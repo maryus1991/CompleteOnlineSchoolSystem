@@ -1,9 +1,9 @@
 from django.db import models
+from apps.common.models import BaseModel
 
-class GradeCategories(models.Model):
-    sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
+class GradeCategories(BaseModel):
     name = models.CharField(max_length=255, verbose_name='نام پایه')
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+
 
     def __str__(self):
         return self.name
@@ -13,10 +13,10 @@ class GradeCategories(models.Model):
         verbose_name = 'پایه'
         verbose_name_plural = 'پایه ها'
 
-class MajorCategories(models.Model):
-    sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
+class MajorCategories(BaseModel):
+
     name = models.CharField(max_length=255, verbose_name='نام رشته')
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+
 
     def __str__(self):
         return self.name
@@ -26,10 +26,10 @@ class MajorCategories(models.Model):
         verbose_name = 'رشته '
         verbose_name_plural = 'رشته ها'
 
-class LessonCategories(models.Model):
-    sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
+class LessonCategories(BaseModel):
+
     name = models.CharField(max_length=255, verbose_name='نام درس')
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+
 
     def __str__(self):
         return self.name
@@ -39,8 +39,7 @@ class LessonCategories(models.Model):
         verbose_name = 'درس '
         verbose_name_plural = 'دروس'
 
-class ProvinceCategories(models.Model):
-    sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
+class ProvinceCategories(BaseModel):
     name = models.CharField(max_length=255, verbose_name='نام')
     is_active = models.BooleanField(default=True, verbose_name='فعال')
 
@@ -52,11 +51,11 @@ class ProvinceCategories(models.Model):
         verbose_name = 'استان'
         verbose_name_plural = 'استان ها'
 
-class CityCategories(models.Model):
+class CityCategories(BaseModel):
     province = models.ForeignKey(ProvinceCategories, null=True, blank=True, verbose_name="استان", related_name='cities', on_delete=models.PROTECT)
-    sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
+
     name = models.CharField(max_length=255, verbose_name='نام')
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+
 
     def __str__(self):
         return self.name

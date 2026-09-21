@@ -1,9 +1,10 @@
 from django.db import models
 from apps.categories.models import ProvinceCategories, CityCategories
 from apps.users.managers.models import Manager
+from apps.common.models import BaseModel
 
 
-class School(models.Model):
+class School(BaseModel):
     manager = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name='schools', verbose_name="مدرسه")
     name = models.CharField("نام", max_length=100)
     province = models.ForeignKey(ProvinceCategories, related_name='schools',blank=True, null=True, on_delete=models.SET_NULL, verbose_name='استان')

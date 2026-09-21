@@ -3,8 +3,10 @@ from apps.schools.models import School
 from apps.users.students.models import Student
 from apps.users.teachers.models import Teacher
 from apps.categories.models import GradeCategories, MajorCategories, LessonCategories
+from apps.common.models import BaseModel
 
-class Class(models.Model):
+
+class Class(BaseModel):
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes', verbose_name="مدرسه")
     student = models.ManyToManyField(Student, related_name='classes', verbose_name="دانش اموزان")
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='classes', verbose_name="معلم")
