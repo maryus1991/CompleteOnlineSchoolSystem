@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 # Application definition
 
@@ -68,7 +69,7 @@ MAIN_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
 
 
-MIDDLEWARE = [
+DJANGO_MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -77,6 +78,27 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+THIRD_PARTY_MIDDLEWARE=[]
+MAIN_MIDDLEWARE=[
+    "apps.sitesetting.middleware.SiteMiddleware"
+]
+
+MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + MAIN_MIDDLEWARE
+
+# html minify
+HTML_MINIFY = True
+HTML_MINIFY_EXCLUDE_EXTENSIONS = (
+    'json',
+    'xml',
+)
+
+# THUMBNAIL
+THUMBNAIL_DEFAULT_OPTIONS = {
+    'format': 'WEBP',      # همیشه WebP تولید کنه
+    'quality': 70,         # کیفیت پیش‌فرض (می‌تونی تغییر بدی)
+    'crop': 'center',      # همیشه از مرکز crop کنه (اگر crop فعال باشه)
+    'optimize': True,      # بهینه‌سازی lossless با Pillow
+}
 
 ROOT_URLCONF = 'config.urls'
 
@@ -92,6 +114,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "apps.sitesettings.context_processors.get_site",
+
             ],
         },
     },
@@ -456,4 +480,4 @@ CKEDITOR_5_CONFIGS = {
 }
 
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "user"
-CKEDITOR_5_FILE_STORAGE = 'config.storage.CKEditorMediaStorage'
+# CKEDITOR_5_FILE_STORAGE = 'config.storage.CKEditorMediaStorage'
