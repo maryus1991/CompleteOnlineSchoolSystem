@@ -6,8 +6,8 @@ from apps.users.managers.models import Manager
 class School(models.Model):
     manager = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name='schools', verbose_name="مدرسه")
     name = models.CharField("نام", max_length=100)
-    province = models.ForeignKey(ProvinceCategories, related_name='adviser',blank=True, null=True, on_delete=models.SET_NULL, verbose_name='استان')
-    city = models.ForeignKey(CityCategories, related_name='adviser', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='شهر')
+    province = models.ForeignKey(ProvinceCategories, related_name='schools',blank=True, null=True, on_delete=models.SET_NULL, verbose_name='استان')
+    city = models.ForeignKey(CityCategories, related_name='schools', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='شهر')
 
     is_active = models.BooleanField(default=True)
 

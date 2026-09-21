@@ -11,7 +11,7 @@ class Student(models.Model):
     province = models.ForeignKey(ProvinceCategories, related_name='student', null=True, on_delete=models.SET_NULL, verbose_name='استان', blank=True)
     city = models.ForeignKey(CityCategories, related_name='student', null=True, on_delete=models.SET_NULL, verbose_name='شهر', blank=True)
     parent_phone_number = PhoneNumberField(verbose_name="شماره والدین", null=True, blank=True)
-    school =  models.ForeignKey(School, verbose_name='مدرسه', null=True, blank=True)
+    school =  models.ForeignKey(School, verbose_name='مدرسه', null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.get_full_name()

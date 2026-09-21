@@ -2,6 +2,6 @@ from django.apps import AppConfig
 
 
 class SchoolsConfig(AppConfig):
-    name = 'schools'
+    name = 'apps.schools'
     verbose_name = "مدارس"
 

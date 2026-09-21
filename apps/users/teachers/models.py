@@ -5,7 +5,6 @@ from apps.categories.models import GradeCategories, MajorCategories, ProvinceCat
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="حساب")
-    grade = models.ForeignKey(GradeCategories, related_name='teacher', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='پایه')
     major = models.ForeignKey(MajorCategories, related_name='teacher', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='رشته')
     province = models.ForeignKey(ProvinceCategories, related_name='teacher', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='استان')
     city = models.ForeignKey(CityCategories, related_name='teacher', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='شهر')

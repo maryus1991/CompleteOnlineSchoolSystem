@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class ExamsConfig(AppConfig):
-    name = 'exams'
+    name = 'apps.exams'
+    verbose_name = "ازمون ها"

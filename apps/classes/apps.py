@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class ClassesConfig(AppConfig):
-    name = 'classes'
+    name = 'apps.classes'
     verbose_name = "کلاس ها"

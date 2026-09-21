@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class LiveClassesConfig(AppConfig):
-    name = 'live_classes'
+    name = 'apps.live_classes'
+    verbose_name = "کلاس های انلاین"

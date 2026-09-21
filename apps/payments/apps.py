@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class PaymentsConfig(AppConfig):
-    name = 'payments'
+    name = 'apps.payments'
+    verbose_name = "پرداخت ها"

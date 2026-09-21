@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class ArticleConfig(AppConfig):
-    name = 'article'
+    name = 'apps.article'
     verbose_name = "مقالات"

@@ -40,6 +40,7 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     "phonenumber_field",
+    "django_ckeditor_5",
 ]
 MAIN_APPS = [
     "apps.categories",
@@ -48,6 +49,18 @@ MAIN_APPS = [
     "apps.users.managers",
     "apps.users.students",
     "apps.users.teachers",
+    "apps.classes",
+    "apps.content",
+    "apps.communication",
+    "apps.exams",
+    "apps.live_classes",
+    "apps.payments",
+    "apps.progress",
+    "apps.questions",
+    "apps.reports",
+    "apps.schools",
+    "apps.subscriptions",
+    "apps.article",
 
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS

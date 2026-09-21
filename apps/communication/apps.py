@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class CommunicationConfig(AppConfig):
-    name = 'communication'
+    name = 'apps.communication'
+    verbose_name = "پیام ها"

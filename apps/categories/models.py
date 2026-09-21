@@ -26,6 +26,19 @@ class MajorCategories(models.Model):
         verbose_name = 'رشته '
         verbose_name_plural = 'رشته ها'
 
+class LessonCategories(models.Model):
+    sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
+    name = models.CharField(max_length=255, verbose_name='نام درس')
+    is_active = models.BooleanField(default=True, verbose_name='فعال')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-sort_number']
+        verbose_name = 'درس '
+        verbose_name_plural = 'دروس'
+
 class ProvinceCategories(models.Model):
     sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
     name = models.CharField(max_length=255, verbose_name='نام')
