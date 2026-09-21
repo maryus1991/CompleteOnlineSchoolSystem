@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.timezone import now
 from datetime import timedelta
 from random import randint
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class User(AbstractUser):

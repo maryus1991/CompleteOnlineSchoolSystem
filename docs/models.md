@@ -1,74 +1,34 @@
 apps/
-<br>
 │
 ├── accounts/
-<br>
 │   ────├──── User
-<br>
 │   ────├──── Role
-<br>
 │   ────└──── Permission
-<br>
+├────── students/
+│   ────────├──── StudentProfile
+│   ────────├──── Enrollment
+│   ────────└──── ParentStudent
+├────── teachers/
+│   ────────└──── TeacherProfile
 │
 ├── schools/
-<br>
 │   ────├──── School
-<br>
-│   ────├──── AcademicYear
-<br>
-│   ────├──── Term
-<br>
 │   ────├──── Grade
-<br>
 │   ────└──── Classroom
-<br>
-│
-├── students/
-<br>
-│   ────├──── StudentProfile
-<br>
-│   ────├──── Enrollment
-<br>
-│   ────└──── ParentStudent
-<br>
-│
-├── teachers/
-<br>
-│   ────└──── TeacherProfile
-<br>
 │
 ├── subjects/
-<br>
 │   ────├──── Subject
-<br>
 │   ────└──── Course
-<br>
 │
 ├── content/
-<br>
-│   ────├──── Section
-<br>
-│   ────├──── Lesson
-<br>
 │   ────├──── Article
-<br>
 │   ────├──── Video
-<br>
 │   ────└──── EducationalFile
-<br>
-│
+|
 ├── questions/
-<br>
 │   ────├──── QuestionBank
-<br>
 │   ────├──── Question
-<br>
 │   ────├──── Choice
-<br>
-│   ────├──── Tag
-<br>
-│   ────└──── Category
-<br>
 │
 ├── exams/
 <br>

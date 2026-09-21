@@ -22,10 +22,14 @@ source = { editable = "." }
 dependencies = [
     { name = "django", version = "5.2.17", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "django", version = "6.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "django-phonenumber-field", extra = ["phonenumbers"] },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "django", specifier = ">=5.2.17" }]
+requires-dist = [
+    { name = "django", specifier = ">=5.2.17" },
+    { name = "django-phonenumber-field", extras = ["phonenumbers"], specifier = ">=8.5.0" },
+]
 
 [[package]]
 name = "django"
@@ -59,6 +63,33 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f8/d4/8314b5bdef20832f0ac6ae3b3e4d4924e4759fa3b4af27609dd747e7a6be/django-6.1.1.tar.gz", hash = "sha256:7ab93536d8e677aa14554c56426290c69480bf2ee68d7513d4a22f57d6bfeb84", size = 11284905, upload-time = "2026-09-02T17:20:45.621Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8d/ca/c1040a4fd15754ede7df15fd72fc2e123045b473b253ab5f5284e11c651e/django-6.1.1-py3-none-any.whl", hash = "sha256:585fb82bf15053c42cf52e67c2f1b54a032dca384759315fd6678ab1870d1d72", size = 8419512, upload-time = "2026-09-02T17:20:39.153Z" },
+]
+
+[[package]]
+name = "django-phonenumber-field"
+version = "8.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django", version = "5.2.17", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "django", version = "6.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0f/82/479b070133cd493cad0f59bc04d6dd3e2e88b2c1f48cd6f54fd897225199/django_phonenumber_field-8.5.0.tar.gz", hash = "sha256:19c606fda7bb25630c4913f7ac83c1824186ea17e2e4c6dc9aa9373e8f5843c5", size = 46311, upload-time = "2026-07-23T12:24:16.471Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/77/14/4e33f4055afbf517ac3223371334f6f3226beecc92b781131a6eb6eeda1c/django_phonenumber_field-8.5.0-py3-none-any.whl", hash = "sha256:a6dd71250f7fd0724aad995df01bdb4ac457a65622f120d0d623792fe8283798", size = 69514, upload-time = "2026-07-23T12:24:14.955Z" },
+]
+
+[package.optional-dependencies]
+phonenumbers = [
+    { name = "phonenumbers" },
+]
+
+[[package]]
+name = "phonenumbers"
+version = "9.0.39"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/41/d9/f73babd005dd7569a81789f4db9cc82efaf001af018d5752bf6d7ea14e19/phonenumbers-9.0.39.tar.gz", hash = "sha256:41a7ff0257d5a7a096a8e263da7efc0a96a6162c84ba64af2ebf8972d09e70e1", size = 2310991, upload-time = "2026-09-10T11:26:52.485Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/99/53/238c99f028b9c638ceae8218a33904e4b84d60e1c3bd707c0ff231b388cf/phonenumbers-9.0.39-py2.py3-none-any.whl", hash = "sha256:d83b878d0188c81a5f5e8572cedcc7262bd0ea3806eb7c8e35d8666d262a8af0", size = 2594744, upload-time = "2026-09-10T11:26:49.561Z" },
 ]
 
 [[package]]
