@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class AdvisersConfig(AppConfig):
-    name = 'advisers'
+    name = 'apps.users.advisers'
+    verbose_name = "مشاوره"

@@ -2,6 +2,6 @@ from django.apps import AppConfig
 
 
 class CategoriesConfig(AppConfig):
-    name = 'categories'
+    name = 'apps.categories'
     verbose_name = "دسته بندی ها"
 

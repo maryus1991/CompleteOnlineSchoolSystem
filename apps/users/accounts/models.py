@@ -31,8 +31,6 @@ class User(AbstractUser):
     USERNAME_FIELD = "PhoneNumber"
     username = None
 
-    objects = UserManager()
-
     class Meta:
         verbose_name = 'کاربر'
         verbose_name_plural = 'کاربران'

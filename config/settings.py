@@ -39,9 +39,15 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 THIRD_PARTY_APPS = [
-    "phonenumber_field"
+    "phonenumber_field",
 ]
 MAIN_APPS = [
+    "apps.categories",
+    "apps.users.accounts",
+    "apps.users.advisers",
+    "apps.users.managers",
+    "apps.users.students",
+    "apps.users.teachers",
 
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
@@ -136,3 +142,302 @@ OTP_EXPIRATIONS_SECONDS = 60 * 3
 OTP_EXPIRATIONS_RANGE_START = 1000
 OTP_EXPIRATIONS_RANGE_END = 1000
 LOGIN_TEMP = 3
+AUTH_USER_MODEL = 'accounts.User'
+# LOGIN_URL = "user:login"
+# LOGIN_REDIRECT_URL = "/"
+JALALI_DATE_DEFAULTS = {
+    # if change it to true then all dates of the list_display will convert to the Jalali.
+    "LIST_DISPLAY_AUTO_CONVERT": True,
+    "Strftime": {
+        "date": "%Y/%m/%d",
+        "datetime": "%H:%M - %Y/%m/%d ",
+    },
+    "Static": {
+        "js": [
+            "admin/js/django_jalali.min.js",
+        ],
+        "css": {
+            "all": [
+                "admin/css/django_jalali.min.css",
+            ]
+        },
+    },
+}
+
+# phone number config
+PHONENUMBER_DEFAULT_FORMAT = "NATIONAL"
+PHONENUMBER_DEFAULT_REGION = "IR"
+
+# cke config
+
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": {
+            "items": [
+                # History
+                "undo",
+                "redo",
+
+                "|",
+
+                # Selection / search
+                "selectAll",
+                "findAndReplace",
+
+                "|",
+
+                # Headings
+                "heading",
+
+                "|",
+
+                # Font
+                "fontFamily",
+                "fontSize",
+                "fontColor",
+                "fontBackgroundColor",
+
+                "|",
+
+                # Text formatting
+                "bold",
+                "italic",
+                "underline",
+                "strikethrough",
+                "subscript",
+                "superscript",
+                "code",
+                "highlight",
+
+                "|",
+
+                # Paragraph
+                "alignment",
+
+                "|",
+
+                # Links / media
+                "link",
+                "imageUpload",
+                "mediaEmbed",
+
+                "|",
+
+                # Lists
+                "bulletedList",
+                "numberedList",
+                "todoList",
+                "outdent",
+                "indent",
+
+                "|",
+
+                # Blocks
+                "blockQuote",
+                "codeBlock",
+                "horizontalLine",
+
+                "|",
+
+                # Tables
+                "insertTable",
+
+                "|",
+
+                # Characters
+                "specialCharacters",
+
+                "|",
+
+                # Clean
+                "removeFormat",
+            ],
+
+            "shouldNotGroupWhenFull": True,
+        },
+
+        "language": "fa",
+
+        # -------------------------
+        # Heading
+        # -------------------------
+        "heading": {
+            "options": [
+                {
+                    "model": "paragraph",
+                    "title": "پاراگراف",
+                    "class": "ck-heading_paragraph",
+                },
+                {
+                    "model": "heading1",
+                    "view": "h1",
+                    "title": "عنوان ۱",
+                    "class": "ck-heading_heading1",
+                },
+                {
+                    "model": "heading2",
+                    "view": "h2",
+                    "title": "عنوان ۲",
+                    "class": "ck-heading_heading2",
+                },
+                {
+                    "model": "heading3",
+                    "view": "h3",
+                    "title": "عنوان ۳",
+                    "class": "ck-heading_heading3",
+                },
+                {
+                    "model": "heading4",
+                    "view": "h4",
+                    "title": "عنوان ۴",
+                    "class": "ck-heading_heading4",
+                },
+            ],
+        },
+
+        # -------------------------
+        # Font Family
+        # -------------------------
+        "fontFamily": {
+            "options": [
+                "default",
+                "Vazirmatn",
+                "Tahoma",
+                "Arial",
+                "Times New Roman",
+            ],
+            "supportAllValues": True,
+        },
+
+        # -------------------------
+        # Font Size
+        # -------------------------
+        "fontSize": {
+            "options": [
+                10,
+                12,
+                14,
+                16,
+                18,
+                20,
+                22,
+                24,
+                28,
+                32,
+                36,
+                48,
+            ],
+        },
+
+        # -------------------------
+        # Font Color
+        # -------------------------
+        "fontColor": {
+            "colors": [
+                {
+                    "color": "#000000",
+                    "label": "مشکی",
+                },
+                {
+                    "color": "#FF0000",
+                    "label": "قرمز",
+                },
+                {
+                    "color": "#0000FF",
+                    "label": "آبی",
+                },
+                {
+                    "color": "#008000",
+                    "label": "سبز",
+                },
+                {
+                    "color": "#FFA500",
+                    "label": "نارنجی",
+                },
+                {
+                    "color": "#800080",
+                    "label": "بنفش",
+                },
+                {
+                    "color": "#808080",
+                    "label": "خاکستری",
+                },
+            ],
+        },
+
+        # -------------------------
+        # Background Color
+        # -------------------------
+        "fontBackgroundColor": {
+            "colors": [
+                {
+                    "color": "#FFFF00",
+                    "label": "زرد",
+                },
+                {
+                    "color": "#00FF00",
+                    "label": "سبز",
+                },
+                {
+                    "color": "#00FFFF",
+                    "label": "فیروزه‌ای",
+                },
+                {
+                    "color": "#FFB6C1",
+                    "label": "صورتی",
+                },
+            ],
+        },
+
+        # -------------------------
+        # Alignment
+        # -------------------------
+        "alignment": {
+            "options": [
+                "left",
+                "center",
+                "right",
+                "justify",
+            ],
+        },
+
+        # -------------------------
+        # Image
+        # -------------------------
+        "image": {
+            "toolbar": [
+                "imageTextAlternative",
+                "|",
+                "imageStyle:inline",
+                "imageStyle:block",
+                "imageStyle:side",
+                "|",
+                "linkImage",
+            ],
+        },
+
+        # -------------------------
+        # Table
+        # -------------------------
+        "table": {
+            "contentToolbar": [
+                "tableColumn",
+                "tableRow",
+                "mergeTableCells",
+                "tableProperties",
+                "tableCellProperties",
+            ],
+        },
+
+        # -------------------------
+        # Link
+        # -------------------------
+        "link": {
+            "addTargetToExternalLinks": True,
+            "defaultProtocol": "https://",
+        },
+    },
+}
+
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "user"
+CKEDITOR_5_FILE_STORAGE = 'config.storage.CKEditorMediaStorage'

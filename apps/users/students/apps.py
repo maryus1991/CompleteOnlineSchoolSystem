@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class StudentsConfig(AppConfig):
-    name = 'students'
+    name = 'apps.users.students'
+    verbose_name = "دانش اموزان"
