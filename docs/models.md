@@ -3,142 +3,142 @@ apps/
 │
 ├── accounts/
 <br>
-│   -------├──── User
+│   ────├──── User
 <br>
-│   -------├──── Role
+│   ────├──── Role
 <br>
-│   -------└──── Permission
+│   ────└──── Permission
 <br>
 │
 ├── schools/
 <br>
-│   -------├──── School
+│   ────├──── School
 <br>
-│   -------├──── AcademicYear
+│   ────├──── AcademicYear
 <br>
-│   -------├──── Term
+│   ────├──── Term
 <br>
-│   -------├──── Grade
+│   ────├──── Grade
 <br>
-│   -------└──── Classroom
+│   ────└──── Classroom
 <br>
 │
 ├── students/
 <br>
-│   -------├──── StudentProfile
+│   ────├──── StudentProfile
 <br>
-│   -------├──── Enrollment
+│   ────├──── Enrollment
 <br>
-│   -------└──── ParentStudent
+│   ────└──── ParentStudent
 <br>
 │
 ├── teachers/
 <br>
-│   -------└──── TeacherProfile
+│   ────└──── TeacherProfile
 <br>
 │
 ├── subjects/
 <br>
-│   -------├──── Subject
+│   ────├──── Subject
 <br>
-│   -------└──── Course
+│   ────└──── Course
 <br>
 │
 ├── content/
 <br>
-│   -------├──── Section
+│   ────├──── Section
 <br>
-│   -------├──── Lesson
+│   ────├──── Lesson
 <br>
-│   -------├──── Article
+│   ────├──── Article
 <br>
-│   -------├──── Video
+│   ────├──── Video
 <br>
-│   -------└──── EducationalFile
+│   ────└──── EducationalFile
 <br>
 │
 ├── questions/
 <br>
-│   -------├──── QuestionBank
+│   ────├──── QuestionBank
 <br>
-│   -------├──── Question
+│   ────├──── Question
 <br>
-│   -------├──── Choice
+│   ────├──── Choice
 <br>
-│   -------├──── Tag
+│   ────├──── Tag
 <br>
-│   -------└──── Category
+│   ────└──── Category
 <br>
 │
 ├── exams/
 <br>
-│   -------├──── Exam
+│   ────├──── Exam
 <br>
-│   -------├──── ExamQuestion
+│   ────├──── ExamQuestion
 <br>
-│   -------├──── ExamAttempt
+│   ────├──── ExamAttempt
 <br>
-│   -------└──── ExamAnswer
+│   ────└──── ExamAnswer
 <br>
 │
 ├── assignments/
 <br>
-│   -------├──── Assignment
+│   ────├──── Assignment
 <br>
-│   -------└──── Submission
+│   ────└──── Submission
 <br>
 │
 ├── live_classes/
 <br>
-│   -------├──── LiveClass
+│   ────├──── LiveClass
 <br>
-│   -------└──── Recording
+│   ────└──── Recording
 <br>
 │
 ├── progress/
 <br>
-│   -------├──── LessonProgress
+│   ────├──── LessonProgress
 <br>
-│   -------├──── CourseProgress
+│   ────├──── CourseProgress
 <br>
-│   -------└──── VideoProgress
+│   ────└──── VideoProgress
 <br>
 │
 ├── grading/
 <br>
-│   -------├──── Grade
+│   ────├──── Grade
 <br>
-│   -------├──── GradeCategory
+│   ────├──── GradeCategory
 <br>
-│   -------└──── ReportCard
+│   ────└──── ReportCard
 <br>
 │
 ├── communication/
 <br>
-│   -------├──── Conversation
+│   ────├──── Conversation
 <br>
-│   -------├──── Message
+│   ────├──── Message
 <br>
-│   -------└──── Notification
+│   ────└──── Notification
 <br>
 │
 ├── payments/
 <br>
-│   -------├──── Order
+│   ────├──── Order
 <br>
-│   -------├──── Payment
+│   ────├──── Payment
 <br>
-│   -------└──── Transaction
+│   ────└──── Transaction
 <br>
 │
 ├── subscriptions/
 <br>
-│   -------├──── Plan
+│   ────├──── Plan
 <br>
-│   -------└──── Subscription
+│   ────└──── Subscription
 <br>
 │
 └── audit/
 <br>
-    └──── -------AuditLog
+    └──── ────AuditLog
     <br>
