@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from datetime import timedelta
 from random import randint
 from phonenumber_field.modelfields import PhoneNumberField
-
+from .manager import UserManager
 
 class User(AbstractUser):
     """
@@ -14,7 +14,7 @@ class User(AbstractUser):
 
     class GenderOfUser(models.TextChoices):
         """
-        for detact the gender of User
+        for detect the gender of User
         """
         MALE = "M", 'مذکر'
         FEMALE = "F", "مونث"
@@ -30,6 +30,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "PhoneNumber"
     username = None
+    objects = UserManager()
 
     class Meta:
         verbose_name = 'کاربر'

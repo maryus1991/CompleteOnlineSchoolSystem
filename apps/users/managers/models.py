@@ -5,8 +5,8 @@ from apps.categories.models import ProvinceCategories, CityCategories
 
 class Manager(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="حساب")
-    province = models.ForeignKey(ProvinceCategories, related_name='manager', null=True, on_delete=models.SET_NULL, verbose_name='استان')
-    city = models.ForeignKey(CityCategories, related_name='manager', null=True, on_delete=models.SET_NULL, verbose_name='شهر')
+    province = models.ForeignKey(ProvinceCategories, related_name='manager', null=True, on_delete=models.SET_NULL, verbose_name='استان', blank=True)
+    city = models.ForeignKey(CityCategories, related_name='manager', null=True, on_delete=models.SET_NULL, verbose_name='شهر', blank=True)
 
     def __str__(self):
         return self.user.get_full_name()
