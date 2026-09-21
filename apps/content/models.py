@@ -28,8 +28,6 @@ class ClassPractice(BaseModel):
     klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='practice', verbose_name="تمرین")
     content = CKEditor5Field("توضیحات")
 
-    # todo: add qbank
-
     class Meta:
         ordering = ['-pk']
         verbose_name = 'تمرین'

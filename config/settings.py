@@ -62,6 +62,7 @@ MAIN_APPS = [
     "apps.subscriptions",
     "apps.article",
     "apps.common",
+    "apps.sitesetting",
 
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
