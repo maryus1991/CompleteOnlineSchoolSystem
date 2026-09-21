@@ -8,9 +8,6 @@ class ClassArticle(BaseModel):
     klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='article', verbose_name="کلاس")
     content = CKEditor5Field("توضیحات")
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         ordering = ['-pk']
         verbose_name = 'مقاله'
@@ -22,22 +19,16 @@ class ClassFile(BaseModel):
     file = models.FileField("فایل")
     content = CKEditor5Field("توضیحات")
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         ordering = ['-pk']
         verbose_name = 'فایل کلاس'
         verbose_name_plural = 'فایل های کلاس'
 
 class ClassPractice(BaseModel):
-    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='file', verbose_name="کلاس")
+    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='practice', verbose_name="تمرین")
     content = CKEditor5Field("توضیحات")
 
     # todo: add qbank
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         ordering = ['-pk']

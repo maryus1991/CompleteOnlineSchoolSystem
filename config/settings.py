@@ -61,6 +61,7 @@ MAIN_APPS = [
     "apps.schools",
     "apps.subscriptions",
     "apps.article",
+    "apps.common",
 
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
