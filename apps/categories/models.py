@@ -9,7 +9,7 @@ class GradeCategories(BaseModel):
         return self.name
 
     class Meta:
-        ordering = ['-sort_number']
+        ordering = ['-sort_number', "-pk"]
         verbose_name = 'پایه'
         verbose_name_plural = 'پایه ها'
 
@@ -22,7 +22,7 @@ class MajorCategories(BaseModel):
         return self.name
 
     class Meta:
-        ordering = ['-sort_number']
+        ordering = ['-sort_number', "-pk"]
         verbose_name = 'رشته '
         verbose_name_plural = 'رشته ها'
 
@@ -35,7 +35,7 @@ class LessonCategories(BaseModel):
         return self.name
 
     class Meta:
-        ordering = ['-sort_number']
+        ordering = ['-sort_number', "-pk"]
         verbose_name = 'درس '
         verbose_name_plural = 'دروس'
 
@@ -47,7 +47,7 @@ class ProvinceCategories(BaseModel):
         return self.name
 
     class Meta:
-        ordering = ['-sort_number']
+        ordering = ['-sort_number', "-pk"]
         verbose_name = 'استان'
         verbose_name_plural = 'استان ها'
 
@@ -61,6 +61,16 @@ class CityCategories(BaseModel):
         return self.name
 
     class Meta:
-        ordering = ['-sort_number']
+        ordering = ['-sort_number', "-pk"]
         verbose_name = 'شهر'
         verbose_name_plural = 'شهر ها'
+
+class BlogCategories(BaseModel):
+    name = models.CharField(max_length=255, verbose_name='نام')
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-sort_number', "-pk"]
+        verbose_name = 'دسته بندی مقاله'
+        verbose_name_plural = 'دسته بندی های مقالات'

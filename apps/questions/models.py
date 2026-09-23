@@ -50,7 +50,7 @@ class QuestionOption(BaseModel):
     is_correct = models.BooleanField(default=False, verbose_name='گزینه صحیح')
 
     class Meta:
-        ordering = ['-sort_number']
+        ordering = ['-sort_number', "pk"]
         verbose_name = ' گزینه سوال تست'
         verbose_name_plural = 'گزینه‌ها سوالات تستی'
 

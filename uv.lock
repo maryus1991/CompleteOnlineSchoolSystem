@@ -24,6 +24,7 @@ dependencies = [
     { name = "django", version = "6.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "django-ckeditor-5" },
     { name = "django-phonenumber-field", extra = ["phonenumbers"] },
+    { name = "django-resized" },
     { name = "pillow" },
 ]
 
@@ -32,6 +33,7 @@ requires-dist = [
     { name = "django", specifier = ">=5.2.17" },
     { name = "django-ckeditor-5", specifier = "==0.0.6" },
     { name = "django-phonenumber-field", extras = ["phonenumbers"], specifier = ">=8.5.0" },
+    { name = "django-resized", specifier = ">=1.0.3" },
     { name = "pillow", specifier = ">=12.3.0" },
 ]
 
@@ -94,6 +96,15 @@ wheels = [
 [package.optional-dependencies]
 phonenumbers = [
     { name = "phonenumbers" },
+]
+
+[[package]]
+name = "django-resized"
+version = "1.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/fc/aa/5e83b3dec9c1ec7d336c86e83bbc93674cd4fc125879a827b932a0ec25c3/django_resized-1.0.3.tar.gz", hash = "sha256:c199f2b6e315816753df3a7a3889b923d3b73ce89fa16af93761cf2ea9bac4f7", size = 4948, upload-time = "2024-10-14T06:08:58.726Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/38/ac/3495743e9923a3b79a929782f63db7acd606dc94c15c296487ef6d015717/django_resized-1.0.3-py3-none-any.whl", hash = "sha256:b5b0cf0d1db4f8db43362eef121d94d63487e2bff7a59c45046a1420788db353", size = 5149, upload-time = "2024-10-14T06:08:55.665Z" },
 ]
 
 [[package]]

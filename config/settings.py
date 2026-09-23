@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from django.conf.global_settings import STATICFILES_DIRS
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -80,7 +82,7 @@ DJANGO_MIDDLEWARE = [
 ]
 THIRD_PARTY_MIDDLEWARE=[]
 MAIN_MIDDLEWARE=[
-    "apps.sitesetting.middleware.SiteMiddleware"
+    "apps.sitesetting.middleware.SiteMiddleware",
 ]
 
 MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + MAIN_MIDDLEWARE
@@ -92,12 +94,14 @@ HTML_MINIFY_EXCLUDE_EXTENSIONS = (
     'xml',
 )
 
-# THUMBNAIL
-THUMBNAIL_DEFAULT_OPTIONS = {
-    'format': 'WEBP',
-    'quality': 70,
-    'crop': 'center',
-    'optimize': True,
+# image compress
+DJANGORESIZED_DEFAULT_SIZE = None
+DJANGORESIZED_DEFAULT_QUALITY = 80
+DJANGORESIZED_DEFAULT_FORCE_FORMAT = "WEBP"
+DJANGORESIZED_DEFAULT_KEEP_META = False
+DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
+DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {
+    "WEBP": ".webp",
 }
 
 ROOT_URLCONF = 'config.urls'
@@ -114,7 +118,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                "apps.sitesettings.context_processors.get_site",
+                "apps.sitesetting.context_processors.get_site",
 
             ],
         },
@@ -170,8 +174,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT =  BASE_DIR / 'static'
-
+# STATIC_ROOT =  BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
 
 
 # Default primary key field type

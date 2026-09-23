@@ -4,7 +4,7 @@
    ============================================ */
 
 /* فونت اصلی */
-@import url('assets/fonts/stylesheet.css');
+@import url('../fonts/stylesheet.css');
 
 * {
     font-family: 'Peyda', 'Segoe UI', system-ui, -apple-system, sans-serif;
