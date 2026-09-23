@@ -1,0 +1,109 @@
+{% extends 'main/Base/Base.html' %}
+
+{% block header %}
+    <link rel="stylesheet" href="../../../static/main/css/courses.css">
+
+{% endblock %}
+
+{% block main %}
+    <main class="courses-page">
+
+
+        <div class="container">
+                <div class="section-header">
+                    <span class="section-subtitle" data-i18n="blog.subtitle">{{site.list_articles_above_tag }}</span>
+                    <h1 class="section-title" data-i18n="blog.title">{{ site.list_articles_title }}</h1>
+                    <p class="section-desc" data-i18n="blog.desc">{{ site.list_articles_description }}</p>
+                </div>
+
+
+            <div class="courses-filter">
+                <div class="filter-tabs">
+
+                    <a href="{% url 'article:article-list' %}" class="filter-tab {% if not pk %} active {% endif %} " data-filter="all">
+                        همه
+                    </a>
+
+                    {% for category in categories %}
+                    <a class="filter-tab {% if pk == category.pk %} active {% endif %}"  href="{{ category.get_absolute_url }}" data-filter="{{ category.name }}">
+                         {{ category.name }}
+                    </a>
+                    {% endfor %}
+
+
+                </div>
+
+
+
+<form method="get" class="course-search-form">
+    <div class="search-box">
+        <input
+            type="text"
+            id="searchCourses"
+            name="q"
+            placeholder="جستجو ..."
+            value="{{ request.GET.q|default:'' }}"
+        >
+
+        <button type="submit" aria-label="جستجو">
+            <svg
+                class="search-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+        </button>
+    </div>
+</form>
+
+
+            </div>
+
+        <!-- BLOG SECTION -->
+
+            <div class="container">
+                <div class="blog-grid">
+
+                                        {% for item in items %}
+                    <article class="blog-card">
+                        <div class="blog-image">
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                            <div class="blog-category" data-i18n="blog.cat1">
+                                {{ item.category.name }}
+                            </div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span>{{ item.updated_at }}</span>
+                                <span>{{ item.reading_time }} دقیقه</span>
+                            </div>
+                            <h2 data-i18n="blog.title1">{{ item.name }}</h2>
+                            <p data-i18n="blog.desc1">{{ item.summery }}</p>
+                            <a href="{{ item.get_absolute_url }}" class="blog-link">
+                                <span data-i18n="blog.readmore">ادامه مطلب</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+                    </article>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </main>
+
+
+
+{% endblock %}
+

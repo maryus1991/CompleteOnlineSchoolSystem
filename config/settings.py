@@ -44,6 +44,13 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "phonenumber_field",
     "django_ckeditor_5",
+    "django_jalali",
+
+
+]
+DEV_APPS = [
+   "debug_toolbar",
+
 ]
 MAIN_APPS = [
     "apps.categories",
@@ -68,7 +75,11 @@ MAIN_APPS = [
     "apps.sitesetting",
 
 ]
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
+if DEBUG:
+    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + DEV_APPS  + MAIN_APPS
+
+else:
+    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
 
 
 DJANGO_MIDDLEWARE = [
@@ -81,11 +92,19 @@ DJANGO_MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 THIRD_PARTY_MIDDLEWARE=[]
+DEV_MIDDLEWARE=[
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
+
 MAIN_MIDDLEWARE=[
     "apps.sitesetting.middleware.SiteMiddleware",
 ]
 
-MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + MAIN_MIDDLEWARE
+if DEBUG:
+    MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + DEV_MIDDLEWARE + MAIN_MIDDLEWARE
+
+else:
+    MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + MAIN_MIDDLEWARE
 
 
 HTML_MINIFY = True
@@ -178,7 +197,16 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
+# django debug
+INTERNAL_IPS = [
+
+    "127.0.0.1",
+    "localhost",
+
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -193,23 +221,29 @@ LOGIN_TEMP = 3
 AUTH_USER_MODEL = 'accounts.User'
 # LOGIN_URL = "user:login"
 # LOGIN_REDIRECT_URL = "/"
-JALALI_DATE_DEFAULTS = {
+JALALI_SETTINGS = {
 
-    "LIST_DISPLAY_AUTO_CONVERT": True,
-    "Strftime": {
-        "date": "%Y/%m/%d",
-        "datetime": "%H:%M - %Y/%m/%d ",
+    "ADMIN_JS_STATIC_FILES": [
+        "admin/jquery.ui.datepicker.jalali/scripts/jquery-1.10.2.min.js",
+        "admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.core.js",
+        "admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc.js",
+        "admin/jquery.ui.datepicker.jalali/scripts/calendar.js",
+        "admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc-fa.js",
+        "admin/main.js",
+    ],
+
+    "ADMIN_CSS_STATIC_FILES": {
+        "all": [
+            "admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css",
+            "admin/css/main.css",
+        ]
     },
-    "Static": {
-        "js": [
-            "admin/js/django_jalali.min.js",
-        ],
-        "css": {
-            "all": [
-                "admin/css/django_jalali.min.css",
-            ]
-        },
-    },
+}
+
+JALALI_DISPLAY = {
+    "DATE_FORMAT": "%Y/%m/%d",
+    "DATETIME_FORMAT": "%H:%M - %Y/%m/%d ",
+    "AUTO_CONVERT": True,
 }
 
 # phone number config
@@ -221,131 +255,26 @@ PHONENUMBER_DEFAULT_REGION = "IR"
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": {
-            "items": [
-                # History
-                "undo",
-                "redo",
-
-                "|",
-
-                # Selection / search
-                "selectAll",
-                "findAndReplace",
-
-                "|",
-
-                # Headings
-                "heading",
-
-                "|",
-
-                # Font
-                "fontFamily",
-                "fontSize",
-                "fontColor",
-                "fontBackgroundColor",
-
-                "|",
-
-                # Text formatting
-                "bold",
-                "italic",
-                "underline",
-                "strikethrough",
-                "subscript",
-                "superscript",
-                "code",
-                "highlight",
-
-                "|",
-
-                # Paragraph
-                "alignment",
-
-                "|",
-
-                # Links / media
-                "link",
-                "imageUpload",
-                "mediaEmbed",
-
-                "|",
-
-                # Lists
-                "bulletedList",
-                "numberedList",
-                "todoList",
-                "outdent",
-                "indent",
-
-                "|",
-
-                # Blocks
-                "blockQuote",
-                "codeBlock",
-                "horizontalLine",
-
-                "|",
-
-                # Tables
-                "insertTable",
-
-                "|",
-
-                # Characters
-                "specialCharacters",
-
-                "|",
-
-                # Clean
-                "removeFormat",
+            "items": ["undo","redo","|","selectAll","findAndReplace","|","heading","|",
+                      "fontFamily","fontSize","fontColor","fontBackgroundColor","|",
+                      "bold","italic","underline","strikethrough","subscript","superscript",
+                      "code","highlight","|","alignment","|","link","imageUpload",
+                      "mediaEmbed","|","bulletedList","numberedList","todoList","outdent",
+                      "indent","|","blockQuote","codeBlock","horizontalLine","|","insertTable","|",
+                      "specialCharacters","|","removeFormat",
             ],
-
             "shouldNotGroupWhenFull": True,
         },
-
         "language": "fa",
-
-        # -------------------------
-        # Heading
-        # -------------------------
         "heading": {
             "options": [
-                {
-                    "model": "paragraph",
-                    "title": "پاراگراف",
-                    "class": "ck-heading_paragraph",
-                },
-                {
-                    "model": "heading1",
-                    "view": "h1",
-                    "title": "عنوان ۱",
-                    "class": "ck-heading_heading1",
-                },
-                {
-                    "model": "heading2",
-                    "view": "h2",
-                    "title": "عنوان ۲",
-                    "class": "ck-heading_heading2",
-                },
-                {
-                    "model": "heading3",
-                    "view": "h3",
-                    "title": "عنوان ۳",
-                    "class": "ck-heading_heading3",
-                },
-                {
-                    "model": "heading4",
-                    "view": "h4",
-                    "title": "عنوان ۴",
-                    "class": "ck-heading_heading4",
-                },
+                {"model": "paragraph","title": "پاراگراف","class": "ck-heading_paragraph",},
+                {"model": "heading1","view": "h1","title": "عنوان ۱","class": "ck-heading_heading1",},
+                {"model": "heading2","view": "h2","title": "عنوان ۲","class": "ck-heading_heading2",},
+                {"model": "heading3","view": "h3","title": "عنوان ۳","class": "ck-heading_heading3",},
+                {"model": "heading4","view": "h4","title": "عنوان ۴","class": "ck-heading_heading4",},
             ],
         },
-
-        # -------------------------
-        # Font Family
-        # -------------------------
         "fontFamily": {
             "options": [
                 "default",
@@ -356,133 +285,42 @@ CKEDITOR_5_CONFIGS = {
             ],
             "supportAllValues": True,
         },
-
-        # -------------------------
-        # Font Size
-        # -------------------------
         "fontSize": {
-            "options": [
-                10,
-                12,
-                14,
-                16,
-                18,
-                20,
-                22,
-                24,
-                28,
-                32,
-                36,
-                48,
+            "options": [10,11,12,13,14,15,16,17,18,19,20,22,24,28,32,36,48,
             ],
         },
-
-        # -------------------------
-        # Font Color
-        # -------------------------
         "fontColor": {
             "colors": [
-                {
-                    "color": "#000000",
-                    "label": "مشکی",
-                },
-                {
-                    "color": "#FF0000",
-                    "label": "قرمز",
-                },
-                {
-                    "color": "#0000FF",
-                    "label": "آبی",
-                },
-                {
-                    "color": "#008000",
-                    "label": "سبز",
-                },
-                {
-                    "color": "#FFA500",
-                    "label": "نارنجی",
-                },
-                {
-                    "color": "#800080",
-                    "label": "بنفش",
-                },
-                {
-                    "color": "#808080",
-                    "label": "خاکستری",
-                },
+                {"color": "#000000","label": "مشکی",},
+                {"color": "#FF0000","label": "قرمز",},
+                {"color": "#0000FF","label": "آبی",},
+                {"color": "#008000","label": "سبز",},
+                {"color": "#FFA500","label": "نارنجی",},
+                {"color": "#800080","label": "بنفش",},
+                {"color": "#808080","label": "خاکستری",},
             ],
         },
-
-        # -------------------------
-        # Background Color
-        # -------------------------
         "fontBackgroundColor": {
             "colors": [
-                {
-                    "color": "#FFFF00",
-                    "label": "زرد",
-                },
-                {
-                    "color": "#00FF00",
-                    "label": "سبز",
-                },
-                {
-                    "color": "#00FFFF",
-                    "label": "فیروزه‌ای",
-                },
-                {
-                    "color": "#FFB6C1",
-                    "label": "صورتی",
-                },
+                {"color": "#FFFF00","label": "زرد",},
+                {"color": "#00FF00","label": "سبز",},
+                {"color": "#00FFFF","label": "فیروزه‌ای",},
+                {"color": "#FFB6C1","label": "صورتی",},
             ],
         },
-
-        # -------------------------
-        # Alignment
-        # -------------------------
         "alignment": {
-            "options": [
-                "left",
-                "center",
-                "right",
-                "justify",
+            "options": ["left","center","right","justify",
             ],
         },
-
-        # -------------------------
-        # Image
-        # -------------------------
         "image": {
-            "toolbar": [
-                "imageTextAlternative",
-                "|",
-                "imageStyle:inline",
-                "imageStyle:block",
-                "imageStyle:side",
-                "|",
-                "linkImage",
+            "toolbar": ["imageTextAlternative","|","imageStyle:inline","imageStyle:block","imageStyle:side","|","linkImage",
             ],
         },
-
-        # -------------------------
-        # Table
-        # -------------------------
         "table": {
-            "contentToolbar": [
-                "tableColumn",
-                "tableRow",
-                "mergeTableCells",
-                "tableProperties",
-                "tableCellProperties",
+            "contentToolbar": ["tableColumn","tableRow","mergeTableCells","tableProperties","tableCellProperties",
             ],
         },
-
-        # -------------------------
-        # Link
-        # -------------------------
-        "link": {
-            "addTargetToExternalLinks": True,
-            "defaultProtocol": "https://",
+        "link": {"addTargetToExternalLinks": True,"defaultProtocol": "https://",
         },
     },
 }

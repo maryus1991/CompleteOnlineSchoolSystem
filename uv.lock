@@ -23,6 +23,8 @@ dependencies = [
     { name = "django", version = "5.2.17", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "django", version = "6.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "django-ckeditor-5" },
+    { name = "django-debug-toolbar" },
+    { name = "django-jalali" },
     { name = "django-phonenumber-field", extra = ["phonenumbers"] },
     { name = "django-resized" },
     { name = "pillow" },
@@ -32,6 +34,8 @@ dependencies = [
 requires-dist = [
     { name = "django", specifier = ">=5.2.17" },
     { name = "django-ckeditor-5", specifier = "==0.0.6" },
+    { name = "django-debug-toolbar", specifier = ">=8.0.0" },
+    { name = "django-jalali", specifier = ">=7.4.0" },
     { name = "django-phonenumber-field", extras = ["phonenumbers"], specifier = ">=8.5.0" },
     { name = "django-resized", specifier = ">=1.0.3" },
     { name = "pillow", specifier = ">=12.3.0" },
@@ -81,6 +85,34 @@ wheels = [
 ]
 
 [[package]]
+name = "django-debug-toolbar"
+version = "8.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django", version = "5.2.17", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "django", version = "6.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "sqlparse" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4f/3d/aa093a841f32837311538e7952f5548b1a9c605a5aba5395163fbc54ac59/django_debug_toolbar-8.0.0.tar.gz", hash = "sha256:cae32d3e441e608f39f3f1ca6b3f028c38d5d04d74c98d8ab96d46022dee3163", size = 1239141, upload-time = "2026-09-01T18:27:56.934Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/22/bd/ffd3f171940c58cca7971d1e5b81d6ab67b85a9569fe9d9fe13f7fbd1c99/django_debug_toolbar-8.0.0-py3-none-any.whl", hash = "sha256:329dfd6e1c26d9b4501a5cc69294c8bb734206ccb1bd36e96afc4d14128b630a", size = 437877, upload-time = "2026-09-01T18:27:55.018Z" },
+]
+
+[[package]]
+name = "django-jalali"
+version = "7.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django", version = "5.2.17", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "django", version = "6.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "jdatetime" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/19/fc/c1f1c1eefdd4e258c817e272d29da398e83ec6b976fbb4dc1f00b18455c8/django_jalali-7.4.0.tar.gz", hash = "sha256:c1beb70625e5f34f79df488f25073e45049194a0d4193e0e0348369a425c4fb0", size = 199592, upload-time = "2025-03-28T09:34:14.47Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/92/bfe5bf23e0593abe550b4af6d9ba51e083dd07b5ece8bd4be5cf4e7739c7/django_jalali-7.4.0-py3-none-any.whl", hash = "sha256:b7472b5bb54a3545607f6c5e03f2778bd555f79015a77e06670a3d9d4045e7e1", size = 210186, upload-time = "2025-03-28T09:34:12.611Z" },
+]
+
+[[package]]
 name = "django-phonenumber-field"
 version = "8.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -105,6 +137,27 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/fc/aa/5e83b3dec9c1ec7d336c86e83bbc93674cd4fc125879a827b932a0ec25c3/django_resized-1.0.3.tar.gz", hash = "sha256:c199f2b6e315816753df3a7a3889b923d3b73ce89fa16af93761cf2ea9bac4f7", size = 4948, upload-time = "2024-10-14T06:08:58.726Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/38/ac/3495743e9923a3b79a929782f63db7acd606dc94c15c296487ef6d015717/django_resized-1.0.3-py3-none-any.whl", hash = "sha256:b5b0cf0d1db4f8db43362eef121d94d63487e2bff7a59c45046a1420788db353", size = 5149, upload-time = "2024-10-14T06:08:55.665Z" },
+]
+
+[[package]]
+name = "jalali-core"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/3c/21e32e3444c572174a5d774643eb2aa8ab60ef68b99a4c3585a0a11428b4/jalali_core-1.0.0.tar.gz", hash = "sha256:f4287c70c630323dcf0a3ab26df905ba4d451e230ac1f65b3bb2f77797894a2b", size = 2752, upload-time = "2024-03-25T09:36:14.934Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f6/20/a4e942f9685df720a106da292e29a53212b27903749cc563b86b612b113e/jalali_core-1.0.0-py3-none-any.whl", hash = "sha256:84e6f5090eadfb35234f24fad084be831d00da3c0b238ee001e8a1fd49bf7924", size = 3616, upload-time = "2024-03-25T09:36:13.133Z" },
+]
+
+[[package]]
+name = "jdatetime"
+version = "6.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jalali-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e2/b3/8195d5bf80f00cf5f8cd3ae74c083cc483c2a4b72fc86ab3f035b7787bed/jdatetime-6.1.0.tar.gz", hash = "sha256:e5812d7ebf4c6609a554230cc07defc89d9c113424350fe2d5b7ed7dc50d3097", size = 23431, upload-time = "2026-08-10T17:22:55.917Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f0/04/ae3d7810795405eb992f027416498a48d539ae1d57f812c16e5097d69ceb/jdatetime-6.1.0-py3-none-any.whl", hash = "sha256:68798192dd65daf6f40797a654000411446a4390ad44c331ba8c0e1d9ba8146f", size = 12890, upload-time = "2026-08-10T17:22:54.89Z" },
 ]
 
 [[package]]

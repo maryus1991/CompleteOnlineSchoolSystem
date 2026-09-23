@@ -5,6 +5,7 @@ from apps.categories.models import BlogCategories
 from django_ckeditor_5.fields import CKEditor5Field
 from apps.common.file_storage_script_for_model import UploadPath
 from django_resized import ResizedImageField
+from django.urls import reverse_lazy
 
 class Article(BaseModel):
     user = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE, verbose_name="نویسنده")
@@ -15,12 +16,19 @@ class Article(BaseModel):
     text = CKEditor5Field("توضیحات")
     image = ResizedImageField("عکس", upload_to=UploadPath("articles-images"))
     file = models.FileField("فایل", upload_to=UploadPath("article-files"), null=True, blank=True)
-    name_for_file = models.CharField(max_length=255, verbose_name='عنوان')
+    name_for_file = models.CharField(max_length=255, verbose_name='عنوان فایل', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
 
     class Meta:
         ordering = ['-sort_number', "-pk"]
         verbose_name = 'مقاله'
         verbose_name_plural = 'مقالات'
+
+    def get_absolute_url(self):
+        return reverse_lazy("article:article-details", kwargs={"pk": self.pk})
 
 
 class ArticleTags(BaseModel):
@@ -28,7 +36,10 @@ class ArticleTags(BaseModel):
     post = models.ForeignKey(Article, related_name="tags", on_delete=models.CASCADE, verbose_name="تگ ها")
     name = models.CharField(max_length=255, verbose_name='عنوان')
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         ordering = ['-sort_number', "-pk"]
-        verbose_name = 'مقاله'
-        verbose_name_plural = 'مقالات'
+        verbose_name = 'تگ مقاله'
+        verbose_name_plural = 'تگ های مقاله'

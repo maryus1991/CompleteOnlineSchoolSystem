@@ -38,7 +38,7 @@ class User(AbstractUser):
         ordering = ('-pk',)
 
     def __str__(self):
-        if self.first_name or self.last_login:
+        if self.first_name or self.last_name:
             return self.get_full_name()
 
         return f"{str(self.PhoneNumber).replace(' ', '')}"

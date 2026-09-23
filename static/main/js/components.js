@@ -18,11 +18,11 @@ if (preloader) {
         if (progress >= 100) { 
             progress = 100; 
             clearInterval(interval); 
-            setTimeout(() => preloader.classList.add('hide'), 300); 
+            setTimeout(() => preloader.classList.add('hide'), 200);
         }
         if (preloaderProgress) preloaderProgress.style.width = progress + '%';
         if (preloaderPercent) preloaderPercent.textContent = toPersianNum(Math.round(progress)) + '%';
-    }, 100);
+    }, 75);
 }
 
 // CUSTOM CURSOR

@@ -507,3 +507,165 @@
         padding: 10px 16px;
     }
 }
+    /* فقط دسکتاپ */
+@media (min-width: 769px) {
+
+    .courses-filter {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .filter-tabs {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 12px;
+
+        flex: 1;
+        min-width: 0;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        white-space: nowrap;
+
+        /* مخفی کردن scrollbar */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        /* محو شدن انتهای نوار */
+        mask-image: linear-gradient(
+            to left,
+            transparent 0,
+            black 30px,
+            black 100%
+        );
+
+        -webkit-mask-image: linear-gradient(
+            to left,
+            transparent 0,
+            black 35px,
+            black 100%
+        );
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-tab {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        text-decoration-line: none;
+    }
+
+    .search-box {
+        flex: 0 0 300px;
+    }
+}
+.course-search-form {
+    width: 50%;
+    max-width: 300px;
+}
+
+.search-box {
+    position: relative;
+    width: 100%;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 5px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+
+    background: var(--bg-primary);
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.search-box:focus-within {
+    border-color: rgba(0, 242, 254, 0.45);
+
+    background: rgba(255, 255, 255, 0.045);
+
+    box-shadow:
+        0 0 0 3px rgba(0, 242, 254, 0.06),
+        0 0 25px rgba(0, 242, 254, 0.08);
+}
+
+.search-box input {
+    flex: 1;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0 16px;
+
+    border: none;
+    outline: none;
+
+    background: var(--bg-primary);
+    font-family: inherit;
+    font-size: 14px;
+
+    direction: rtl;
+    text-align: right;
+}
+
+
+
+.search-box button {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    color: #061018;
+
+    background: linear-gradient(
+        135deg,
+        #00f2fe,
+        #4facfe
+    );
+
+    box-shadow:
+        0 0 15px rgba(0, 242, 254, 0.15);
+
+}
+
+.search-box button:hover {
+
+
+
+
+    box-shadow:
+        0 0 20px rgba(0, 242, 254, 0.3);
+}
+
+
+
+.search-icon {
+    width: 18px;
+    height: 18px;
+}
+.course-search-form {
+    direction: rtl;
+}

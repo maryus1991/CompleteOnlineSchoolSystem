@@ -1,5 +1,6 @@
 from django.db import models
 from apps.common.models import BaseModel
+from django.urls import reverse_lazy
 
 class GradeCategories(BaseModel):
     name = models.CharField(max_length=255, verbose_name='نام پایه')
@@ -74,3 +75,6 @@ class BlogCategories(BaseModel):
         ordering = ['-sort_number', "-pk"]
         verbose_name = 'دسته بندی مقاله'
         verbose_name_plural = 'دسته بندی های مقالات'
+
+    def get_absolute_url(self):
+        return reverse_lazy("article:article-category-list", kwargs={"pk": self.pk})
