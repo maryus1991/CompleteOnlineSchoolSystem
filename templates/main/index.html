@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="site.title">آکادمی پولاریس | فرماندهی نسل بعدی برنامه‌نویسان</title>
+    <meta name="description" content="آکادمی پولاریس - آموزش مدرن برنامه‌نویسی با منتورهای تراز اول">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
+    <!-- Font -->
+    <link rel="preload" href="../../static/main/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="../../static/main/fonts/Peyda-Bold.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="../../static/main/fonts/Peyda-Medium.woff" as="font" type="font/woff" crossorigin>
+
+    <link rel="stylesheet" href="../../static/main/fonts/stylesheet.css">
+    <!-- Style -->
+    <link rel="stylesheet" href="../../static/main/css/main.css">
+    <link rel="stylesheet" href="../../static/main/css/theme.css">
+    <link rel="stylesheet" href="../../static/main/css/components.css">
+    <link rel="stylesheet" href="../../static/main/css/animations.css">
+    <link rel="stylesheet" href="../../static/main/css/responsive.css">
+    <link rel="stylesheet" href="../../static/main/css/blog.css">
+    <style>
+        body, button, input, textarea, .btn, .post-title, .post-content, .sidebar-widget, .nav-link, .logo span {
+            font-family: 'Peyda', 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCROLL PROGRESS BAR -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- PRELOADER -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">
+                <svg width="50" height="50" viewBox="0 0 100 100" fill="none">
+                    <defs><linearGradient id="plGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="50%" stop-color="#4facfe"/><stop offset="100%" stop-color="#f093fb"/></linearGradient></defs>
+                    <circle cx="50" cy="50" r="46" stroke="url(#plGrad)" stroke-width="3" fill="none" stroke-dasharray="289"><animate attributeName="stroke-dashoffset" from="289" to="0" dur="2s" fill="freeze"/></circle>
+                    <circle cx="50" cy="50" r="14" fill="url(#plGrad)"><animate attributeName="r" values="10;16;10" dur="2s" repeatCount="indefinite"/></circle>
+                    <line x1="50" y1="20" x2="50" y2="36" stroke="url(#plGrad)" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="50" y1="64" x2="50" y2="80" stroke="url(#plGrad)" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="20" y1="50" x2="36" y2="50" stroke="url(#plGrad)" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="64" y1="50" x2="80" y2="50" stroke="url(#plGrad)" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+                <span class="gradient-text">پولاریس</span>
+            </div>
+            <div class="preloader-bar"><div class="preloader-progress"></div></div>
+            <div class="preloader-percent">۰٪</div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- BACK TO TOP -->
+    <button class="back-to-top" id="backToTop"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">
+                    <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+                        <defs><linearGradient id="hdGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
+                        <circle cx="50" cy="50" r="46" stroke="url(#hdGrad)" stroke-width="4" fill="none"/>
+                        <circle cx="50" cy="50" r="14" fill="url(#hdGrad)"/>
+                        <line x1="50" y1="22" x2="50" y2="36" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="50" y1="64" x2="50" y2="78" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="22" y1="50" x2="36" y2="50" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="64" y1="50" x2="78" y2="50" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                    <span class="logo-gradient">پولاریس</span><span class="logo-text">آکادمی</span>
+                </a>
+                <nav class="nav" id="mainNav">
+                    <ul class="nav-list">
+                        <li><a href="index.html#home" class="nav-link">خانه</a></li>
+                        <li><a href="index.html#roadmap" class="nav-link">مسیر یادگیری</a></li>
+                        <li><a href="courses.html" class="nav-link">دوره‌ها</a></li>
+                        <li><a href="index.html#portfolio" class="nav-link">نمونه‌کارها</a></li>
+                        <li><a href="index.html#stats" class="nav-link">دستاوردها</a></li>
+                        <li><a href="index.html#mentors" class="nav-link">منتورها</a></li>
+                        <li><a href="index.html#blog" class="nav-link">وبلاگ</a></li>
+                        <li><a href="index.html#events" class="nav-link">رویدادها</a></li>
+                        <li><a href="index.html#testimonials" class="nav-link">نظرات</a></li>
+                        <li><a href="index.html#faq" class="nav-link">سوالات</a></li>
+                        <li><a href="index.html#contact" class="nav-link">تماس</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="auth.html" class="header-icon-btn" id="accountBtn" title="حساب کاربری">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span class="header-icon-label">حساب</span>
+                    </a>
+                    <a href="cart.html" class="header-icon-btn cart-btn" id="cartBtn" title="سبد خرید">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span class="header-icon-label">سبد خرید</span>
+                        <span class="cart-badge" id="cartCountBadge" style="display: none;">0</span>
+                    </a>
+                    <button class="mobile-toggle" id="mobileToggle">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-close" id="mobileClose"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        <ul class="mobile-nav">
+            <li><a href="index.html#home">خانه</a></li>
+            <li><a href="index.html#roadmap">مسیر یادگیری</a></li>
+            <li><a href="courses.html">دوره‌ها</a></li>
+            <li><a href="index.html#portfolio">نمونه‌کارها</a></li>
+            <li><a href="index.html#stats">دستاوردها</a></li>
+            <li><a href="index.html#mentors">منتورها</a></li>
+            <li><a href="index.html#blog">وبلاگ</a></li>
+            <li><a href="index.html#events">رویدادها</a></li>
+            <li><a href="index.html#testimonials">نظرات</a></li>
+            <li><a href="index.html#faq">سوالات</a></li>
+            <li><a href="index.html#contact">تماس</a></li>
+        </ul>
+    </div>
+
+    <main>
+
+        <!-- HERO SECTION -->
+        <section class="hero" id="home">
+            <div class="hero-bg">
+                <div class="hero-glow hero-glow-1"></div>
+                <div class="hero-glow hero-glow-2"></div>
+                <div class="hero-grid-pattern"></div>
+            </div>
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div class="hero-badge"><span class="badge-dot"></span><span data-i18n="hero.badge">ظرفیت محدود ترم تابستان ۱۴۰۵</span></div>
+                        <h1 class="hero-title">
+                            <span class="title-line" data-i18n="hero.greeting">از امروز کدنویسی را</span>
+                            <span class="title-gradient" data-i18n="hero.title-main">حرفه‌ای شروع کن</span>
+                        </h1>
+                        <p class="hero-desc" data-i18n="hero.desc">در آکادمی پولاریس، شما فقط کدنویسی یاد نمی‌گیرید. شما تبدیل به یک مهندس نرم‌افزار تمام‌عیار می‌شوید که آماده ورود به بازار کار جهانی است.</p>
+                        <div class="hero-cta">
+                            <a href="courses.html" class="btn btn-primary"><span data-i18n="hero.cta1">مشاهده دوره‌ها</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                            <a href="#roadmap" class="btn btn-outline"><span data-i18n="hero.cta2">مسیر یادگیری</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></a>
+                        </div>
+
+                    </div>
+                    <div class="hero-visual">
+                        <div class="image-wrapper"><img src="../../static/main/image/author.jpg" alt="آکادمی پولاریس"></div>
+                        <div class="hero-floating-card card-1"><div class="card-icon-small"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div><div><strong>۸۵۰۰+</strong><span>دانشجو</span></div></div>
+                        <div class="hero-floating-card card-2"><div class="card-icon-small"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><div><strong>۹۸٪</strong><span>اشتغال</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS SECTION -->
+        <section class="stats-section" id="stats">
+            <div class="container"><div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><span class="stat-number"><span class="counter" data-target="8500">0</span>+</span><span class="stat-label" data-i18n="stats.students">دانشجویان</span></div>
+                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect></svg></div><span class="stat-number"><span class="counter" data-target="42">0</span></span><span class="stat-label" data-i18n="stats.companies">شرکت همکار</span></div>
+                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path></svg></div><span class="stat-number"><span class="counter" data-target="98">0</span>%</span><span class="stat-label" data-i18n="stats.satisfaction">رضایت</span></div>
+                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div><span class="stat-number"><span class="counter" data-target="120">0</span>+</span><span class="stat-label" data-i18n="stats.projects">پروژه عملی</span></div>
+            </div></div>
+        </section>
+
+
+        <!-- COURSES SECTION -->
+        <section class="courses" id="courses">
+            <div class="container">
+                <div class="section-header"><span class="section-subtitle" data-i18n="courses.subtitle">دوره‌های تخصصی</span><h2 class="section-title" data-i18n="courses.title">دوره‌هایی که آینده شما را می‌سازند</h2><p class="section-desc" data-i18n="courses.desc">تمامی دوره‌ها پروژه‌محور و بر اساس نیاز بازار کار طراحی شده‌اند.</p></div>
+                <div class="courses-grid">
+                    <div class="course-card"><div class="course-image"><img src="../../static/main/image/front.jpg" alt="Front-End"><div class="course-badge" data-i18n="courses.badge1">پرفروش</div></div><div class="course-content"><div class="course-meta"><span data-i18n="courses.meta1">۳۲ جلسه</span><span data-i18n="courses.level1">مبتدی تا پیشرفته</span></div><h3 class="course-title" data-i18n="courses.title1">بوت‌کمپ جامع فرانت‌اند</h3><p class="course-desc" data-i18n="courses.desc1">HTML، CSS، JavaScript، React، Next.js و همه چیز برای تبدیل شدن به یک فرانت‌اندکار حرفه‌ای.</p><div class="course-footer"><span class="course-price"><span data-i18n="courses.price1">۸,۵۰۰,۰۰۰</span> <span data-i18n="courses.currency">تومان</span></span><a href="course-single.html?id=1" class="btn btn-primary" data-i18n="courses.btn">شرکت در دوره</a></div></div></div>
+                    <div class="course-card"><div class="course-image"><img src="../../static/main/image/node.webp" alt="Back-End"><div class="course-badge" data-i18n="courses.badge2">جدید</div></div><div class="course-content"><div class="course-meta"><span data-i18n="courses.meta2">۲۸ جلسه</span><span data-i18n="courses.level2">متوسط تا پیشرفته</span></div><h3 class="course-title" data-i18n="courses.title2">مهندسی بک‌اند با Node.js</h3><p class="course-desc" data-i18n="courses.desc2">طراحی API، معماری میکروسرویس، کار با دیتابیس‌ها و مدیریت حرفه‌ای سرور.</p><div class="course-footer"><span class="course-price"><span data-i18n="courses.price2">۹,۲۰۰,۰۰۰</span> <span data-i18n="courses.currency">تومان</span></span><a href="course-single.html?id=2" class="btn btn-primary" data-i18n="courses.btn">شرکت در دوره</a></div></div></div>
+                    <div class="course-card"><div class="course-image"><img src="../../static/main/image/full.jpg" alt="Full-Stack"><div class="course-badge" data-i18n="courses.badge3">ویژه</div></div><div class="course-content"><div class="course-meta"><span data-i18n="courses.meta3">۴۸ جلسه</span><span data-i18n="courses.level3">صفر تا استخدام</span></div><h3 class="course-title" data-i18n="courses.title3">پکیج کامل فول‌استک</h3><p class="course-desc" data-i18n="courses.desc3">همه مهارت‌های لازم برای یک فول‌استک دولوپر در یک پکیج جامع و کامل.</p><div class="course-footer"><span class="course-price"><span data-i18n="courses.price3">۱۵,۰۰۰,۰۰۰</span> <span data-i18n="courses.currency">تومان</span></span><a href="course-single.html?id=3" class="btn btn-primary" data-i18n="courses.btn">شرکت در دوره</a></div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MENTORS SECTION -->
+        <section class="mentors" id="mentors">
+            <div class="container">
+                <div class="section-header"><span class="section-subtitle" data-i18n="mentors.subtitle">تیم رویایی</span><h2 class="section-title" data-i18n="mentors.title">منتورهای آکادمی پولاریس</h2><p class="section-desc" data-i18n="mentors.desc">با برنامه‌نویسانی کار می‌کنید که در بزرگترین شرکت‌های دنیا کدنویسی کرده‌اند.</p></div>
+                <div class="mentors-grid">
+                    <div class="mentor-card"><div class="mentor-avatar"><img src="../../static/main/image/user1.jpg" alt="آرش محمدی"></div><div class="mentor-info"><h4 data-i18n="mentors.1.name">آرش محمدی</h4><span data-i18n="mentors.1.role">Senior Front-End در گوگل</span><p data-i18n="mentors.1.desc">۱۰ سال سابقه در توسعه محصولات کاربر-محور</p><div class="mentor-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path></svg></a><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></div></div></div>
+                    <div class="mentor-card"><div class="mentor-avatar"><img src="../../static/main/image/user4.jpg" alt="سارا احمدی"></div><div class="mentor-info"><h4 data-i18n="mentors.2.name">سارا احمدی</h4><span data-i18n="mentors.2.role">Back-End Engineer در آمازون</span><p data-i18n="mentors.2.desc">متخصص معماری میکروسرویس و سیستم‌های توزیع‌شده</p><div class="mentor-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path></svg></a><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></div></div></div>
+                    <div class="mentor-card"><div class="mentor-avatar"><img src="../../static/main/image/user2.jpg" alt="علی رضایی"></div><div class="mentor-info"><h4 data-i18n="mentors.3.name">علی رضایی</h4><span data-i18n="mentors.3.role">Full-Stack & AI در اسنپ</span><p data-i18n="mentors.3.desc">تبدیل ایده‌های پیچیده به محصولات مقیاس‌پذیر</p><div class="mentor-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path></svg></a><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOG SECTION -->
+        <section class="blog" id="blog">
+            <div class="container">
+                <div class="section-header"><span class="section-subtitle" data-i18n="blog.subtitle">مقالات آموزشی</span><h2 class="section-title" data-i18n="blog.title">از وبلاگ پولاریس</h2><p class="section-desc" data-i18n="blog.desc">جدیدترین مقالات و نکات برنامه‌نویسی.</p></div>
+                <div class="blog-grid">
+                    <article class="blog-card"><div class="blog-image"><img src="../../static/main/image/css.webp" alt="مقاله"><div class="blog-category" data-i18n="blog.cat1">فرانت‌اند</div></div><div class="blog-content"><div class="blog-meta"><span>۱۵ خرداد ۱۴۰۵</span><span>۸ دقیقه</span></div><h3 data-i18n="blog.title1">۱۰ ترفند CSS که باید بدانید</h3><p data-i18n="blog.desc1">کدهای تمیزتر و حرفه‌ای‌تر با CSS مدرن.</p><a href="#" class="blog-link"><span data-i18n="blog.readmore">ادامه مطلب</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></div></article>
+                    <article class="blog-card"><div class="blog-image"><img src="../../static/main/image/docker.webp" alt="مقاله"><div class="blog-category" data-i18n="blog.cat2">بک‌اند</div></div><div class="blog-content"><div class="blog-meta"><span>۱۰ خرداد ۱۴۰۵</span><span>۱۲ دقیقه</span></div><h3 data-i18n="blog.title2">راهنمای کامل Docker</h3><p data-i18n="blog.desc2">همه چیز درباره کانتینرها در پروژه‌های واقعی.</p><a href="#" class="blog-link"><span data-i18n="blog.readmore">ادامه مطلب</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></div></article>
+                    <article class="blog-card"><div class="blog-image"><img src="../../static/main/image/github.webp" alt="مقاله"><div class="blog-category" data-i18n="blog.cat3">هوش مصنوعی</div></div><div class="blog-content"><div class="blog-meta"><span>۵ خرداد ۱۴۰۵</span><span>۱۰ دقیقه</span></div><h3 data-i18n="blog.title3">کدنویسی سریع با GitHub Copilot</h3><p data-i18n="blog.desc3">بهترین روش‌های استفاده از AI در توسعه.</p><a href="#" class="blog-link"><span data-i18n="blog.readmore">ادامه مطلب</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></div></article>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENTS SECTION -->
+        <section class="events" id="events">
+            <div class="container">
+                <div class="section-header"><span class="section-subtitle" data-i18n="events.subtitle">رویدادها و کارگاه‌ها</span><h2 class="section-title" data-i18n="events.title">رویدادهای پیش رو</h2><p class="section-desc" data-i18n="events.desc">در کارگاه‌ها و وبینارهای رایگان ما شرکت کنید.</p></div>
+                <div class="events-grid">
+                    <div class="event-card"><div class="event-date"><span class="event-day">۲۵</span><span class="event-month">تیر</span></div><div class="event-info"><span class="event-type" data-i18n="events.type1">وبینار رایگان</span><h3 data-i18n="events.title1">معرفی Next.js ۱۵</h3><p data-i18n="events.desc1">با ویژگی‌های جدید آشنا شوید.</p><div class="event-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ۱۸:۰۰</span></div><a href="#contact" class="btn btn-outline btn-sm" data-i18n="events.register">ثبت‌نام رایگان</a></div></div>
+                    <div class="event-card"><div class="event-date"><span class="event-day">۲۸</span><span class="event-month">تیر</span></div><div class="event-info"><span class="event-type" data-i18n="events.type2">کارگاه حضوری</span><h3 data-i18n="events.title2">ساخت اپ با React Native</h3><p data-i18n="events.desc2">یک اپلیکیشن کامل از صفر بسازید.</p><div class="event-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ۱۴:۰۰</span></div><a href="#contact" class="btn btn-outline btn-sm" data-i18n="events.register">ثبت‌نام رایگان</a></div></div>
+                    <div class="event-card"><div class="event-date"><span class="event-day">۵</span><span class="event-month">مرداد</span></div><div class="event-info"><span class="event-type" data-i18n="events.type1">وبینار رایگان</span><h3 data-i18n="events.title3">مسیر شغلی در ۱۴۰۵</h3><p data-i18n="events.desc3">با نقشه راه شغلی آشنا شوید.</p><div class="event-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ۱۹:۰۰</span></div><a href="#contact" class="btn btn-outline btn-sm" data-i18n="events.register">ثبت‌نام رایگان</a></div></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-top"><div class="container"><div class="footer-grid">
+            <div class="footer-col footer-brand">
+                <a href="#" class="footer-logo">
+                    <svg width="40" height="40" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="ftGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs><circle cx="50" cy="50" r="46" stroke="url(#ftGrad)" stroke-width="4" fill="none"/><circle cx="50" cy="50" r="14" fill="url(#ftGrad)"/></svg>
+                    <span>پولاریس <strong>آکادمی</strong></span>
+                </a>
+                <p data-i18n="footer.desc">فرماندهی نسل بعدی برنامه‌نویسان.</p>
+            </div>
+            <div class="footer-col"><h4 data-i18n="footer.quick">دسترسی سریع</h4><ul><li><a href="index.html#home" data-i18n="nav.home">خانه</a></li><li><a href="courses.html" data-i18n="nav.courses">دوره‌ها</a></li><li><a href="index.html#portfolio" data-i18n="nav.portfolio">نمونه‌کارها</a></li><li><a href="index.html#blog" data-i18n="nav.blog">وبلاگ</a></li></ul></div>
+            <div class="footer-col"><h4 data-i18n="footer.links">لینک‌های مهم</h4><ul><li><a href="#" data-i18n="footer.about">درباره ما</a></li><li><a href="#" data-i18n="footer.careers">فرصت‌های شغلی</a></li><li><a href="index.html#faq" data-i18n="nav.faq">سوالات متداول</a></li><li><a href="index.html#events" data-i18n="nav.events">رویدادها</a></li></ul></div>
+            <div class="footer-col">
+                <h4 data-i18n="footer.social">همراه ما باشید</h4>
+                <div class="footer-social">
+                    <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path></svg></a>
+                    <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2.5L2.5 10.5L10 13.5L14 21.5L21.5 2.5Z"></path></svg></a>
+                    <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                </div>
+                <div class="footer-newsletter"><h5 data-i18n="footer.newsletter">عضویت در خبرنامه</h5><form class="newsletter-form"><input type="email" placeholder="ایمیل خود را وارد کنید"><button type="submit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button></form></div>
+            </div>
+        </div></div></div>
+        <div class="footer-bottom"><div class="container"><div class="footer-bottom-content">
+            <p data-i18n="footer.copyright">© ۲۰۲۶ آکادمی پولاریس. با <span class="heart">❤️</span> برای نسل بعدی برنامه‌نویسان ایران.</p>
+            <div class="footer-bottom-links"><a href="#" data-i18n="footer.privacy">قوانین</a><a href="#" data-i18n="footer.terms">حریم خصوصی</a></div>
+        </div></div></div>
+    </footer>
+
+    <script src="../../static/main/js/theme-switcher.js"></script>
+    <script src="../../static/main/js/navigation.js"></script>
+    <script src="../../static/main/js/components.js"></script>
+    <script src="../../static/main/js/cart.js"></script>
+    <script src="../../static/main/js/main.js"></script>
+</body>
+</html>

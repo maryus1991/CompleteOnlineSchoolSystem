@@ -1,0 +1,509 @@
+/* ============================================
+   COURSES.CSS - استایل صفحه لیست دوره‌ها
+   ============================================ */
+
+.courses-page {
+    padding: 140px 0 80px;
+    background: var(--bg-primary);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ========== هدر بخش ========== */
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-subtitle {
+    display: inline-block;
+    padding: 8px 24px;
+    background: rgba(79, 172, 254, 0.1);
+    border: 1px solid rgba(79, 172, 254, 0.3);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.section-desc {
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+/* ========== فیلتر و جستجو ========== */
+.courses-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 50px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.filter-tab svg {
+    stroke: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.filter-tab.active,
+.filter-tab:hover {
+    background: var(--accent-gradient);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+}
+
+.filter-tab.active svg,
+.filter-tab:hover svg {
+    stroke: white;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    padding: 12px 24px 12px 50px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    color: var(--text-primary);
+    width: 300px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    stroke: var(--text-muted);
+    pointer-events: none;
+}
+
+/* ========== لودینگ اسکلتون ========== */
+.loading-skeleton {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 32px;
+}
+
+.skeleton-card {
+    background: var(--bg-card);
+    border-radius: 28px;
+    height: 450px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ========== گرید دوره‌ها ========== */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 32px;
+}
+
+.course-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    position: relative;
+}
+
+.course-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-gradient);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.course-card:hover::before {
+    transform: scaleX(1);
+}
+
+.course-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-color);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+}
+
+/* تصویر دوره */
+.course-image {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.course-card:hover .course-image img {
+    transform: scale(1.1);
+}
+
+.course-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--accent-gradient);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* برچسب ویژه */
+.course-card[data-category="fullstack"] .course-badge {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.course-card[data-category="ai"] .course-badge {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+/* محتوای کارت */
+.course-content {
+    padding: 24px;
+}
+
+.course-meta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 14px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.course-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.course-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+.course-card:hover .course-title {
+    color: var(--accent-color);
+}
+
+.course-desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ویژگی‌های دوره */
+.course-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.feature-tag {
+    background: rgba(79, 172, 254, 0.1);
+    border: 1px solid rgba(79, 172, 254, 0.2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.65rem;
+    color: var(--accent-color);
+}
+
+/* فوتر کارت */
+.course-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.course-price {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--accent-color);
+}
+
+.course-price small {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+/* دکمه‌ها */
+.btn-sm {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+.btn-outline:hover {
+    background: var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--accent-gradient);
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+/* حالت بدون نتیجه */
+.no-results {
+    text-align: center;
+    padding: 80px 40px;
+    background: var(--bg-card);
+    border-radius: 28px;
+    grid-column: 1 / -1;
+    border: 1px solid var(--border-color);
+}
+
+.no-results svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    stroke: var(--text-muted);
+    opacity: 0.5;
+}
+
+.no-results h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.no-results p {
+    color: var(--text-muted);
+}
+
+/* ========== انیمیشن ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.course-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* ========== ریسپانسیو ========== */
+@media (max-width: 1200px) {
+    .courses-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+    }
+}
+
+@media (max-width: 992px) {
+    .courses-page {
+        padding: 130px 0 70px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .courses-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .courses-page {
+        padding: 120px 0 60px;
+    }
+    
+    .section-title {
+        font-size: 1.6rem;
+    }
+    
+    .section-desc {
+        font-size: 0.9rem;
+    }
+    
+    .courses-filter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-tabs {
+        justify-content: center;
+    }
+    
+    .search-box input {
+        width: 100%;
+    }
+    
+    .courses-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .course-card {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+    
+    .course-meta {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 576px) {
+    .courses-page {
+        padding: 110px 0 50px;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+    }
+    
+    .section-subtitle {
+        font-size: 0.7rem;
+        padding: 6px 18px;
+    }
+    
+    .filter-tab {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+    }
+    
+    .filter-tab svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .course-content {
+        padding: 18px;
+    }
+    
+    .course-title {
+        font-size: 1.1rem;
+    }
+    
+    .course-price {
+        font-size: 1.1rem;
+    }
+    
+    .course-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .course-footer .btn {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .btn-sm {
+        padding: 10px 16px;
+    }
+}

@@ -85,7 +85,7 @@ MAIN_MIDDLEWARE=[
 
 MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + MAIN_MIDDLEWARE
 
-# html minify
+
 HTML_MINIFY = True
 HTML_MINIFY_EXCLUDE_EXTENSIONS = (
     'json',
@@ -94,10 +94,10 @@ HTML_MINIFY_EXCLUDE_EXTENSIONS = (
 
 # THUMBNAIL
 THUMBNAIL_DEFAULT_OPTIONS = {
-    'format': 'WEBP',      # همیشه WebP تولید کنه
-    'quality': 70,         # کیفیت پیش‌فرض (می‌تونی تغییر بدی)
-    'crop': 'center',      # همیشه از مرکز crop کنه (اگر crop فعال باشه)
-    'optimize': True,      # بهینه‌سازی lossless با Pillow
+    'format': 'WEBP',
+    'quality': 70,
+    'crop': 'center',
+    'optimize': True,
 }
 
 ROOT_URLCONF = 'config.urls'
@@ -170,6 +170,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT =  BASE_DIR / 'static'
+
 
 
 # Default primary key field type
@@ -186,7 +188,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # LOGIN_URL = "user:login"
 # LOGIN_REDIRECT_URL = "/"
 JALALI_DATE_DEFAULTS = {
-    # if change it to true then all dates of the list_display will convert to the Jalali.
+
     "LIST_DISPLAY_AUTO_CONVERT": True,
     "Strftime": {
         "date": "%Y/%m/%d",

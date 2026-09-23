@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پولاریس آکادمی | ورود و ثبت‌نام</title>
+    <meta name="description" content="ورود و ثبت‌نام در آکادمی پولاریس">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
+    
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body>
+
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">
+                <svg width="50" height="50" viewBox="0 0 100 100" fill="none">
+                    <defs><linearGradient id="plGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="50%" stop-color="#4facfe"/><stop offset="100%" stop-color="#f093fb"/></linearGradient></defs>
+                    <circle cx="50" cy="50" r="46" stroke="url(#plGrad)" stroke-width="3" fill="none" stroke-dasharray="289"><animate attributeName="stroke-dashoffset" from="289" to="0" dur="2s" fill="freeze"/></circle>
+                    <circle cx="50" cy="50" r="14" fill="url(#plGrad)"><animate attributeName="r" values="10;16;10" dur="2s" repeatCount="indefinite"/></circle>
+                </svg>
+                <span class="gradient-text">پولاریس</span>
+            </div>
+            <div class="preloader-bar"><div class="preloader-progress"></div></div>
+            <div class="preloader-percent">۰٪</div>
+        </div>
+    </div>
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">
+                    <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
+                        <defs><linearGradient id="hdGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
+                        <circle cx="50" cy="50" r="46" stroke="url(#hdGrad)" stroke-width="4" fill="none"/>
+                        <circle cx="50" cy="50" r="14" fill="url(#hdGrad)"/>
+                        <line x1="50" y1="22" x2="50" y2="36" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="50" y1="64" x2="50" y2="78" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="22" y1="50" x2="36" y2="50" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="64" y1="50" x2="78" y2="50" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                    <span class="logo-gradient">پولاریس</span><span class="logo-text">آکادمی</span>
+                </a>
+                <nav class="nav" id="mainNav">
+                    <ul class="nav-list">
+                        <li><a href="index.html#home" class="nav-link" data-i18n="nav.home">خانه</a></li>
+                        <li><a href="index.html#roadmap" class="nav-link" data-i18n="nav.roadmap">مسیر یادگیری</a></li>
+                        <li><a href="courses.html" class="nav-link" data-i18n="nav.courses">دوره‌ها</a></li>
+                        <li><a href="index.html#portfolio" class="nav-link" data-i18n="nav.portfolio">نمونه‌کارها</a></li>
+                        <li><a href="index.html#stats" class="nav-link" data-i18n="nav.stats">دستاوردها</a></li>
+                        <li><a href="index.html#mentors" class="nav-link" data-i18n="nav.mentors">منتورها</a></li>
+                        <li><a href="index.html#blog" class="nav-link" data-i18n="nav.blog">وبلاگ</a></li>
+                        <li><a href="index.html#events" class="nav-link" data-i18n="nav.events">رویدادها</a></li>
+                        <li><a href="index.html#testimonials" class="nav-link" data-i18n="nav.testimonials">نظرات</a></li>
+                        <li><a href="index.html#faq" class="nav-link" data-i18n="nav.faq">سوالات</a></li>
+                        <li><a href="index.html#contact" class="nav-link" data-i18n="nav.contact">تماس</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="auth.html" class="header-icon-btn" id="accountBtn" title="حساب کاربری">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span class="header-icon-label" data-i18n="nav.account">حساب</span>
+                    </a>
+                    <a href="cart.html" class="header-icon-btn cart-btn" id="cartBtn" title="سبد خرید">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span class="header-icon-label" data-i18n="nav.cart">سبد خرید</span>
+                        <span class="cart-badge" id="cartCountBadge" style="display: none;">0</span>
+                    </a>
+                    <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-close" id="mobileClose">✕</button>
+        <ul class="mobile-nav">
+            <li><a href="index.html#home" data-i18n="nav.home">خانه</a></li>
+            <li><a href="index.html#roadmap" data-i18n="nav.roadmap">مسیر یادگیری</a></li>
+            <li><a href="courses.html" data-i18n="nav.courses">دوره‌ها</a></li>
+            <li><a href="index.html#portfolio" data-i18n="nav.portfolio">نمونه‌کارها</a></li>
+            <li><a href="index.html#stats" data-i18n="nav.stats">دستاوردها</a></li>
+            <li><a href="index.html#mentors" data-i18n="nav.mentors">منتورها</a></li>
+            <li><a href="index.html#blog" data-i18n="nav.blog">وبلاگ</a></li>
+            <li><a href="index.html#events" data-i18n="nav.events">رویدادها</a></li>
+            <li><a href="index.html#testimonials" data-i18n="nav.testimonials">نظرات</a></li>
+            <li><a href="index.html#faq" data-i18n="nav.faq">سوالات</a></li>
+            <li><a href="index.html#contact" data-i18n="nav.contact">تماس</a></li>
+        </ul>
+    </div>
+
+    <!-- محتوای اصلی -->
+    <main class="auth-split-page">
+        <div class="auth-split-container">
+            <!-- سمت چپ - تصویر و آمار -->
+            <div class="auth-split-left">
+                <div class="auth-left-content">
+                    <div class="auth-image-wrapper">
+                        <img src="assets/image/auth.jpg" alt="پولاریس آکادمی" class="auth-illustration" 
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 200 200\'%3E%3Cdefs%3E%3ClinearGradient id=\'g\' x1=\'0%25\' y1=\'0%25\' x2=\'100%25\' y2=\'100%25\'%3E%3Cstop offset=\'0%25\' stop-color=\'%2300f2fe\'/%3E%3Cstop offset=\'100%25\' stop-color=\'%234facfe\'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx=\'100\' cy=\'100\' r=\'85\' stroke=\'url(%23g)\' stroke-width=\'6\' fill=\'none\' stroke-dasharray=\'10 10\'/%3E%3Ccircle cx=\'100\' cy=\'100\' r=\'40\' fill=\'url(%23g)\' opacity=\'0.9\'/%3E%3Cpath d=\'M100 60 L100 80 M100 120 L100 140 M60 100 L80 100 M120 100 L140 100\' stroke=\'url(%23g)\' stroke-width=\'4\' stroke-linecap=\'round\'/%3E%3C/svg%3E'">
+                    </div>
+                    
+                    <div class="auth-stats-simple">
+                        <div class="stat-circle">
+                            <span class="stat-circle-number" id="statUsers">۸,۵۰۰+</span>
+                            <span class="stat-circle-label" data-i18n="auth.statUsers">کاربر فعال</span>
+                        </div>
+                        <p class="auth-left-text" data-i18n="auth.leftText">
+                            به خانواده بزرگ پولاریس بپیوندید و آینده شغلی خود را بسازید.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- سمت راست - فرم -->
+            <div class="auth-split-right">
+                <div class="auth-card">
+                    <div class="auth-logo-small">
+                        <svg width="45" height="45" viewBox="0 0 100 100" fill="none">
+                            <defs><linearGradient id="smallGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
+                            <circle cx="50" cy="50" r="46" stroke="url(#smallGrad)" stroke-width="4" fill="none"/>
+                            <circle cx="50" cy="50" r="14" fill="url(#smallGrad)"/>
+                        </svg>
+                        <h2 data-i18n="auth.welcomeTitle">خوش آمدید</h2>
+                    </div>
+
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" data-tab="login">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>
+                            <span data-i18n="auth.login">ورود</span>
+                        </button>
+                        <button class="auth-tab" data-tab="register">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                            <span data-i18n="auth.register">ثبت‌نام</span>
+                        </button>
+                    </div>
+
+                    <!-- فرم ورود -->
+                    <div class="auth-form active" id="loginForm">
+                        <div id="loginMessage" class="auth-message"></div>
+                        <form id="loginFormElement">
+                            <div class="form-group">
+                                <input type="email" id="loginEmail" placeholder=" " required>
+                                <label>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                    <span data-i18n="auth.email">آدرس ایمیل</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="loginPassword" placeholder=" " required>
+                                <label>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                    <span data-i18n="auth.password">رمز عبور</span>
+                                </label>
+                            </div>
+                            <div class="form-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="rememberMe">
+                                    <span data-i18n="auth.remember">مرا به خاطر بسپار</span>
+                                </label>
+                                <a href="#" class="forgot-link" data-i18n="auth.forgot">فراموشی رمز عبور؟</a>
+                            </div>
+                            <button type="submit" class="auth-btn">
+                                <span data-i18n="auth.loginBtn">ورود به حساب کاربری</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </button>
+                        </form>
+
+                        <!-- باکس ادمین -->
+                        <div class="admin-info-box" id="adminQuickLogin">
+                            <div class="admin-info-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                            </div>
+                            <div class="admin-info-content">
+                                <div class="admin-info-title" data-i18n="auth.adminTitle">دسترسی سریع ادمین</div>
+                                <div class="admin-info-creds">
+                                    <code>admin@polaris.com</code>
+                                    <span class="admin-sep">/</span>
+                                    <code>admin123</code>
+                                </div>
+                                <div class="admin-info-hint" data-i18n="auth.adminHint">برای ورود سریع کلیک کنید →</div>
+                            </div>
+                            <div class="admin-info-arrow">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="auth-divider"><span data-i18n="auth.or">یا ادامه با</span></div>
+                        <div class="social-buttons">
+                            <button class="social-btn google-btn" onclick="handleSocialLogin('google')">
+                                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                                <span data-i18n="auth.google">گوگل</span>
+                            </button>
+                            <button class="social-btn github-btn" onclick="handleSocialLogin('github')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.21.68-.48 0-.24-.01-.88-.01-1.72-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48C19.13 20.17 22 16.42 22 12c0-5.52-4.48-10-10-10z"/></svg>
+                                <span data-i18n="auth.github">گیت‌هاب</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- فرم ثبت‌نام -->
+                    <div class="auth-form" id="registerForm">
+                        <div id="registerMessage" class="auth-message"></div>
+                        <form id="registerFormElement">
+                            <div class="form-group">
+                                <input type="text" id="regName" placeholder=" " required>
+                                <label>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    <span data-i18n="auth.fullname">نام و نام خانوادگی</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="regEmail" placeholder=" " required>
+                                <label>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                    <span data-i18n="auth.email">ایمیل</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <input style="direction: rtl;" type="tel" id="regPhone" placeholder=" ">
+                                <label>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                    <span data-i18n="auth.phone">شماره تماس (اختیاری)</span>
+                                </label>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group half">
+                                    <input type="password" id="regPassword" placeholder=" " required>
+                                    <label>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                        <span data-i18n="auth.password">رمز عبور</span>
+                                    </label>
+                                </div>
+                                <div class="form-group half">
+                                    <input type="password" id="regConfirmPassword" placeholder=" " required>
+                                    <label>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                        <span data-i18n="auth.confirmPassword">تکرار رمز</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="acceptTerms" required>
+                                <span data-i18n="auth.terms"><a href="#">قوانین و مقررات</a> را می‌پذیرم</span>
+                            </label>
+                            <button type="submit" class="auth-btn">
+                                <span data-i18n="auth.registerBtn">ساخت حساب کاربری</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </button>
+                        </form>
+                        <div class="auth-divider"><span data-i18n="auth.or">یا ثبت‌نام با</span></div>
+                        <div class="social-buttons">
+                            <button class="social-btn google-btn" onclick="handleSocialLogin('google')">
+                                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                                <span data-i18n="auth.google">گوگل</span>
+                            </button>
+                            <button class="social-btn github-btn" onclick="handleSocialLogin('github')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.21.68-.48 0-.24-.01-.88-.01-1.72-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48C19.13 20.17 22 16.42 22 12c0-5.52-4.48-10-10-10z"/></svg>
+                                <span data-i18n="auth.github">گیت‌هاب</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col footer-brand">
+                        <a href="index.html" class="footer-logo">
+                            <svg width="40" height="40" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="ftGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs><circle cx="50" cy="50" r="46" stroke="url(#ftGrad)" stroke-width="4" fill="none"/><circle cx="50" cy="50" r="14" fill="url(#ftGrad)"/></svg>
+                            <span>پولاریس <strong>آکادمی</strong></span>
+                        </a>
+                        <p data-i18n="footer.desc">فرماندهی نسل بعدی برنامه‌نویسان.</p>
+                    </div>
+                    <div class="footer-col"><h4 data-i18n="footer.quick">دسترسی سریع</h4><ul><li><a href="index.html#home" data-i18n="nav.home">خانه</a></li><li><a href="courses.html" data-i18n="nav.courses">دوره‌ها</a></li><li><a href="dashboard.html" data-i18n="nav.dashboard">حساب کاربری</a></li><li><a href="cart.html" data-i18n="nav.cart">سبد خرید</a></li></ul></div>
+                    <div class="footer-col"><h4 data-i18n="footer.links">لینک‌های مهم</h4><ul><li><a href="#" data-i18n="footer.about">درباره ما</a></li><li><a href="#" data-i18n="footer.careers">فرصت‌های شغلی</a></li><li><a href="#" data-i18n="footer.faq">سوالات متداول</a></li></ul></div>
+                    <div class="footer-col"><h4 data-i18n="footer.social">همراه ما باشید</h4><div class="footer-social"><a href="#">📷</a><a href="#">💼</a><a href="#">🐦</a></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <p data-i18n="footer.copyright">© ۲۰۲۶ آکادمی پولاریس. با ❤️ برای نسل بعدی برنامه‌نویسان ایران.</p>
+                    <div class="footer-bottom-links"><a href="#" data-i18n="footer.privacy">قوانین</a><a href="#" data-i18n="footer.terms">حریم خصوصی</a></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/theme-switcher.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/auth.js"></script>
+    
+    <script>
+        // Preloader
+        const preloader = document.getElementById('preloader');
+        const preloaderProgress = document.querySelector('.preloader-progress');
+        const preloaderPercent = document.querySelector('.preloader-percent');
+        if (preloader) {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(() => preloader.classList.add('hide'), 300); }
+                if (preloaderProgress) preloaderProgress.style.width = progress + '%';
+                if (preloaderPercent) preloaderPercent.textContent = Math.round(progress) + '%';
+            }, 100);
+        }
+        
+        const scrollProgress = document.getElementById('scrollProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            if (scrollProgress) scrollProgress.style.width = progress + '%';
+        });
+        
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => { if (backToTop) backToTop.classList.toggle('show', window.scrollY > 500); });
+        backToTop?.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        
+        const settingsPanel = document.getElementById('settingsPanel');
+        const settingsToggle = document.getElementById('settingsToggle');
+        settingsToggle?.addEventListener('click', (e) => { e.stopPropagation(); settingsPanel.classList.toggle('open'); });
+        document.addEventListener('click', (e) => { if (settingsPanel && settingsToggle && !settingsPanel.contains(e.target) && !settingsToggle.contains(e.target)) { settingsPanel.classList.remove('open'); } });
+        
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileClose = document.getElementById('mobileClose');
+        mobileToggle?.addEventListener('click', () => mobileMenu.classList.add('open'));
+        mobileClose?.addEventListener('click', () => mobileMenu.classList.remove('open'));
+        document.querySelectorAll('.mobile-nav a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.remove('open')); });
+        
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 100); });
+        
+        // اتصال رویداد کلیک به باکس ادمین
+        document.getElementById('adminQuickLogin')?.addEventListener('click', fillAdminCredentials);
+        
+        function updateCartBadge() {
+            const cartItems = JSON.parse(localStorage.getItem('polaris_cart') || '[]');
+            const badge = document.getElementById('cartCountBadge');
+            if (badge) {
+                badge.textContent = cartItems.length;
+                badge.style.display = cartItems.length > 0 ? 'flex' : 'none';
+            }
+        }
+        updateCartBadge();
+        
+        function updateUserStats() {
+            const users = JSON.parse(localStorage.getItem('polaris_users') || '[]');
+            const userCount = users.length;
+            const statElement = document.getElementById('statUsers');
+            if (statElement) {
+                statElement.textContent = userCount.toLocaleString() + '+';
+            }
+        }
+        updateUserStats();
+    </script>
+</body>
+</html>

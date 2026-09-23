@@ -1,0 +1,690 @@
+/* ============================================
+   CHECKOUT.CSS - طراحی مدرن و حرفه‌ای
+   ============================================ */
+
+.checkout-page {
+    padding: 140px 0 80px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+/* ========== هدر صفحه ========== */
+.checkout-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.checkout-header .badge {
+    display: inline-block;
+    padding: 8px 24px;
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-color);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.checkout-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.checkout-header .gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.checkout-header p {
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+}
+
+/* ========== کانتینر اصلی ========== */
+.checkout-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 35px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ========== کارت‌ها ========== */
+.section-card, .order-card, .help-card {
+    background: var(--bg-card);
+    border-radius: 28px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.section-card:hover, .order-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.section-card {
+    padding: 30px;
+}
+
+.order-card {
+    padding: 25px;
+    position: sticky;
+    top: 100px;
+}
+
+/* ========== هدر کارت‌ها ========== */
+.card-header, .order-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-icon, .order-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-glow);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.card-header h3, .order-header h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* ========== فرم اطلاعات ========== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.input-group.full-width {
+    grid-column: span 2;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.input-group input, .input-group textarea {
+    width: 100%;
+    padding: 14px 16px 14px 45px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-family: 'Peyda', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.input-group textarea {
+    resize: none;
+    padding-right: 45px;
+    min-height: 80px;
+}
+
+.input-group input:focus, .input-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 42px;
+    font-size: 1rem;
+    opacity: 0.6;
+}
+
+.input-group textarea ~ .input-icon {
+    top: 42px;
+}
+
+.divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 25px 0;
+}
+
+/* ========== روش‌های پرداخت ========== */
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.payment-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-card:hover {
+    transform: translateX(-5px);
+    border-color: var(--accent-color);
+}
+
+.payment-card.active {
+    border-color: var(--accent-color);
+    background: var(--accent-glow);
+}
+
+.payment-icon {
+    font-size: 1.5rem;
+}
+
+.payment-info {
+    flex: 1;
+}
+
+.payment-info strong {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+}
+
+.payment-info span {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.payment-check {
+    width: 24px;
+    height: 24px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.payment-card.active .payment-check {
+    opacity: 1;
+}
+
+/* ========== دکمه ارسال ========== */
+.submit-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 60px;
+    color: white;
+    font-family: 'Peyda', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px var(--accent-glow);
+}
+
+.submit-btn svg {
+    transition: transform 0.3s;
+}
+
+.submit-btn:hover svg {
+    transform: translateX(-5px);
+}
+
+/* ========== خلاصه سفارش ========== */
+.order-items {
+    max-height: 350px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.order-items::-webkit-scrollbar {
+    width: 3px;
+}
+
+.order-items::-webkit-scrollbar-track {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.order-items::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 3px;
+}
+
+.checkout-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.checkout-item:last-child {
+    border-bottom: none;
+}
+
+.checkout-item-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.checkout-item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.checkout-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.checkout-item-details {
+    flex: 1;
+}
+
+.checkout-item-details h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.checkout-item-price {
+    font-weight: 700;
+    color: var(--accent-color);
+    font-size: 0.85rem;
+}
+
+/* ========== لودینگ و حالت خالی ========== */
+.loading-items {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+}
+
+.loader {
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.empty-cart-message {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+}
+
+.empty-cart-message svg {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-cart-message .btn {
+    display: inline-block;
+    margin-top: 15px;
+}
+
+/* ========== جمع کل ========== */
+.order-total {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.total-row.discount {
+    color: #10b981;
+}
+
+.total-row.grand {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    padding-top: 12px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ========== فوتر کارت ========== */
+.order-footer {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.secure-badge svg {
+    stroke: #10b981;
+}
+
+/* ========== کارت راهنما ========== */
+.help-card {
+    margin-top: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: linear-gradient(135deg, var(--accent-glow), transparent);
+}
+
+.help-icon {
+    width: 45px;
+    height: 45px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.help-content strong {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.help-content p {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.help-phone {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.help-phone:hover {
+    text-decoration: underline;
+}
+
+/* ========== ریسپانسیو ========== */
+@media (max-width: 992px) {
+    .checkout-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .order-card {
+        position: static;
+    }
+    
+    .checkout-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout-page {
+        padding: 120px 0 60px;
+    }
+    
+    .section-card {
+        padding: 25px;
+    }
+    
+    .order-card {
+        padding: 20px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .input-group.full-width {
+        grid-column: span 1;
+    }
+    
+    .input-group input, 
+    .input-group textarea {
+        padding: 12px 16px 12px 40px;
+    }
+    
+    .input-icon {
+        top: 40px;
+        left: 12px;
+    }
+    
+    .payment-card {
+        padding: 12px 16px;
+    }
+    
+    .payment-icon {
+        font-size: 1.2rem;
+    }
+    
+    .submit-btn {
+        padding: 14px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .checkout-page {
+        padding: 100px 0 50px;
+    }
+    
+    .checkout-header {
+        margin-bottom: 40px;
+    }
+    
+    .checkout-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .checkout-header .badge {
+        padding: 6px 18px;
+        font-size: 0.7rem;
+    }
+    
+    .checkout-header p {
+        font-size: 0.85rem;
+    }
+    
+    .section-card {
+        padding: 20px;
+    }
+    
+    .order-card {
+        padding: 18px;
+    }
+    
+    .card-header h3, 
+    .order-header h3 {
+        font-size: 1rem;
+    }
+    
+    .header-icon, 
+    .order-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .input-group label {
+        font-size: 0.75rem;
+    }
+    
+    .input-group input, 
+    .input-group textarea {
+        font-size: 0.85rem;
+        padding: 10px 14px 10px 38px;
+    }
+    
+    .input-icon {
+        top: 38px;
+        left: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .payment-card {
+        padding: 10px 14px;
+        gap: 10px;
+    }
+    
+    .payment-info strong {
+        font-size: 0.8rem;
+    }
+    
+    .payment-info span {
+        font-size: 0.65rem;
+    }
+    
+    .submit-btn {
+        padding: 12px;
+        font-size: 0.85rem;
+    }
+    
+    .submit-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .checkout-item-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .checkout-item-image {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto;
+    }
+    
+    .help-card {
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .help-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .help-content strong {
+        font-size: 0.8rem;
+    }
+    
+    .help-phone {
+        font-size: 0.75rem;
+    }
+}
+
+/* ========== پشتیبانی از RTL ========== */
+[dir="ltr"] .input-icon {
+    left: auto;
+    right: 16px;
+}
+
+[dir="ltr"] .payment-card:hover {
+    transform: translateX(5px);
+}
+
+[dir="ltr"] .submit-btn:hover svg {
+    transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    [dir="ltr"] .input-icon {
+        right: 12px;
+        left: auto;
+    }
+}
+
+/* ========== انیمیشن‌های اضافی ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-card, .order-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.order-card {
+    animation-delay: 0.1s;
+}
+
+.help-card {
+    animation: fadeInUp 0.5s ease forwards;
+    animation-delay: 0.2s;
+}

@@ -1,0 +1,591 @@
+/* ============================================
+   بلاگ پست استایل - پولاریس آکادمی
+   با فونت Peyda و هماهنگی کامل با تم سایت
+   ============================================ */
+
+/* فونت اصلی */
+@import url('assets/fonts/stylesheet.css');
+
+* {
+    font-family: 'Peyda', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ===== ساختار اصلی ===== */
+.blog-post-article {
+    padding-top: 140px;
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+/* ===== هدر مقاله ===== */
+.post-header {
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto 40px;
+}
+
+.post-category {
+    display: inline-block;
+    background: var(--accent-glow);
+    color: var(--accent-color);
+    padding: 8px 24px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(4px);
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-title {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 20px 0 10px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-family: 'Peyda', sans-serif;
+}
+
+.meta-item svg {
+    stroke: var(--accent-color);
+}
+
+/* ===== تصویر شاخص ===== */
+.post-featured-image {
+    margin: 40px 0 60px;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.post-featured-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.post-featured-image:hover img {
+    transform: scale(1.02);
+}
+
+/* ===== محتوای اصلی + سایدبار ===== */
+.post-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 60px;
+    align-items: start;
+}
+
+.post-content {
+    background: var(--bg-card);
+    border-radius: 28px;
+    padding: 45px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+.post-lead {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--accent-color);
+    border-right: 4px solid var(--accent-color);
+    padding-right: 20px;
+    margin-bottom: 35px;
+    line-height: 1.8;
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-content h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 45px 0 20px;
+    color: var(--text-primary);
+    position: relative;
+    display: inline-block;
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-gradient);
+    border-radius: 3px;
+}
+
+.post-content p {
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 25px;
+    font-size: 1.02rem;
+    font-family: 'Peyda', sans-serif;
+}
+
+/* ===== نقل قول ===== */
+.post-quote {
+    background: var(--bg-secondary);
+    padding: 35px 30px;
+    border-radius: 24px;
+    margin: 35px 0;
+    border-right: 5px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.post-quote svg {
+    stroke: var(--accent-color);
+    opacity: 0.7;
+}
+
+.post-quote p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-style: italic;
+    margin-bottom: 0;
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-quote cite {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 600;
+    font-family: 'Peyda', sans-serif;
+}
+
+/* ===== لیست مهارت‌ها ===== */
+.skills-list {
+    list-style: none;
+    margin: 30px 0;
+}
+
+.skills-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition);
+    font-family: 'Peyda', sans-serif;
+}
+
+.skills-list li:hover {
+    transform: translateX(-8px);
+    border-bottom-color: var(--accent-color);
+}
+
+.skills-list li span:first-child {
+    font-size: 1.8rem;
+}
+
+.skills-list li strong {
+    color: var(--accent-color);
+    min-width: 200px;
+    font-family: 'Peyda', sans-serif;
+    font-weight: 700;
+}
+
+.skills-list li span:last-child {
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+}
+
+/* ===== باکس هایلایت ===== */
+.post-highlight-box {
+    background: linear-gradient(135deg, var(--accent-glow), transparent);
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+    padding: 25px 30px;
+    margin: 40px 0;
+}
+
+.post-highlight-box h3 {
+    color: var(--accent-color);
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+    font-family: 'Peyda', sans-serif;
+    font-weight: 800;
+}
+
+.post-highlight-box p {
+    font-family: 'Peyda', sans-serif;
+}
+
+/* ===== CTA داخلی ===== */
+.post-cta-inline {
+    background: var(--bg-secondary);
+    text-align: center;
+    padding: 40px;
+    border-radius: 28px;
+    margin: 50px 0 30px;
+    border: 1px solid var(--border-color);
+}
+
+.post-cta-inline p {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    font-family: 'Peyda', sans-serif;
+}
+
+/* ===== تگ‌ها ===== */
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 40px 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.post-tags span {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-tags a {
+    background: var(--bg-primary);
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-tags a:hover {
+    background: var(--accent-gradient);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+
+/* ===== باکس نویسنده ===== */
+.post-author-box {
+    display: flex;
+    gap: 25px;
+    padding: 30px;
+    background: var(--bg-secondary);
+    border-radius: 24px;
+    margin-top: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.post-author-box img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-color);
+}
+
+.author-info h4 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: var(--accent-color);
+    font-family: 'Peyda', sans-serif;
+    font-weight: 800;
+}
+
+.author-info p {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    font-family: 'Peyda', sans-serif;
+    color: var(--text-secondary);
+}
+
+.author-social a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    margin-left: 15px;
+    transition: var(--transition);
+    font-family: 'Peyda', sans-serif;
+}
+
+.author-social a:hover {
+    color: var(--accent-color);
+}
+
+/* ===== سایدبار ===== */
+.post-sidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.sidebar-widget {
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.sidebar-widget:hover {
+    border-color: var(--accent-color);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.sidebar-widget h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    position: relative;
+    font-family: 'Peyda', sans-serif;
+}
+
+.related-posts {
+    list-style: none;
+}
+
+.related-posts li {
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.related-posts li a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition);
+    display: block;
+    font-size: 0.95rem;
+    font-family: 'Peyda', sans-serif;
+}
+
+.related-posts li a:hover {
+    color: var(--accent-color);
+    transform: translateX(-5px);
+}
+
+/* ===== خبرنامه سایدبار ===== */
+.newsletter-widget input {
+    width: 100%;
+    padding: 14px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    font-family: 'Peyda', sans-serif;
+    font-size: 0.9rem;
+}
+
+.newsletter-widget input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.newsletter-widget button {
+    width: 100%;
+    background: var(--accent-gradient);
+    border: none;
+    padding: 12px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Peyda', sans-serif;
+    font-size: 0.9rem;
+}
+
+.newsletter-widget button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px var(--accent-glow);
+}
+
+/* ===== اسکرول پروگرس ===== */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-gradient);
+    z-index: 10000;
+    transition: width 0.1s;
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* ===== هماهنگی با تم ===== */
+body, .blog-post-article {
+    background: var(--bg-primary);
+}
+
+.post-content, .sidebar-widget {
+    background: var(--bg-card);
+}
+
+/* ===== ریسپانسیو ===== */
+@media (max-width: 992px) {
+    .post-content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .post-sidebar {
+        position: static;
+    }
+    
+    .post-title {
+        font-size: 2.2rem;
+    }
+    
+    .post-content {
+        padding: 30px;
+    }
+    
+    .blog-post-article {
+        padding-top: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .blog-post-article {
+        padding-top: 100px;
+    }
+    
+    .post-title {
+        font-size: 1.8rem;
+    }
+    
+    .post-meta {
+        gap: 18px;
+    }
+    
+    .post-author-box {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+    
+    .skills-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .skills-list li strong {
+        min-width: auto;
+    }
+    
+    .post-quote {
+        padding: 25px 20px;
+    }
+    
+    .post-quote p {
+        font-size: 1rem;
+    }
+    
+    .post-cta-inline {
+        padding: 25px 20px;
+    }
+    
+    .post-cta-inline p {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .blog-post-article {
+        padding-top: 90px;
+    }
+    
+    .post-title {
+        font-size: 1.5rem;
+    }
+    
+    .post-content {
+        padding: 20px;
+    }
+    
+    .post-content h2 {
+        font-size: 1.3rem;
+    }
+    
+    .post-lead {
+        font-size: 1rem;
+        padding-right: 12px;
+    }
+    
+    .meta-item {
+        font-size: 0.75rem;
+    }
+    
+    .sidebar-widget {
+        padding: 20px;
+    }
+    
+    .sidebar-widget h3 {
+        font-size: 1.1rem;
+    }
+    
+    .post-author-box img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .author-info h4 {
+        font-size: 1rem;
+    }
+}
+
+/* ===== RTL پشتیبانی ===== */
+[dir="ltr"] .post-lead {
+    border-right: none;
+    border-left: 4px solid var(--accent-color);
+    padding-right: 0;
+    padding-left: 20px;
+}
+
+[dir="ltr"] .skills-list li:hover {
+    transform: translateX(8px);
+}
+
+[dir="ltr"] .related-posts li a:hover {
+    transform: translateX(5px);
+}
+
+[dir="ltr"] .scroll-progress {
+    right: auto;
+    left: 0;
+}

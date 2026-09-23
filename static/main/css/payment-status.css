@@ -1,0 +1,182 @@
+/* ============================================
+   PAYMENT-STATUS.CSS - استایل صفحات وضعیت پرداخت
+   ============================================ */
+
+.payment-status-page {
+    padding: 160px 0 100px;
+    background: var(--bg-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.payment-status-card {
+    max-width: 550px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border-radius: 32px;
+    padding: 50px 40px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.status-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.status-icon.success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 2px solid #10b981;
+}
+
+.status-icon.failed {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 2px solid #ef4444;
+}
+
+.payment-status-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.payment-status-card > p {
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+.payment-details {
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 25px 0;
+    text-align: right;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row span:first-child {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.detail-row span:last-child {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.purchased-courses {
+    margin: 25px 0;
+    text-align: right;
+}
+
+.purchased-courses h4 {
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.course-list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border-color);
+    font-size: 0.9rem;
+}
+
+.course-list-item span:first-child {
+    color: var(--text-secondary);
+}
+
+.error-message {
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 25px 0;
+    text-align: right;
+}
+
+.error-message p {
+    color: #ef4444;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.error-message ul {
+    padding-right: 20px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.error-message li {
+    margin: 5px 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    min-width: 180px;
+    justify-content: center;
+}
+
+@media (max-width: 576px) {
+    .payment-status-page {
+        padding: 130px 0 60px;
+    }
+    
+    .payment-status-card {
+        padding: 30px 20px;
+    }
+    
+    .payment-status-card h2 {
+        font-size: 1.3rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+}

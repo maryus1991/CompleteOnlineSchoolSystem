@@ -1,0 +1,443 @@
+/* ============================================
+   COURSE-SINGLE.CSS - استایل صفحه جزئیات دوره
+   ============================================ */
+
+.course-single-page {
+    padding: 140px 0 80px;
+    background: var(--bg-primary);
+    min-height: 100vh;
+}
+
+/* ========== هدر دوره ========== */
+.course-hero {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 32px;
+    padding: 48px;
+    margin-bottom: 50px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 50px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.course-hero:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.course-hero-info h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.3;
+}
+
+/* متادیتا */
+.course-meta-list {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+    padding: 20px 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.meta-item svg {
+    stroke: var(--accent-color);
+    width: 20px;
+    height: 20px;
+}
+
+/* قیمت بزرگ */
+.course-price-large {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent-color);
+    margin: 24px 0 16px;
+}
+
+/* توضیحات */
+.course-description {
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin: 20px 0;
+    font-size: 1rem;
+}
+
+/* ویژگی‌های دوره */
+.course-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 30px 0;
+    padding: 20px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.feature-item svg {
+    stroke: var(--accent-color);
+    width: 18px;
+    height: 18px;
+}
+
+/* سایدبار */
+.course-sidebar-card {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.05));
+    border-radius: 28px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    position: sticky;
+    top: 100px;
+    transition: all 0.3s ease;
+}
+
+.course-sidebar-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+}
+
+.course-sidebar-card img {
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+.course-sidebar-card .course-price {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    margin: 20px 0;
+}
+
+.course-sidebar-card .btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 12px;
+    padding: 14px;
+    font-size: 1rem;
+}
+
+/* سرفصل‌های دوره */
+.curriculum-section {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    padding: 40px;
+    margin-top: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.curriculum-section h2 {
+    margin-bottom: 30px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.curriculum-section h2 svg {
+    stroke: var(--accent-color);
+    width: 28px;
+    height: 28px;
+}
+
+.curriculum-item {
+    border-bottom: 1px solid var(--border-color);
+    padding: 18px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.curriculum-item:hover {
+    padding-right: 12px;
+    background: rgba(79, 172, 254, 0.05);
+    margin: 0 -12px;
+    padding-left: 12px;
+    border-radius: 12px;
+}
+
+.curriculum-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 500;
+}
+
+.curriculum-title svg {
+    stroke: var(--accent-color);
+    width: 20px;
+    height: 20px;
+}
+
+.curriculum-duration {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.curriculum-duration svg {
+    stroke: var(--text-muted);
+    width: 16px;
+    height: 16px;
+}
+
+/* بخش مدرس */
+.instructor-section {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    padding: 40px;
+    margin-top: 30px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    border: 1px solid var(--border-color);
+}
+
+.instructor-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+}
+
+.instructor-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+}
+
+.instructor-info p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-top: 12px;
+}
+
+.instructor-badge {
+    display: inline-block;
+    background: var(--accent-glow);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    margin-top: 8px;
+}
+
+/* نظر دانشجویان */
+.reviews-section {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    padding: 40px;
+    margin-top: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.reviews-section h2 {
+    margin-bottom: 30px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.review-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.review-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.review-stars {
+    display: flex;
+    gap: 4px;
+    margin: 8px 0;
+}
+
+.review-stars svg {
+    width: 16px;
+    height: 16px;
+    fill: #ffc107;
+    stroke: none;
+}
+
+.review-text {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 0.9rem;
+}
+
+/* دوره‌های مشابه */
+.related-courses {
+    margin-top: 50px;
+}
+
+.related-courses h2 {
+    margin-bottom: 30px;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.related-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+}
+
+.related-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+}
+
+.related-card img {
+    width: 100%;
+    border-radius: 14px;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    margin-bottom: 14px;
+}
+
+.related-card h4 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.related-card .price {
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+/* ========== ریسپانسیو ========== */
+@media (max-width: 992px) {
+    .course-hero {
+        grid-template-columns: 1fr;
+        padding: 32px;
+    }
+    
+    .course-sidebar-card {
+        position: static;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    .course-features {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-single-page {
+        padding: 120px 0 60px;
+    }
+    
+    .course-hero {
+        padding: 24px;
+    }
+    
+    .course-hero-info h1 {
+        font-size: 1.6rem;
+    }
+    
+    .curriculum-section,
+    .instructor-section,
+    .reviews-section {
+        padding: 24px;
+    }
+    
+    .instructor-section {
+        text-align: center;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .course-price-large {
+        font-size: 1.5rem;
+    }
+    
+    .meta-item {
+        font-size: 0.8rem;
+    }
+    
+    .curriculum-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
