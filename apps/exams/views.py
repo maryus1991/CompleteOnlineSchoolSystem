@@ -13,14 +13,15 @@ class ExamListView(ListView):
 
 
     def get_queryset(self):
-        queryset = Exam.objects.filter(is_active=True, is_public=True).select_related("school", "grade", "major", "lesson", ).annotate(
+        queryset = Exam.objects.filter(is_active=True, is_public=True).select_related("school", "grade", "major", "lesson").annotate(
             student_count=Count('selected_student', distinct=True),
             questions_count=Count('question', distinct=True),
             is_student=Exists(
                 Student.objects.filter(
                     user=self.request.user if self.request.user.is_authenticated else None,
-                    classes=OuterRef("pk"),
-                ))
+                    exam=OuterRef("pk"),
+                )
+            ),
         )
 
 
@@ -50,18 +51,20 @@ class ExamDetailsView(DetailView):
         queryset = Exam.objects.filter(
             is_active=True,
             is_public=True,
-        ).select_related("grade", "major", "lesson", ).annotate(
+        ).select_related("grade", "major", "lesson", "province", "city").annotate(
             student_count=Count('selected_student', distinct=True),
             questions_count=Count('question', distinct=True),
             is_student=Exists(
                 Student.objects.filter(
                     user=self.request.user if self.request.user.is_authenticated else None,
-                    classes=OuterRef("pk"),
-                ))
+                    exam=OuterRef("pk"),
+                )
+            ),
         )
         return queryset
 
     def get_context_data(self, *args, **kwargs):
+        # todo: fix the is_student
         data = super().get_context_data(*args, **kwargs)
         data.update(
             {
@@ -78,7 +81,7 @@ class ExamDetailsView(DetailView):
                     is_student=Exists(
                         Student.objects.filter(
                             user=self.request.user if self.request.user.is_authenticated else None,
-                            classes=OuterRef("pk"),
+                            exam=OuterRef("pk"),
                         )
                     ),
                 ).select_related("grade", "major", "lesson")

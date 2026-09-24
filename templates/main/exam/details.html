@@ -117,11 +117,8 @@
                     <button class="btn btn-outline" disabled="" style="opacity:0.6;">✓ قبلاً ثبت‌نام کرده‌اید</button>
                     <a href="dashboard.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">رفتن به داشبورد</a>
                 {% else %}
-                    <a href="dashboard.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">شرکت در دوره</a>
-                <div class="secure-badge" style="margin-top: 20px; font-size:0.7rem; color:var(--text-muted); text-align:center;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                    <span>پرداخت امن و رمزنگاری شده</span>
-                </div>
+                    <a href="dashboard.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">شرکت در ازمون</a>
+
                 {% endif %}
 
 
@@ -134,28 +131,169 @@
 اطلاعات ازمون
             </h2>
 
-<div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> مبحث  : {{object.section}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> نام استان محل برگذاری : {{object.province}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>نام شهر محل برگذاری : {{object.city}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>محل و نحوه برگذاری : {{object.type_of_quiz}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> هزینه  : {{object.price}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>(دقیقه) تایمر : {{object.time_minutes}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>زمان برگذاری : {{object.start_at}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>زمان پایان : {{object.stop_at}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>اخرین زمان ورود : {{object.last_enter}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>زمان تصحیح : {{object.corrected_at}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>حداکثر نمره : {{object.max_score}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> ضریب  : {{object.score}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> ظرفیت  : {{object.capacity}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> ظرفیت پر شده : {{object.filled_capacity}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> انلاین  : {{object.is_online}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>دارای نمره منفی : {{object.have_negative_score}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> وضعیت  : {{object.status}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>درصد کم کردن از نمره در ازای هر سوال اشتباه : {{object.reduce_percent_of_negative_score}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> عمومی  : {{object.is_public}}</span></div></div>
-            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> رایگان  : {{object.is_free}}</span></div></div>
+<div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> مبحث  : {{object.section|default:"-"}}</span></div></div>
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>نام استان محل برگزاری: {{ object.province|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>نام شهر محل برگزاری: {{ object.city|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>محل و نحوه برگزاری: {{ object.type_of_quiz|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>هزینه: {{ object.price|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>تایمر (دقیقه): {{ object.time_minutes|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>زمان برگزاری: {{ object.start_at|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>زمان پایان: {{ object.stop_at|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>آخرین زمان ورود: {{ object.last_enter|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>زمان تصحیح: {{ object.corrected_at|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>حداکثر نمره: {{ object.max_score|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>ضریب: {{ object.score|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>ظرفیت: {{ object.capacity|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>ظرفیت پر شده: {{ object.filled_capacity|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>آنلاین: {% if object.is_online is True %}بله{% elif object.is_online is False %}خیر{% else %}-{% endif %}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>دارای نمره منفی: {% if object.have_negative_score is True %}بله{% elif object.have_negative_score is False %}خیر{% else %}-{% endif %}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>وضعیت: {{ object.status|default:"-" }}</span>
+    </div>
+</div>
+
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>درصد کسر نمره به ازای هر سؤال اشتباه: {{ object.reduce_percent_of_negative_score|default:"-" }}</span>
+    </div>
+</div>
 
 
+<div class="curriculum-item">
+    <div class="curriculum-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>رایگان: {% if object.get_price_status is not False %}بله{% elif object.get_price_status is False %}خیر{% else %}-{% endif %}</span>
+    </div>
+</div>
 
         </div>
 
