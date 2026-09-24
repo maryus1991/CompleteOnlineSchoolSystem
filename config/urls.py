@@ -26,6 +26,7 @@ urlpatterns = [
     path('posts/', include('apps.article.urls')),
     path('courses/', include('apps.classes.urls')),
     path('users/', include('apps.users.accounts.urls')),
+    path('exams/', include('apps.exams.urls')),
 ]
 
 if settings.DEBUG:
