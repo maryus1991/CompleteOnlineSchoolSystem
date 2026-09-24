@@ -40,3 +40,49 @@ class ExamListView(ListView):
 
         return queryset
 
+
+class ExamDetailsView(DetailView):
+    """for details exam"""
+    context_object_name = 'object'
+    template_name = 'main/exam/details.html'
+
+    def get_queryset(self) :
+        queryset = Exam.objects.filter(
+            is_active=True,
+            is_public=True,
+        ).select_related("grade", "major", "lesson", ).annotate(
+            student_count=Count('selected_student', distinct=True),
+            questions_count=Count('question', distinct=True),
+            is_student=Exists(
+                Student.objects.filter(
+                    user=self.request.user if self.request.user.is_authenticated else None,
+                    classes=OuterRef("pk"),
+                ))
+        )
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        data = super().get_context_data(*args, **kwargs)
+        data.update(
+            {
+
+                "related": Exam.objects.filter(
+                    Q(lesson=self.object.lesson)|
+                    Q(major=self.object.major)|
+                    Q(grade=self.object.grade),
+                    is_active=True,
+                    is_public=True,
+                ).annotate(
+                    student_count=Count('selected_student', distinct=True),
+                    questions_count=Count('question', distinct=True),
+                    is_student=Exists(
+                        Student.objects.filter(
+                            user=self.request.user if self.request.user.is_authenticated else None,
+                            classes=OuterRef("pk"),
+                        )
+                    ),
+                ).select_related("grade", "major", "lesson")
+                .exclude(id=self.object.id)[:self.request.site.count_of_courses_in_course_detail_page],
+            }
+        )
+        return data

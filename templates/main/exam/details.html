@@ -71,7 +71,7 @@
                 <div class="course-meta-list">
                     <div class="meta-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        <span>{{object.section_count}} جلسه</span>
+                        <span>{{object.questions_count}}   سوال</span>
                     </div>
                     <div class="meta-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
@@ -79,15 +79,15 @@
                     </div>
                     <div class="meta-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                        <span>{{object.student_count}} دانشجو</span>
+                        <span>{{object.student_count}} شرکت کننده</span>
                     </div>
                     <div class="meta-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                         <span>آخرین بروزرسانی: {{object.updated_at.year}}/{{object.updated_at.month}}/{{object.updated_at.day}}</span>
                     </div>
                 </div>
-                {% if object.get_price > 0 %}
-                <div class="course-price-large">{{object.get_price}} تومان</div>
+                {% if object.get_price_status %}
+                <div class="course-price-large">{{object.get_price_status}} تومان</div>
                 {% else %}
                 <div class="course-price-large">رایگان</div>
 
@@ -96,38 +96,18 @@
                 {{object.summery}}
                 </p>
                 <p class="course-description">
-                {{object.text|safe}}
+                {{object.description|safe}}
                 </p>
 
 
 
-                <div class="course-features">
 
-                    <div class="feature-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22 6 12 13 2 6"></polyline></svg>
-                        <span>
-                            {{object.first_tag}}
-                        </span>
-                    </div>
-                    <div class="feature-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
-                        <span>
-                            {{object.second_tag}}
-                        </span>
-                    </div>
-                    <div class="feature-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                        <span>
-                            {{object.third_tag}}
-                        </span>
-                    </div>
-                </div>
             </div>
 
             <div class="course-sidebar-card">
                 <img src="{{object.image.url}}" alt="{{object.name}}" >
-                {% if object.get_price > 0 %}
-                <div class="course-price">{{object.get_price}} تومان</div>
+                {% if object.get_price_status  %}
+                <div class="course-price">{{object.get_price_status}} تومان</div>
                 {% else %}
                 <div class="course-price">رایگان</div>
 
@@ -151,36 +131,35 @@
         <div class="curriculum-section">
             <h2>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                سرفصل‌های دوره
+اطلاعات ازمون
             </h2>
 
-                {% for section in sections %}
-                <div class="curriculum-item">
-                    <div class="curriculum-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        <span>جلسه {{forloop.counter}} : {{section.name}}</span>
-                    </div>
-                </div>
-                {% empty %}
-                            <div class="curriculum-item">
-                    <div class="curriculum-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        <span>هنوز جلسه ای برای این کلاس تعریف یا منتشر نشده است</span>
-                    </div>
-                </div>
-            {% endfor %}
+<div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> مبحث  : {{object.section}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> نام استان محل برگذاری : {{object.province}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>نام شهر محل برگذاری : {{object.city}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>محل و نحوه برگذاری : {{object.type_of_quiz}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> هزینه  : {{object.price}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>(دقیقه) تایمر : {{object.time_minutes}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>زمان برگذاری : {{object.start_at}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>زمان پایان : {{object.stop_at}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>اخرین زمان ورود : {{object.last_enter}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>زمان تصحیح : {{object.corrected_at}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>حداکثر نمره : {{object.max_score}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> ضریب  : {{object.score}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> ظرفیت  : {{object.capacity}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> ظرفیت پر شده : {{object.filled_capacity}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> انلاین  : {{object.is_online}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>دارای نمره منفی : {{object.have_negative_score}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> وضعیت  : {{object.status}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>درصد کم کردن از نمره در ازای هر سوال اشتباه : {{object.reduce_percent_of_negative_score}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> عمومی  : {{object.is_public}}</span></div></div>
+            <div class="curriculum-item"><div class="curriculum-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span> رایگان  : {{object.is_free}}</span></div></div>
 
 
 
         </div>
 
-        <div class="instructor-section">
-            <img src="{{object.teacher.user.profile_image.url}}" alt="{{object.teacher.user.get_full_name}}" class="instructor-avatar" >
-            <div class="instructor-info">
-                <h2>{{object.teacher.user.get_full_name}}</h2>
-                <p>{{object.teacher.user.biography}}</p>
-            </div>
-        </div>
+
 <br>
 <br>
 
