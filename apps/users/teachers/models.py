@@ -1,9 +1,10 @@
 from django.db import models
 from apps.users.accounts.models import User
 from apps.categories.models import GradeCategories, MajorCategories, ProvinceCategories, CityCategories
+from apps.common.models import BaseModel
 
 
-class Teacher(models.Model):
+class Teacher( BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="حساب")
     major = models.ForeignKey(MajorCategories, related_name='teacher', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='رشته')
     province = models.ForeignKey(ProvinceCategories, related_name='teacher', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='استان')

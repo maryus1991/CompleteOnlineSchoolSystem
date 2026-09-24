@@ -3,8 +3,9 @@ from apps.users.accounts.models import User
 from apps.categories.models import GradeCategories, MajorCategories, ProvinceCategories, CityCategories
 from phonenumber_field.modelfields import PhoneNumberField
 from apps.schools.models import School
+from apps.common.models import BaseModel
 
-class Student(models.Model):
+class Student(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="حساب")
     grade = models.ForeignKey(GradeCategories, related_name='student', null=True, on_delete=models.SET_NULL, verbose_name='پایه', blank=True)
     major = models.ForeignKey(MajorCategories, related_name='student', null=True, on_delete=models.SET_NULL, verbose_name='رشته تحصیلی', blank=True)
