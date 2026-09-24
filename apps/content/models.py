@@ -6,6 +6,10 @@ from apps.common.models import BaseModel
 class Section(BaseModel):
     klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='sections', verbose_name="کلاس")
     is_publish = models.BooleanField("انتشار", default=False)
+    name = models.CharField("نام", max_length=255 )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ["-sort_number", 'pk']
@@ -16,6 +20,10 @@ class Section(BaseModel):
 class ClassArticle(BaseModel):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='article', verbose_name="مقاله")
     content = CKEditor5Field("توضیحات")
+    name = models.CharField("نام", max_length=255 )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ["-sort_number", 'pk']
@@ -27,6 +35,10 @@ class ClassFile(BaseModel):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='file', verbose_name="فایل")
     file = models.FileField("فایل")
     content = CKEditor5Field("توضیحات")
+    name = models.CharField("نام", max_length=255 )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ["-sort_number", 'pk']
@@ -36,6 +48,10 @@ class ClassFile(BaseModel):
 class ClassPractice(BaseModel):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='practice', verbose_name="تمرین")
     content = CKEditor5Field("توضیحات")
+    name = models.CharField("نام", max_length=255 )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ["-sort_number", 'pk']
