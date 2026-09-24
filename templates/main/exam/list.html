@@ -64,34 +64,17 @@
     <main class="courses-page">
         <div class="container">
             <div class="section-header">
-                <span class="section-subtitle">{{site.list_course_above_tag}}</span>
-                <h1 class="section-title">{{site.list_course_title}}</h1>
-                <p class="section-desc">{{site.list_course_description}}</p>
+                <span class="section-subtitle">{{site.list_exam_above_tag}}</span>
+                <h1 class="section-title">{{site.list_exam_title}}</h1>
+                <p class="section-desc">{{site.list_exam_description}}</p>
             </div>
 
             <div class="courses-filter">
                 <div class="filter-tabs">
 
-                    <a href="{% url 'class:list' %}" class="filter-tab {% if not pk %} active {% endif %} " data-filter="all">
+                    <a href="{% url 'exam:list' %}" class="filter-tab {% if not pk %} active {% endif %} " data-filter="all">
                         همه
                     </a>
-
-<!--                    {% for category in major %}-->
-<!--                    <a class="filter-tab {% if pk == category.pk %} active {% endif %}"  href="{{ category.get_absolute_url }}" data-filter="{{ category.name }}">-->
-<!--                         {{ category.name }}-->
-<!--                    </a>-->
-<!--                    {% endfor %}-->
-<!--                    {% for category in grade %}-->
-<!--                    <a class="filter-tab {% if pk == category.pk %} active {% endif %}"  href="{{ category.get_absolute_url }}" data-filter="{{ category.name }}">-->
-<!--                         {{ category.name }}-->
-<!--                    </a>-->
-<!--                    {% endfor %}-->
-<!--                    {% for category in lesson %}-->
-<!--                    <a class="filter-tab {% if pk == category.pk %} active {% endif %}"  href="{{ category.get_absolute_url }}" data-filter="{{ category.name }}">-->
-<!--                         {{ category.name }}-->
-<!--                    </a>-->
-<!--                    {% endfor %}-->
-
 
                 </div>
                 <form method="get" class="course-search-form">
@@ -127,7 +110,7 @@
                 <div class="course-card" >
                 <div class="course-image">
                     <img src="{{item.image.url}}" alt="{{item.name}}" >
-                    <div class="course-badge">{{item.lesson.name}} {{item.grade.name}}  {{item.major.name}}</div>
+                    <div class="course-badge">{{item.get_categories}}</div>
                     {% if item.is_student %}
                     <div class="course-badge enrolled-badge" style="background: linear-gradient(135deg, #10b981, #059669); right: auto; left: 15px;">✓ ثبت‌نام شده</div>
                     {% endif %}
@@ -139,7 +122,7 @@
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            {{ item.section_count }} جلسه
+                            {{ item.questions_count }} سوال
                         </span>
                         <span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -153,14 +136,12 @@
                     </div>
                     <h3 class="course-title">{{item.name}}</h3>
                     <p class="course-desc">{{item.summery}}</p>
-                    <div class="course-features">
-                        <span class="feature-tag">{{item.first_tag}}</span><span class="feature-tag">{{item.second_tag}}</span><span class="feature-tag">{{item.third_tag}}</span>
-                    </div>
+
                    <div class="course-footer">
-    {% if item.is_free or item.price <= 0 %}
+    {% if not item.get_price_status %}
         <span class="course-price">رایگان</span>
     {% else %}
-        <span class="course-price"> {{item.get_price}}   تومان </span>
+        <span class="course-price"> {{item.get_price_status}}   تومان </span>
     {% endif %}
 
     <div class="course-actions">

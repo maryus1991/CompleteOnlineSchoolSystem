@@ -29,14 +29,14 @@ class Class(BaseModel):
 
     def get_absolute_url(self):
         return reverse_lazy("class:details", kwargs={'pk': self.pk})
-
-    def __str__(self):
-        return self.name
-
     def get_price(self):
         if self.is_free or self.price <= 0:
             return 0
         return f"{self.price:,}"
+    def __str__(self):
+        return self.name
+
+
 
     class Meta:
         ordering = ['-pk']

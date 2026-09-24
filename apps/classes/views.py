@@ -49,7 +49,7 @@ class ClassListView(ListView):
             )
         )
         if q := self.request.GET.get("q"):
-            print(q)
+
             queryset = queryset.filter(
                 Q(school__name__icontains=q) |
                 Q(teacher__user__first_name__icontains=q) |
@@ -70,9 +70,9 @@ class ClassListView(ListView):
         data = super().get_context_data(*args, **kwargs)
         data.update(
             {
-                "major": MajorCategories.objects.filter(is_active=True),
-                "grade": GradeCategories.objects.filter(is_active=True),
-                "lesson": LessonCategories.objects.filter(is_active=True),
+                # "major": MajorCategories.objects.filter(is_active=True),
+                # "grade": GradeCategories.objects.filter(is_active=True),
+                # "lesson": LessonCategories.objects.filter(is_active=True),
             }
         )
         return data
