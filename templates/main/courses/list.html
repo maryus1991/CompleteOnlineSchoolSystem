@@ -6,7 +6,61 @@
 {% endblock %}
 
 {% block main %}
+<style>
+    .course-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
+.course-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* موبایل */
+@media (max-width: 576px) {
+    .course-actions {
+        width: 100%;
+        display: flex;
+    }
+
+    .course-action-btn {
+        flex: 1;
+        min-width: 0;
+    }
+    .course-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+}
+    .course-card {
+    height: 100%;
+}
+
+.course-image {
+    aspect-ratio: 16 / 9;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+</style>
     <main class="courses-page">
         <div class="container">
             <div class="section-header">
@@ -68,11 +122,11 @@
             </div>
 
         <div class="courses-grid" id="coursesContainer">
-            {% for _ in "123456789" %}
+
             {% for item in items %}
                 <div class="course-card" >
                 <div class="course-image">
-                    <img src="{{item.image.url}}" alt="بوت‌کمپ جامع فرانت‌اند" onerror="this.src='https://picsum.photos/id/20/400/250'">
+                    <img src="{{item.image.url}}" alt="بوت‌کمپ جامع فرانت‌اند" >
                     <div class="course-badge">{{item.lesson.name}} {{item.grade.name}}  {{item.major.name}}</div>
                     {% if item.is_student %}
                     <div class="course-badge enrolled-badge" style="background: linear-gradient(135deg, #10b981, #059669); right: auto; left: 15px;">✓ ثبت‌نام شده</div>
@@ -102,29 +156,41 @@
                     <div class="course-features">
                         <span class="feature-tag">{{item.first_tag}}</span><span class="feature-tag">{{item.second_tag}}</span><span class="feature-tag">{{item.third_tag}}</span>
                     </div>
-                    <div class="course-footer">
-                        {% if item.is_free or item.price <= 0 %}
-                        <span class="course-price">رایگان</span>
-                        {% else %}
-                        <span class="course-price">۸,۵۰۰,۰۰۰ تومان</span>
-                        {% endif %}
-                        <div style="display: flex; gap: 10px;">
-                            <a href="{{item.get_absolute_url}}" title="جزئیات" class="btn btn-outline btn-sm">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                                جزئیات
-                            </a>
-                            {% if item.is_student %}
-                                <button class="btn btn-outline btn-sm" disabled="" style="opacity:0.6; cursor:not-allowed;">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    ثبت‌نام شده
-                                </button>
-                            {% endif %}
-                        </div>
-                    </div>
+                   <div class="course-footer">
+    {% if item.is_free or item.price <= 0 %}
+        <span class="course-price">رایگان</span>
+    {% else %}
+        <span class="course-price"> {{item.get_price}}   تومان </span>
+    {% endif %}
+
+    <div class="course-actions">
+        <a href="{{ item.get_absolute_url }}"
+           title="جزئیات"
+           class="btn btn-outline btn-sm course-action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            جزئیات
+        </a>
+
+        {% if item.is_student %}
+            <button class="btn btn-outline btn-sm course-action-btn enrolled-btn"
+                    disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                ثبت‌نام شده
+            </button>
+        {% endif %}
+    </div>
+</div>
                 </div>
             </div>
             {% endfor %}
-            {% endfor %}
+
         </div>
 
         </div>

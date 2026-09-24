@@ -6,7 +6,7 @@ from apps.categories.models import GradeCategories, MajorCategories, LessonCateg
 from apps.common.models import BaseModel
 from apps.common.file_storage_script_for_model import UploadPath
 from django_resized import ResizedImageField
-
+from django.urls import reverse_lazy
 
 class Class(BaseModel):
     school = models.ForeignKey(School, null=True, blank=True, on_delete=models.CASCADE, related_name='classes', verbose_name="مدرسه")
@@ -25,10 +25,14 @@ class Class(BaseModel):
     second_tag = models.CharField("تگ دوم", max_length=50, null=True, blank=True, default="گواهی معتبر")
     third_tag = models.CharField("تگ سوم", max_length=50, null=True, blank=True, default="پروژه محور")
 
-    def get_absolute_url(self):pass
+    def get_absolute_url(self):
+        return reverse_lazy("class:details", kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name
+
+    def get_price(self):
+        return f"{self.price:,}"
 
     class Meta:
         ordering = ['-pk']

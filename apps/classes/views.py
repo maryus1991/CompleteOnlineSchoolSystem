@@ -56,3 +56,9 @@ class ClassListView(ListView):
             }
         )
         return data
+
+class ClassDetailView(DetailView):
+    """for detail class"""
+    context_object_name = 'item'
+    queryset = Class.objects.all()
+    template_name = 'main/courses/details.html'
