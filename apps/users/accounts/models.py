@@ -23,7 +23,7 @@ class User(AbstractUser):
 
     gender = models.CharField(max_length=255, choices=GenderOfUser, default=GenderOfUser.MALE , verbose_name="جنسیت")
     PhoneNumber = PhoneNumberField(unique=True, verbose_name="شماره", db_index=True)
-
+    sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
     private_code = models.CharField(max_length=1000, verbose_name='کد مخفی کاربر', null=True, blank=True)
     otp = models.CharField(max_length=6, blank=True, null=True, verbose_name="کد otp")
     otp_expiry_date = models.DateTimeField(null=True, blank=True, verbose_name="تاریخ انقضای ")
@@ -31,6 +31,9 @@ class User(AbstractUser):
     login_temp = models.PositiveSmallIntegerField(default=0, verbose_name="دفعات ورود")
     profile_image = ResizedImageField("عکس", upload_to=UploadPath("users-profile"), null=True, blank=True)
     biography = models.CharField(max_length=1000, verbose_name='معرفی کوتاه', null=True, blank=True)
+    publish = models.BooleanField(default=False, verbose_name='انتشار')
+    telegram_link = models.URLField("لینک تلرام", null=True, blank=True)
+    instagram_link = models.URLField("لینک اینستاگرام", null=True, blank=True)
 
     USERNAME_FIELD = "PhoneNumber"
     username = None
@@ -39,7 +42,7 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'کاربر'
         verbose_name_plural = 'کاربران'
-        ordering = ('-pk',)
+        ordering = ("-sort_number", '-pk')
 
     def __str__(self):
         if self.first_name or self.last_name:
