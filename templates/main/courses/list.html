@@ -1,0 +1,134 @@
+{% extends "main/Base/Base.html" %}
+
+
+{% block header %}
+    <link rel="stylesheet" href="../../../static/main/css/courses.css">
+{% endblock %}
+
+{% block main %}
+
+    <main class="courses-page">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">{{site.list_course_above_tag}}</span>
+                <h1 class="section-title">{{site.list_course_title}}</h1>
+                <p class="section-desc">{{site.list_course_description}}</p>
+            </div>
+
+            <div class="courses-filter">
+                <div class="filter-tabs">
+
+                    <a href="{% url 'class:list' %}" class="filter-tab {% if not pk %} active {% endif %} " data-filter="all">
+                        همه
+                    </a>
+
+                    {% for category in major %}
+                    <a class="filter-tab {% if pk == category.pk %} active {% endif %}"  href="{{ category.get_absolute_url }}" data-filter="{{ category.name }}">
+                         {{ category.name }}
+                    </a>
+                    {% endfor %}
+                    {% for category in grade %}
+                    <a class="filter-tab {% if pk == category.pk %} active {% endif %}"  href="{{ category.get_absolute_url }}" data-filter="{{ category.name }}">
+                         {{ category.name }}
+                    </a>
+                    {% endfor %}
+                    {% for category in lesson %}
+                    <a class="filter-tab {% if pk == category.pk %} active {% endif %}"  href="{{ category.get_absolute_url }}" data-filter="{{ category.name }}">
+                         {{ category.name }}
+                    </a>
+                    {% endfor %}
+
+
+                </div>
+                <form method="get" class="course-search-form">
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            id="searchCourses"
+                            name="q"
+                            placeholder="جستجو ..."
+                            value="{{ request.GET.q|default:'' }}"
+                        >
+
+                        <button type="submit" aria-label="جستجو">
+                            <svg
+                                class="search-icon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+        <div class="courses-grid" id="coursesContainer">
+            {% for _ in "123456789" %}
+            {% for item in items %}
+                <div class="course-card" >
+                <div class="course-image">
+                    <img src="{{item.image.url}}" alt="بوت‌کمپ جامع فرانت‌اند" onerror="this.src='https://picsum.photos/id/20/400/250'">
+                    <div class="course-badge">{{item.lesson.name}} {{item.grade.name}}  {{item.major.name}}</div>
+                    {% if item.is_student %}
+                    <div class="course-badge enrolled-badge" style="background: linear-gradient(135deg, #10b981, #059669); right: auto; left: 15px;">✓ ثبت‌نام شده</div>
+                    {% endif %}
+                </div>
+                <div class="course-content">
+                    <div class="course-meta">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {{ item.section_count }} جلسه
+                        </span>
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            {{item.student_count}} شرکت کننده
+                        </span>
+                    </div>
+                    <h3 class="course-title">{{item.name}}</h3>
+                    <p class="course-desc">{{item.summery}}</p>
+                    <div class="course-features">
+                        <span class="feature-tag">{{item.first_tag}}</span><span class="feature-tag">{{item.second_tag}}</span><span class="feature-tag">{{item.third_tag}}</span>
+                    </div>
+                    <div class="course-footer">
+                        {% if item.is_free or item.price <= 0 %}
+                        <span class="course-price">رایگان</span>
+                        {% else %}
+                        <span class="course-price">۸,۵۰۰,۰۰۰ تومان</span>
+                        {% endif %}
+                        <div style="display: flex; gap: 10px;">
+                            <a href="{{item.get_absolute_url}}" title="جزئیات" class="btn btn-outline btn-sm">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                جزئیات
+                            </a>
+                            {% if item.is_student %}
+                                <button class="btn btn-outline btn-sm" disabled="" style="opacity:0.6; cursor:not-allowed;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    ثبت‌نام شده
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endfor %}
+        </div>
+
+        </div>
+    </main>
+{% endblock %}
+
+
