@@ -1,191 +1,78 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پولاریس مگ | آینده برنامه‌نویسی با هوش مصنوعی</title>
-    <meta name="description" content="تحلیل جامع تأثیر هوش مصنوعی بر آینده برنامه‌نویسی و فرصت‌های شغلی پیش رو">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
-    
-    <!-- فایل‌های اصلی سایت -->
-    <link rel="stylesheet" href="../../../static/main/css/main.css">
-    <link rel="stylesheet" href="../../../static/main/css/theme.css">
-    <link rel="stylesheet" href="../../../static/main/css/components.css">
-    <link rel="stylesheet" href="../../../static/main/css/animations.css">
-    <link rel="stylesheet" href="../../../static/main/css/responsive.css">
-    
-    <!-- استایل اختصاصی بلاگ -->
-    <link rel="stylesheet" href="../../../static/main/css/blog.css">
-    
+{% extends "main/Base/Base.html" %}
+
+
+{% block header %}
     <style>
         /* استایل اضافی برای اطمینان از عملکرد درست */
         .hidden { display: none; }
         [data-aos] { transition: all 0.7s ease; }
+        a{
+            text-decoration: none;
+        }
     </style>
-</head>
-<body>
+{% endblock %}
 
-    <!-- اسکرول پروگرس بار -->
-    <div class="scroll-progress" id="scrollProgress"></div>
 
-    <!-- PRELOADER -->
-    <div class="preloader" id="preloader">
-        <div class="preloader-content">
-            <div class="preloader-logo">
-                <svg width="50" height="50" viewBox="0 0 100 100" fill="none">
-                    <defs><linearGradient id="plGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="50%" stop-color="#4facfe"/><stop offset="100%" stop-color="#f093fb"/></linearGradient></defs>
-                    <circle cx="50" cy="50" r="46" stroke="url(#plGrad)" stroke-width="3" fill="none" stroke-dasharray="289"><animate attributeName="stroke-dashoffset" from="289" to="0" dur="2s" fill="freeze"/></circle>
-                    <circle cx="50" cy="50" r="14" fill="url(#plGrad)"><animate attributeName="r" values="10;16;10" dur="2s" repeatCount="indefinite"/></circle>
-                </svg>
-                <span class="gradient-text">پولاریس</span>
-            </div>
-            <div class="preloader-bar"><div class="preloader-progress"></div></div>
-            <div class="preloader-percent">۰٪</div>
-        </div>
-    </div>
-
-    <!-- CUSTOM CURSOR -->
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
-
-    <!-- BACK TO TOP -->
-    <button class="back-to-top" id="backToTop">↑</button>
-
-    <!-- HEADER -->
-    <header class="header" id="header">
-        <div class="container">
-            <div class="header-inner">
-                <a href="index.html" class="logo">
-                    <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
-                        <defs><linearGradient id="hdGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
-                        <circle cx="50" cy="50" r="46" stroke="url(#hdGrad)" stroke-width="4" fill="none"/>
-                        <circle cx="50" cy="50" r="14" fill="url(#hdGrad)"/>
-                    </svg>
-                    <span class="logo-gradient">پولاریس</span><span class="logo-text">آکادمی</span>
-                </a>
-                <nav class="nav" id="mainNav">
-                    <ul class="nav-list">
-                        <li><a href="index.html#home" class="nav-link" data-i18n="nav.home">خانه</a></li>
-                        <li><a href="index.html#roadmap" class="nav-link" data-i18n="nav.roadmap">مسیر یادگیری</a></li>
-                        <li><a href="index.html#courses" class="nav-link" data-i18n="nav.courses">دوره‌ها</a></li>
-                        <li><a href="index.html#portfolio" class="nav-link" data-i18n="nav.portfolio">نمونه‌کارها</a></li>
-                        <li><a href="index.html#mentors" class="nav-link" data-i18n="nav.mentors">منتورها</a></li>
-                        <li><a href="index.html#blog" class="nav-link active" data-i18n="nav.blog">وبلاگ</a></li>
-                        <li><a href="index.html#contact" class="nav-link" data-i18n="nav.contact">تماس</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions">
-                    <a href="index.html#contact" class="btn btn-primary" data-i18n="header.cta">مشاوره رایگان</a>
-                    <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- موبایل منو -->
-    <div class="mobile-menu" id="mobileMenu">
-        <button class="mobile-close" id="mobileClose">✕</button>
-        <ul class="mobile-nav">
-            <li><a href="index.html#home" data-i18n="nav.home">خانه</a></li>
-            <li><a href="index.html#roadmap" data-i18n="nav.roadmap">مسیر یادگیری</a></li>
-            <li><a href="index.html#courses" data-i18n="nav.courses">دوره‌ها</a></li>
-            <li><a href="index.html#portfolio" data-i18n="nav.portfolio">نمونه‌کارها</a></li>
-            <li><a href="index.html#mentors" data-i18n="nav.mentors">منتورها</a></li>
-            <li><a href="index.html#blog" data-i18n="nav.blog">وبلاگ</a></li>
-            <li><a href="index.html#contact" data-i18n="nav.contact">تماس</a></li>
-        </ul>
-    </div>
-
-    <!-- ===== بخش اصلی مقاله ===== -->
-    <main>
+{% block main %}
         <article class="blog-post-article">
             <div class="container">
                 <!-- هدر مقاله -->
                 <div class="post-header" data-aos="fade-up">
-                    <div class="post-category" data-i18n="blog.category">🔥 هوش مصنوعی & آینده شغلی</div>
-                    <h1 class="post-title" data-i18n="blog.post.title">آینده برنامه‌نویسی با هوش مصنوعی؛ تهدید یا فرصت؟</h1>
+                    <div class="post-category" data-i18n="blog.category">{{ item.category.name }}</div>
+                    <h1 class="post-title" data-i18n="blog.post.title">{{ item.name }}</h1>
                     <div class="post-meta">
                         <div class="meta-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            <span data-i18n="blog.post.date">۲۵ اردیبهشت ۱۴۰۵</span>
+                            <span data-i18n="blog.post.date">{{ item.updated_at }}</span>
                         </div>
                         <div class="meta-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            <span data-i18n="blog.post.author">نوشته: آرش محمدی</span>
+                            <span data-i18n="blog.post.author">نوشته: {{item.user.get_full_name }}</span>
                         </div>
                         <div class="meta-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <span data-i18n="blog.post.readTime">زمان مطالعه: ۷ دقیقه</span>
+                            <span data-i18n="blog.post.readTime">زمان مطالعه: {{ item.reading_time }} دقیقه</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- تصویر شاخص -->
                 <div class="post-featured-image" data-aos="zoom-in">
-                    <img src="../../../static/main/image/ai-coding-banner.webp" alt="هوش مصنوعی و برنامه‌نویسی">
+                    <img src="{{item.image.url}}" alt="{{item.name}}">
                 </div>
 
                 <!-- محتوای اصلی -->
                 <div class="post-content-wrapper" data-aos="fade-up">
                     <div class="post-content">
-                        <p class="post-lead" data-i18n="blog.post.lead">آیا هوش مصنوعی جای برنامه‌نویسان را می‌گیرد؟ این سوالی است که این روزها ذهن بسیاری از توسعه‌دهندگان را مشغول کرده. در این مقاله از <strong class="gradient-text">آکادمی پولاریس</strong> به بررسی عمیق این موضوع می‌پردازیم.</p>
+                        <p class="post-lead" data-i18n="blog.post.lead">{{item.summery}}</p>
                         
-                        <h2 data-i18n="blog.post.h2.1">واقعیت هوش مصنوعی در دنیای کد</h2>
-                        <p data-i18n="blog.post.p1">ابزارهایی مثل GitHub Copilot، ChatGPT و Cursor سرعت توسعه را چندین برابر کرده‌اند. اما نگران نباشید! طبق آخرین گزارش Stack Overflow، ۹۰٪ توسعه‌دهندگان از AI به عنوان دستیار استفاده می‌کنند، نه جایگزین. هوش مصنوعی کارهای تکراری و کدنویسی سطح پایین را خودکار می‌کند، اما خلاقیت، معماری سیستم، درک نیازهای کسب‌وکار و تصمیم‌گیری‌های استراتژیک همچنان نیازمند انسان است.</p>
-                        
-                        <div class="post-quote">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 11h-4v-4h4v4zM18 11h-4v-4h4v4z"/><path d="M6 3v18l6-3 6 3v-18"/></svg>
-                            <p data-i18n="blog.post.quote">「برنامه‌نویسی که از AI استفاده نمی‌کند، به زودی جای خود را به برنامه‌نویسی می‌دهد که از AI استفاده می‌کند.」</p>
-                            <cite data-i18n="blog.post.quoteAuthor">- ساندار پیچای، مدیرعامل گوگل</cite>
-                        </div>
+                        <h2 data-i18n="blog.post.h2.1">{{item.name}}</h2>
 
-                        <h2 data-i18n="blog.post.h2.2">۵ مهارتی که در عصر AI طلایی می‌شوند</h2>
-                        <ul class="skills-list">
-                            <li><span>🧠</span> <strong data-i18n="blog.post.skill1.title">معماری سیستم و حل مسئله</strong> <span data-i18n="blog.post.skill1.desc">– AI کد می‌نویسد ولی ساختار را انسان طراحی می‌کند.</span></li>
-                            <li><span>🔍</span> <strong data-i18n="blog.post.skill2.title">مهندسی پرامپت (Prompt Engineering)</strong> <span data-i18n="blog.post.skill2.desc">– مهارت ارتباط با مدل‌های زبانی.</span></li>
-                            <li><span>⚙️</span> <strong data-i18n="blog.post.skill3.title">یکپارچه‌سازی APIهای هوشمند</strong> <span data-i18n="blog.post.skill3.desc">– استفاده از سرویس‌های آماده AI.</span></li>
-                            <li><span>📊</span> <strong data-i18n="blog.post.skill4.title">تحلیل داده و تصمیم‌گیری</strong> <span data-i18n="blog.post.skill4.desc">– درک خروجی AI برای تصمیمات تجاری.</span></li>
-                            <li><span>🚀</span> <strong data-i18n="blog.post.skill5.title">یادگیری مادام‌العمر</strong> <span data-i18n="blog.post.skill5.desc">– فناوری هر ۶ ماه تغییر می‌کند.</span></li>
-                        </ul>
+                        {{item.text|safe}}
 
-                        <h2 data-i18n="blog.post.h2.3">نقشه راه برنامه‌نویس حرفه‌ای در ۲۰۲۶</h2>
-                        <p data-i18n="blog.post.p2">در آکادمی پولاریس، دقیقاً همین مسیر را طراحی کرده‌ایم. از آموزش مبانی برنامه‌نویسی با پایتون تا استفاده حرفه‌ای از AI Copilotها، و در نهایت معماری میکروسرویس و کانتینرها. شما نه فقط کدنویسی، بلکه تفکر مهندسی یاد می‌گیرید.</p>
-                        
-                        <div class="post-highlight-box">
-                            <h3 data-i18n="blog.post.highlight.title">📌 آمار جالب:</h3>
-                            <p data-i18n="blog.post.highlight.text">بر اساس گزارش مجمع جهانی اقتصاد، تا سال ۲۰۳۰ حدود ۹۷ میلیون شغل جدید در حوزه فناوری‌های هوشمند ایجاد می‌شود. سوال این نیست که آیا شغلی وجود دارد، سوال این است: <strong>آیا شما برای آن آماده‌اید؟</strong></p>
-                        </div>
+                        {% if item.name_for_file and item.file.url %}
+                              <a href="{{item.file.url}}" class="btn btn-primary" title="دانلود فایل" data-i18n="blog.post.cta.btn">مشاهده دوره‌های تخصصی ←</a>
+                        {% endif %}
 
-                        <h2 data-i18n="blog.post.h2.4">کلام آخر: از تهدید تا فرصت</h2>
-                        <p data-i18n="blog.post.p3">به جای ترس از AI، آن را به بازوی قدرتمند خود تبدیل کنید. برنامه‌نویسان برتر کسانی هستند که یاد می‌گیرند با هوش مصنوعی همکاری کنند، نه رقابت. در <span class="gradient-text">آکادمی پولاریس</span> ما به شما یاد می‌دهیم که چگونه از جدیدترین ابزارها برای ساخت پروژه‌های نسل بعدی استفاده کنید.</p>
-                        
-                        <!-- دکمه CTA داخلی -->
-                        <div class="post-cta-inline">
-                            <p data-i18n="blog.post.cta.text">آماده‌ای تا یک قدم از بقیه جلوتر باشی؟</p>
-                            <a href="index.html#courses" class="btn btn-primary" data-i18n="blog.post.cta.btn">مشاهده دوره‌های تخصصی ←</a>
-                        </div>
+
 
                         <!-- تگ‌ها -->
                         <div class="post-tags">
                             <span data-i18n="blog.post.tags.label">برچسب‌ها:</span>
-                            <a href="#">#هوش_مصنوعی</a>
-                            <a href="#">#آینده_برنامه‌نویسی</a>
-                            <a href="#">#یادگیری_ماشین</a>
-                            <a href="#">#پولاریس</a>
+                            {% for tag in item.tags.all %}
+                                <a href="{{tag.url}}" title="{{tag.name}}">#{{tag.name}}</a>
+                            {% endfor %}
+
                         </div>
 
                         <!-- نویسنده -->
-                        <div class="post-author-box">
-                            <img src="../../../static/main/image/user1.jpg" alt="آرش محمدی">
+                        <a class="post-author-box" href="{{item.user.get_absolute_url}}" title="{{item.user.get_full_name }}">
+                            <img src="{{item.user.profile_image.url}}" alt="{{item.user.get_full_name }}">
                             <div class="author-info">
-                                <h4 data-i18n="mentors.1.name">آرش محمدی</h4>
-                                <p data-i18n="blog.post.author.bio">Senior Front-End Engineer در گوگل | منتور آکادمی پولاریس با ۱۰ سال سابقه در توسعه محصولات کاربرمحور. عاشق تدریس و هدایت استعدادهای جوان.</p>
-                                <div class="author-social">
-                                    <a href="#">🔗 لینکدین</a>
-                                    <a href="#">🐦 توییتر</a>
-                                </div>
+                                <h4 data-i18n="mentors.1.name">{{item.user.get_full_name }}</h4>
+                                <p data-i18n="blog.post.author.bio">{{item.user.biography }}</p>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     <!-- سایدبار -->
@@ -193,383 +80,16 @@
                         <div class="sidebar-widget">
                             <h3 data-i18n="blog.sidebar.related">📚 مقالات مرتبط</h3>
                             <ul class="related-posts">
-                                <li><a href="#" data-i18n="blog.sidebar.link1">⚡ ۱۰ ابزار هوش مصنوعی برای برنامه‌نویسان حرفه‌ای</a></li>
-                                <li><a href="#" data-i18n="blog.sidebar.link2">🎯 چگونه با GitHub Copilot سرعت کدنویسی را ۲ برابر کنیم؟</a></li>
-                                <li><a href="#" data-i18n="blog.sidebar.link3">🧠 مسیر شغلی متخصص AI در ایران و جهان</a></li>
-                                <li><a href="#" data-i18n="blog.sidebar.link4">📈 پیش‌بینی بازار کار برنامه‌نویسی تا ۲۰۳۰</a></li>
+                                {% for related_post in related_posts %}
+                                <li><a href="{{related_post.get_absolute_url}}" title="{{related_post.name}}" data-i18n="blog.sidebar.link1">{{related_post.name}}</a></li>
+                                {% endfor %}
                             </ul>
                         </div>
-                        <div class="sidebar-widget newsletter-widget">
-                            <h3 data-i18n="blog.sidebar.newsletter.title">✉️ خبرنامه پولاریس</h3>
-                            <p data-i18n="blog.sidebar.newsletter.desc">هر هفته جدیدترین مقالات و ترفندها را دریافت کن.</p>
-                            <form id="sidebarNewsletter">
-                                <input type="email" placeholder="ایمیل شما" data-i18n-placeholder="blog.sidebar.newsletter.placeholder">
-                                <button type="submit" data-i18n="blog.sidebar.newsletter.btn">عضویت</button>
-                            </form>
-                        </div>
+
                     </aside>
                 </div>
             </div>
         </article>
-    </main>
-
-    <!-- فوتر -->
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-col footer-brand">
-                        <a href="index.html" class="footer-logo">
-                            <svg width="40" height="40" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="ftGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs><circle cx="50" cy="50" r="46" stroke="url(#ftGrad)" stroke-width="4" fill="none"/><circle cx="50" cy="50" r="14" fill="url(#ftGrad)"/></svg>
-                            <span>پولاریس <strong>آکادمی</strong></span>
-                        </a>
-                        <p data-i18n="footer.desc">فرماندهی نسل بعدی برنامه‌نویسان.</p>
-                    </div>
-                    <div class="footer-col"><h4 data-i18n="footer.quick">دسترسی سریع</h4><ul><li><a href="index.html#home" data-i18n="nav.home">خانه</a></li><li><a href="index.html#courses" data-i18n="nav.courses">دوره‌ها</a></li><li><a href="index.html#portfolio" data-i18n="nav.portfolio">نمونه‌کارها</a></li><li><a href="index.html#blog" data-i18n="nav.blog">وبلاگ</a></li></ul></div>
-                    <div class="footer-col"><h4 data-i18n="footer.links">لینک‌های مهم</h4><ul><li><a href="#" data-i18n="footer.about">درباره ما</a></li><li><a href="#" data-i18n="footer.careers">فرصت‌های شغلی</a></li><li><a href="index.html#faq" data-i18n="nav.faq">سوالات متداول</a></li></ul></div>
-                    <div class="footer-col"><h4 data-i18n="footer.social">همراه ما باشید</h4><div class="footer-social"><a href="#">📷</a><a href="#">💼</a><a href="#">🐦</a></div></div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom"><div class="container"><div class="footer-bottom-content"><p data-i18n="footer.copyright">© ۲۰۲۶ آکادمی پولاریس. با ❤️ برای نسل بعدی برنامه‌نویسان ایران.</p></div></div></div>
-    </footer>
-
-    <!-- ===== اسکریپت‌ها ===== -->
-    <script>
-        // ============================================
-        // ترجمه‌ها (مستقیماً در صفحه برای اطمینان)
-        // ============================================
-        const blogTranslations = {
-            fa: {
-                "nav.home": "خانه",
-                "nav.roadmap": "مسیر یادگیری",
-                "nav.courses": "دوره‌ها",
-                "nav.portfolio": "نمونه‌کارها",
-                "nav.mentors": "منتورها",
-                "nav.blog": "وبلاگ",
-                "nav.contact": "تماس",
-                "header.cta": "مشاوره رایگان",
-                "footer.desc": "فرماندهی نسل بعدی برنامه‌نویسان.",
-                "footer.quick": "دسترسی سریع",
-                "footer.links": "لینک‌های مهم",
-                "footer.social": "همراه ما باشید",
-                "footer.about": "درباره ما",
-                "footer.careers": "فرصت‌های شغلی",
-                "footer.copyright": "© ۲۰۲۶ آکادمی پولاریس. با ❤️ برای نسل بعدی برنامه‌نویسان ایران.",
-                "blog.category": "🔥 هوش مصنوعی & آینده شغلی",
-                "blog.post.title": "آینده برنامه‌نویسی با هوش مصنوعی؛ تهدید یا فرصت؟",
-                "blog.post.date": "۲۵ اردیبهشت ۱۴۰۵",
-                "blog.post.author": "نوشته: آرش محمدی",
-                "blog.post.readTime": "زمان مطالعه: ۷ دقیقه",
-                "blog.post.lead": "آیا هوش مصنوعی جای برنامه‌نویسان را می‌گیرد؟ این سوالی است که این روزها ذهن بسیاری از توسعه‌دهندگان را مشغول کرده. در این مقاله از <strong class='gradient-text'>آکادمی پولاریس</strong> به بررسی عمیق این موضوع می‌پردازیم.",
-                "blog.post.h2.1": "واقعیت هوش مصنوعی در دنیای کد",
-                "blog.post.p1": "ابزارهایی مثل GitHub Copilot، ChatGPT و Cursor سرعت توسعه را چندین برابر کرده‌اند. اما نگران نباشید! طبق آخرین گزارش Stack Overflow، ۹۰٪ توسعه‌دهندگان از AI به عنوان دستیار استفاده می‌کنند، نه جایگزین.",
-                "blog.post.quote": "「برنامه‌نویسی که از AI استفاده نمی‌کند، به زودی جای خود را به برنامه‌نویسی می‌دهد که از AI استفاده می‌کند。」",
-                "blog.post.quoteAuthor": "- ساندار پیچای، مدیرعامل گوگل",
-                "blog.post.h2.2": "۵ مهارتی که در عصر AI طلایی می‌شوند",
-                "blog.post.skill1.title": "معماری سیستم و حل مسئله",
-                "blog.post.skill1.desc": "– AI کد می‌نویسد ولی ساختار را انسان طراحی می‌کند.",
-                "blog.post.skill2.title": "مهندسی پرامپت (Prompt Engineering)",
-                "blog.post.skill2.desc": "– مهارت ارتباط با مدل‌های زبانی.",
-                "blog.post.skill3.title": "یکپارچه‌سازی APIهای هوشمند",
-                "blog.post.skill3.desc": "– استفاده از سرویس‌های آماده AI.",
-                "blog.post.skill4.title": "تحلیل داده و تصمیم‌گیری",
-                "blog.post.skill4.desc": "– درک خروجی AI برای تصمیمات تجاری.",
-                "blog.post.skill5.title": "یادگیری مادام‌العمر",
-                "blog.post.skill5.desc": "– فناوری هر ۶ ماه تغییر می‌کند.",
-                "blog.post.h2.3": "نقشه راه برنامه‌نویس حرفه‌ای در ۲۰۲۶",
-                "blog.post.p2": "در آکادمی پولاریس، دقیقاً همین مسیر را طراحی کرده‌ایم. از آموزش مبانی برنامه‌نویسی با پایتون تا استفاده حرفه‌ای از AI Copilotها.",
-                "blog.post.highlight.title": "📌 آمار جالب:",
-                "blog.post.highlight.text": "بر اساس گزارش مجمع جهانی اقتصاد، تا سال ۲۰۳۰ حدود ۹۷ میلیون شغل جدید در حوزه فناوری‌های هوشمند ایجاد می‌شود.",
-                "blog.post.h2.4": "کلام آخر: از تهدید تا فرصت",
-                "blog.post.p3": "به جای ترس از AI، آن را به بازوی قدرتمند خود تبدیل کنید. برنامه‌نویسان برتر کسانی هستند که یاد می‌گیرند با هوش مصنوعی همکاری کنند.",
-                "blog.post.cta.text": "آماده‌ای تا یک قدم از بقیه جلوتر باشی؟",
-                "blog.post.cta.btn": "مشاهده دوره‌های تخصصی ←",
-                "blog.post.tags.label": "برچسب‌ها:",
-                "blog.post.author.bio": "Senior Front-End Engineer در گوگل | منتور آکادمی پولاریس با ۱۰ سال سابقه",
-                "blog.sidebar.related": "📚 مقالات مرتبط",
-                "blog.sidebar.link1": "⚡ ۱۰ ابزار هوش مصنوعی برای برنامه‌نویسان حرفه‌ای",
-                "blog.sidebar.link2": "🎯 چگونه با GitHub Copilot سرعت کدنویسی را ۲ برابر کنیم؟",
-                "blog.sidebar.link3": "🧠 مسیر شغلی متخصص AI در ایران و جهان",
-                "blog.sidebar.link4": "📈 پیش‌بینی بازار کار برنامه‌نویسی تا ۲۰۳۰",
-                "blog.sidebar.newsletter.title": "✉️ خبرنامه پولاریس",
-                "blog.sidebar.newsletter.desc": "هر هفته جدیدترین مقالات و ترفندها را دریافت کن.",
-                "blog.sidebar.newsletter.btn": "عضویت"
-            },
-            en: {
-                "nav.home": "Home",
-                "nav.roadmap": "Roadmap",
-                "nav.courses": "Courses",
-                "nav.portfolio": "Portfolio",
-                "nav.mentors": "Mentors",
-                "nav.blog": "Blog",
-                "nav.contact": "Contact",
-                "header.cta": "Free Consultation",
-                "footer.desc": "Commanding next-gen programmers.",
-                "footer.quick": "Quick Access",
-                "footer.links": "Important Links",
-                "footer.social": "Follow Us",
-                "footer.about": "About Us",
-                "footer.careers": "Careers",
-                "footer.copyright": "© 2026 Polaris Academy. With ❤️ for Iran's next-gen programmers.",
-                "blog.category": "🔥 AI & Future Career",
-                "blog.post.title": "The Future of Programming with AI: Threat or Opportunity?",
-                "blog.post.date": "May 15, 2026",
-                "blog.post.author": "Written by: Arash Mohammadi",
-                "blog.post.readTime": "Read time: 7 min",
-                "blog.post.lead": "Will AI replace programmers? This question has been on many developers' minds. In this article from <strong class='gradient-text'>Polaris Academy</strong>, we deeply explore this topic.",
-                "blog.post.h2.1": "The Reality of AI in the Coding World",
-                "blog.post.p1": "Tools like GitHub Copilot, ChatGPT, and Cursor have multiplied development speed. But don't worry! According to the latest Stack Overflow report, 90% of developers use AI as an assistant, not a replacement.",
-                "blog.post.quote": "「The programmer who doesn't use AI will soon be replaced by the programmer who does.」",
-                "blog.post.quoteAuthor": "- Sundar Pichai, CEO of Google",
-                "blog.post.h2.2": "5 Skills That Become Golden in the AI Era",
-                "blog.post.skill1.title": "System Architecture & Problem Solving",
-                "blog.post.skill1.desc": "– AI writes code, but humans design the structure.",
-                "blog.post.skill2.title": "Prompt Engineering",
-                "blog.post.skill2.desc": "– Skill of communicating with language models.",
-                "blog.post.skill3.title": "Smart API Integration",
-                "blog.post.skill3.desc": "– Using ready-made AI services.",
-                "blog.post.skill4.title": "Data Analysis & Decision Making",
-                "blog.post.skill4.desc": "– Understanding AI output for business decisions.",
-                "blog.post.skill5.title": "Lifelong Learning",
-                "blog.post.skill5.desc": "– Technology changes every 6 months.",
-                "blog.post.h2.3": "Professional Programmer Roadmap in 2026",
-                "blog.post.p2": "At Polaris Academy, we have designed exactly this path. From programming fundamentals with Python to professional use of AI Copilots.",
-                "blog.post.highlight.title": "📌 Interesting Stat:",
-                "blog.post.highlight.text": "According to the World Economic Forum, about 97 million new jobs will be created in smart technologies by 2030.",
-                "blog.post.h2.4": "Final Word: From Threat to Opportunity",
-                "blog.post.p3": "Instead of fearing AI, turn it into your powerful ally. Top programmers are those who learn to collaborate with AI, not compete.",
-                "blog.post.cta.text": "Ready to stay one step ahead?",
-                "blog.post.cta.btn": "View Specialized Courses ←",
-                "blog.post.tags.label": "Tags:",
-                "blog.post.author.bio": "Senior Front-End Engineer at Google | Polaris Academy Mentor with 10 years of experience",
-                "blog.sidebar.related": "📚 Related Articles",
-                "blog.sidebar.link1": "⚡ 10 AI Tools for Professional Programmers",
-                "blog.sidebar.link2": "🎯 How to Double Coding Speed with GitHub Copilot",
-                "blog.sidebar.link3": "🧠 AI Specialist Career Path in Iran and the World",
-                "blog.sidebar.link4": "📈 Programming Job Market Forecast until 2030",
-                "blog.sidebar.newsletter.title": "✉️ Polaris Newsletter",
-                "blog.sidebar.newsletter.desc": "Get the latest articles and tips every week.",
-                "blog.sidebar.newsletter.btn": "Subscribe"
-            }
-        };
-
-        // ============================================
-        // توابع اصلی تنظیمات
-        // ============================================
-        function applyTranslations(lang) {
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (blogTranslations[lang] && blogTranslations[lang][key]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        if (el.hasAttribute('placeholder')) {
-                            el.placeholder = blogTranslations[lang][key];
-                        }
-                    } else {
-                        el.innerHTML = blogTranslations[lang][key];
-                    }
-                }
-            });
-        }
-
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                if (btn.getAttribute('data-theme') === theme) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            localStorage.setItem('blog-theme', theme);
-        }
-
-        function setLanguage(lang) {
-            applyTranslations(lang);
-            document.documentElement.setAttribute('lang', lang);
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.getAttribute('data-lang') === lang) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            localStorage.setItem('blog-lang', lang);
-        }
-
-        function setDirection(dir) {
-            document.documentElement.setAttribute('dir', dir);
-            document.body.style.direction = dir;
-            document.querySelectorAll('.dir-btn').forEach(btn => {
-                if (btn.getAttribute('data-dir') === dir) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            localStorage.setItem('blog-dir', dir);
-        }
-
-        // ============================================
-        // Event Listeners
-        // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // بارگذاری تنظیمات ذخیره شده
-            const savedTheme = localStorage.getItem('blog-theme') || 'dark';
-            const savedLang = localStorage.getItem('blog-lang') || 'fa';
-            const savedDir = localStorage.getItem('blog-dir') || 'rtl';
-            
-            setTheme(savedTheme);
-            setLanguage(savedLang);
-            setDirection(savedDir);
-            
-            // دکمه‌های تم
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.addEventListener('click', () => setTheme(btn.getAttribute('data-theme')));
-            });
-            
-            // دکمه‌های زبان
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
-            });
-            
-            // دکمه‌های جهت
-            document.querySelectorAll('.dir-btn').forEach(btn => {
-                btn.addEventListener('click', () => setDirection(btn.getAttribute('data-dir')));
-            });
-            
-            // دکمه ریست
-            const resetBtn = document.getElementById('resetSettingsBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    setTheme('dark');
-                    setLanguage('fa');
-                    setDirection('rtl');
-                });
-            }
-            
-            // اسکرول پروگرس
-            const scrollProgress = document.getElementById('scrollProgress');
-            window.addEventListener('scroll', () => {
-                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const progress = (scrollTop / scrollHeight) * 100;
-                if (scrollProgress) scrollProgress.style.width = progress + '%';
-            });
-            
-            // Preloader
-            const preloader = document.getElementById('preloader');
-            const preloaderProgress = document.querySelector('.preloader-progress');
-            const preloaderPercent = document.querySelector('.preloader-percent');
-            if (preloader) {
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.random() * 15;
-                    if (progress >= 100) {
-                        progress = 100;
-                        clearInterval(interval);
-                        setTimeout(() => preloader.classList.add('hide'), 300);
-                    }
-                    if (preloaderProgress) preloaderProgress.style.width = progress + '%';
-                    if (preloaderPercent) preloaderPercent.textContent = Math.round(progress) + '%';
-                }, 100);
-            }
-            
-            // Custom Cursor
-            const cursor = document.querySelector('.cursor');
-            const follower = document.querySelector('.cursor-follower');
-            if (cursor && follower) {
-                document.addEventListener('mousemove', (e) => {
-                    cursor.style.left = e.clientX + 'px';
-                    cursor.style.top = e.clientY + 'px';
-                    setTimeout(() => {
-                        follower.style.left = e.clientX + 'px';
-                        follower.style.top = e.clientY + 'px';
-                    }, 80);
-                });
-                document.querySelectorAll('a, button, .btn, .post-tags a, .sidebar-widget').forEach(el => {
-                    el.addEventListener('mouseenter', () => {
-                        cursor.style.transform = 'scale(1.5)';
-                        follower.style.transform = 'scale(1.5)';
-                    });
-                    el.addEventListener('mouseleave', () => {
-                        cursor.style.transform = 'scale(1)';
-                        follower.style.transform = 'scale(1)';
-                    });
-                });
-            }
-            
-            // Back to top
-            const backToTop = document.getElementById('backToTop');
-            window.addEventListener('scroll', () => {
-                if (backToTop) backToTop.classList.toggle('show', window.scrollY > 500);
-            });
-            backToTop?.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            // Settings Panel Toggle
-            const settingsPanel = document.getElementById('settingsPanel');
-            const settingsToggle = document.getElementById('settingsToggle');
-            settingsToggle?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                settingsPanel.classList.toggle('open');
-            });
-            document.addEventListener('click', (e) => {
-                if (settingsPanel && settingsToggle && !settingsPanel.contains(e.target) && !settingsToggle.contains(e.target)) {
-                    settingsPanel.classList.remove('open');
-                }
-            });
-            
-            // Mobile Menu
-            const mobileToggle = document.getElementById('mobileToggle');
-            const mobileMenu = document.getElementById('mobileMenu');
-            const mobileClose = document.getElementById('mobileClose');
-            mobileToggle?.addEventListener('click', () => mobileMenu.classList.add('open'));
-            mobileClose?.addEventListener('click', () => mobileMenu.classList.remove('open'));
-            document.querySelectorAll('.mobile-nav a').forEach(link => {
-                link.addEventListener('click', () => mobileMenu.classList.remove('open'));
-            });
-            
-            // Header scroll effect
-            const header = document.getElementById('header');
-            window.addEventListener('scroll', () => {
-                header.classList.toggle('scrolled', window.scrollY > 100);
-            });
-            
-            // Newsletter form
-            const newsletterForm = document.getElementById('sidebarNewsletter');
-            newsletterForm?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = this.querySelector('input').value;
-                const lang = localStorage.getItem('blog-lang') || 'fa';
-                if (email) {
-                    alert(lang === 'fa' ? '✅ با تشکر! ایمیل شما با موفقیت ثبت شد.' : '✅ Thank you! Your email has been successfully registered.');
-                    this.reset();
-                } else {
-                    alert(lang === 'fa' ? 'لطفاً ایمیل خود را وارد کنید.' : 'Please enter your email.');
-                }
-            });
-            
-            // AOS-like fade in
-            const fadeElements = document.querySelectorAll('[data-aos]');
-            const fadeObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                        fadeObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            fadeElements.forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
-                fadeObserver.observe(el);
-            });
-        });
-    </script>
-</body>
-</html>
+        <br>
+        <br>
+{% endblock %}

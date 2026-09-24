@@ -35,6 +35,7 @@ class ArticleTags(BaseModel):
 
     post = models.ForeignKey(Article, related_name="tags", on_delete=models.CASCADE, verbose_name="تگ ها")
     name = models.CharField(max_length=255, verbose_name='عنوان')
+    url = models.URLField(default="#", verbose_name="لینک")
 
     def __str__(self):
         return self.name

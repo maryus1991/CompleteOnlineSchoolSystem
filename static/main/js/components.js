@@ -22,7 +22,7 @@ if (preloader) {
         }
         if (preloaderProgress) preloaderProgress.style.width = progress + '%';
         if (preloaderPercent) preloaderPercent.textContent = toPersianNum(Math.round(progress)) + '%';
-    }, 75);
+    }, 100);
 }
 
 // CUSTOM CURSOR

@@ -74,6 +74,14 @@ class ArticleCategoryListView(ListView):
 class ArticleDetailView(DetailView):
     """detail view for articles"""
 
-    queryset = Article.objects.filter(is_active=True).select_related("category").prefetch_related("tags")
-    template_name = "main/blog/detail.html"
+    queryset = Article.objects.filter(is_active=True).select_related("category", "user").prefetch_related("tags")
+    template_name = "main/blog/details.html"
     context_object_name = "item"
+
+    def get_context_data( self, *args, **kwargs ) :
+        data = super().get_context_data(*args, **kwargs)
+
+        data.update({
+            "related_posts" :  self.object.category.posts.filter(is_active=True).all(),
+        })
+        return data

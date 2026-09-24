@@ -5,6 +5,8 @@ from django.utils.timezone import now
 from datetime import timedelta
 from random import randint
 from phonenumber_field.modelfields import PhoneNumberField
+from apps.common.file_storage_script_for_model import UploadPath
+from django_resized import ResizedImageField
 from .manager import UserManager
 
 class User(AbstractUser):
@@ -27,6 +29,8 @@ class User(AbstractUser):
     otp_expiry_date = models.DateTimeField(null=True, blank=True, verbose_name="تاریخ انقضای ")
     is_verified = models.BooleanField(default=True, verbose_name='تایید شماره همراه')
     login_temp = models.PositiveSmallIntegerField(default=0, verbose_name="دفعات ورود")
+    profile_image = ResizedImageField("عکس", upload_to=UploadPath("users-profile"), null=True, blank=True)
+    biography = models.CharField(max_length=1000, verbose_name='معرفی کوتاه', null=True, blank=True)
 
     USERNAME_FIELD = "PhoneNumber"
     username = None
