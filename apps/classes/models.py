@@ -7,6 +7,7 @@ from apps.common.models import BaseModel
 from apps.common.file_storage_script_for_model import UploadPath
 from django_resized import ResizedImageField
 from django.urls import reverse_lazy
+from django_ckeditor_5.fields import CKEditor5Field
 
 class Class(BaseModel):
     school = models.ForeignKey(School, null=True, blank=True, on_delete=models.CASCADE, related_name='classes', verbose_name="مدرسه")
@@ -24,6 +25,7 @@ class Class(BaseModel):
     first_tag = models.CharField("تگ اول", max_length=50, null=True, blank=True, default="پشتیبانی ۲۴/۷")
     second_tag = models.CharField("تگ دوم", max_length=50, null=True, blank=True, default="گواهی معتبر")
     third_tag = models.CharField("تگ سوم", max_length=50, null=True, blank=True, default="پروژه محور")
+    text = CKEditor5Field("توضیحات", null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse_lazy("class:details", kwargs={'pk': self.pk})
@@ -32,9 +34,12 @@ class Class(BaseModel):
         return self.name
 
     def get_price(self):
+        if self.is_free or self.price <= 0:
+            return 0
         return f"{self.price:,}"
 
     class Meta:
         ordering = ['-pk']
         verbose_name = 'کلاس'
         verbose_name_plural = 'کلاس ها'
+

@@ -5,9 +5,10 @@ from apps.common.models import BaseModel
 
 class Section(BaseModel):
     klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='sections', verbose_name="کلاس")
+    is_publish = models.BooleanField("انتشار", default=False)
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ["-sort_number", 'pk']
         verbose_name = 'جلسه'
         verbose_name_plural = 'جلسه ها'
 
@@ -17,7 +18,7 @@ class ClassArticle(BaseModel):
     content = CKEditor5Field("توضیحات")
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ["-sort_number", 'pk']
         verbose_name = 'مقاله'
         verbose_name_plural = 'مقالات'
 
@@ -28,7 +29,7 @@ class ClassFile(BaseModel):
     content = CKEditor5Field("توضیحات")
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ["-sort_number", 'pk']
         verbose_name = 'فایل کلاس'
         verbose_name_plural = 'فایل های کلاس'
 
@@ -37,7 +38,7 @@ class ClassPractice(BaseModel):
     content = CKEditor5Field("توضیحات")
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ["-sort_number", 'pk']
         verbose_name = 'تمرین'
         verbose_name_plural = 'تمرینات'
 

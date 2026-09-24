@@ -1,184 +1,266 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پولاریس آکادمی | جزئیات دوره</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
-    
-    <link rel="preload" href="assets/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="assets/fonts/Peyda-Bold.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="assets/fonts/Peyda-Medium.woff" as="font" type="font/woff" crossorigin>
-    <link rel="stylesheet" href="assets/fonts/stylesheet.css">
-    
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-    <link rel="stylesheet" href="assets/css/responsive.css">
-    <link rel="stylesheet" href="assets/css/course-single.css">
-</head>
-<body>
+{% extends "main/Base/Base.html" %}
 
-    <div class="scroll-progress" id="scrollProgress"></div>
+{% block header %}
+    <link rel="stylesheet" href="../../../static/main/css/course-single.css">
+    <link rel="stylesheet" href="../../../static/main/css/courses.css">
 
-    <div class="preloader" id="preloader">
-        <div class="preloader-content">
-            <div class="preloader-logo">
-                <svg width="50" height="50" viewBox="0 0 100 100" fill="none">
-                    <defs><linearGradient id="plGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="50%" stop-color="#4facfe"/><stop offset="100%" stop-color="#f093fb"/></linearGradient></defs>
-                    <circle cx="50" cy="50" r="46" stroke="url(#plGrad)" stroke-width="3" fill="none" stroke-dasharray="289"><animate attributeName="stroke-dashoffset" from="289" to="0" dur="2s" fill="freeze"/></circle>
-                    <circle cx="50" cy="50" r="14" fill="url(#plGrad)"><animate attributeName="r" values="10;16;10" dur="2s" repeatCount="indefinite"/></circle>
-                </svg>
-                <span class="gradient-text">پولاریس</span>
-            </div>
-            <div class="preloader-bar"><div class="preloader-progress"></div></div>
-            <div class="preloader-percent">۰٪</div>
-        </div>
-    </div>
+ {% endblock %}
 
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
+{% block main %}
+<style>
+    .course-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
-    <header class="header" id="header">
+.course-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* موبایل */
+@media (max-width: 576px) {
+    .course-actions {
+        width: 100%;
+        display: flex;
+    }
+
+    .course-action-btn {
+        flex: 1;
+        min-width: 0;
+    }
+    .course-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+}
+    .course-card {
+    height: 100%;
+}
+
+.course-image {
+    aspect-ratio: 16 / 9;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+</style>
+<main class="course-single-page" id="courseSinglePage">
         <div class="container">
-            <div class="header-inner">
-                <a href="index.html" class="logo">
-                    <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
-                        <defs><linearGradient id="hdGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
-                        <circle cx="50" cy="50" r="46" stroke="url(#hdGrad)" stroke-width="4" fill="none"/>
-                        <circle cx="50" cy="50" r="14" fill="url(#hdGrad)"/>
-                    </svg>
-                    <span class="logo-gradient">پولاریس</span><span class="logo-text">آکادمی</span>
-                </a>
-                <nav class="nav" id="mainNav">
-                    <ul class="nav-list">
-                        <li><a href="index.html#home" class="nav-link">خانه</a></li>
-                        <li><a href="index.html#roadmap" class="nav-link">مسیر یادگیری</a></li>
-                        <li><a href="courses.html" class="nav-link">دوره‌ها</a></li>
-                        <li><a href="index.html#portfolio" class="nav-link">نمونه‌کارها</a></li>
-                        <li><a href="index.html#stats" class="nav-link">دستاوردها</a></li>
-                        <li><a href="index.html#mentors" class="nav-link">منتورها</a></li>
-                        <li><a href="index.html#blog" class="nav-link">وبلاگ</a></li>
-                        <li><a href="index.html#events" class="nav-link">رویدادها</a></li>
-                        <li><a href="index.html#testimonials" class="nav-link">نظرات</a></li>
-                        <li><a href="index.html#faq" class="nav-link">سوالات</a></li>
-                        <li><a href="index.html#contact" class="nav-link">تماس</a></li>
-                    </ul>
-                </nav>
-                <div class="header-actions">
-                    <a href="./auth.html" class="header-icon-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span class="header-icon-label">حساب</span>
-                    </a>
-                    <a href="cart.html" class="header-icon-btn cart-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                        <span class="header-icon-label">سبد خرید</span>
-                        <span class="cart-badge" id="cartCountBadge" style="display: none;">0</span>
-                    </a>
-                    <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+            <div id="courseContent">
+        <div class="course-hero">
+            <div class="course-hero-info">
+                <h1>{{object.name}}</h1>
+                <div class="course-meta-list">
+                    <div class="meta-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>{{object.section_count}} جلسه</span>
+                    </div>
+                    <div class="meta-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                        <span>{{object.lesson.name}} {{object.grade.name}}  {{object.major.name}}</span>
+                    </div>
+                    <div class="meta-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>{{object.student_count}} دانشجو</span>
+                    </div>
+                    <div class="meta-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>آخرین بروزرسانی: {{object.updated_at.year}}/{{object.updated_at.month}}/{{object.updated_at.day}}</span>
+                    </div>
+                </div>
+                {% if object.get_price > 0 %}
+                <div class="course-price-large">{{object.get_price}} تومان</div>
+                {% else %}
+                <div class="course-price-large">رایگان</div>
+
+                {% endif %}
+                <p class="course-description">
+                {{object.summery}}
+                </p>
+                <p class="course-description">
+                {{object.text}}
+                </p>
+
+
+
+                <div class="course-features">
+
+                    <div class="feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22 6 12 13 2 6"></polyline></svg>
+                        <span>
+                            {{object.first_tag}}
+                        </span>
+                    </div>
+                    <div class="feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                        <span>
+                            {{object.second_tag}}
+                        </span>
+                    </div>
+                    <div class="feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        <span>
+                            {{object.third_tag}}
+                        </span>
+                    </div>
                 </div>
             </div>
+
+            <div class="course-sidebar-card">
+                <img src="{{object.image.url}}" alt="{{object.name}}" >
+                {% if object.get_price > 0 %}
+                <div class="course-price">{{object.get_price}} تومان</div>
+                {% else %}
+                <div class="course-price">رایگان</div>
+
+                {% endif %}
+<!--                todo: fix the dashboard and add course-->
+                {% if object.is_student %}
+                    <button class="btn btn-outline" disabled="" style="opacity:0.6;">✓ قبلاً ثبت‌نام کرده‌اید</button>
+                    <a href="dashboard.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">رفتن به داشبورد</a>
+                {% else %}
+                    <a href="dashboard.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">شرکت در دوره</a>
+                <div class="secure-badge" style="margin-top: 20px; font-size:0.7rem; color:var(--text-muted); text-align:center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                    <span>پرداخت امن و رمزنگاری شده</span>
+                </div>
+                {% endif %}
+
+
+            </div>
         </div>
-    </header>
 
-    <div class="mobile-menu" id="mobileMenu">
-        <button class="mobile-close" id="mobileClose">✕</button>
-        <ul class="mobile-nav">
-            <li><a href="index.html#home">خانه</a></li>
-            <li><a href="index.html#roadmap">مسیر یادگیری</a></li>
-            <li><a href="courses.html">دوره‌ها</a></li>
-            <li><a href="index.html#portfolio">نمونه‌کارها</a></li>
-            <li><a href="index.html#stats">دستاوردها</a></li>
-            <li><a href="index.html#mentors">منتورها</a></li>
-            <li><a href="index.html#blog">وبلاگ</a></li>
-            <li><a href="index.html#events">رویدادها</a></li>
-            <li><a href="index.html#testimonials">نظرات</a></li>
-            <li><a href="index.html#faq">سوالات</a></li>
-            <li><a href="index.html#contact">تماس</a></li>
-        </ul>
+        <div class="curriculum-section">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                سرفصل‌های دوره
+            </h2>
+
+                {% for section in sections %}
+                <div class="curriculum-item">
+                    <div class="curriculum-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>جلسه {{forloop.counter}}: مقدمه‌ای بر دنیای وب و اینترنت</span>
+                    </div>
+                </div>
+                {% empty %}
+                            <div class="curriculum-item">
+                    <div class="curriculum-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>هنوز جلسه ای برای این کلاس تعریف یا منتشر نشده است</span>
+                    </div>
+                </div>
+            {% endfor %}
+
+
+
+        </div>
+
+        <div class="instructor-section">
+            <img src="{{object.teacher.user.profile_image.url}}" alt="{{object.teacher.user.get_full_name}}" class="instructor-avatar" >
+            <div class="instructor-info">
+                <h2>{{object.teacher.user.get_full_name}}</h2>
+                <p>{{object.teacher.user.biography}}</p>
+            </div>
+        </div>
+<br>
+<br>
+
+        <div class="courses-grid" id="coursesContainer">
+
+            {% for item in related %}
+                <div class="course-card" >
+                <div class="course-image">
+                    <img src="{{item.image.url}}" alt="بوت‌کمپ جامع فرانت‌اند" >
+                    <div class="course-badge">{{item.lesson.name}} {{item.grade.name}}  {{item.major.name}}</div>
+                    {% if item.is_student %}
+                    <div class="course-badge enrolled-badge" style="background: linear-gradient(135deg, #10b981, #059669); right: auto; left: 15px;">✓ ثبت‌نام شده</div>
+                    {% endif %}
+                </div>
+                <div class="course-content">
+                    <div class="course-meta">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {{ item.section_count }} جلسه
+                        </span>
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            {{item.student_count}} شرکت کننده
+                        </span>
+                    </div>
+                    <h3 class="course-title">{{item.name}}</h3>
+                    <p class="course-desc">{{item.summery}}</p>
+                    <div class="course-features">
+                        <span class="feature-tag">{{item.first_tag}}</span><span class="feature-tag">{{item.second_tag}}</span><span class="feature-tag">{{item.third_tag}}</span>
+                    </div>
+                   <div class="course-footer">
+    {% if item.is_free or item.price <= 0 %}
+        <span class="course-price">رایگان</span>
+    {% else %}
+        <span class="course-price"> {{item.get_price}}   تومان </span>
+    {% endif %}
+
+    <div class="course-actions">
+        <a href="{{ item.get_absolute_url }}"
+           title="جزئیات"
+           class="btn btn-outline btn-sm course-action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            جزئیات
+        </a>
+
+        {% if item.is_student %}
+            <button class="btn btn-outline btn-sm course-action-btn enrolled-btn"
+                    disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                ثبت‌نام شده
+            </button>
+        {% endif %}
     </div>
+</div>
+                </div>
+            </div>
 
-    <main class="course-single-page" id="courseSinglePage">
-        <div class="container">
-            <div id="courseContent"></div>
+            {% endfor %}
+
+        </div>
+        </div>
         </div>
     </main>
+ {% endblock %}
 
-    <footer class="footer">
-        <div class="footer-top"><div class="container"><div class="footer-grid">
-            <div class="footer-col footer-brand">
-                <a href="index.html" class="footer-logo"><svg width="40" height="40" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="ftGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs><circle cx="50" cy="50" r="46" stroke="url(#ftGrad)" stroke-width="4" fill="none"/><circle cx="50" cy="50" r="14" fill="url(#ftGrad)"/></svg><span>پولاریس <strong>آکادمی</strong></span></a>
-                <p>فرماندهی نسل بعدی برنامه‌نویسان.</p>
-            </div>
-            <div class="footer-col"><h4>دسترسی سریع</h4><ul><li><a href="index.html#home">خانه</a></li><li><a href="courses.html">دوره‌ها</a></li><li><a href="dashboard.html">حساب کاربری</a></li><li><a href="cart.html">سبد خرید</a></li></ul></div>
-            <div class="footer-col"><h4>لینک‌های مهم</h4><ul><li><a href="#">درباره ما</a></li><li><a href="#">فرصت‌های شغلی</a></li><li><a href="#">سوالات متداول</a></li></ul></div>
-            <div class="footer-col"><h4>همراه ما باشید</h4><div class="footer-social"><a href="#">📷</a><a href="#">💼</a><a href="#">🐦</a></div>
-            <div class="footer-newsletter"><h5>عضویت در خبرنامه</h5><form class="newsletter-form"><input type="email" placeholder="ایمیل خود را وارد کنید"><button type="submit">📧</button></form></div></div>
-        </div></div></div>
-        <div class="footer-bottom"><div class="container"><div class="footer-bottom-content"><p>© ۲۰۲۶ آکادمی پولاریس. با ❤️ برای نسل بعدی برنامه‌نویسان ایران.</p><div class="footer-bottom-links"><a href="#">قوانین</a><a href="#">حریم خصوصی</a></div></div></div></div>
-    </footer>
 
-    <script src="assets/js/course-single.js"></script>
-    <script src="assets/js/theme-switcher.js"></script>
-    <script src="assets/js/navigation.js"></script>
-    <script src="assets/js/components.js"></script>
-    <script src="assets/js/cart.js"></script>
-    
-    <script>
-        // Preloader
-        const preloader = document.getElementById('preloader');
-        const preloaderProgress = document.querySelector('.preloader-progress');
-        const preloaderPercent = document.querySelector('.preloader-percent');
-        if (preloader) {
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(() => preloader.classList.add('hide'), 300); }
-                if (preloaderProgress) preloaderProgress.style.width = progress + '%';
-                if (preloaderPercent) preloaderPercent.textContent = Math.round(progress) + '%';
-            }, 100);
-        }
-        
-        // Scroll Progress
-        const scrollProgress = document.getElementById('scrollProgress');
-        window.addEventListener('scroll', () => {
-            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const progress = (scrollTop / scrollHeight) * 100;
-            if (scrollProgress) scrollProgress.style.width = progress + '%';
-        });
-        
-        // Back to Top
-        const backToTop = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => { if (backToTop) backToTop.classList.toggle('show', window.scrollY > 500); });
-        backToTop?.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-        
-        // Mobile Menu
-        const mobileToggle = document.getElementById('mobileToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const mobileClose = document.getElementById('mobileClose');
-        mobileToggle?.addEventListener('click', () => mobileMenu.classList.add('open'));
-        mobileClose?.addEventListener('click', () => mobileMenu.classList.remove('open'));
-        document.querySelectorAll('.mobile-nav a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.remove('open')); });
-        
-        // Header Scroll Effect
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 100); });
-        
-        // Custom Cursor
-        const cursor = document.querySelector('.cursor');
-        const follower = document.querySelector('.cursor-follower');
-        if (cursor && follower) {
-            document.addEventListener('mousemove', (e) => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-                setTimeout(() => { follower.style.left = e.clientX + 'px'; follower.style.top = e.clientY + 'px'; }, 80);
-            });
-            document.querySelectorAll('a, button, .btn, .cart-item-remove, .submit-btn, .payment-card').forEach(el => {
-                el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(1.5)'; follower.style.transform = 'scale(1.5)'; });
-                el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; follower.style.transform = 'scale(1)'; });
-            });
-        }
-    </script>
-</body>
-</html>
+
+
