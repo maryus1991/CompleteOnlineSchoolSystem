@@ -3,9 +3,17 @@ from apps.classes.models import Class
 from django_ckeditor_5.fields import CKEditor5Field
 from apps.common.models import BaseModel
 
+class Section(BaseModel):
+    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='sections', verbose_name="کلاس")
+
+    class Meta:
+        ordering = ['-pk']
+        verbose_name = 'جلسه'
+        verbose_name_plural = 'جلسه ها'
+
 
 class ClassArticle(BaseModel):
-    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='article', verbose_name="کلاس")
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='article', verbose_name="مقاله")
     content = CKEditor5Field("توضیحات")
 
     class Meta:
@@ -15,7 +23,7 @@ class ClassArticle(BaseModel):
 
 
 class ClassFile(BaseModel):
-    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='file', verbose_name="کلاس")
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='file', verbose_name="فایل")
     file = models.FileField("فایل")
     content = CKEditor5Field("توضیحات")
 
@@ -25,7 +33,7 @@ class ClassFile(BaseModel):
         verbose_name_plural = 'فایل های کلاس'
 
 class ClassPractice(BaseModel):
-    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='practice', verbose_name="تمرین")
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='practice', verbose_name="تمرین")
     content = CKEditor5Field("توضیحات")
 
     class Meta:

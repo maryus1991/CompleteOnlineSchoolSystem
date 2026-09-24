@@ -8,7 +8,7 @@ class UploadPath:
     def __call__(self, instance, filename):
         date = timezone.now()
 
-        return f"{self.folder}/{date:%Y/%m/%d}/{filename}"
+        return f"{self.folder}/{date:%Y/%m/%d/%H/%M}/{filename}"
 
     def deconstruct(self):
         return (

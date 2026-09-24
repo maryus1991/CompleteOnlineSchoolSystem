@@ -2,15 +2,15 @@
 from apps.common.models import BaseModel
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
-from django.utils.crypto import get_random_string
 from apps.categories.models import GradeCategories, MajorCategories, LessonCategories
 from apps.users.teachers.models import Teacher
 from apps.users.students.models import Student
 from apps.exams.models import Exam
 from apps.content.models import ClassPractice
+from apps.common.file_storage_script_for_model import UploadPath
 
-def photo_path_upload_to(instance, filename):
-    return f"questions/{get_random_string(100)}-{filename}"
+
+def photo_path_upload_to(*args, **kwargs): return ""
 
 class Question(BaseModel):
 
@@ -22,8 +22,8 @@ class Question(BaseModel):
         PDF_BASED = 'سوال از فایل PDF', 'سوال از فایل PDF'
 
     description = CKEditor5Field(blank=True, null=True, verbose_name='متن سوال')
-    image = models.ImageField(upload_to=photo_path_upload_to, blank=True, null=True, verbose_name='تصویر سوال')
-    pdf_file = models.FileField(upload_to=photo_path_upload_to, blank=True, null=True, verbose_name='فایل PDF سوال')
+    image = models.ImageField(upload_to=UploadPath("questions"), blank=True, null=True, verbose_name='تصویر سوال')
+    pdf_file = models.FileField(upload_to=UploadPath("questions"), blank=True, null=True, verbose_name='فایل PDF سوال')
     name = models.CharField(max_length=255, verbose_name='عنوان سوال')
     type_of_question = models.CharField(max_length=100, choices=TypeOfQuestions.choices, verbose_name='نوع سوال')
     score = models.FloatField(default=1, verbose_name='حداکثر نمره سوال')
@@ -58,9 +58,6 @@ class QuestionOption(BaseModel):
         return f"{self.question.name} - {self.text}"
 
 
-def photo_path_upload_to(instance, filename):
-    return f"questions/key/{get_random_string(100)}-{filename}"
-
 class QuestionAnswerKey(BaseModel):
     class TypeOfAnswer(models.TextChoices):
         TEXT_BASED = 'پاسخ تشریحی', 'پاسخ تشریحی'
@@ -70,8 +67,8 @@ class QuestionAnswerKey(BaseModel):
     question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='answer_key', verbose_name='سوال')
     type_of_answer = models.CharField(max_length=50, choices=TypeOfAnswer.choices, verbose_name='نوع پاسخ صحیح')
     description = CKEditor5Field(blank=True, null=True, verbose_name='متن پاسخ')
-    image = models.ImageField(upload_to=photo_path_upload_to, blank=True, null=True, verbose_name='تصویر پاسخ')
-    pdf_file = models.FileField(upload_to=photo_path_upload_to, blank=True, null=True, verbose_name='فایل PDF پاسخ')
+    image = models.ImageField(upload_to=UploadPath("questions/key/"), blank=True, null=True, verbose_name='تصویر پاسخ')
+    pdf_file = models.FileField(upload_to=UploadPath("questions/key/"), blank=True, null=True, verbose_name='فایل PDF پاسخ')
 
     class Meta:
         verbose_name = 'پاسخ صحیح (ادمین)'
@@ -79,10 +76,6 @@ class QuestionAnswerKey(BaseModel):
 
     def __str__(self):
         return f"کلید سوال  - {self.question.name}"
-
-
-def photo_path_upload_to(instance, filename):
-    return f"questions/{get_random_string(100)}-{filename}"
 
 
 class StudentAnswer(BaseModel):
@@ -103,8 +96,8 @@ class StudentAnswer(BaseModel):
         NOT_ANSWERED = 'جواب داده نشده', 'جواب داده نشده'
 
     type_of_answer = models.CharField(max_length=50, choices=TypeOfAnswer.choices, verbose_name='نوع پاسخ', default=TypeOfAnswer.NOT_ANSWERED)
-    image = models.ImageField(upload_to=photo_path_upload_to, blank=True, null=True, verbose_name='تصویر پاسخ')
-    pdf_file = models.FileField(upload_to=photo_path_upload_to, blank=True, null=True, verbose_name='فایل PDF پاسخ')
+    image = models.ImageField(upload_to=UploadPath("student-answers"), blank=True, null=True, verbose_name='تصویر پاسخ')
+    pdf_file = models.FileField(upload_to=UploadPath("student-answers"), blank=True, null=True, verbose_name='فایل PDF پاسخ')
     selected_option = models.ForeignKey(QuestionOption, on_delete=models.SET_NULL, null=True, blank=True,verbose_name='گزینه انتخاب‌شده')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='student_answers', null=True,blank=True, verbose_name='سوال')
     description = models.TextField(blank=True, null=True, verbose_name='متن پاسخ')
