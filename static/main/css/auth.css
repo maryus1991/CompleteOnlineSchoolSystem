@@ -6,16 +6,19 @@
     padding: 140px 0 80px;
     min-height: 100vh;
     background: var(--bg-primary);
+    justify-content: center;
+    align-items: center;
 }
+
 
 .auth-split-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
+
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 50px;
-    align-items: center;
 }
 
 /* سمت چپ */
@@ -69,13 +72,23 @@
     margin: 20px auto 0;
 }
 
-/* سمت راست */
+
 .auth-split-right {
+    grid-column: 1 / -1;
+    justify-self: center;
+
+    width: 100%;
+    max-width: 600px;
+
     background: var(--bg-card);
     border-radius: 32px;
     padding: 40px;
     border: 1px solid var(--border-color);
     box-shadow: var(--card-shadow);
+}
+.auth-card{
+    justify-items: center;
+    align-items: center;
 }
 
 .auth-logo-small {
