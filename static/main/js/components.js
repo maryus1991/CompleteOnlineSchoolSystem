@@ -138,14 +138,6 @@ document.querySelectorAll('.faq-question').forEach(button => {
     });
 });
 
-// FORM SUBMIT
-document.getElementById('contactForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const lang = localStorage.getItem('lang') || 'fa';
-    alert(lang === 'fa' ? '🚀 پیام شما با موفقیت ارسال شد! به زودی با شما تماس می‌گیریم.' : '🚀 Your message has been sent! We will contact you soon.');
-    this.reset();
-});
-
 // PARALLAX
 window.addEventListener('mousemove', (e) => {
     const moveX = (e.clientX - window.innerWidth / 2) * 0.01;

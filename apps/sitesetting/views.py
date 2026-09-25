@@ -7,11 +7,34 @@ from django.contrib import messages
 from apps.sitesetting.forms import ContactForm, CounselingForm
 from django.urls import reverse_lazy
 
-from apps.sitesetting.models import FAQ
+from apps.sitesetting.models import FAQ, TimeLine, TestMonomials
+
 
 
 class Main(TemplateView):
     template_name = 'main/index.html'
+
+class About(TemplateView):
+    template_name = 'main/site/about.html'
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:
+        if not request.site.about_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs: Any) -> dict:
+        data = super().get_context_data(**kwargs)
+
+        data.update(
+            {
+                "timeline": TimeLine.objects.filter(is_active=True).all(),
+                "testimonials": TestMonomials.objects.filter(is_active=True).all(),
+            }
+        )
+
+        return data
 
 class FAQListView(ListView):
     """for list faqs"""

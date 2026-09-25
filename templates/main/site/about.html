@@ -1,28 +1,63 @@
-        <!-- ROADMAP SECTION -->
+{% extends 'main/Base/Base.html' %}
+
+{% block main %}
         <section class="roadmap" id="roadmap">
             <div class="container">
-                <div class="section-header"><span class="section-subtitle" data-i18n="roadmap.subtitle">مسیر یادگیری</span><h2 class="section-title" data-i18n="roadmap.title">نقشه راه حرفه‌ای شدن</h2><p class="section-desc" data-i18n="roadmap.desc">مسیری که ما طراحی کردیم، شما را از نقطه صفر به استخدام می‌رساند.</p></div>
+                <div class="section-header">
+                    <span class="section-subtitle" data-i18n="roadmap.subtitle">{{request.site.about_above_tag}}</span>
+                    <h1 class="section-title" data-i18n="roadmap.title">{{request.site.about_title}}</h1>
+
+                </div>
                 <div class="roadmap-timeline">
                     <div class="roadmap-line"></div>
-                    <div class="roadmap-step right"><div class="step-marker">۱</div><div class="step-card"><div class="step-icon-wrap"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div><h3 data-i18n="roadmap.step1.title">مبانی برنامه‌نویسی</h3><p data-i18n="roadmap.step1.desc">مفاهیم پایه، منطق برنامه‌نویسی و حل مسئله. Python اولین زبان شماست.</p><span class="step-duration">۴ هفته</span></div></div>
-                    <div class="roadmap-step left"><div class="step-marker">۲</div><div class="step-card"><div class="step-icon-wrap"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div><h3 data-i18n="roadmap.step2.title">توسعه فرانت‌اند</h3><p data-i18n="roadmap.step2.desc">HTML، CSS، JavaScript مدرن و React.js با پروژه‌های واقعی.</p><span class="step-duration">۸ هفته</span></div></div>
-                    <div class="roadmap-step right"><div class="step-marker">۳</div><div class="step-card"><div class="step-icon-wrap"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div><h3 data-i18n="roadmap.step3.title">توسعه بک‌اند</h3><p data-i18n="roadmap.step3.desc">Node.js، Express، RESTful و GraphQL با MongoDB و PostgreSQL.</p><span class="step-duration">۸ هفته</span></div></div>
-                    <div class="roadmap-step left"><div class="step-marker">۴</div><div class="step-card"><div class="step-icon-wrap"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 15h18M5 9h14M8 3L6 6M16 3l2 3M9 21h6M12 3v18"></path></svg></div><h3 data-i18n="roadmap.step4.title">دواپس و امنیت</h3><p data-i18n="roadmap.step4.desc">Docker، Kubernetes، CI/CD و امنیت برنامه‌های وب.</p><span class="step-duration">۴ هفته</span></div></div>
-                    <div class="roadmap-step right"><div class="step-marker">۵</div><div class="step-card"><div class="step-icon-wrap"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><h3 data-i18n="roadmap.step5.title">پروژه نهایی و بازار کار</h3><p data-i18n="roadmap.step5.desc">ساخت پروژه فول‌استک، رزومه و آمادگی مصاحبه.</p><span class="step-duration">۴ هفته</span></div></div>
+
+                    {% for item in timeline %}
+                    <div class="roadmap-step {% cycle 'right' 'left' %} ">
+                        <div class="step-marker">{{forloop.counter}}</div>
+                        <div class="step-card">
+                            <div class="step-icon-wrap">
+                                {{ item.svq|safe }}
+
+                            </div>
+                            <h2 data-i18n="roadmap.step1.title">
+                                {{item.name}}
+                            </h2>
+                            <p data-i18n="roadmap.step1.desc">
+                                {{item.description}}
+                            </p>
+
+                        </div>
+                    </div>
+                    {% endfor %}
+
+
+                </div>
+                <br>
+                <br>
+                <div class="post-content">
+
+                    {{request.site.description|safe}}
+
+                </div>
+                <br>
+                <br>
+                <div class="container">
+                    <div class="testimonials-grid">
+                        {% for item in testimonials %}
+                        <div class="testimonial-card">
+                            <p data-i18n="testimonials.1.text">{{item.text}}</p>
+                            <div class="testimonial-author">
+                                <img src="{{item.image.url}}" alt="{{item.name}}">
+                                <div>
+                                    <strong data-i18n="testimonials.1.name">{{item.name}}</strong>
+                                    <span data-i18n="testimonials.1.role">{{item.behave}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </section>
 
-
-
-        <!-- TESTIMONIALS SECTION -->
-        <section class="testimonials" id="testimonials">
-            <div class="container">
-                <div class="section-header"><span class="section-subtitle" data-i18n="testimonials.subtitle">نظرات دانشجویان</span><h2 class="section-title" data-i18n="testimonials.title">داستان موفقیت‌ها</h2></div>
-                <div class="testimonials-grid">
-                    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p data-i18n="testimonials.1.text">"پولاریس مسیر زندگی من رو تغییر داد."</p><div class="testimonial-author"><img src="../../static/main/image/user5.jpg" alt="نگین محمدی"><div><strong data-i18n="testimonials.1.name">نگین محمدی</strong><span data-i18n="testimonials.1.role">Front-End در دیجی‌کالا</span></div></div></div>
-                    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p data-i18n="testimonials.2.text">"بهترین سرمایه‌گذاری عمرم."</p><div class="testimonial-author"><img src="../../static/main/image/user3.jpg" alt="سامان راد"><div><strong data-i18n="testimonials.2.name">سامان راد</strong><span data-i18n="testimonials.2.role">Back-End در علی‌بابا</span></div></div></div>
-                    <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p data-i18n="testimonials.3.text">"کیفیت آموزش‌ها واقعاً بالاست."</p><div class="testimonial-author"><img src="../../static/main/image/user6.jpg" alt="آیدا نظری"><div><strong data-i18n="testimonials.3.name">آیدا نظری</strong><span data-i18n="testimonials.3.role">Full-Stack در کافه‌بازار</span></div></div></div>
-                </div>
-            </div>
-        </section>
+{% endblock %}

@@ -128,7 +128,7 @@
 .faq-question svg{flex-shrink:0;transition:transform 0.4s}
 .faq-item.active .faq-question svg{transform:rotate(180deg)}
 .faq-answer{max-height:0;overflow:hidden;transition:max-height 0.5s,padding 0.5s}
-.faq-item.active .faq-answer{max-height:300px;padding:0 25px 25px}
+.faq-item.active .faq-answer{max-height:100%;padding:0 25px 25px}
 .faq-answer p{color:var(--text-secondary);line-height:1.9}
 
 .contact{background:var(--bg-secondary)}

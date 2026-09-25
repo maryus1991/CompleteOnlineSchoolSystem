@@ -2,9 +2,13 @@ from django.db import models
 from apps.common.models import BaseModel
 from phonenumber_field.modelfields import PhoneNumberField
 from django_ckeditor_5.fields import CKEditor5Field
+from apps.common.file_storage_script_for_model import UploadPath
+from django_resized import ResizedImageField
+
 
 class Site(BaseModel):
     name = models.CharField("نام سایت", max_length=100, default='بنیاد اموزشی فراسو')
+    description = CKEditor5Field("توضیحات", default="")
 
     list_articles_above_tag = models.CharField("تگ لیست مقالات", max_length=100, default=" مقالات آموزشی ")
     list_articles_title = models.CharField("عنوان لیست مقالات", max_length=100, default=" مقالات امورشی فراسو")
@@ -42,6 +46,10 @@ class Site(BaseModel):
     faq_description = models.CharField("توضیحات پرسش پاسخ", max_length=500, default="پاسخ به سوالات متداول")
     faq_active = models.BooleanField("فعال صفحه پرسش پاسخ", default=True)
 
+    about_above_tag = models.CharField("تگ درباره ما", max_length=100, default="با ما اشنا شوید")
+    about_title = models.CharField("عنوان درباره ما", max_length=100, default="درباره ما")
+    about_active = models.BooleanField("فعال صفحه درباره ما", default=True)
+
 
     def __str__(self):
         return self.name
@@ -51,6 +59,40 @@ class Site(BaseModel):
         verbose_name = 'تنظیمات'
         verbose_name_plural = 'تنظیمات'
 
+
+class TestMonomials(BaseModel):
+
+    name = models.CharField("نام", max_length=255)
+    text = models.CharField("توضیحات", max_length=255)
+    image = ResizedImageField("عکس", upload_to=UploadPath("test-monomials"))
+    behave = models.CharField("سابقه", max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["-sort_number", '-pk']
+        verbose_name = 'نظر'
+        verbose_name_plural = 'نظرات'
+
+
+class TimeLine(BaseModel):
+    svq=models.TextField("svg ایکون", default="""
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+    """)
+    name=models.CharField("نام", max_length=255)
+    description=models.CharField("توضیحات", max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["-sort_number", 'pk']
+        verbose_name = 'تایم لاین'
+        verbose_name_plural = 'تایم لاین ها'
 
 class Contact(BaseModel):
     full_name = models.CharField("نام", max_length=250)
