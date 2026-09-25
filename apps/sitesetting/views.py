@@ -2,13 +2,29 @@ from typing import Any
 
 from django.http import HttpRequest, HttpResponseBase
 from django.shortcuts import redirect
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, ListView
 from django.contrib import messages
 from apps.sitesetting.forms import ContactForm, CounselingForm
 from django.urls import reverse_lazy
 
+from apps.sitesetting.models import FAQ
+
+
 class Main(TemplateView):
     template_name = 'main/index.html'
+
+class FAQListView(ListView):
+    """for list faqs"""
+
+    template_name = 'main/site/faq.html'
+    queryset = FAQ.objects.filter(is_active=True).all()
+    context_object_name = 'items'
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:
+        if not request.site.faq_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
 
 class Contact(CreateView):
     template_name = 'main/site/contact.html'
@@ -32,7 +48,7 @@ class Contact(CreateView):
 class Counseling(CreateView):
     template_name = 'main/site/free-counseling.html'
     form_class = CounselingForm
-    success_url = reverse_lazy('site:contact')
+    success_url = reverse_lazy('site:counseling')
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:
         if not request.site.active_counseling:

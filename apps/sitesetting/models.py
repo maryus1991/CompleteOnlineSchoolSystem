@@ -1,6 +1,7 @@
 from django.db import models
 from apps.common.models import BaseModel
 from phonenumber_field.modelfields import PhoneNumberField
+from django_ckeditor_5.fields import CKEditor5Field
 
 class Site(BaseModel):
     name = models.CharField("نام سایت", max_length=100, default='بنیاد اموزشی فراسو')
@@ -35,6 +36,11 @@ class Site(BaseModel):
     phone_number_counseling = PhoneNumberField("شماره تماس صفحه صفحه مشاوره رایگان", default="09373061991")
     email_counseling = models.EmailField("ایمیل صفحه صفحه مشاوره رایگان", default="maryus19915123@gmail.com")
     active_counseling = models.BooleanField("فعال صفحه مشاوره رایگان", default=True)
+
+    faq_above_tag = models.CharField("تگ پرسش پاسخ", max_length=100, default="سوالی داری؟ ")
+    faq_title = models.CharField("عنوان پرسش پاسخ", max_length=100, default=" سوالات متداول")
+    faq_description = models.CharField("توضیحات پرسش پاسخ", max_length=500, default="پاسخ به سوالات متداول")
+    faq_active = models.BooleanField("فعال صفحه پرسش پاسخ", default=True)
 
 
     def __str__(self):
@@ -78,3 +84,13 @@ class Counseling(BaseModel):
         verbose_name_plural = 'درخواست های مشاوره'
 
 
+class FAQ(BaseModel):
+    question =  models.CharField("سوال", max_length=500)
+    answer = CKEditor5Field("پاسخ")
+    class Meta:
+        ordering = ["-sort_number", '-pk']
+        verbose_name = 'سوال متداول'
+        verbose_name_plural = 'سوالات متداول'
+
+    def __str__(self):
+        return self.question

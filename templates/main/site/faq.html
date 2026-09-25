@@ -1,12 +1,31 @@
-        <!-- FAQ SECTION -->
+ {% extends "main/Base/Base.html" %}
+
+{% block main %}
         <section class="faq" id="faq">
             <div class="container">
-                <div class="section-header"><span class="section-subtitle" data-i18n="faq.subtitle">سوالات متداول</span><h2 class="section-title" data-i18n="faq.title">سوالی داری؟</h2></div>
+                <div class="section-header">
+                    <span class="section-subtitle" data-i18n="faq.subtitle">{{site.faq_above_tag}}</span>
+                    <h1 class="section-title" data-i18n="faq.title">{{site.faq_title}}</h1>
+                    <p class="contact-desc" data-i18n="contact.desc">{{site.faq_description}}</p>
+
+                </div>
                 <div class="faq-list">
-                    <div class="faq-item"><button class="faq-question"><span data-i18n="faq.q1">پیش‌نیاز دوره‌ها چیست؟</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="faq-answer"><p data-i18n="faq.a1">هیچ پیش‌نیازی نیاز نیست! فقط یک کامپیوتر و انگیزه.</p></div></div>
-                    <div class="faq-item"><button class="faq-question"><span data-i18n="faq.q2">آیا وارد بازار کار می‌شوم؟</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="faq-answer"><p data-i18n="faq.a2">بله، دوره‌ها کاملاً پروژه‌محور و منطبق با نیاز بازارند.</p></div></div>
-                    <div class="faq-item"><button class="faq-question"><span data-i18n="faq.q3">شرایط پرداخت؟</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="faq-answer"><p data-i18n="faq.a3">پرداخت اقساطی و تخفیف‌های ویژه.</p></div></div>
-                    <div class="faq-item"><button class="faq-question"><span data-i18n="faq.q4">مدرک می‌دهید؟</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="faq-answer"><p data-i18n="faq.a4">بله، گواهی معتبر از آکادمی پولاریس.</p></div></div>
+
+                    {% for item in items %}
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span data-i18n="faq.q{{item.id}}">{{item.question}}</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div data-i18n="faq.a{{item.id}}" class="faq-answer">
+                            {{item.answer|safe}}
+                        </div>
+                    </div>
+                    {% endfor %}
+
                 </div>
             </div>
         </section>
+{% endblock %}
