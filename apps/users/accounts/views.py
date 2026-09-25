@@ -12,6 +12,12 @@ class UserListView(ListView):
     paginate_by = 100
     template_name = "main/teachers/list.html"
 
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_users_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
+
 
 class AuthView(TemplateView):
     """auth view"""

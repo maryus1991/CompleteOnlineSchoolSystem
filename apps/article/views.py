@@ -1,5 +1,3 @@
-from unicodedata import category
-
 from django.db.models import Q
 from django.http import Http404
 from django.views.generic import ListView, DetailView
@@ -14,6 +12,14 @@ class ArticleListView(ListView):
     template_name = "main/blog/list.html"
     context_object_name = "items"
     paginate_by = 100
+
+
+
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_articles_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         if q:=self.request.GET.get("q"):
@@ -44,6 +50,12 @@ class ArticleCategoryListView(ListView):
     template_name = "main/blog/list.html"
     context_object_name = "items"
     paginate_by = 100
+
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_articles_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
 
@@ -77,6 +89,12 @@ class ArticleDetailView(DetailView):
     queryset = Article.objects.filter(is_active=True).select_related("category", "user").prefetch_related("tags")
     template_name = "main/blog/details.html"
     context_object_name = "item"
+
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_articles_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data( self, *args, **kwargs ) :
         data = super().get_context_data(*args, **kwargs)

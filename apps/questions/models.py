@@ -35,13 +35,15 @@ class Question(BaseModel):
     major = models.ForeignKey(MajorCategories, related_name='question', on_delete=models.SET_NULL, null=True ,verbose_name='رشته', blank=True)
     lesson = models.ForeignKey(LessonCategories, related_name='question', on_delete=models.SET_NULL, null=True ,verbose_name='درس' , blank=True)
 
+
+
     class Meta:
         ordering = ["-sort_number", '-id']
         verbose_name = 'سوال'
         verbose_name_plural = 'سوالات'
 
     def __str__(self):
-        return f"{self.quiz} - {self.name}"
+        return f" {self.name}"
 
 
 class QuestionOption(BaseModel):

@@ -11,6 +11,11 @@ class ExamListView(ListView):
     paginate_by = 100
     template_name = "main/exam/list.html"
 
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_exam_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = Exam.objects.filter(is_active=True, is_public=True).select_related("school", "grade", "major", "lesson").annotate(
@@ -23,6 +28,7 @@ class ExamListView(ListView):
                 )
             ),
         )
+
 
 
 
@@ -46,6 +52,12 @@ class ExamDetailsView(DetailView):
     """for details exam"""
     context_object_name = 'object'
     template_name = 'main/exam/details.html'
+
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_exam_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self) :
         queryset = Exam.objects.filter(

@@ -1,0 +1,2056 @@
+
+{% extends "main/Base/Base.html" %}
+
+{% block main %}
+<style>
+
+/* =========================================================
+   QUESTION BANK
+   Theme: Dark / Light
+========================================================= */
+
+.question-bank {
+    position: relative;
+    padding: 90px 0 110px;
+
+    background: var(--bg-primary);
+    color: var(--text-primary);
+
+    transition:
+        background .3s ease,
+        color .3s ease;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.question-bank-header {
+    margin-bottom: 45px;
+}
+
+.question-bank-header .section-subtitle {
+    color: var(--accent-color);
+}
+
+.question-bank-header .section-title {
+    color: var(--text-primary);
+}
+
+.question-bank-header .contact-desc {
+    color: var(--text-secondary);
+}
+
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+.question-filter-card {
+    position: relative;
+
+    padding: 22px;
+
+    background: var(--glass-bg);
+
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+
+    box-shadow: var(--card-shadow);
+
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+
+    transition:
+        background .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
+}
+
+.question-filter-card:hover {
+    border-color: var(--border-hover);
+}
+
+
+/* =========================================================
+   FILTER FORM
+========================================================= */
+
+.question-filter-form {
+    display: grid;
+
+    grid-template-columns:
+        minmax(240px, 1.5fr)
+        repeat(3, minmax(150px, 1fr))
+        auto;
+
+    gap: 14px;
+
+    align-items: end;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.question-search {
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 16px;
+
+    background: var(--bg-secondary);
+
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+
+    color: var(--text-muted);
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.question-search:hover {
+    border-color: var(--border-hover);
+}
+
+.question-search:focus-within {
+    border-color: var(--accent-color);
+
+    background: var(--bg-card);
+
+    box-shadow:
+        0 0 0 3px var(--accent-glow);
+}
+
+.question-search svg {
+    flex-shrink: 0;
+
+    color: var(--text-muted);
+
+    transition: color .25s ease;
+}
+
+.question-search:focus-within svg {
+    color: var(--accent-color);
+}
+
+.question-search input {
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: var(--text-primary);
+
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.question-search input::placeholder {
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   FILTER FIELDS
+========================================================= */
+
+.question-filter-field {
+    min-width: 0;
+}
+
+.question-filter-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 100%;
+    height: 52px;
+
+    padding: 0 16px 0 40px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+
+    background-color: var(--bg-secondary);
+
+    color: var(--text-primary);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    cursor: pointer;
+    outline: none;
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.select-wrapper select:hover {
+    border-color: var(--border-hover);
+}
+
+.select-wrapper select:focus {
+    border-color: var(--accent-color);
+
+    background-color: var(--bg-card);
+
+    box-shadow:
+        0 0 0 3px var(--accent-glow);
+}
+
+
+/* Select options */
+
+.select-wrapper select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+
+/* Arrow */
+
+.select-wrapper svg {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+
+    color: var(--text-muted);
+
+    transition:
+        color .25s ease,
+        transform .25s ease;
+}
+
+.select-wrapper:focus-within svg {
+    color: var(--accent-color);
+}
+
+
+/* =========================================================
+   SEARCH BUTTON
+========================================================= */
+
+.question-filter-button {
+    position: relative;
+
+    height: 52px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 0 23px;
+
+    border: 0;
+    border-radius: 12px;
+
+    background: var(--accent-gradient);
+
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 8px 25px var(--accent-glow);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        filter .25s ease;
+}
+
+.question-filter-button::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background: linear-gradient(
+        120deg,
+        transparent 20%,
+        rgba(255, 255, 255, .18) 50%,
+        transparent 80%
+    );
+
+    transform: translateX(-100%);
+
+    transition: transform .5s ease;
+}
+
+.question-filter-button:hover::before {
+    transform: translateX(100%);
+}
+
+.question-filter-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 32px var(--accent-glow-strong);
+
+    filter: brightness(1.05);
+}
+
+.question-filter-button:active {
+    transform: translateY(0);
+}
+
+.question-filter-button svg {
+    position: relative;
+    z-index: 1;
+}
+
+.question-filter-button {
+    isolation: isolate;
+}
+
+
+/* =========================================================
+   RESULTS HEADER
+========================================================= */
+
+.question-results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+.question-results-title {
+    color: var(--text-primary);
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.question-results-count {
+    display: inline-flex;
+    align-items: center;
+
+    margin-right: 9px;
+
+    padding: 4px 10px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.question-clear-filter {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+
+    text-decoration: none;
+
+    transition:
+        color .2s ease,
+        gap .2s ease;
+}
+
+.question-clear-filter:hover {
+    color: var(--accent-color);
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+   QUESTION LIST
+========================================================= */
+
+.question-bank-list {
+    max-width: 950px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   QUESTION CARD
+========================================================= */
+
+.question-card {
+    position: relative;
+
+    overflow: hidden;
+
+    margin-bottom: 14px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 17px;
+
+    background: var(--bg-card);
+
+    box-shadow: var(--card-shadow);
+
+    transition:
+        background .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease,
+        transform .25s ease;
+}
+
+.question-card:hover {
+    border-color: var(--border-hover);
+
+    box-shadow: var(--card-shadow-hover);
+}
+
+.question-card.open {
+    border-color: var(--accent-color);
+
+    box-shadow:
+        var(--card-shadow),
+        0 0 0 1px var(--accent-glow);
+}
+
+
+/* =========================================================
+   QUESTION HEADER
+========================================================= */
+
+.question-card-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 22px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: inherit;
+
+    text-align: right;
+
+    font-family: inherit;
+
+    cursor: pointer;
+}
+
+
+/* Title */
+
+.question-card-title {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+}
+
+.question-number {
+    flex: 0 0 36px;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition:
+        background .25s ease,
+        color .25s ease,
+        border-color .25s ease;
+}
+
+.question-card:hover .question-number,
+.question-card.open .question-number {
+    border-color: var(--accent-color);
+
+    background: var(--accent-glow);
+
+    color: var(--accent-color);
+}
+
+.question-title {
+    color: var(--text-primary);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   TOGGLE
+========================================================= */
+
+.question-toggle {
+    flex: 0 0 34px;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-muted);
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        color .25s ease,
+        transform .25s ease;
+}
+
+.question-toggle svg {
+    transition: transform .3s ease;
+}
+
+.question-card:hover .question-toggle {
+    border-color: var(--border-hover);
+
+    color: var(--text-secondary);
+}
+
+.question-card.open .question-toggle {
+    border-color: transparent;
+
+    background: var(--accent-gradient);
+
+    color: #fff;
+
+    box-shadow:
+        0 5px 18px var(--accent-glow);
+}
+
+.question-card.open .question-toggle svg {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   META / BADGES
+========================================================= */
+
+.question-meta {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    padding: 0 22px 17px;
+
+    border-bottom: 1px solid var(--border-color);
+}
+
+.question-badge {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 10px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-secondary);
+
+    font-size: 10px;
+    font-weight: 500;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        color .2s ease;
+}
+
+.question-badge:hover {
+    border-color: var(--border-hover);
+
+    background: var(--bg-card-hover);
+
+    color: var(--text-primary);
+}
+
+.question-badge-accent {
+    border-color: transparent;
+
+    background: var(--accent-glow);
+
+    color: var(--accent-color);
+}
+
+
+/* =========================================================
+   COLLAPSIBLE CONTENT
+========================================================= */
+
+.question-card-content {
+    display: grid;
+
+    grid-template-rows: 0fr;
+
+    transition:
+        grid-template-rows .35s ease;
+}
+
+.question-card.open .question-card-content {
+    grid-template-rows: 1fr;
+}
+
+.question-card-content > * {
+    min-height: 0;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   ANSWER
+========================================================= */
+
+.question-answer {
+    padding: 0 22px;
+
+    opacity: 0;
+
+    transition:
+        opacity .25s ease,
+        padding .35s ease;
+}
+
+.question-card.open .question-answer {
+    padding: 22px;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   CONTENT LABEL
+========================================================= */
+
+.question-content-label {
+    margin-bottom: 10px;
+
+    color: var(--text-secondary);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   QUESTION DESCRIPTION
+========================================================= */
+
+.question-description {
+    margin-bottom: 20px;
+}
+
+.question-description-body {
+    padding: 18px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+
+    line-height: 2;
+}
+
+
+/* =========================================================
+   QUESTION MEDIA
+========================================================= */
+
+.question-media {
+    margin-top: 16px;
+
+    padding: 12px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 13px;
+
+    background: var(--bg-secondary);
+
+    text-align: center;
+}
+
+.question-media img {
+    max-width: 100%;
+    height: auto;
+
+    display: block;
+
+    margin: 0 auto;
+
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   OPTIONS
+========================================================= */
+
+.question-options {
+    margin-top: 20px;
+}
+
+.question-option {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
+
+    padding: 11px 13px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+}
+
+.question-option:hover {
+    border-color: var(--border-hover);
+
+    background: var(--bg-card-hover);
+}
+
+.option-number {
+    flex: 0 0 26px;
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7px;
+
+    background: var(--bg-card-hover);
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.option-text {
+    flex: 1;
+
+    line-height: 1.8;
+}
+
+
+/* Correct option */
+
+.question-option-correct {
+    border-color: rgba(74, 222, 128, .25);
+
+    background:
+        rgba(74, 222, 128, .06);
+
+    color: var(--text-primary);
+}
+
+.option-correct {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 4px;
+
+    padding: 4px 8px;
+
+    border-radius: 6px;
+
+    background: rgba(74, 222, 128, .1);
+
+    color: #4ade80;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ANSWER KEY
+========================================================= */
+
+.question-answer-key {
+    margin-top: 24px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border-color);
+}
+
+.question-answer-label {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 13px;
+
+    color: var(--text-primary);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.answer-icon {
+    width: 25px;
+    height: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--accent-glow-strong);
+    border-radius: 7px;
+
+    background: var(--accent-glow);
+
+    color: var(--accent-color);
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.question-answer-body {
+    padding: 18px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+
+    line-height: 2;
+}
+
+
+/* =========================================================
+   FILE LINK
+========================================================= */
+
+.question-file {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 14px;
+
+    padding: 9px 12px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-secondary);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.question-file:hover {
+    border-color: var(--accent-color);
+
+    background: var(--accent-glow);
+
+    color: var(--accent-color);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.question-empty {
+    padding: 70px 25px;
+
+    border: 1px dashed var(--border-color);
+    border-radius: 18px;
+
+    background: var(--bg-card);
+
+    text-align: center;
+
+    box-shadow: var(--card-shadow);
+}
+
+.question-empty-icon {
+    width: 68px;
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-muted);
+}
+
+.question-empty h3 {
+    margin: 0 0 8px;
+
+    color: var(--text-primary);
+
+    font-size: 16px;
+}
+
+.question-empty p {
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   FOCUS / ACCESSIBILITY
+========================================================= */
+
+.question-card-header:focus-visible,
+.question-filter-button:focus-visible,
+.question-clear-filter:focus-visible,
+.question-file:focus-visible,
+.question-search input:focus-visible,
+.select-wrapper select:focus-visible {
+    outline: 2px solid var(--accent-color);
+
+    outline-offset: 3px;
+}
+
+/* ========================================================= QUESTION SOURCE ========================================================= */ .question-source { margin-top: 20px; } .question-source-item { display: inline-flex; align-items: center; margin-left: 7px; margin-bottom: 7px; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); color: var(--text-secondary); font-size: 11px; } /* ========================================================= ANSWER TYPE ========================================================= */ .question-answer-type { display: inline-flex; align-items: center; margin-right: 5px; padding: 4px 8px; border-radius: 6px; background: var(--accent-glow); color: var(--accent-color); font-size: 9px; font-weight: 600; } /* ========================================================= NO ANSWER ========================================================= */ .question-no-answer { margin-top: 20px; padding: 13px 15px; border: 1px dashed var(--border-color); border-radius: 10px; background: var(--bg-secondary); color: var(--text-muted); font-size: 11px; } /* ========================================================= FILE WRAPPER ========================================================= */ .question-file-wrapper { margin-top: 18px; } /* ========================================================= PAGINATION ========================================================= */ .question-pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 35px; } .question-page-button { display: inline-flex; align-items: center; justify-content: center; min-width: 80px; height: 40px; padding: 0 14px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card); color: var(--text-secondary); font-size: 11px; font-weight: 600; text-decoration: none; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; } .question-page-button:hover { border-color: var(--accent-color); background: var(--accent-glow); color: var(--accent-color); transform: translateY(-1px); } .question-page-current { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-secondary); color: var(--text-muted); font-size: 11px; }
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .question-filter-form {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .question-search {
+        grid-column: 1 / -1;
+    }
+
+    .question-filter-button {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .question-bank {
+        padding: 65px 0 80px;
+    }
+
+    .question-filter-card {
+        padding: 15px;
+
+        border-radius: 16px;
+    }
+
+    .question-filter-form {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .question-search {
+        grid-column: auto;
+    }
+
+    .question-results-header {
+        align-items: flex-start;
+
+        gap: 12px;
+    }
+
+    .question-clear-filter {
+        white-space: nowrap;
+    }
+
+    .question-card-header {
+        padding: 16px;
+
+        gap: 10px;
+    }
+
+    .question-card-title {
+        align-items: flex-start;
+    }
+
+    .question-number {
+        flex-basis: 31px;
+
+        width: 31px;
+        height: 31px;
+    }
+
+    .question-title {
+        font-size: 13px;
+    }
+
+    .question-meta {
+        padding: 0 16px 14px;
+    }
+
+    .question-card.open .question-answer {
+        padding: 16px;
+    }
+
+    .question-description-body,
+    .question-answer-body {
+        padding: 14px;
+
+        font-size: 12px;
+    }
+
+    .question-option {
+        align-items: flex-start;
+    }
+
+    .option-correct {
+        flex-shrink: 0;
+    }
+}
+
+.question-option-correct {
+    background: rgba(74, 222, 128, .06);
+}
+
+.option-correct {
+    color: #4ade80;
+}
+
+</style>
+<br>
+<br>
+<br>
+<section class="question-bank">
+
+    <div class="container">
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div class="section-header question-bank-header">
+
+            <span class="section-subtitle">
+                {{site.qbank_above_tag}}
+            </span>
+
+            <h1 class="section-title">
+                {{site.qbank_title}}
+            </h1>
+
+            <p class="contact-desc">
+                {{site.qbank_description}}
+            </p>
+
+        </div>
+
+
+
+
+        <div class="question-filter-card">
+
+            <form method="get" class="question-filter-form">
+
+                <!-- Search -->
+
+                <div class="question-search">
+
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line
+                            x1="21"
+                            y1="21"
+                            x2="16.65"
+                            y2="16.65"
+                        ></line>
+                    </svg>
+
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ request.GET.q|default:'' }}"
+                        placeholder="جستجو در سوالات..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- Major -->
+
+                <div class="question-filter-field">
+
+                    <label for="question-major">
+                        رشته
+                    </label>
+
+                    <div class="select-wrapper">
+
+                        <select
+                            name="major"
+                            id="question-major"
+                        >
+
+                            <option value="">
+                                همه رشته‌ها
+                            </option>
+
+                            {% for major in majors %}
+
+                                <option
+                                    value="{{ major.pk }}"
+                                    {% if request.GET.major == major.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ major.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <polyline
+                                points="6 9 12 15 18 9"
+                            ></polyline>
+                        </svg>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Grade -->
+
+                <div class="question-filter-field">
+
+                    <label for="question-grade">
+                        پایه
+                    </label>
+
+                    <div class="select-wrapper">
+
+                        <select
+                            name="grade"
+                            id="question-grade"
+                        >
+
+                            <option value="">
+                                همه پایه‌ها
+                            </option>
+
+                            {% for grade in grades %}
+
+                                <option
+                                    value="{{ grade.pk }}"
+                                    {% if request.GET.grade == grade.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ grade.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <polyline
+                                points="6 9 12 15 18 9"
+                            ></polyline>
+                        </svg>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Lesson -->
+
+                <div class="question-filter-field">
+
+                    <label for="question-lesson">
+                        درس
+                    </label>
+
+                    <div class="select-wrapper">
+
+                        <select
+                            name="lesson"
+                            id="question-lesson"
+                        >
+
+                            <option value="">
+                                همه درس‌ها
+                            </option>
+
+                            {% for lesson in lessons %}
+
+                                <option
+                                    value="{{ lesson.pk }}"
+                                    {% if request.GET.lesson == lesson.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ lesson.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <polyline
+                                points="6 9 12 15 18 9"
+                            ></polyline>
+                        </svg>
+
+                    </div>
+
+                </div>
+
+
+
+
+                <button
+                    type="submit"
+                    class="question-filter-button"
+                >
+
+                    <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <circle
+                            cx="11"
+                            cy="11"
+                            r="8"
+                        ></circle>
+
+                        <line
+                            x1="21"
+                            y1="21"
+                            x2="16.65"
+                            y2="16.65"
+                        ></line>
+                    </svg>
+
+                    جستجو
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =====================================================
+             RESULT HEADER
+        ====================================================== -->
+
+        <div class="question-results-header">
+
+
+
+
+            {% if request.GET.q or request.GET.major or request.GET.grade or request.GET.lesson %}
+
+                <a
+                    href="{% url 'question:list' %}"
+                    class="question-clear-filter"
+                >
+
+                    حذف فیلترها
+
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <line
+                            x1="18"
+                            y1="6"
+                            x2="6"
+                            y2="18"
+                        ></line>
+
+                        <line
+                            x1="6"
+                            y1="6"
+                            x2="18"
+                            y2="18"
+                        ></line>
+                    </svg>
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =====================================================
+             QUESTIONS
+        ====================================================== -->
+
+        <div class="question-bank-list">
+
+            {% for item in questions %}
+
+                <article class="question-card">
+
+                    <!-- =================================================
+                         QUESTION HEADER
+                    ================================================== -->
+
+                    <button
+                        type="button"
+                        class="question-card-header"
+                        aria-expanded="false"
+                    >
+
+                        <div class="question-card-title">
+
+                            <span class="question-number">
+                                {{ page_obj.start_index|add:forloop.counter0 }}
+                            </span>
+
+                            <span class="question-title">
+                                {{ item.name }}
+                            </span>
+
+                        </div>
+
+
+                        <span class="question-toggle">
+
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline
+                                    points="6 9 12 15 18 9"
+                                ></polyline>
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- =================================================
+                         META
+                    ================================================== -->
+
+                    <div class="question-meta">
+
+                        {% if item.major %}
+
+                            <span class="question-badge">
+
+                                رشته:
+
+                                {{ item.major.name }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if item.grade %}
+
+                            <span class="question-badge">
+
+                                پایه:
+
+                                {{ item.grade.name }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if item.lesson %}
+
+                            <span class="question-badge question-badge-accent">
+
+                                درس:
+
+                                {{ item.lesson.name }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        <span class="question-badge">
+
+                            {{ item.get_type_of_question_display }}
+
+                        </span>
+
+
+                        <span class="question-badge">
+
+                            نمره:
+
+                            {{ item.score }}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CONTENT
+                    ================================================== -->
+
+                    <div class="question-card-content">
+
+                        <div class="question-answer">
+
+
+                            <!-- =========================================
+                                 QUESTION DESCRIPTION
+                            ========================================== -->
+
+                            {% if item.description %}
+
+                                <div class="question-description">
+
+                                    <div class="question-content-label">
+                                        متن سوال
+                                    </div>
+
+                                    <div class="question-description-body">
+                                        {{ item.description|safe }}
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 QUESTION IMAGE
+                            ========================================== -->
+
+                            {% if item.image %}
+
+                                <div class="question-media">
+
+                                    <div class="question-content-label">
+                                        تصویر سوال
+                                    </div>
+
+                                    <img
+                                        src="{{ item.image.url }}"
+                                        alt="{{ item.name }}"
+                                        loading="lazy"
+                                    >
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 QUESTION PDF
+                            ========================================== -->
+
+                            {% if item.pdf_file %}
+
+                                <div class="question-file-wrapper">
+
+                                    <div class="question-content-label">
+                                        فایل سوال
+                                    </div>
+
+                                    <a
+                                        href="{{ item.pdf_file.url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="question-file"
+                                    >
+
+                                        <svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                                            ></path>
+
+                                            <polyline
+                                                points="14 2 14 8 20 8"
+                                            ></polyline>
+                                        </svg>
+
+                                        مشاهده فایل PDF سوال
+
+                                    </a>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 EXAM / PRACTICE
+                            ========================================== -->
+
+                            {% if item.exam or item.practice %}
+
+                                <div class="question-source">
+
+                                    <div class="question-content-label">
+                                        منبع سوال
+                                    </div>
+
+                                    {% if item.exam %}
+
+                                        <span class="question-source-item">
+
+                                            آزمون:
+
+                                            {{ item.exam }}
+
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    {% if item.practice %}
+
+                                        <span class="question-source-item">
+
+                                            تمرین:
+
+                                            {{ item.practice }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 MULTIPLE CHOICE OPTIONS
+                            ========================================== -->
+
+                            {% if item.type_of_question == "تستی چند گزینه‌ای" %}
+
+                                {% with options=item.options.all %}
+
+                                    {% if options %}
+
+                                        <div class="question-options">
+
+                                            <div class="question-content-label">
+                                                گزینه‌های سوال
+                                            </div>
+
+
+                                            {% for option in options %}
+
+                                                <div
+                                                    class="
+                                                        question-option
+                                                        {% if option.is_correct %}
+                                                            question-option-correct
+                                                        {% endif %}
+                                                    "
+                                                >
+
+                                                    <span class="option-number">
+                                                        {{ forloop.counter }}
+                                                    </span>
+
+
+                                                    <span class="option-text">
+                                                        {{ option.text }}
+                                                    </span>
+
+
+                                                    {% if option.is_correct %}
+
+                                                        <span class="option-correct">
+
+                                                            <svg
+                                                                width="14"
+                                                                height="14"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                stroke-width="2"
+                                                            >
+                                                                <polyline
+                                                                    points="20 6 9 17 4 12"
+                                                                ></polyline>
+                                                            </svg>
+
+                                                            پاسخ صحیح
+
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endwith %}
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 ANSWER KEY
+                            ========================================== -->
+
+                            {% if item.answer_key %}
+
+                                <div class="question-answer-key">
+
+                                    <div class="question-answer-label">
+
+                                        <span class="answer-icon">
+                                            ✓
+                                        </span>
+
+                                        <span>
+                                            کلید پاسخ
+                                        </span>
+
+                                        <span class="question-answer-type">
+                                            {{ item.answer_key.get_type_of_answer_display }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- =================================
+                                         TEXT ANSWER
+                                    ================================== -->
+
+                                    {% if item.answer_key.description %}
+
+                                        <div class="question-answer-body">
+
+                                            {{ item.answer_key.description|safe }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- =================================
+                                         IMAGE ANSWER
+                                    ================================== -->
+
+                                    {% if item.answer_key.image %}
+
+                                        <div class="question-media answer-media">
+
+                                            <div class="question-content-label">
+                                                تصویر پاسخ
+                                            </div>
+
+                                            <img
+                                                src="{{ item.answer_key.image.url }}"
+                                                alt="پاسخ {{ item.name }}"
+                                                loading="lazy"
+                                            >
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- =================================
+                                         PDF ANSWER
+                                    ================================== -->
+
+                                    {% if item.answer_key.pdf_file %}
+
+                                        <div class="question-file-wrapper">
+
+                                            <div class="question-content-label">
+                                                فایل پاسخ
+                                            </div>
+
+                                            <a
+                                                href="{{ item.answer_key.pdf_file.url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="question-file"
+                                            >
+
+                                                <svg
+                                                    width="18"
+                                                    height="18"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                >
+                                                    <path
+                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                                                    ></path>
+
+                                                    <polyline
+                                                        points="14 2 14 8 20 8"
+                                                    ></polyline>
+                                                </svg>
+
+                                                مشاهده فایل PDF پاسخ
+
+                                            </a>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="question-no-answer">
+
+                                    <span>
+                                        کلید پاسخ برای این سوال ثبت نشده است.
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+
+                <!-- =================================================
+                     EMPTY
+                ================================================== -->
+
+                <div class="question-empty">
+
+                    <div class="question-empty-icon">
+
+                        <svg
+                            width="34"
+                            height="34"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                        >
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            ></path>
+
+                            <polyline
+                                points="14 2 14 8 20 8"
+                            ></polyline>
+
+                            <line
+                                x1="8"
+                                y1="13"
+                                x2="16"
+                                y2="13"
+                            ></line>
+
+                            <line
+                                x1="8"
+                                y1="17"
+                                x2="14"
+                                y2="17"
+                            ></line>
+                        </svg>
+
+                    </div>
+
+
+                    <h3>
+                        سوالی پیدا نشد
+                    </h3>
+
+
+                    <p>
+                        با تغییر فیلترها یا عبارت جستجو دوباره تلاش کنید.
+                    </p>
+
+                </div>
+
+
+            {% endfor %}
+
+        </div>
+
+
+    </div>
+
+</section>
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const cards = document.querySelectorAll(".question-card");
+
+    cards.forEach(function (card) {
+
+        const button =
+            card.querySelector(".question-card-header");
+
+        if (!button) {
+            return;
+        }
+
+
+        button.addEventListener("click", function () {
+
+            const isOpen =
+                card.classList.contains("open");
+
+
+            /*
+             * Close other questions
+             */
+
+            cards.forEach(function (otherCard) {
+
+                otherCard.classList.remove("open");
+
+                const otherButton =
+                    otherCard.querySelector(
+                        ".question-card-header"
+                    );
+
+                if (otherButton) {
+
+                    otherButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+            });
+
+
+            /*
+             * Open clicked question
+             */
+
+            if (!isOpen) {
+
+                card.classList.add("open");
+
+                button.setAttribute(
+                    "aria-expanded",
+                    "true"
+                );
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
+
+
+
+{% endblock %}
+

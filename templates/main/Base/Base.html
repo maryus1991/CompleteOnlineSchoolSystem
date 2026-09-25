@@ -80,11 +80,19 @@
                 <nav class="nav" id="mainNav">
                     <ul class="nav-list">
                         <li><a href="{% url 'site:main' %}" class="nav-link">خانه</a></li>
-
-                        <li><a href="index.html#faq" class="nav-link">بانک سوال</a></li>
+                        {% if site.qbank_active %}
+                        <li><a href="{% url 'question:list' %}" class="nav-link">بانک سوال</a></li>
+                        {% endif %}
+                        {% if site.list_exam_active %}
                         <li><a href="{% url 'exam:list' %}" class="nav-link">ازمون ها</a></li>
+                        {% endif %}
+                        {% if site.list_course_active %}
                         <li><a href="{% url 'class:list' %}" class="nav-link">دروه ها</a></li>
+                        {% endif %}
+                        {% if site.list_articles_active %}
                         <li><a href="{% url 'article:article-list' %}" class="nav-link">مقالات</a></li>
+                        {% endif %}
+
 
                         {% if site.faq_active %}
                         <li><a href="{% url 'site:faq' %}" class="nav-link">سوالات متداول</a></li>
@@ -98,6 +106,10 @@
                         {% if site.about_active %}
                         <li><a href="{% url 'site:about' %}" class="nav-link">درباره ما</a></li>
                         {% endif %}
+                        {% if site.list_users_active %}
+                        <li><a href="{% url 'user:list' %}" class="nav-link">{{site.users_title_url_name}}</a></li>
+                        {% endif %}
+
 
                     </ul>
                 </nav>
@@ -137,12 +149,18 @@
         <button class="mobile-close" id="mobileClose"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         <ul class="mobile-nav">
                         <li><a href="{% url 'site:main' %}" class="nav-link">خانه</a></li>
-
-                        <li><a href="index.html#faq" class="nav-link">بانک سوال</a></li>
+                        {% if site.qbank_active %}
+                        <li><a href="{% url 'question:list' %}" class="nav-link">بانک سوال</a></li>
+                        {% endif %}
+                        {% if site.list_exam_active %}
                         <li><a href="{% url 'exam:list' %}" class="nav-link">ازمون ها</a></li>
+                        {% endif %}
+                        {% if site.list_course_active %}
                         <li><a href="{% url 'class:list' %}" class="nav-link">دروه ها</a></li>
+                        {% endif %}
+                        {% if site.list_articles_active %}
                         <li><a href="{% url 'article:article-list' %}" class="nav-link">مقالات</a></li>
-
+                        {% endif %}
                         {% if site.faq_active %}
                         <li><a href="{% url 'site:faq' %}" class="nav-link">سوالات متداول</a></li>
                         {% endif %}
@@ -154,6 +172,9 @@
                         {% endif %}
                         {% if site.about_active %}
                         <li><a href="{% url 'site:about' %}" class="nav-link">درباره ما</a></li>
+                        {% endif %}
+                        {% if site.list_users_active %}
+                        <li><a href="{% url 'user:list' %}" class="nav-link">{{site.users_title_url_name}}</a></li>
                         {% endif %}
         </ul>
     </div>

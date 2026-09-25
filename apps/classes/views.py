@@ -9,6 +9,12 @@ class ClassListView(ListView):
     paginate_by = 100
     template_name = 'main/courses/list.html'
 
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_course_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
 
         if self.request.user.is_authenticated:
@@ -81,6 +87,12 @@ class ClassDetailView(DetailView):
     """for detail class"""
     context_object_name = 'object'
     template_name = 'main/courses/details.html'
+
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.list_course_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self) :
         queryset = Class.objects.filter(

@@ -14,19 +14,24 @@ class Site(BaseModel):
     list_articles_above_tag = models.CharField("تگ لیست مقالات", max_length=100, default=" مقالات آموزشی ")
     list_articles_title = models.CharField("عنوان لیست مقالات", max_length=100, default=" مقالات امورشی فراسو")
     list_articles_description = models.CharField("توضیحات لیست مقالات", max_length=500, default="اگاهی و دانایی بیشتر با مطالعه بیشتر")
+    list_articles_active = models.BooleanField("فعال صفحه لیست مقالات", default=True)
 
     list_course_above_tag = models.CharField("تگ لیست دوره ها", max_length=100, default=" دوره‌های تخصصی ")
     list_course_title = models.CharField("عنوان لیست دوره ها", max_length=100, default=" دورهای امورشی فراسو")
     list_course_description = models.CharField("توضیحات لیست دوره ها", max_length=500, default="دوره‌هایی که آینده شما را می‌سازند")
+    list_course_active = models.BooleanField("فعال صفحه لیست دوره ها", default=True)
     count_of_courses_in_course_detail_page = models.IntegerField("تعداد نمایشی دوره ها در صفحه جزییات ", default=6)
 
     list_users_above_tag = models.CharField("تگ لیست کاربران", max_length=100, default="اعضایی گرامی")
     list_users_title = models.CharField("عنوان لیست کاربران", max_length=100, default=" اعضای سایت امورشی فراسو")
+    users_title_url_name = models.CharField("عنوان لیست کاربران", max_length=100, default="برترین ها")
     list_users_description = models.CharField("توضیحات لیست کاربران", max_length=500, default="افرادی که اینده را میسازند")
+    list_users_active = models.BooleanField("فعال صفحه لیست کاربران", default=True)
 
     list_exam_above_tag = models.CharField("تگ لیست ازمون ها", max_length=100, default="سنجش و یادگیری")
     list_exam_title = models.CharField("عنوان لیست ازمون ها", max_length=100, default=" ازمون های امورشی فراسو")
     list_exam_description = models.CharField("توضیحات لیست ازمون ها", max_length=500, default="داشن خود را به چالش بکشید")
+    list_exam_active = models.BooleanField("فعال صفحه لیست ازمون ها", default=True)
 
     contact_above_tag = models.CharField("تگ تماس با ما", max_length=100, default=" ارتباط با ما")
     contact_title = models.CharField("عنوان تماس با ما", max_length=100, default="پیام خود را ارسال کنید")
@@ -46,6 +51,11 @@ class Site(BaseModel):
     faq_title = models.CharField("عنوان پرسش پاسخ", max_length=100, default=" سوالات متداول")
     faq_description = models.CharField("توضیحات پرسش پاسخ", max_length=500, default="پاسخ به سوالات متداول")
     faq_active = models.BooleanField("فعال صفحه پرسش پاسخ", default=True)
+
+    qbank_above_tag = models.CharField("تگ بانک سوال", max_length=100, default="سوال نیاز داری")
+    qbank_title = models.CharField("عنوان بانک سوال", max_length=100, default="بانک سوال")
+    qbank_description = models.CharField("توضیحات بانک سوال", max_length=500, default="بانک سوال رایگان فراسو")
+    qbank_active = models.BooleanField("فعال صفحه بانک سوال", default=True)
 
     about_above_tag = models.CharField("تگ درباره ما", max_length=100, default="با ما اشنا شوید")
     about_title = models.CharField("عنوان درباره ما", max_length=100, default="درباره ما")
