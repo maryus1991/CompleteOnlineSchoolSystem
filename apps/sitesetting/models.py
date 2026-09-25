@@ -29,9 +29,9 @@ class Site(BaseModel):
     email_contact = models.EmailField("ایمیل صفحه تماس با ما", default="maryus19915123@gmail.com")
     active_contact = models.BooleanField("فعال صفحه تماس با ما", default=True)
 
-    free_counseling_above_tag = models.CharField("تگ مشاوره رایگان", max_length=100, default=" ارتباط با ما")
-    free_counseling_title = models.CharField("عنوان مشاوره رایگان", max_length=100, default="پیام خود را ارسال کنید")
-    free_counseling_description = models.CharField("توضیحات مشاوره رایگان", max_length=500, default="ما در سریعترین زمان به پیام شما پاسخ خواهیم داد")
+    free_counseling_above_tag = models.CharField("تگ مشاوره رایگان", max_length=100, default="آماده‌ای که شروع کنیم؟")
+    free_counseling_title = models.CharField("عنوان مشاوره رایگان", max_length=100, default=" مشاوره رایگان")
+    free_counseling_description = models.CharField("توضیحات مشاوره رایگان", max_length=500, default="برای مشاوره رایگان فرم رو پر کن. کمتر از ۲۴ ساعت تماس می‌گیریم.")
     phone_number_counseling = PhoneNumberField("شماره تماس صفحه صفحه مشاوره رایگان", default="09373061991")
     email_counseling = models.EmailField("ایمیل صفحه صفحه مشاوره رایگان", default="maryus19915123@gmail.com")
     active_counseling = models.BooleanField("فعال صفحه مشاوره رایگان", default=True)
@@ -57,8 +57,24 @@ class Contact(BaseModel):
         return str(self.full_name) + " " + str(self.phone_number) + " " +str(self.read)
 
     class Meta:
-        ordering = ['pk']
+        ordering = ["-read", 'pk']
         verbose_name = 'پیام'
         verbose_name_plural = 'پیام ها'
+
+
+class Counseling(BaseModel):
+    full_name = models.CharField("نام", max_length=250)
+    read = models.BooleanField("خوانده شده", default=False)
+    phone_number = PhoneNumberField("شماره تماس ",)
+    message = models.TextField("پیام")
+
+
+    def __str__(self):
+        return str(self.full_name) + " " + str(self.phone_number) + " " +str(self.read)
+
+    class Meta:
+        ordering = ["-read", 'pk']
+        verbose_name = 'درخواست مشاوره'
+        verbose_name_plural = 'درخواست های مشاوره'
 
 
