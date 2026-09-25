@@ -1,5 +1,6 @@
 from django.db import models
 from apps.common.models import BaseModel
+from phonenumber_field.modelfields import PhoneNumberField
 
 class Site(BaseModel):
     name = models.CharField("نام سایت", max_length=100, default='بنیاد اموزشی فراسو')
@@ -21,6 +22,21 @@ class Site(BaseModel):
     list_exam_title = models.CharField("عنوان لیست ازمون ها", max_length=100, default=" ازمون های امورشی فراسو")
     list_exam_description = models.CharField("توضیحات لیست ازمون ها", max_length=500, default="داشن خود را به چالش بکشید")
 
+    contact_above_tag = models.CharField("تگ تماس با ما", max_length=100, default=" ارتباط با ما")
+    contact_title = models.CharField("عنوان تماس با ما", max_length=100, default="پیام خود را ارسال کنید")
+    contact_description = models.CharField("توضیحات تماس با ما", max_length=500, default="ما در سریعترین زمان به پیام شما پاسخ خواهیم داد")
+    phone_number_contact = PhoneNumberField("شماره تماس صفحه تماس با ما", default="09373061991")
+    email_contact = models.EmailField("ایمیل صفحه تماس با ما", default="maryus19915123@gmail.com")
+    active_contact = models.BooleanField("فعال صفحه تماس با ما", default=True)
+
+    free_counseling_above_tag = models.CharField("تگ مشاوره رایگان", max_length=100, default=" ارتباط با ما")
+    free_counseling_title = models.CharField("عنوان مشاوره رایگان", max_length=100, default="پیام خود را ارسال کنید")
+    free_counseling_description = models.CharField("توضیحات مشاوره رایگان", max_length=500, default="ما در سریعترین زمان به پیام شما پاسخ خواهیم داد")
+    phone_number_counseling = PhoneNumberField("شماره تماس صفحه صفحه مشاوره رایگان", default="09373061991")
+    email_counseling = models.EmailField("ایمیل صفحه صفحه مشاوره رایگان", default="maryus19915123@gmail.com")
+    active_counseling = models.BooleanField("فعال صفحه مشاوره رایگان", default=True)
+
+
     def __str__(self):
         return self.name
 
@@ -28,3 +44,21 @@ class Site(BaseModel):
         ordering = ['-pk']
         verbose_name = 'تنظیمات'
         verbose_name_plural = 'تنظیمات'
+
+
+class Contact(BaseModel):
+    full_name = models.CharField("نام", max_length=250)
+    read = models.BooleanField("خوانده شده", default=False)
+    phone_number = PhoneNumberField("شماره تماس ",)
+    message = models.TextField("پیام")
+
+
+    def __str__(self):
+        return str(self.full_name) + " " + str(self.phone_number) + " " +str(self.read)
+
+    class Meta:
+        ordering = ['pk']
+        verbose_name = 'پیام'
+        verbose_name_plural = 'پیام ها'
+
+
