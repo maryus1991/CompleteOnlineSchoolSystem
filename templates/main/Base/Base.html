@@ -65,18 +65,12 @@
     <header class="header" id="header">
         <div class="container">
             <div class="header-inner">
-                <a href="index.html" class="logo">
-                    <svg width="38" height="38" viewBox="0 0 100 100" fill="none">
-                        <defs><linearGradient id="hdGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
-                        <circle cx="50" cy="50" r="46" stroke="url(#hdGrad)" stroke-width="4" fill="none"/>
-                        <circle cx="50" cy="50" r="14" fill="url(#hdGrad)"/>
-                        <line x1="50" y1="22" x2="50" y2="36" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
-                        <line x1="50" y1="64" x2="50" y2="78" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
-                        <line x1="22" y1="50" x2="36" y2="50" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
-                        <line x1="64" y1="50" x2="78" y2="50" stroke="url(#hdGrad)" stroke-width="4" stroke-linecap="round"/>
-                    </svg>
-                    <span class="logo-gradient">پولاریس</span><span class="logo-text">آکادمی</span>
-                </a>
+                <span class="logo">
+                        {{site.logo_svg|safe}}
+                    <span class="logo-gradient">
+                        {{site.name}}
+                    </span>
+                </span>
                 <nav class="nav" id="mainNav">
                     <ul class="nav-list">
                         <li><a href="{% url 'site:main' %}" class="nav-link">خانه</a></li>
