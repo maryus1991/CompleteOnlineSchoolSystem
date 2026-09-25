@@ -354,29 +354,60 @@
     <footer class="footer">
         <div class="footer-top"><div class="container"><div class="footer-grid">
             <div class="footer-col footer-brand">
-                <a href="#" class="footer-logo">
-                    <svg width="40" height="40" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="ftGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs><circle cx="50" cy="50" r="46" stroke="url(#ftGrad)" stroke-width="4" fill="none"/><circle cx="50" cy="50" r="14" fill="url(#ftGrad)"/></svg>
-                    <span>پولاریس <strong>آکادمی</strong></span>
-                </a>
-                <p data-i18n="footer.desc">فرماندهی نسل بعدی برنامه‌نویسان.</p>
+                <span  class="footer-logo">
+                    {{site.logo_svg|safe}}
+                    <span>{{site.name}}</span>
+                </span>
+
+
+                <p data-i18n="footer.desc">{{site.short_description}}</p>
             </div>
-            <div class="footer-col"><h4 data-i18n="footer.quick">دسترسی سریع</h4><ul><li><a href="index.html#home" data-i18n="nav.home">خانه</a></li><li><a href="courses.html" data-i18n="nav.courses">دوره‌ها</a></li><li><a href="index.html#portfolio" data-i18n="nav.portfolio">نمونه‌کارها</a></li><li><a href="index.html#blog" data-i18n="nav.blog">وبلاگ</a></li></ul></div>
-            <div class="footer-col"><h4 data-i18n="footer.links">لینک‌های مهم</h4><ul><li><a href="#" data-i18n="footer.about">درباره ما</a></li><li><a href="#" data-i18n="footer.careers">فرصت‌های شغلی</a></li><li><a href="index.html#faq" data-i18n="nav.faq">سوالات متداول</a></li><li><a href="index.html#events" data-i18n="nav.events">رویدادها</a></li></ul></div>
+            <div class="footer-col"><h2 data-i18n="footer.quick">دسترسی سریع</h2>
+                <ul>
+                    <li>
+                        <a href="{{site.footer_fast_link_1_url}}" data-i18n="nav.home">{{site.footer_fast_link_1_name}}</a>
+                    </li>
+                    <li>
+                        <a href="{{site.footer_fast_link_2_url}}" data-i18n="nav.courses">{{site.footer_fast_link_2_name}}</a>
+                    </li>
+                    <li>
+                        <a href="{{site.footer_fast_link_3_url}}" data-i18n="nav.portfolio">{{site.footer_fast_link_3_name}}</a>
+                    </li>
+                    <li>
+                        <a href="{{site.footer_fast_link_4_url}}" data-i18n="nav.blog">{{site.footer_fast_link_4_name}}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col"><h2 data-i18n="footer.links">لینک‌های مهم</h2>
+                <ul>
+                    <li>
+                        <a href="{{site.footer_important_1_url}}" data-i18n="footer.about"> {{site.footer_important_1_name}}</a>
+                    </li>
+                    <li>
+                        <a href="{{site.footer_important_2_url}}" data-i18n="footer.careers"> {{site.footer_important_2_name}}</a>
+                    </li>
+                    <li>
+                        <a href="{{site.footer_important_3_url}}" data-i18n="nav.faq"> {{site.footer_important_3_name}}</a>
+                    </li>
+                    <li>
+                        <a href="{{site.footer_important_4_url}}" data-i18n="nav.events">{{site.footer_important_4_name}}</a>
+                    </li>
+                </ul>
+            </div>
             <div class="footer-col">
                 <h4 data-i18n="footer.social">همراه ما باشید</h4>
                 <div class="footer-social">
-                    <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path></svg></a>
-                    <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2.5L2.5 10.5L10 13.5L14 21.5L21.5 2.5Z"></path></svg></a>
-                    <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                    <a href="{{site.instagram_link}}" title="لینک اینستاگرام"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path></svg></a>
+                    <a href="{{site.telegram_link}}" title="لینک تلرام"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2.5L2.5 10.5L10 13.5L14 21.5L21.5 2.5Z"></path></svg></a>
+                    <a href="{{site.other_link}}" title="لینک های دیگر"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
                 </div>
-                <div class="footer-newsletter"><h5 data-i18n="footer.newsletter">عضویت در خبرنامه</h5><form class="newsletter-form"><input type="email" placeholder="ایمیل خود را وارد کنید"><button type="submit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button></form></div>
-            </div>
+             </div>
         </div></div></div>
         <div class="footer-bottom"><div class="container"><div class="footer-bottom-content">
-            <p data-i18n="footer.copyright">© ۲۰۲۶ آکادمی پولاریس. با <span class="heart">❤️</span> برای نسل بعدی برنامه‌نویسان ایران.</p>
-            <div class="footer-bottom-links">                        {% if site.faq_active %}
-             <a href="{% url 'site:faq' %}" class="nav-link">سوالات متداول</a>
-                        {% endif %}</div>
+            <p data-i18n="footer.copyright">{{site.copyright}}</p>
+            <div class="footer-bottom-links">
+             <a href="{{site.link_url}}" class="nav-link">{{site.developer_message}}</a>
+                       </div>
         </div></div></div>
     </footer>
     {% block footer %}

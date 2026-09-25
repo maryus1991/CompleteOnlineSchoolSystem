@@ -9,6 +9,7 @@ from django_resized import ResizedImageField
 class Site(BaseModel):
     name = models.CharField("نام سایت", max_length=100, default='بنیاد اموزشی فراسو')
     description = CKEditor5Field("توضیحات", default="")
+    short_description = models.CharField("توضیحات کوتاه", default="بنیادی که برای تضمین اینده شما به وجود امده است", max_length=255)
 
     list_articles_above_tag = models.CharField("تگ لیست مقالات", max_length=100, default=" مقالات آموزشی ")
     list_articles_title = models.CharField("عنوان لیست مقالات", max_length=100, default=" مقالات امورشی فراسو")
@@ -61,6 +62,33 @@ class Site(BaseModel):
     login_active = models.BooleanField("فعال کردن ورود", default=True)
     register_active = models.BooleanField("فعال کردن ثبت نام", default=True)
     forgot_password_active = models.BooleanField("فعال کردن فراموشی رمز", default=True)
+
+    footer_fast_link_1_url = models.URLField("لینک شماره ۱ سریع فوتر", default="/")
+    footer_fast_link_2_url = models.URLField(" لینک شماره ۲ سریع فوتر", default="/courses/")
+    footer_fast_link_3_url = models.URLField(" لینک شماره ۳ سریع فوتر", default="/posts/")
+    footer_fast_link_4_url = models.URLField(" لینک شماره ۴ سریع فوتر", default="/exams/")
+    footer_fast_link_1_name = models.CharField("نام لینک شماره ۱ سریع فوتر", default="خانه", max_length=50)
+    footer_fast_link_2_name = models.CharField("نام لینک شماره ۲ سریع فوتر", default="دورها", max_length=50)
+    footer_fast_link_3_name = models.CharField("نام لینک شماره ۳ سریع فوتر", default="مقالات", max_length=50)
+    footer_fast_link_4_name = models.CharField("نام لینک شماره ۴ سریع فوتر", default="ازمون ها", max_length=50)
+
+    footer_important_1_url = models.URLField("لینک مهم شماره ۱ فوتر", default="/users/auth/")
+    footer_important_2_url = models.URLField(" لینک مهم شماره ۲ فوتر", default="/about/")
+    footer_important_3_url = models.URLField(" لینک مهم شماره ۳ فوتر", default="/contact/")
+    footer_important_4_url = models.URLField(" لینک مهم شماره ۴ فوتر", default="/free-counseling/")
+    footer_important_1_name = models.CharField("نام لینک مهم شماره ۱ فوتر", default="ورود یا ثبت نام", max_length=50)
+    footer_important_2_name = models.CharField("نام لینک مهم شماره ۲ فوتر", default="درباره ما", max_length=50)
+    footer_important_3_name = models.CharField("نام لینک مهم شماره ۳ فوتر", default="تماس با ما", max_length=50)
+    footer_important_4_name = models.CharField("نام لینک مهم شماره ۴ فوتر", default="درخواست مشاوره رایگان", max_length=50)
+
+    copyright = models.CharField("کپی رایت", default="© ۲۰۲۶ آکادمی فراسو برای اینده ای بهتر", max_length=150)
+    developer_message = models.CharField("پیام طراح", default="نوشته شده با ❤️ توسط maryus", max_length=50)
+    link_url = models.URLField("لینک طراح", default="https://github.com/maryus1991/CompleteOnlineSchoolSystem")
+
+    instagram_link = models.URLField("لینک اینستاگرام", default="#")
+    telegram_link = models.URLField("لینک تلرام", default="#")
+    other_link = models.URLField("لینک های دیگر", default="#")
+
 
     def __str__(self):
         return self.name
