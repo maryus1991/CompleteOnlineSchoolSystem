@@ -50,6 +50,17 @@ class Site(BaseModel):
     about_title = models.CharField("عنوان درباره ما", max_length=100, default="درباره ما")
     about_active = models.BooleanField("فعال صفحه درباره ما", default=True)
 
+    auth_title = models.CharField("عنوان احراز هویت", max_length=100, default="خوش امدید")
+    logo_svg = models.CharField("svg لوگو سایت", max_length=500, default="""
+        <svg width="45" height="45" viewBox="0 0 100 100" fill="none">
+            <defs><linearGradient id="smallGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
+            <circle cx="50" cy="50" r="46" stroke="url(#smallGrad)" stroke-width="4" fill="none"/>
+            <circle cx="50" cy="50" r="14" fill="url(#smallGrad)"/>
+        </svg>
+    """)
+    login_active = models.BooleanField("فعال کردن ورود", default=True)
+    register_active = models.BooleanField("فعال کردن ثبت نام", default=True)
+    forgot_password_active = models.BooleanField("فعال کردن فراموشی رمز", default=True)
 
     def __str__(self):
         return self.name

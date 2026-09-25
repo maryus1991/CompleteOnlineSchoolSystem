@@ -79,39 +79,54 @@
                 </a>
                 <nav class="nav" id="mainNav">
                     <ul class="nav-list">
-                        <li><a href="index.html#home" class="nav-link">خانه</a></li>
-                        <li><a href="index.html#roadmap" class="nav-link">مسیر یادگیری</a></li>
-                        <li><a href="courses.html" class="nav-link">دوره‌ها</a></li>
-                        <li><a href="index.html#portfolio" class="nav-link">نمونه‌کارها</a></li>
-                        <li><a href="index.html#stats" class="nav-link">دستاوردها</a></li>
-                        <li><a href="index.html#mentors" class="nav-link">منتورها</a></li>
-                        <li><a href="index.html#blog" class="nav-link">وبلاگ</a></li>
-                        <li><a href="index.html#events" class="nav-link">رویدادها</a></li>
-                        <li><a href="index.html#testimonials" class="nav-link">نظرات</a></li>
-                        <li><a href="index.html#faq" class="nav-link">سوالات</a></li>
-                        <li><a href="index.html#contact" class="nav-link">تماس</a></li>
+                        <li><a href="{% url 'site:main' %}" class="nav-link">خانه</a></li>
+
+                        <li><a href="index.html#faq" class="nav-link">بانک سوال</a></li>
+                        <li><a href="{% url 'exam:list' %}" class="nav-link">ازمون ها</a></li>
+                        <li><a href="{% url 'class:list' %}" class="nav-link">دروه ها</a></li>
+                        <li><a href="{% url 'article:article-list' %}" class="nav-link">مقالات</a></li>
+
+                        {% if site.faq_active %}
+                        <li><a href="{% url 'site:faq' %}" class="nav-link">سوالات متداول</a></li>
+                        {% endif %}
+                        {% if site.active_counseling %}
+                        <li><a href="{% url 'site:counseling' %}" class="nav-link">درخواست مشاوره</a></li>
+                        {% endif %}
+                        {% if site.active_contact %}
+                        <li><a href="{% url 'site:contact' %}" class="nav-link">تماس با ما</a></li>
+                        {% endif %}
+                        {% if site.about_active %}
+                        <li><a href="{% url 'site:about' %}" class="nav-link">درباره ما</a></li>
+                        {% endif %}
+
                     </ul>
                 </nav>
                 <div class="header-actions">
+                    {% if request.user.is_authenticated %}
                     <a href="auth.html" class="header-icon-btn" id="accountBtn" title="حساب کاربری">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                             <circle cx="12" cy="7" r="4"/>
                         </svg>
-                        <span class="header-icon-label">حساب</span>
+                        <span class="header-icon-label">حساب کاربری</span>
                     </a>
-                    <a href="cart.html" class="header-icon-btn cart-btn" id="cartBtn" title="سبد خرید">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"/>
-                            <circle cx="20" cy="21" r="1"/>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                        </svg>
-                        <span class="header-icon-label">سبد خرید</span>
-                        <span class="cart-badge" id="cartCountBadge" style="display: none;">0</span>
-                    </a>
+
                     <button class="mobile-toggle" id="mobileToggle">
                         <span></span><span></span><span></span>
                     </button>
+                    {% else %}
+                    <a href="{% url 'user:auth' %}" class="header-icon-btn" id="accountBtn" title="ورود و ثبت نام">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span class="header-icon-label">ورود | ثبت نام</span>
+                    </a>
+
+                    <button class="mobile-toggle" id="mobileToggle">
+                        <span></span><span></span><span></span>
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -121,17 +136,25 @@
     <div class="mobile-menu" id="mobileMenu">
         <button class="mobile-close" id="mobileClose"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         <ul class="mobile-nav">
-            <li><a href="index.html#home">خانه</a></li>
-            <li><a href="index.html#roadmap">مسیر یادگیری</a></li>
-            <li><a href="courses.html">دوره‌ها</a></li>
-            <li><a href="index.html#portfolio">نمونه‌کارها</a></li>
-            <li><a href="index.html#stats">دستاوردها</a></li>
-            <li><a href="index.html#mentors">منتورها</a></li>
-            <li><a href="index.html#blog">وبلاگ</a></li>
-            <li><a href="index.html#events">رویدادها</a></li>
-            <li><a href="index.html#testimonials">نظرات</a></li>
-            <li><a href="index.html#faq">سوالات</a></li>
-            <li><a href="index.html#contact">تماس</a></li>
+                        <li><a href="{% url 'site:main' %}" class="nav-link">خانه</a></li>
+
+                        <li><a href="index.html#faq" class="nav-link">بانک سوال</a></li>
+                        <li><a href="{% url 'exam:list' %}" class="nav-link">ازمون ها</a></li>
+                        <li><a href="{% url 'class:list' %}" class="nav-link">دروه ها</a></li>
+                        <li><a href="{% url 'article:article-list' %}" class="nav-link">مقالات</a></li>
+
+                        {% if site.faq_active %}
+                        <li><a href="{% url 'site:faq' %}" class="nav-link">سوالات متداول</a></li>
+                        {% endif %}
+                        {% if site.active_counseling %}
+                        <li><a href="{% url 'site:counseling' %}" class="nav-link">درخواست مشاوره</a></li>
+                        {% endif %}
+                        {% if site.active_contact %}
+                        <li><a href="{% url 'site:contact' %}" class="nav-link">تماس با ما</a></li>
+                        {% endif %}
+                        {% if site.about_active %}
+                        <li><a href="{% url 'site:about' %}" class="nav-link">درباره ما</a></li>
+                        {% endif %}
         </ul>
     </div>
 
@@ -351,7 +374,9 @@
         </div></div></div>
         <div class="footer-bottom"><div class="container"><div class="footer-bottom-content">
             <p data-i18n="footer.copyright">© ۲۰۲۶ آکادمی پولاریس. با <span class="heart">❤️</span> برای نسل بعدی برنامه‌نویسان ایران.</p>
-            <div class="footer-bottom-links"><a href="#" data-i18n="footer.privacy">قوانین</a><a href="#" data-i18n="footer.terms">حریم خصوصی</a></div>
+            <div class="footer-bottom-links">                        {% if site.faq_active %}
+             <a href="{% url 'site:faq' %}" class="nav-link">سوالات متداول</a>
+                        {% endif %}</div>
         </div></div></div>
     </footer>
     {% block footer %}
@@ -359,7 +384,8 @@
     <script src="../../../static/main/js/theme-switcher.js"></script>
     <script src="../../../static/main/js/navigation.js"></script>
     <script src="../../../static/main/js/components.js"></script>
-    <script src="../../../static/main/js/cart.js"></script>
+
     <script src="../../../static/main/js/main.js"></script>
+
 </body>
 </html>

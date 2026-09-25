@@ -160,12 +160,7 @@
     <script src="assets/js/dashboard.js"></script>
     
     <script>
-        function updateCartBadge() {
-            const cartItems = JSON.parse(localStorage.getItem('polaris_cart') || '[]');
-            const badge = document.getElementById('cartCountBadge');
-            if(badge) { badge.textContent = cartItems.length; badge.style.display = cartItems.length > 0 ? 'flex' : 'none'; }
-        }
-        updateCartBadge();
+
         
         window.uploadAvatar = function(input) {
             if(input.files && input.files[0]) {
