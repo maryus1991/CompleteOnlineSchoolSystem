@@ -8,6 +8,7 @@ from apps.users.students.models import Student
 from apps.exams.models import Exam
 from apps.content.models import ClassPractice
 from apps.common.file_storage_script_for_model import UploadPath
+from django.urls import reverse_lazy
 
 
 def photo_path_upload_to(*args, **kwargs): return ""
@@ -35,7 +36,8 @@ class Question(BaseModel):
     major = models.ForeignKey(MajorCategories, related_name='question', on_delete=models.SET_NULL, null=True ,verbose_name='رشته', blank=True)
     lesson = models.ForeignKey(LessonCategories, related_name='question', on_delete=models.SET_NULL, null=True ,verbose_name='درس' , blank=True)
 
-
+    def get_absolute_url(self):
+        return reverse_lazy("question:details", kwargs={"pk": self.pk})
 
     class Meta:
         ordering = ["-sort_number", '-id']
@@ -44,6 +46,7 @@ class Question(BaseModel):
 
     def __str__(self):
         return f" {self.name}"
+
 
 
 class QuestionOption(BaseModel):

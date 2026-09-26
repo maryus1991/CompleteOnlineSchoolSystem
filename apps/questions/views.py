@@ -1,6 +1,6 @@
 
 from django.db.models import Q
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from .models import Question
 from apps.categories.models import (
@@ -11,15 +11,6 @@ from apps.categories.models import (
 
 
 class QuestionBankListView(ListView):
-    """
-    نمایش بانک سوالات
-
-    فیلترها:
-        ?q=
-        ?major=
-        ?grade=
-        ?lesson=
-    """
 
     model = Question
     template_name = "main/qbank/list.html"
@@ -94,5 +85,62 @@ class QuestionBankListView(ListView):
             LessonCategories.objects.all()
         )
 
+        return context
+
+
+class QuestionBankDetailsView(DetailView):
+
+    model = Question
+    template_name = "main/qbank/details.html"
+    context_object_name = "item"
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs) :
+        if not request.site.qbank_active:
+            messages.error(request, "این صفحه غیر فعال میباشد")
+            return redirect("site:main")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = (
+            Question.objects
+            .filter(is_for_qbank=True)
+            .select_related(
+                "grade",
+                "major",
+                "lesson",
+                "answer_key",
+            )
+            .prefetch_related(
+                "options",
+            )
+
+        )
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update(
+            {
+                "related":
+                    Question.objects
+                        .filter(
+                            is_for_qbank=True,
+                            grade=self.object.grade,
+                            major=self.object.major,
+                            lesson=self.object.lesson
+                        )
+                        .select_related(
+                            "grade",
+                            "major",
+                            "lesson"
+                        )
+                        .exclude(
+                        id=self.object.id
+                    )
+            }
+        )
         return context
 

@@ -20,7 +20,6 @@
         background .3s ease,
         color .3s ease;
 }
-
 a {
     text-decoration: none;
 }
@@ -469,10 +468,6 @@ a {
 }
 
 
-/* =========================================================
-   QUESTION HEADER
-========================================================= */
-
 .question-card-header {
     width: 100%;
 
@@ -496,9 +491,6 @@ a {
 
     cursor: pointer;
 }
-
-
-/* Title */
 
 .question-card-title {
     min-width: 0;
@@ -1160,305 +1152,468 @@ a {
     <div class="container">
 
 
+
+                <article class="question-card open">
+
+                    <button
+                        type="submit"
+                        class="question-card-header"
+                        aria-expanded="true"
+                    >
+
+                        <div class="question-card-title">
+
+                            <span class="question-number">
+                                {{ item.pk }}
+                            </span>
+
+                            <h1 class="question-title">
+                                {{ item.name }}
+                            </h1>
+
+                        </div>
+
+
+                        <span class="question-toggle">
+
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <polyline
+                                    points="6 9 12 15 18 9"
+                                ></polyline>
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <div class="question-meta">
+
+                        {% if item.major %}
+
+                            <span class="question-badge">
+
+                                رشته:
+
+                                {{ item.major.name }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if item.grade %}
+
+                            <span class="question-badge">
+
+                                پایه:
+
+                                {{ item.grade.name }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if item.lesson %}
+
+                            <span class="question-badge question-badge-accent">
+
+                                درس:
+
+                                {{ item.lesson.name }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        <span class="question-badge">
+
+                            {{ item.get_type_of_question_display }}
+
+                        </span>
+
+
+                        <span class="question-badge">
+
+                            نمره:
+
+                            {{ item.score }}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CONTENT
+                    ================================================== -->
+
+                    <div class="question-card-content">
+
+                        <div class="question-answer">
+
+
+                            <!-- =========================================
+                                 QUESTION DESCRIPTION
+                            ========================================== -->
+
+                            {% if item.description %}
+
+                                <div class="question-description">
+
+                                    <div class="question-content-label">
+                                        متن سوال
+                                    </div>
+
+                                    <div class="question-description-body">
+                                        {{ item.description|safe }}
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 QUESTION IMAGE
+                            ========================================== -->
+
+                            {% if item.image %}
+
+                                <div class="question-media">
+
+                                    <div class="question-content-label">
+                                        تصویر سوال
+                                    </div>
+
+                                    <img
+                                        src="{{ item.image.url }}"
+                                        alt="{{ item.name }}"
+                                        loading="lazy"
+                                    >
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 QUESTION PDF
+                            ========================================== -->
+
+                            {% if item.pdf_file %}
+
+                                <div class="question-file-wrapper">
+
+                                    <div class="question-content-label">
+                                        فایل سوال
+                                    </div>
+
+                                    <a
+                                        href="{{ item.pdf_file.url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="question-file"
+                                    >
+
+                                        <svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                                            ></path>
+
+                                            <polyline
+                                                points="14 2 14 8 20 8"
+                                            ></polyline>
+                                        </svg>
+
+                                        مشاهده فایل PDF سوال
+
+                                    </a>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 EXAM / PRACTICE
+                            ========================================== -->
+
+                            {% if item.exam or item.practice %}
+
+                                <div class="question-source">
+
+                                    <div class="question-content-label">
+                                        منبع سوال
+                                    </div>
+
+                                    {% if item.exam %}
+
+                                        <span class="question-source-item">
+
+                                            آزمون:
+
+                                            {{ item.exam }}
+
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    {% if item.practice %}
+
+                                        <span class="question-source-item">
+
+                                            تمرین:
+
+                                            {{ item.practice }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 MULTIPLE CHOICE OPTIONS
+                            ========================================== -->
+
+                            {% if item.type_of_question == "تستی چند گزینه‌ای" %}
+
+                                {% with options=item.options.all %}
+
+                                    {% if options %}
+
+                                        <div class="question-options">
+
+                                            <div class="question-content-label">
+                                                گزینه‌های سوال
+                                            </div>
+
+
+                                            {% for option in options %}
+
+                                                <div
+                                                    class="
+                                                        question-option
+                                                        {% if option.is_correct %}
+                                                            question-option-correct
+                                                        {% endif %}
+                                                    "
+                                                >
+
+                                                    <span class="option-number">
+                                                        {{ forloop.counter }}
+                                                    </span>
+
+
+                                                    <span class="option-text">
+                                                        {{ option.text }}
+                                                    </span>
+
+
+                                                    {% if option.is_correct %}
+
+                                                        <span class="option-correct">
+
+                                                            <svg
+                                                                width="14"
+                                                                height="14"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                stroke-width="2"
+                                                            >
+                                                                <polyline
+                                                                    points="20 6 9 17 4 12"
+                                                                ></polyline>
+                                                            </svg>
+
+                                                            پاسخ صحیح
+
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endwith %}
+
+                            {% endif %}
+
+
+                            <!-- =========================================
+                                 ANSWER KEY
+                            ========================================== -->
+
+                            {% if item.answer_key %}
+
+                                <div class="question-answer-key">
+
+                                    <div class="question-answer-label">
+
+                                        <span class="answer-icon">
+                                            ✓
+                                        </span>
+
+                                        <span>
+                                            کلید پاسخ
+                                        </span>
+
+                                        <span class="question-answer-type">
+                                            {{ item.answer_key.get_type_of_answer_display }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- =================================
+                                         TEXT ANSWER
+                                    ================================== -->
+
+                                    {% if item.answer_key.description %}
+
+                                        <div class="question-answer-body">
+
+                                            {{ item.answer_key.description|safe }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- =================================
+                                         IMAGE ANSWER
+                                    ================================== -->
+
+                                    {% if item.answer_key.image %}
+
+                                        <div class="question-media answer-media">
+
+                                            <div class="question-content-label">
+                                                تصویر پاسخ
+                                            </div>
+
+                                            <img
+                                                src="{{ item.answer_key.image.url }}"
+                                                alt="پاسخ {{ item.name }}"
+                                                loading="lazy"
+                                            >
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- =================================
+                                         PDF ANSWER
+                                    ================================== -->
+
+                                    {% if item.answer_key.pdf_file %}
+
+                                        <div class="question-file-wrapper">
+
+                                            <div class="question-content-label">
+                                                فایل پاسخ
+                                            </div>
+
+                                            <a
+                                                href="{{ item.answer_key.pdf_file.url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="question-file"
+                                            >
+
+                                                <svg
+                                                    width="18"
+                                                    height="18"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                >
+                                                    <path
+                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                                                    ></path>
+
+                                                    <polyline
+                                                        points="14 2 14 8 20 8"
+                                                    ></polyline>
+                                                </svg>
+
+                                                مشاهده فایل PDF پاسخ
+
+                                            </a>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="question-no-answer">
+
+                                    <span>
+                                        کلید پاسخ برای این سوال ثبت نشده است.
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+
+        </div>
+    {% if related %}
+
         <div class="section-header question-bank-header">
 
-            <span class="section-subtitle">
-                {{site.qbank_above_tag}}
-            </span>
+            <br>
+            <br>
 
-            <h1 class="section-title">
-                {{site.qbank_title}}
-            </h1>
+            <h2 class="section-title">
+                سوالات مشابه
+            </h2>
 
-            <p class="contact-desc">
-                {{site.qbank_description}}
-            </p>
 
         </div>
+    <div class="question-bank-list">
 
-
-
-
-        <div class="question-filter-card">
-
-            <form method="get" class="question-filter-form">
-
-                <!-- Search -->
-
-                <div class="question-search">
-
-                    <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line
-                            x1="21"
-                            y1="21"
-                            x2="16.65"
-                            y2="16.65"
-                        ></line>
-                    </svg>
-
-                    <input
-                        type="text"
-                        name="q"
-                        value="{{ request.GET.q|default:'' }}"
-                        placeholder="جستجو در سوالات..."
-                        autocomplete="off"
-                    >
-
-                </div>
-
-
-                <!-- Major -->
-
-                <div class="question-filter-field">
-
-                    <label for="question-major">
-                        رشته
-                    </label>
-
-                    <div class="select-wrapper">
-
-                        <select
-                            name="major"
-                            id="question-major"
-                        >
-
-                            <option value="">
-                                همه رشته‌ها
-                            </option>
-
-                            {% for major in majors %}
-
-                                <option
-                                    value="{{ major.pk }}"
-                                    {% if request.GET.major == major.pk|stringformat:"s" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ major.name }}
-                                </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                        <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <polyline
-                                points="6 9 12 15 18 9"
-                            ></polyline>
-                        </svg>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Grade -->
-
-                <div class="question-filter-field">
-
-                    <label for="question-grade">
-                        پایه
-                    </label>
-
-                    <div class="select-wrapper">
-
-                        <select
-                            name="grade"
-                            id="question-grade"
-                        >
-
-                            <option value="">
-                                همه پایه‌ها
-                            </option>
-
-                            {% for grade in grades %}
-
-                                <option
-                                    value="{{ grade.pk }}"
-                                    {% if request.GET.grade == grade.pk|stringformat:"s" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ grade.name }}
-                                </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                        <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <polyline
-                                points="6 9 12 15 18 9"
-                            ></polyline>
-                        </svg>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Lesson -->
-
-                <div class="question-filter-field">
-
-                    <label for="question-lesson">
-                        درس
-                    </label>
-
-                    <div class="select-wrapper">
-
-                        <select
-                            name="lesson"
-                            id="question-lesson"
-                        >
-
-                            <option value="">
-                                همه درس‌ها
-                            </option>
-
-                            {% for lesson in lessons %}
-
-                                <option
-                                    value="{{ lesson.pk }}"
-                                    {% if request.GET.lesson == lesson.pk|stringformat:"s" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ lesson.name }}
-                                </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                        <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <polyline
-                                points="6 9 12 15 18 9"
-                            ></polyline>
-                        </svg>
-
-                    </div>
-
-                </div>
-
-
-
-
-                <button
-                    type="submit"
-                    class="question-filter-button"
-                >
-
-                    <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <circle
-                            cx="11"
-                            cy="11"
-                            r="8"
-                        ></circle>
-
-                        <line
-                            x1="21"
-                            y1="21"
-                            x2="16.65"
-                            y2="16.65"
-                        ></line>
-                    </svg>
-
-                    جستجو
-
-                </button>
-
-            </form>
-
-        </div>
-
-
-        <!-- =====================================================
-             RESULT HEADER
-        ====================================================== -->
-
-        <div class="question-results-header">
-
-
-
-
-            {% if request.GET.q or request.GET.major or request.GET.grade or request.GET.lesson %}
-
-                <a
-                    href="{% url 'question:list' %}"
-                    class="question-clear-filter"
-                >
-
-                    حذف فیلترها
-
-                    <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <line
-                            x1="18"
-                            y1="6"
-                            x2="6"
-                            y2="18"
-                        ></line>
-
-                        <line
-                            x1="6"
-                            y1="6"
-                            x2="18"
-                            y2="18"
-                        ></line>
-                    </svg>
-
-                </a>
-
-            {% endif %}
-
-        </div>
-
-        <div class="question-bank-list">
-
-            {% for item in questions %}
+            {% for item in related %}
 
                 <article class="question-card">
 
@@ -1472,7 +1627,7 @@ a {
                         <div class="question-card-title">
 
                             <span class="question-number">
-                                {{ page_obj.start_index|add:forloop.counter0 }}
+                                {{ forloop.counter }}
                             </span>
 
                             <span class="question-title">
@@ -1562,67 +1717,10 @@ a {
 
 
                 </article>
-
-            {% empty %}
-
-
-                <div class="question-empty">
-
-                    <div class="question-empty-icon">
-
-                        <svg
-                            width="34"
-                            height="34"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        >
-                            <path
-                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                            ></path>
-
-                            <polyline
-                                points="14 2 14 8 20 8"
-                            ></polyline>
-
-                            <line
-                                x1="8"
-                                y1="13"
-                                x2="16"
-                                y2="13"
-                            ></line>
-
-                            <line
-                                x1="8"
-                                y1="17"
-                                x2="14"
-                                y2="17"
-                            ></line>
-                        </svg>
-
-                    </div>
-
-
-                    <h3>
-                        سوالی پیدا نشد
-                    </h3>
-
-
-                    <p>
-                        با تغییر فیلترها یا عبارت جستجو دوباره تلاش کنید.
-                    </p>
-
-                </div>
-
-
-            {% endfor %}
-
-        </div>
-
+        {% endfor %}
 
     </div>
-
+    {% endif %}
 </section>
 <script>
 
@@ -1693,6 +1791,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+
 
 
 

@@ -1,16 +1,13 @@
 
 from django.urls import path
 
-from .views import QuestionBankListView
+from . import views
 
 
 app_name = "question"
 
 urlpatterns = [
-    path(
-        "",
-        QuestionBankListView.as_view(),
-        name="list",
-    ),
+    path("", views.QuestionBankListView.as_view(), name="list"),
+    path("<int:pk>", views.QuestionBankDetailsView.as_view(), name="details"),
 ]
 
