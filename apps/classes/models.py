@@ -39,7 +39,7 @@ class Class(BaseModel):
 
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ["-sort_number", '-pk']
         verbose_name = 'کلاس'
         verbose_name_plural = 'کلاس ها'
 

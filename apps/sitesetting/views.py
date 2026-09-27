@@ -8,11 +8,45 @@ from apps.sitesetting.forms import ContactForm, CounselingForm
 from django.urls import reverse_lazy
 
 from apps.sitesetting.models import FAQ, TimeLine, TestMonomials
+from apps.classes.models import Class
+from apps.users.accounts.models import User
+from apps.article.models import Article
+from django.db.models import Count, Exists, OuterRef
+from apps.users.students.models import Student
 
 
 
 class Main(TemplateView):
     template_name = 'main/index.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        data.update(
+            {
+                "course": Class.objects.filter(
+                        is_active=True,
+                        teacher__is_active=True,
+                        lesson__is_active=True,
+                        major__is_active=True,
+                        grade__is_active=True,
+                        is_public=True,
+                    ).annotate(
+                        student_count=Count('student', distinct=True),
+                        section_count=Count('sections', distinct=True),
+                        is_student=Exists(
+                            Student.objects.filter(
+                                user=self.request.user if self.request.user.is_authenticated else None,
+                                classes=OuterRef("pk"),
+                            )
+                        ),
+                    ).select_related("grade", "major", "lesson").prefetch_related("sections").distinct()[:3],
+                "mentors": User.objects.filter(is_active=True, publish=True).all()[:3],
+                "blog": Article.objects.filter(is_active=True).select_related("category").all()[:3],
+            }
+        )
+
+        return data
 
 class About(TemplateView):
     template_name = 'main/site/about.html'

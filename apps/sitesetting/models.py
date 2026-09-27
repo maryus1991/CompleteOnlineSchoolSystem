@@ -62,7 +62,7 @@ class Site(BaseModel):
     about_active = models.BooleanField("فعال صفحه درباره ما", default=True)
 
     auth_title = models.CharField("عنوان احراز هویت", max_length=100, default="خوش امدید")
-    logo_svg = models.CharField("svg لوگو سایت", max_length=500, default="""
+    logo_svg = models.TextField("svg لوگو سایت", default="""
         <svg width="45" height="45" viewBox="0 0 100 100" fill="none">
             <defs><linearGradient id="smallGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
             <circle cx="50" cy="50" r="46" stroke="url(#smallGrad)" stroke-width="4" fill="none"/>
@@ -98,6 +98,87 @@ class Site(BaseModel):
     instagram_link = models.URLField("لینک اینستاگرام", default="#")
     telegram_link = models.URLField("لینک تلرام", default="#")
     other_link = models.URLField("لینک های دیگر", default="#")
+
+    main_page_first_button_url = models.URLField("لینک دکمه شماره یک صفحه اصلی", default="/free-counseling/")
+    main_page_first_button_name = models.CharField("نام دکمه شماره یک صفحه اصلی", default="درخواست مشاوره", max_length=50)
+    main_page_first_button_svg = models.TextField("svg دکمه شماره یک صفحه اصلی",  default="""
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+    """)
+
+    main_page_second_button_url = models.URLField(" لینک دکمه شماره دو صفحه اصلی", default="/qbank/")
+    main_page_second_button_name = models.CharField("نام دکمه شماره دو صفحه اصلی", default="بانک سوال", max_length=50)
+    main_page_second_button_svg = models.TextField("svg دکمه شماره دو صفحه اصلی",  default="""
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+    """)
+
+    main_page_badge = models.CharField("بگ صفحه اصلی", default="ظرفیت محدود ترم تابستان ۱۴۰۵", max_length=50)
+    main_page_greeting = models.CharField("گریتینگ صفحه اصلی", default="وجود شما باعث افتخار ماست", max_length=50)
+
+    about_img = ResizedImageField("عکس صفحه اصلی", upload_to=UploadPath("about-image"), null=True, blank=True)
+
+    main_page_first_stats_number = models.CharField("عدد اول روی تصویر صفحه اصلی ", max_length=50, default="درصد قبولی")
+    main_page_first_stats_name = models.CharField("نام اول روی تصویر صفحه اصلی ", default="۸۵٪", max_length=50)
+    main_page_first_stats_svg = models.TextField("svg اول روی تصویر صفحه اصلی",  default="""
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+    """)
+
+    main_page_second_stats_number =  models.CharField("عدد دوم روی تصویر صفحه اصلی ", default="۸,۵۰۰+", max_length=50)
+    main_page_second_stats_name = models.CharField("نام دوم روی تصویر صفحه اصلی ", default="تعداد انش اموزان", max_length=50)
+    main_page_second_stats_svg = models.TextField("svg دوم روی تصویر صفحه اصلی",  default="""
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+    """)
+
+    first_stats_card_svg = models.TextField("svg نماد امار اول",  default="""
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+    """)
+    first_stats_card_number =  models.CharField("عدد نماد امار اول", default="8500", max_length=50)
+    first_stats_card_symbol =  models.CharField("علامت نماد امار اول", default="+", max_length=50)
+    first_stats_card_name = models.CharField("نام نماد امار اول", default="دانش اموزان", max_length=50)
+
+
+    second_stats_card_svg = models.TextField("svg نماد امار دوم",  default="""
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+        </svg>
+    """)
+    second_stats_card_number =  models.CharField("عدد نماد امار دوم", default="42", max_length=50)
+    second_stats_card_symbol =  models.CharField("علامت نماد امار دوم", default="", max_length=50)
+    second_stats_card_name = models.CharField("نام نماد امار دوم", default="مدرسه", max_length=50)
+
+
+    third_stats_card_svg = models.TextField("svg نماد امار سوم",  default="""
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        </svg>
+    """)
+    third_stats_card_number =  models.CharField("عدد نماد امار سوم", default="98", max_length=50)
+    third_stats_card_symbol =  models.CharField("علامت نماد امار سوم", default="%", max_length=50)
+    third_stats_card_name = models.CharField("نام نماد امار سوم", default="رضایت", max_length=50)
+
+
+    fourth_stats_card_svg = models.TextField("svg نماد امار چهار",  default="""
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+    """)
+    fourth_stats_card_number =  models.CharField("عدد نماد امار چهار", default="120", max_length=50)
+    fourth_stats_card_symbol =  models.CharField("علامت نماد امار چهار", default="+", max_length=50)
+    fourth_stats_card_name = models.CharField("نام نماد امار چهار", default="پروژه عملی", max_length=50)
+
+    main_page_course_section_active = models.BooleanField("فعال کردن قسمت دوره ها در صفحه اصلی", default=True)
+    main_page_course_name =  models.CharField("نام قسمت دوره ها در صفحه اصلی", default="بهترین دوره ها", max_length=100)
+
+    main_page_mentors_active = models.BooleanField("فعال کردن قسمت افراد در صفحه اصلی", default=True)
+    main_page_mentors_name =  models.CharField("نام قسمت افراد در صفحه اصلی", default="برترین ها", max_length=100)
+
+    main_page_blog_active = models.BooleanField("فعال کردن قسمت مقالات در صفحه اصلی", default=True)
+    main_page_blog_name =  models.CharField("نام قسمت مقالات در صفحه اصلی", default="مقالات آموزشی", max_length=100)
 
 
     def __str__(self):

@@ -12,22 +12,51 @@
             <div class="container">
                 <div class="hero-grid">
                     <div class="hero-content">
-                        <div class="hero-badge"><span class="badge-dot"></span><span data-i18n="hero.badge">ظرفیت محدود ترم تابستان ۱۴۰۵</span></div>
+                        <div class="hero-badge"><span class="badge-dot"></span><span data-i18n="hero.badge">{{site.main_page_badge}}</span></div>
                         <h1 class="hero-title">
-                            <span class="title-line" data-i18n="hero.greeting">از امروز کدنویسی را</span>
-                            <span class="title-gradient" data-i18n="hero.title-main">حرفه‌ای شروع کن</span>
+                            <span class="title-line" data-i18n="hero.greeting">{{site.main_page_greeting}}</span>
+                            <span class="title-gradient" data-i18n="hero.title-main">{{site.name}}</span>
                         </h1>
-                        <p class="hero-desc" data-i18n="hero.desc">در آکادمی پولاریس، شما فقط کدنویسی یاد نمی‌گیرید. شما تبدیل به یک مهندس نرم‌افزار تمام‌عیار می‌شوید که آماده ورود به بازار کار جهانی است.</p>
+                        <p class="hero-desc" data-i18n="hero.desc">{{site.short_description}}</p>
                         <div class="hero-cta">
-                            <a href="courses.html" class="btn btn-primary"><span data-i18n="hero.cta1">مشاهده دوره‌ها</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
-                            <a href="#roadmap" class="btn btn-outline"><span data-i18n="hero.cta2">مسیر یادگیری</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></a>
+                            <a href="{{site.main_page_first_button_url}}" class="btn btn-primary">
+                                <span data-i18n="hero.cta1">{{site.main_page_first_button_name}}</span>
+                                {{site.main_page_first_button_svg|safe}}
+                            </a>
+                            <a href="{{site.main_page_second_button_url}}" class="btn btn-outline">
+                                <span data-i18n="hero.cta2">{{site.main_page_second_button_name}}</span>
+                                {{site.main_page_second_button_svg|safe}}
+                            </a>
                         </div>
 
                     </div>
                     <div class="hero-visual">
-                        <div class="image-wrapper"><img src="../../static/main/image/author.jpg" alt="آکادمی پولاریس"></div>
-                        <div class="hero-floating-card card-1"><div class="card-icon-small"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div><div><strong>۸۵۰۰+</strong><span>دانشجو</span></div></div>
-                        <div class="hero-floating-card card-2"><div class="card-icon-small"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><div><strong>۹۸٪</strong><span>اشتغال</span></div></div>
+                        <div class="image-wrapper">
+                            {% if site.about_img %}
+                                <img src="{{site.about_img.url}}" alt="{{site.name}}">
+                            {% else %}
+                                <img src="../../static/main/image/data.jpg" alt="{{site.name}}">
+                            {% endif %}
+
+                        </div>
+                        <div class="hero-floating-card card-1">
+                            <div class="card-icon-small">
+                                {{site.main_page_first_stats_svg|safe}}
+                            </div>
+                            <div>
+                                <strong>{{site.main_page_first_stats_name}}</strong>
+                                <span>{{site.main_page_first_stats_number}}</span>
+                            </div>
+                        </div>
+                        <div class="hero-floating-card card-2">
+                            <div class="card-icon-small">
+                                {{site.main_page_second_stats_svg|safe}}
+                            </div>
+                            <div>
+                                <strong>{{site.main_page_second_stats_name}}</strong>
+                                <span>{{site.main_page_second_stats_number}}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,59 +65,244 @@
         <!-- STATS SECTION -->
         <section class="stats-section" id="stats">
             <div class="container"><div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><span class="stat-number"><span class="counter" data-target="8500">0</span>+</span><span class="stat-label" data-i18n="stats.students">دانشجویان</span></div>
-                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect></svg></div><span class="stat-number"><span class="counter" data-target="42">0</span></span><span class="stat-label" data-i18n="stats.companies">شرکت همکار</span></div>
-                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path></svg></div><span class="stat-number"><span class="counter" data-target="98">0</span>%</span><span class="stat-label" data-i18n="stats.satisfaction">رضایت</span></div>
-                <div class="stat-card"><div class="stat-icon-wrap"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div><span class="stat-number"><span class="counter" data-target="120">0</span>+</span><span class="stat-label" data-i18n="stats.projects">پروژه عملی</span></div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap">
+{{site.first_stats_card_svg|safe}}
+                    </div>
+                    <span class="stat-number">
+                        <span class="counter" data-target="{{site.first_stats_card_number}}">0</span>{{site.first_stats_card_symbol}}
+                    </span>
+                    <span class="stat-label" data-i18n="stats.students">{{site.first_stats_card_name}}</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap">
+{{site.second_stats_card_svg|safe}}
+                    </div>
+                    <span class="stat-number">
+                        <span class="counter" data-target="{{site.second_stats_card_number}}">0</span>{{site.second_stats_card_symbol}}
+                        <span class="stat-label" data-i18n="stats.companies">{{site.second_stats_card_name}}</span>
+                    </span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap">
+{{site.third_stats_card_svg|safe}}
+                    </div>
+                    <span class="stat-number">
+                        <span class="counter" data-target="{{site.third_stats_card_number}}">0</span>{{site.third_stats_card_symbol}}
+                    </span>
+                    <span class="stat-label" data-i18n="stats.satisfaction">{{site.third_stats_card_name}}</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap">
+{{site.fourth_stats_card_svg|safe}}
+                    </div>
+                    <span class="stat-number">
+                        <span class="counter" data-target="{{site.fourth_stats_card_number}}">0</span>{{site.fourth_stats_card_symbol}}
+                    </span>
+                    <span class="stat-label" data-i18n="stats.projects">{{site.fourth_stats_card_name}}</span>
+                </div>
             </div></div>
         </section>
 
+{% if site.main_page_course_section_active %}
+<style>
+    .course-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
-        <!-- COURSES SECTION -->
-        <section class="courses" id="courses">
-            <div class="container">
-                <div class="section-header"><span class="section-subtitle" data-i18n="courses.subtitle">دوره‌های تخصصی</span><h2 class="section-title" data-i18n="courses.title">دوره‌هایی که آینده شما را می‌سازند</h2><p class="section-desc" data-i18n="courses.desc">تمامی دوره‌ها پروژه‌محور و بر اساس نیاز بازار کار طراحی شده‌اند.</p></div>
-                <div class="courses-grid">
-                    <div class="course-card"><div class="course-image"><img src="../../static/main/image/front.jpg" alt="Front-End"><div class="course-badge" data-i18n="courses.badge1">پرفروش</div></div><div class="course-content"><div class="course-meta"><span data-i18n="courses.meta1">۳۲ جلسه</span><span data-i18n="courses.level1">مبتدی تا پیشرفته</span></div><h3 class="course-title" data-i18n="courses.title1">بوت‌کمپ جامع فرانت‌اند</h3><p class="course-desc" data-i18n="courses.desc1">HTML، CSS، JavaScript، React، Next.js و همه چیز برای تبدیل شدن به یک فرانت‌اندکار حرفه‌ای.</p><div class="course-footer"><span class="course-price"><span data-i18n="courses.price1">۸,۵۰۰,۰۰۰</span> <span data-i18n="courses.currency">تومان</span></span><a href="course-single.html?id=1" class="btn btn-primary" data-i18n="courses.btn">شرکت در دوره</a></div></div></div>
-                    <div class="course-card"><div class="course-image"><img src="../../static/main/image/node.webp" alt="Back-End"><div class="course-badge" data-i18n="courses.badge2">جدید</div></div><div class="course-content"><div class="course-meta"><span data-i18n="courses.meta2">۲۸ جلسه</span><span data-i18n="courses.level2">متوسط تا پیشرفته</span></div><h3 class="course-title" data-i18n="courses.title2">مهندسی بک‌اند با Node.js</h3><p class="course-desc" data-i18n="courses.desc2">طراحی API، معماری میکروسرویس، کار با دیتابیس‌ها و مدیریت حرفه‌ای سرور.</p><div class="course-footer"><span class="course-price"><span data-i18n="courses.price2">۹,۲۰۰,۰۰۰</span> <span data-i18n="courses.currency">تومان</span></span><a href="course-single.html?id=2" class="btn btn-primary" data-i18n="courses.btn">شرکت در دوره</a></div></div></div>
-                    <div class="course-card"><div class="course-image"><img src="../../static/main/image/full.jpg" alt="Full-Stack"><div class="course-badge" data-i18n="courses.badge3">ویژه</div></div><div class="course-content"><div class="course-meta"><span data-i18n="courses.meta3">۴۸ جلسه</span><span data-i18n="courses.level3">صفر تا استخدام</span></div><h3 class="course-title" data-i18n="courses.title3">پکیج کامل فول‌استک</h3><p class="course-desc" data-i18n="courses.desc3">همه مهارت‌های لازم برای یک فول‌استک دولوپر در یک پکیج جامع و کامل.</p><div class="course-footer"><span class="course-price"><span data-i18n="courses.price3">۱۵,۰۰۰,۰۰۰</span> <span data-i18n="courses.currency">تومان</span></span><a href="course-single.html?id=3" class="btn btn-primary" data-i18n="courses.btn">شرکت در دوره</a></div></div></div>
+.course-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* موبایل */
+@media (max-width: 576px) {
+    .course-actions {
+        width: 100%;
+        display: flex;
+    }
+
+    .course-action-btn {
+        flex: 1;
+        min-width: 0;
+    }
+    .course-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+}
+    .course-card {
+    height: 100%;
+}
+
+.course-image {
+    aspect-ratio: 16 / 9;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+</style>
+    <section class="courses" id="courses">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle" data-i18n="courses.subtitle">    {{site.main_page_course_name}}</span>
+                    </div>
+        <div class="courses-grid" id="coursesContainer">
+
+                                {% for item in course %}
+                <div class="course-card" >
+                <div class="course-image">
+                    <img src="{{item.image.url}}" alt="{{item.name}}" >
+                    <div class="course-badge">{{item.lesson.name}} {{item.grade.name}}  {{item.major.name}}</div>
+                    {% if item.is_student %}
+                    <div class="course-badge enrolled-badge" style="background: linear-gradient(135deg, #10b981, #059669); right: auto; left: 15px;">✓ ثبت‌نام شده</div>
+                    {% endif %}
+                </div>
+                <div class="course-content">
+                    <div class="course-meta">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {{ item.section_count }} جلسه
+                        </span>
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            {{item.student_count}} شرکت کننده
+                        </span>
+                    </div>
+                    <h3 class="course-title">{{item.name}}</h3>
+                    <p class="course-desc">{{item.summery}}</p>
+                    <div class="course-features">
+                        <span class="feature-tag">{{item.first_tag}}</span><span class="feature-tag">{{item.second_tag}}</span><span class="feature-tag">{{item.third_tag}}</span>
+                    </div>
+                   <div class="course-footer">
+    {% if item.is_free or item.price <= 0 %}
+        <span class="course-price">رایگان</span>
+    {% else %}
+        <span class="course-price"> {{item.get_price}}   تومان </span>
+    {% endif %}
+
+    <div class="course-actions">
+        <a href="{{ item.get_absolute_url }}"
+           title="جزئیات"
+           class="btn btn-outline btn-sm course-action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            جزئیات
+        </a>
+
+
+    </div>
+</div>
                 </div>
             </div>
-        </section>
+            {% endfor %}
 
-        <!-- MENTORS SECTION -->
-        <section class="mentors" id="mentors">
-            <div class="container">
-                <div class="section-header"><span class="section-subtitle" data-i18n="mentors.subtitle">تیم رویایی</span><h2 class="section-title" data-i18n="mentors.title">منتورهای آکادمی پولاریس</h2><p class="section-desc" data-i18n="mentors.desc">با برنامه‌نویسانی کار می‌کنید که در بزرگترین شرکت‌های دنیا کدنویسی کرده‌اند.</p></div>
-                <div class="mentors-grid">
-                    <div class="mentor-card"><div class="mentor-avatar"><img src="../../static/main/image/user1.jpg" alt="آرش محمدی"></div><div class="mentor-info"><h4 data-i18n="mentors.1.name">آرش محمدی</h4><span data-i18n="mentors.1.role">Senior Front-End در گوگل</span><p data-i18n="mentors.1.desc">۱۰ سال سابقه در توسعه محصولات کاربر-محور</p><div class="mentor-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path></svg></a><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></div></div></div>
-                    <div class="mentor-card"><div class="mentor-avatar"><img src="../../static/main/image/user4.jpg" alt="سارا احمدی"></div><div class="mentor-info"><h4 data-i18n="mentors.2.name">سارا احمدی</h4><span data-i18n="mentors.2.role">Back-End Engineer در آمازون</span><p data-i18n="mentors.2.desc">متخصص معماری میکروسرویس و سیستم‌های توزیع‌شده</p><div class="mentor-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path></svg></a><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></div></div></div>
-                    <div class="mentor-card"><div class="mentor-avatar"><img src="../../static/main/image/user2.jpg" alt="علی رضایی"></div><div class="mentor-info"><h4 data-i18n="mentors.3.name">علی رضایی</h4><span data-i18n="mentors.3.role">Full-Stack & AI در اسنپ</span><p data-i18n="mentors.3.desc">تبدیل ایده‌های پیچیده به محصولات مقیاس‌پذیر</p><div class="mentor-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path></svg></a><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></div></div></div>
                 </div>
-            </div>
-        </section>
+                </div>
+            </section>
+{% endif %}
+{% if site.main_page_mentors_active %}
 
-        <!-- BLOG SECTION -->
-        <section class="blog" id="blog">
-            <div class="container">
-                <div class="section-header"><span class="section-subtitle" data-i18n="blog.subtitle">مقالات آموزشی</span><h2 class="section-title" data-i18n="blog.title">از وبلاگ پولاریس</h2><p class="section-desc" data-i18n="blog.desc">جدیدترین مقالات و نکات برنامه‌نویسی.</p></div>
-                <div class="blog-grid">
-                    <article class="blog-card"><div class="blog-image"><img src="../../static/main/image/css.webp" alt="مقاله"><div class="blog-category" data-i18n="blog.cat1">فرانت‌اند</div></div><div class="blog-content"><div class="blog-meta"><span>۱۵ خرداد ۱۴۰۵</span><span>۸ دقیقه</span></div><h3 data-i18n="blog.title1">۱۰ ترفند CSS که باید بدانید</h3><p data-i18n="blog.desc1">کدهای تمیزتر و حرفه‌ای‌تر با CSS مدرن.</p><a href="#" class="blog-link"><span data-i18n="blog.readmore">ادامه مطلب</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></div></article>
-                    <article class="blog-card"><div class="blog-image"><img src="../../static/main/image/docker.webp" alt="مقاله"><div class="blog-category" data-i18n="blog.cat2">بک‌اند</div></div><div class="blog-content"><div class="blog-meta"><span>۱۰ خرداد ۱۴۰۵</span><span>۱۲ دقیقه</span></div><h3 data-i18n="blog.title2">راهنمای کامل Docker</h3><p data-i18n="blog.desc2">همه چیز درباره کانتینرها در پروژه‌های واقعی.</p><a href="#" class="blog-link"><span data-i18n="blog.readmore">ادامه مطلب</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></div></article>
-                    <article class="blog-card"><div class="blog-image"><img src="../../static/main/image/github.webp" alt="مقاله"><div class="blog-category" data-i18n="blog.cat3">هوش مصنوعی</div></div><div class="blog-content"><div class="blog-meta"><span>۵ خرداد ۱۴۰۵</span><span>۱۰ دقیقه</span></div><h3 data-i18n="blog.title3">کدنویسی سریع با GitHub Copilot</h3><p data-i18n="blog.desc3">بهترین روش‌های استفاده از AI در توسعه.</p><a href="#" class="blog-link"><span data-i18n="blog.readmore">ادامه مطلب</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></div></article>
-                </div>
-            </div>
-        </section>
+    <section class="mentors" id="mentors">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle" data-i18n="mentors.subtitle">{{site.main_page_mentors_name}}</span>
 
-        <!-- EVENTS SECTION -->
-        <section class="events" id="events">
-            <div class="container">
-                <div class="section-header"><span class="section-subtitle" data-i18n="events.subtitle">رویدادها و کارگاه‌ها</span><h2 class="section-title" data-i18n="events.title">رویدادهای پیش رو</h2><p class="section-desc" data-i18n="events.desc">در کارگاه‌ها و وبینارهای رایگان ما شرکت کنید.</p></div>
-                <div class="events-grid">
-                    <div class="event-card"><div class="event-date"><span class="event-day">۲۵</span><span class="event-month">تیر</span></div><div class="event-info"><span class="event-type" data-i18n="events.type1">وبینار رایگان</span><h3 data-i18n="events.title1">معرفی Next.js ۱۵</h3><p data-i18n="events.desc1">با ویژگی‌های جدید آشنا شوید.</p><div class="event-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ۱۸:۰۰</span></div><a href="#contact" class="btn btn-outline btn-sm" data-i18n="events.register">ثبت‌نام رایگان</a></div></div>
-                    <div class="event-card"><div class="event-date"><span class="event-day">۲۸</span><span class="event-month">تیر</span></div><div class="event-info"><span class="event-type" data-i18n="events.type2">کارگاه حضوری</span><h3 data-i18n="events.title2">ساخت اپ با React Native</h3><p data-i18n="events.desc2">یک اپلیکیشن کامل از صفر بسازید.</p><div class="event-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ۱۴:۰۰</span></div><a href="#contact" class="btn btn-outline btn-sm" data-i18n="events.register">ثبت‌نام رایگان</a></div></div>
-                    <div class="event-card"><div class="event-date"><span class="event-day">۵</span><span class="event-month">مرداد</span></div><div class="event-info"><span class="event-type" data-i18n="events.type1">وبینار رایگان</span><h3 data-i18n="events.title3">مسیر شغلی در ۱۴۰۵</h3><p data-i18n="events.desc3">با نقشه راه شغلی آشنا شوید.</p><div class="event-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ۱۹:۰۰</span></div><a href="#contact" class="btn btn-outline btn-sm" data-i18n="events.register">ثبت‌نام رایگان</a></div></div>
+                    </div>
+                    <div class="mentors-grid">
+                    {% for item in mentors %}
+                    <div class="mentor-card">
+                        <div class="mentor-avatar">
+                            <img src="{{item.profile_image.url}}" alt="{{item.get_full_name}}">
+                        </div>
+                        <div class="mentor-info">
+                            <h2 data-i18n="mentors.1.name" data-i18n="mentors.1.role">{{item.get_full_name}}</h2>
+
+                            <p data-i18n="mentors.1.desc">{{item.biography}}</p>
+                            <div class="mentor-social">
+                                {% if item.telegram_link %}
+                                <a href="{{item.telegram_link}}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path></svg>
+                                </a>
+                                {% endif %}
+                                {% if item.instagram_link %}
+                                <a href="{{item.instagram_link}}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+{% endif %}
+{% if site.main_page_blog_active %}
+
+    <section class="blog" id="blog">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-subtitle" data-i18n="blog.subtitle">    {{site.main_page_blog_name}}</span>
+                    </div>
+                    <div class="blog-grid">
+                    {% for item in blog %}
+                    <article class="blog-card">
+                        <div class="blog-image">
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                            <div class="blog-category" data-i18n="blog.cat1">
+                                {{ item.category.name }}
+                            </div>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span>{{ item.updated_at }}</span>
+                                <span>{{ item.reading_time }} دقیقه</span>
+                            </div>
+                            <h2 data-i18n="blog.title1">{{ item.name }}</h2>
+                            <p data-i18n="blog.desc1">{{ item.summery }}</p>
+                            <a href="{{ item.get_absolute_url }}" class="blog-link">
+                                <span data-i18n="blog.readmore">ادامه مطلب</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                    </div>
+                </div>
+            </section>
+{% endif %}
+
 {% endblock %}
