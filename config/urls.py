@@ -28,6 +28,7 @@ urlpatterns = [
     path('users/', include('apps.users.accounts.urls')),
     path('exams/', include('apps.exams.urls')),
     path('qbank/', include('apps.questions.urls')),
+    path('student/', include('apps.users.students.urls')),
 ]
 
 if settings.DEBUG:

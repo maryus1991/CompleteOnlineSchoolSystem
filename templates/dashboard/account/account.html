@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "dashboard/base.html" %}
 
-</body>
-</html>
+
+{% block main  %}
+<div class="welcome-premium">
+    <div class="welcome-content">
+        <div class="welcome-badge">
+            <span class="badge-dot"></span>
+            <span>ویرایش حساب</span>
+        </div>
+        <h1 class="welcome-title">
+            ویرایش <span class="gradient-text">پروفایل</span>
+        </h1>
+        <p class="welcome-desc">اطلاعات شخصی خود را به‌روزرسانی کنید</p>
+    </div>
+</div>
+<div style="padding:25px">
+    <form id="editProfileForm" class="edit-profile-form">
+        <div class="form-group-glass">
+            <input type="text" id="editName"  placeholder=" ">
+            <label>نام و نام خانوادگی</label>
+        </div>
+        <div class="form-group-glass">
+            <input type="email" id="editEmail"  placeholder=" ">
+            <label>آدرس ایمیل</label>
+        </div>
+        <div class="form-group-glass">
+            <input type="tel" id="editPhone"  placeholder=" ">
+            <label>شماره تماس</label>
+        </div>
+        <div class="form-group-glass">
+            <input type="password"   placeholder=" ">
+            <label>رمز عبور جدید (اختیاری)</label>
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn-save">ذخیره تغییرات</button>
+            <a   class="btn-cancel" href="{% url 'student:account' %}" >انصراف</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

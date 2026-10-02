@@ -8,7 +8,9 @@
 * {
     font-family: 'Peyda', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
-
+a {
+    text-decoration: none;
+}
 .dashboard-premium {
     padding: 130px 0 80px;
     background: var(--bg-primary);

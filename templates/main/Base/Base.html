@@ -109,7 +109,7 @@
                 </nav>
                 <div class="header-actions">
                     {% if request.user.is_authenticated %}
-                    <a href="auth.html" class="header-icon-btn" id="accountBtn" title="حساب کاربری">
+                    <a href="{% url 'student:main' %}" class="header-icon-btn" id="accountBtn" title="حساب کاربری">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                             <circle cx="12" cy="7" r="4"/>

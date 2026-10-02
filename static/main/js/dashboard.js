@@ -1,15 +1,10 @@
-// ============================================
-// DASHBOARD.JS - داشبورد حرفه‌ای
-// ============================================
 
-// تبدیل عدد به فارسی
 function toPersianNumber(num) {
-    if (num === undefined || num === null) return '۰';
     const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
     return num.toString().replace(/\d/g, d => persianDigits[d]);
 }
 
-// مقداردهی اولیه داده‌ها در localStorage با ۴ دوره کامل
+
 function initData() {
     const courses = [
         { id: 1, title: 'بوت‌کمپ جامع فرانت‌اند', price: 8500000, image: '../../static/main/image/front.jpg', progress: 45 },
@@ -115,13 +110,7 @@ function updateCartBadge() {
     if (badge) { badge.textContent = cart.length; badge.style.display = cart.length > 0 ? 'flex' : 'none'; }
 }
 
-function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.innerHTML = msg;
-    toast.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, #00f2fe, #4facfe); color:white; padding:12px 24px; border-radius:50px; z-index:10000; font-weight:600; animation:fadeInUp 0.3s ease;';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
+
 
 // ========== بخش‌های محتوایی ==========
 

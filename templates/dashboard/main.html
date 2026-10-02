@@ -1,0 +1,25 @@
+{% extends "dashboard/base.html" %}
+
+{% block main %}
+    <div id="overviewContent">
+        <div class="welcome-premium">
+            <div class="welcome-content">
+                <div class="welcome-badge"><span class="badge-dot"></span><span data-i18n="dashboard.proLevel">سطح حرفه‌ای</span></div>
+                <h1 class="welcome-title"><span data-i18n="dashboard.welcomeBack">خوش برگشتی،</span> <span class="gradient-text" id="welcomeUserName">کاربر عزیز</span></h1>
+                <p class="welcome-desc" data-i18n="dashboard.todayGoal">امروز چه مهارت جدیدی می‌خواهید یاد بگیرید؟</p>
+            </div>
+            <div class="welcome-stats-premium">
+                <div class="premium-stat"><div class="stat-icon">🔥</div><div class="stat-info"><span class="stat-value" id="streakDays">۰</span><span class="stat-label" data-i18n="dashboard.streak">روز پیاپی</span></div></div>
+                <div class="premium-stat"><div class="stat-icon">⭐</div><div class="stat-info"><span class="stat-value" id="totalPoints">۰</span><span class="stat-label" data-i18n="dashboard.points">امتیاز</span></div></div>
+                <div class="premium-stat"><div class="stat-icon">🏆</div><div class="stat-info"><span class="stat-value" id="userRank">#۱</span><span class="stat-label" data-i18n="dashboard.rank">رتبه</span></div></div>
+            </div>
+        </div>
+        <div class="stats-premium-grid">
+            <div class="stat-premium-card"><div class="card-icon bg-1"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a10 10 0 1 0 10 10 10 10 0 0 0-10-10z M12 6v6l4 2"/></svg></div><div class="card-info"><h3 id="totalCourses">۰</h3><p data-i18n="dashboard.enrolledCourses">دوره ثبت‌نام شده</p></div><div class="card-trend up" id="coursesTrend">+۰%</div></div>
+            <div class="stat-premium-card"><div class="card-icon bg-2"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="card-info"><h3 id="completedCourses">۰</h3><p data-i18n="dashboard.completedCourses">دوره تکمیل شده</p></div><div class="card-trend up" id="completedTrend">+۰%</div></div>
+            <div class="stat-premium-card"><div class="card-icon bg-3"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z M8 8h8v8H8z"/></svg></div><div class="card-info"><h3 id="certificatesCount">۰</h3><p data-i18n="dashboard.certificatesReceived">گواهی دریافت شده</p></div><div class="card-trend up" id="certificatesTrend">+۰%</div></div>
+            <div class="stat-premium-card"><div class="card-icon bg-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="card-info"><h3 id="hoursSpent">۰</h3><p data-i18n="dashboard.learningHours">ساعت یادگیری</p></div><div class="card-trend up" id="hoursTrend">+۰%</div></div>
+        </div>
+        <div class="recommended-section"><div class="section-header-flex"><h2 data-i18n="dashboard.recommendedCourses">🎯 دوره‌های پیشنهادی برای شما</h2><a href="courses.html" class="view-all-link" data-i18n="dashboard.viewAll">مشاهده همه →</a></div><div id="recommendedCourses" class="recommended-grid"></div></div>
+    </div>
+{% endblock %}

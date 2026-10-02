@@ -42,7 +42,9 @@
                         <div id="loginMessage" class="auth-message"></div>
                         <form id="loginFormElement" action="{% url 'user:login' %}" method="POST">
                             {% csrf_token %}
+                            {% if next  %}
                             <input type="hidden" name="next" value="{{ next }}">
+                            {% endif %}
                             <div class="form-group">
                                 {{login_form.phone_number}}
                                 <label>
