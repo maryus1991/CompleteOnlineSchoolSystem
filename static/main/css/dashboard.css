@@ -3,7 +3,7 @@
    با فونت پولاریس و هماهنگی کامل با سایت
    ============================================ */
 
-@import url('assets/fonts/stylesheet.css');
+@import url('/static/main/fonts/stylesheet.css');
 
 * {
     font-family: 'Peyda', 'Segoe UI', system-ui, -apple-system, sans-serif;

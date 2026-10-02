@@ -12,10 +12,10 @@ function toPersianNumber(num) {
 // مقداردهی اولیه داده‌ها در localStorage با ۴ دوره کامل
 function initData() {
     const courses = [
-        { id: 1, title: 'بوت‌کمپ جامع فرانت‌اند', price: 8500000, image: 'assets/image/front.jpg', progress: 45 },
-        { id: 2, title: 'مهندسی بک‌اند با Node.js', price: 9200000, image: 'assets/image/node.webp', progress: 20 },
-        { id: 3, title: 'پکیج کامل فول‌استک', price: 15000000, image: 'assets/image/full.jpg', progress: 80 },
-        { id: 4, title: 'هوش مصنوعی با Python', price: 11000000, image: 'assets/image/python.webp', progress: 100, completedDate: '2026-05-01' }
+        { id: 1, title: 'بوت‌کمپ جامع فرانت‌اند', price: 8500000, image: '../../static/main/image/front.jpg', progress: 45 },
+        { id: 2, title: 'مهندسی بک‌اند با Node.js', price: 9200000, image: '../../static/main/image/node.webp', progress: 20 },
+        { id: 3, title: 'پکیج کامل فول‌استک', price: 15000000, image: '../../static/main/image/full.jpg', progress: 80 },
+        { id: 4, title: 'هوش مصنوعی با Python', price: 11000000, image: '../../static/main/image/python.webp', progress: 100, completedDate: '2026-05-01' }
     ];
     
     if (!localStorage.getItem('polaris_enrolled')) {
@@ -24,19 +24,19 @@ function initData() {
     
     if (!localStorage.getItem('polaris_cart')) {
         localStorage.setItem('polaris_cart', JSON.stringify([
-            { id: 2, title: 'مهندسی بک‌اند با Node.js', price: 9200000, image: 'assets/image/node.webp' }
+            { id: 2, title: 'مهندسی بک‌اند با Node.js', price: 9200000, image: '../../static/main/image/node.webp' }
         ]));
     }
     
     if (!localStorage.getItem('polaris_current_user')) {
         localStorage.setItem('polaris_current_user', JSON.stringify({
-            id: 1, name: 'کاربر مهمان', email: 'guest@polaris.com', phone: '09123456789', avatar: 'assets/image/user5.jpg'
+            id: 1, name: 'کاربر مهمان', email: 'guest@polaris.com', phone: '09123456789', avatar: '../../static/main/image/user5.jpg'
         }));
     }
     
     if (!localStorage.getItem('polaris_users')) {
         localStorage.setItem('polaris_users', JSON.stringify([
-            { id: 1, name: 'کاربر مهمان', email: 'guest@polaris.com', phone: '09123456789', password: '123456', avatar: 'assets/image/user5.jpg' }
+            { id: 1, name: 'کاربر مهمان', email: 'guest@polaris.com', phone: '09123456789', password: '123456', avatar: '../../static/main/image/user5.jpg' }
         ]));
     }
 }
@@ -44,7 +44,7 @@ function initData() {
 // بارگذاری پروفایل کاربر
 function loadUserProfile() {
     const user = JSON.parse(localStorage.getItem('polaris_current_user') || '{}');
-    const defaultUser = { name: 'کاربر مهمان', email: 'guest@polaris.com', avatar: 'assets/image/user5.jpg' };
+    const defaultUser = { name: 'کاربر مهمان', email: 'guest@polaris.com', avatar: '../../static/main/image/user5.jpg' };
     const currentUser = user.id ? user : defaultUser;
     
     const welcomeName = document.getElementById('welcomeUserName');
@@ -60,7 +60,7 @@ function loadUserProfile() {
         if (currentUser.avatar && currentUser.avatar.startsWith('data:image')) {
             sidebarAvatar.src = currentUser.avatar;
         } else {
-            sidebarAvatar.src = currentUser.avatar || 'assets/image/user5.jpg';
+            sidebarAvatar.src = currentUser.avatar || '../../static/main/image/user5.jpg';
         }
     }
     
@@ -103,10 +103,10 @@ function loadRecommendedCourses() {
     if (!container) return;
     
     container.innerHTML = [
-        { id: 5, title: 'TypeScript پیشرفته', level: 'پیشرفته', image: 'assets/image/js.webp' },
-        { id: 6, title: 'Docker و Kubernetes', level: 'متوسط', image: 'assets/image/docker.webp' },
-        { id: 7, title: 'GitHub Copilot', level: 'مبتدی تا پیشرفته', image: 'assets/image/github.webp' }
-    ].map(c => `<a href="course-single.html?id=${c.id}" class="recommended-card"><img src="${c.image}" class="recommended-img" onerror="this.src='assets/image/front.jpg'"><div class="recommended-info"><h4>${c.title}</h4><p>${c.level}</p></div></a>`).join('');
+        { id: 5, title: 'TypeScript پیشرفته', level: 'پیشرفته', image: '../../static/main/image/js.webp' },
+        { id: 6, title: 'Docker و Kubernetes', level: 'متوسط', image: '../../static/main/image/docker.webp' },
+        { id: 7, title: 'GitHub Copilot', level: 'مبتدی تا پیشرفته', image: '../../static/main/image/github.webp' }
+    ].map(c => `<a href="course-single.html?id=${c.id}" class="recommended-card"><img src="${c.image}" class="recommended-img" onerror="this.src='../../static/main/image/front.jpg'"><div class="recommended-info"><h4>${c.title}</h4><p>${c.level}</p></div></a>`).join('');
 }
 
 function updateCartBadge() {
@@ -168,7 +168,7 @@ window.showMyProducts = function() {
         return; 
     }
     container.innerHTML = enrolled.map(c => `
-        <div class="course-card-small"><img src="${c.image}" class="course-img-small" onerror="this.src='assets/image/front.jpg'"><div class="course-info-small"><h4>${c.title}</h4><div class="progress-small"><div class="progress-bar-small"><div class="progress-fill-small" style="width: ${c.progress}%"></div></div><span class="progress-text-small">${toPersianNumber(c.progress)}%</span></div><div class="course-actions-small"><span class="price-small">${c.price.toLocaleString()} تومان</span><a href="course-single.html?id=${c.id}" class="btn-small">${c.progress === 100 ? 'مشاهده' : 'ادامه'}</a></div></div></div>
+        <div class="course-card-small"><img src="${c.image}" class="course-img-small" onerror="this.src='../../static/main/image/front.jpg'"><div class="course-info-small"><h4>${c.title}</h4><div class="progress-small"><div class="progress-bar-small"><div class="progress-fill-small" style="width: ${c.progress}%"></div></div><span class="progress-text-small">${toPersianNumber(c.progress)}%</span></div><div class="course-actions-small"><span class="price-small">${c.price.toLocaleString()} تومان</span><a href="course-single.html?id=${c.id}" class="btn-small">${c.progress === 100 ? 'مشاهده' : 'ادامه'}</a></div></div></div>
     `).join('');
 };
 
@@ -207,7 +207,7 @@ window.showMyCourses = function() {
         return; 
     }
     container.innerHTML = enrolled.map(c => `
-        <div class="course-card-small"><img src="${c.image}" class="course-img-small" onerror="this.src='assets/image/front.jpg'"><div class="course-info-small"><h4>${c.title}</h4><div class="progress-small"><div class="progress-bar-small"><div class="progress-fill-small" style="width: ${c.progress}%"></div></div><span class="progress-text-small">${toPersianNumber(c.progress)}%</span></div><div class="course-actions-small"><span class="status-badge-small ${c.progress === 100 ? 'completed' : 'progress'}">${c.progress === 100 ? 'تکمیل شده' : 'در حال یادگیری'}</span><a href="course-single.html?id=${c.id}" class="btn-small">${c.progress === 100 ? 'مشاهده' : 'ادامه'}</a></div></div></div>
+        <div class="course-card-small"><img src="${c.image}" class="course-img-small" onerror="this.src='../../static/main/image/front.jpg'"><div class="course-info-small"><h4>${c.title}</h4><div class="progress-small"><div class="progress-bar-small"><div class="progress-fill-small" style="width: ${c.progress}%"></div></div><span class="progress-text-small">${toPersianNumber(c.progress)}%</span></div><div class="course-actions-small"><span class="status-badge-small ${c.progress === 100 ? 'completed' : 'progress'}">${c.progress === 100 ? 'تکمیل شده' : 'در حال یادگیری'}</span><a href="course-single.html?id=${c.id}" class="btn-small">${c.progress === 100 ? 'مشاهده' : 'ادامه'}</a></div></div></div>
     `).join('');
 };
 
@@ -226,7 +226,7 @@ window.showCart = function() {
         return; 
     }
     let total = 0;
-    container.innerHTML = cart.map(item => { total += item.price; return `<div class="cart-item-small"><img src="${item.image}" class="cart-img-small" onerror="this.src='assets/image/front.jpg'"><div class="cart-info-small"><h4>${item.title}</h4><span class="cart-price-small">${item.price.toLocaleString()} تومان</span></div><button onclick="removeFromCart(${item.id})" class="cart-remove-small">🗑️ حذف</button></div>`; }).join('');
+    container.innerHTML = cart.map(item => { total += item.price; return `<div class="cart-item-small"><img src="${item.image}" class="cart-img-small" onerror="this.src='../../static/main/image/front.jpg'"><div class="cart-info-small"><h4>${item.title}</h4><span class="cart-price-small">${item.price.toLocaleString()} تومان</span></div><button onclick="removeFromCart(${item.id})" class="cart-remove-small">🗑️ حذف</button></div>`; }).join('');
     document.getElementById('cartTotal').innerHTML = `جمع کل: ${total.toLocaleString()} تومان`;
 };
 
