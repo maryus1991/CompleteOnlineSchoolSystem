@@ -441,7 +441,14 @@ a {
     margin-bottom: 20px;
 }
 
-.form-group-glass input {
+
+/* =========================
+   Input / Select / Textarea
+   ========================= */
+
+.form-group-glass input,
+.form-group-glass select,
+.form-group-glass textarea {
     width: 100%;
     padding: 14px 16px;
     background: var(--bg-primary);
@@ -449,34 +456,241 @@ a {
     border-radius: 14px;
     color: var(--text-primary);
     font-size: 0.9rem;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     font-family: 'Peyda', sans-serif;
+    box-sizing: border-box;
 }
 
-.form-group-glass input:focus {
+
+/* =========================
+   Focus
+   ========================= */
+
+.form-group-glass input:focus,
+.form-group-glass select:focus,
+.form-group-glass textarea:focus {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+
+/* =========================
+   Select
+   ========================= */
+
+.form-group-glass select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    cursor: pointer;
+
+    padding-left: 42px;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+        linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+    background-position:
+        calc(100% - 20px) 50%,
+        calc(100% - 14px) 50%;
+    background-size:
+        6px 6px,
+        6px 6px;
+    background-repeat: no-repeat;
+}
+
+
+/* =========================
+   Select options
+   ========================= */
+
+.form-group-glass select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: 'Peyda', sans-serif;
+}
+
+
+/* =========================
+   Textarea
+   ========================= */
+
+.form-group-glass textarea {
+    min-height: 130px;
+    resize: vertical;
+    line-height: 1.8;
+}
+
+
+/* =========================
+   Labels
+   ========================= */
+
 .form-group-glass label {
     position: absolute;
     right: 16px;
     top: 14px;
+
     color: var(--text-muted);
-    transition: all 0.3s;
+
+    transition:
+        top 0.2s ease,
+        right 0.2s ease,
+        font-size 0.2s ease,
+        color 0.2s ease,
+        background 0.2s ease;
+
     pointer-events: none;
+
     font-size: 0.85rem;
+    font-family: 'Peyda', sans-serif;
+    z-index: 2;
 }
 
+
+/* =========================
+   Floating Label - Input
+   ========================= */
+
 .form-group-glass input:focus ~ label,
-.form-group-glass input:not(:placeholder-shown) ~ label {
+.form-group-glass input:not(:placeholder-shown) ~ label,
+
+/* =========================
+   Floating Label - Textarea
+   ========================= */
+
+.form-group-glass textarea:focus ~ label,
+.form-group-glass textarea:not(:placeholder-shown) ~ label,
+
+/* =========================
+   Floating Label - Select
+   ========================= */
+
+.form-group-glass select:focus ~ label,
+.form-group-glass select:valid ~ label {
+
     top: -10px;
     right: 12px;
+
     font-size: 0.65rem;
+
     background: var(--bg-card);
+
     padding: 0 6px;
+
     color: var(--accent-color);
+}
+
+
+/* =========================
+   File Input
+   ========================= */
+
+.form-group-glass input[type="file"] {
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+
+/* File button */
+
+.form-group-glass input[type="file"]::file-selector-button {
+    border: none;
+    border-radius: 10px;
+
+    padding: 8px 14px;
+
+    margin-left: 10px;
+
+    background: var(--accent-color);
+    color: #fff;
+
+    font-family: 'Peyda', sans-serif;
+    font-size: 0.8rem;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+.form-group-glass input[type="file"]::file-selector-button:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================
+   Placeholder
+   ========================= */
+
+.form-group-glass input::placeholder,
+.form-group-glass textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+
+/* =========================
+   Disabled
+   ========================= */
+
+.form-group-glass input:disabled,
+.form-group-glass select:disabled,
+.form-group-glass textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Validation
+   ========================= */
+
+.form-group-glass input.is-invalid,
+.form-group-glass select.is-invalid,
+.form-group-glass textarea.is-invalid {
+    border-color: #dc3545;
+}
+
+
+.form-group-glass input.is-invalid:focus,
+.form-group-glass select.is-invalid:focus,
+.form-group-glass textarea.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+
+/* =========================
+   Help Text
+   ========================= */
+
+.form-group-glass .help-text {
+    display: block;
+
+    margin-top: 6px;
+    padding-right: 4px;
+
+    color: var(--text-muted);
+
+    font-size: 0.7rem;
+}
+
+
+/* =========================
+   Error
+   ========================= */
+
+.form-group-glass .errorlist {
+    list-style: none;
+
+    margin: 6px 0 0;
+    padding: 0;
+
+    color: #dc3545;
+
+    font-size: 0.72rem;
 }
 
 .form-buttons {

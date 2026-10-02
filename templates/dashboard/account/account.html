@@ -16,21 +16,79 @@
 </div>
 <div style="padding:25px">
     <form id="editProfileForm" class="edit-profile-form">
+        {% csrf_token %}
         <div class="form-group-glass">
-            <input type="text" id="editName"  placeholder=" ">
-            <label>نام و نام خانوادگی</label>
+            {{ form.first_name }}
+            <label for="{{form.first_name.id_for_label}}">نام</label>
         </div>
         <div class="form-group-glass">
-            <input type="email" id="editEmail"  placeholder=" ">
-            <label>آدرس ایمیل</label>
+            {{ form.last_name }}
+            <label for="{{form.last_name.id_for_label}}">نام خانوادگی</label>
         </div>
         <div class="form-group-glass">
-            <input type="tel" id="editPhone"  placeholder=" ">
-            <label>شماره تماس</label>
+            {{ form.email }}
+            <label for="{{ form.email.id_for_label }}"> ایمیل</label>
         </div>
         <div class="form-group-glass">
-            <input type="password"   placeholder=" ">
-            <label>رمز عبور جدید (اختیاری)</label>
+            {{ form.grade }}
+            <label for="{{form.grade.id_for_label}}">رشته</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.major }}
+            <label for="{{form.major.id_for_label}}">پایه</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.province }}
+            <label for="{{form.province.id_for_label}}">استان</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.city }}
+            <label for="{{form.city.id_for_label}}">شهر</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.school }}
+            <label for="{{form.school.id_for_label}}">مدرسه</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.gender }}
+            <label for="{{form.gender.id_for_label}}">جنسیت</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.PhoneNumber }}
+            <label for="{{form.PhoneNumber.id_for_label}}">شماره</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.profile_image }}
+            <label for="{{form.profile_image.id_for_label}}">عکس پروفایل</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.biography }}
+            <label for="{{form.biography.id_for_label}}">بیوگرافی</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.parent_phone_number }}
+            <label for="{{form.parent_phone_number.id_for_label}}">شماره ای از والدین</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.telegram_link }}
+            <label for="{{form.telegram_link.id_for_label}}">ایدی تلگرام</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.instagram_link }}
+            <label for="{{form.instagram_link.id_for_label}}">ایدی اینستاگرام</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.last_password }}
+            <label for="{{form.last_password.id_for_label}}">رمز عبور قدیم (در صورت نیاز به تغییر رمز وارد شود)</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.password }}
+
+            <label for="{{form.password.id_for_label}}" >رمز عبور جدید (در صورت نیاز به تغییر رمز وارد شود)</label>
+        </div>
+        <div class="form-group-glass">
+            {{ form.conform_password }}
+            <label for="{{form.conform_password.id_for_label}}">تایید رمز عبور جدید (در صورت نیاز به تغییر رمز وارد شود)</label>
         </div>
         <div class="form-buttons">
             <button type="submit" class="btn-save">ذخیره تغییرات</button>
