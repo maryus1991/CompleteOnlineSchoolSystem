@@ -1,10 +1,22 @@
 from django.views.generic import ListView, TemplateView, RedirectView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import User
 from .forms import UserLoginForm
 from django.urls import reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class UserLogoutView(LoginRequiredMixin, RedirectView):
+    """for logout view"""
+    def get_redirect_url(self):
+        logout(self.request)
+        messages.success(self.request,
+                         "ما همیشه منتظر حضور گرمتان هستیم"
+                         )
+        return reverse_lazy("site:main")
+
 
 class UserListView(ListView):
     queryset = User.objects.filter(is_active=True, publish=True)

@@ -85,8 +85,8 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7V4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
                         </div>
                         <div class="menu-info">
-                            <h4 data-i18n="dashboard.myProducts">محصولات من</h4>
-                            <p data-i18n="dashboard.myProductsDesc">دوره‌های خریداری شده</p>
+                            <h4 data-i18n="dashboard.myProducts">دوره ها</h4>
+
                         </div>
                         <div class="menu-arrow">→</div>
                     </button>
@@ -95,8 +95,7 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z M8 8h8v8H8z"/></svg>
                         </div>
                         <div class="menu-info">
-                            <h4 data-i18n="dashboard.certificates">گواهی‌ها</h4>
-                            <p data-i18n="dashboard.certificatesDesc">گواهی‌های دریافت شده</p>
+                            <h4 data-i18n="dashboard.certificates">ازمون ها</h4>
                         </div>
                         <div class="menu-arrow">→</div>
                     </button>
@@ -105,8 +104,7 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a10 10 0 1 0 10 10 10 10 0 0 0-10-10z M12 6v6l4 2"/></svg>
                         </div>
                         <div class="menu-info">
-                            <h4 data-i18n="dashboard.myCourses">دوره‌های من</h4>
-                            <p data-i18n="dashboard.myCoursesDesc">دوره‌های ثبت‌نام شده</p>
+                            <h4 data-i18n="dashboard.myCourses">کارنامه ها</h4>
                         </div>
                         <div class="menu-arrow">→</div>
                     </button>
@@ -115,8 +113,7 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                         </div>
                         <div class="menu-info">
-                            <h4 data-i18n="nav.cart">سبد خرید</h4>
-                            <p data-i18n="dashboard.cartDesc">دوره‌های انتخاب شده</p>
+                            <h4 data-i18n="nav.cart">مشاوره</h4>
                         </div>
                         <div class="menu-arrow">→</div>
                     </button>
@@ -125,8 +122,7 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                         </div>
                         <div class="menu-info">
-                            <h4 data-i18n="dashboard.support">پشتیبانی</h4>
-                            <p data-i18n="dashboard.supportDesc">تماس با تیم ما</p>
+                            <h4 data-i18n="dashboard.support">تیکت</h4>
                         </div>
                         <div class="menu-arrow">→</div>
                     </button>
@@ -140,16 +136,15 @@
                         </div>
                         <div class="menu-arrow">→</div>
                     </a>
-                    <button class="sidebar-menu-item logout" data-section="logout">
+                    <a href="{% url 'user:logout' %}" class="sidebar-menu-item logout" data-section="logout">
                         <div class="menu-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9"/></svg>
                         </div>
                         <div class="menu-info">
                             <h4 style="color:#ef4444;" data-i18n="dashboard.logout">خروج از حساب</h4>
-                            <p style="color:#ef4444;" data-i18n="dashboard.logoutDesc">بازگشت به صفحه اصلی</p>
                         </div>
                         <div class="menu-arrow" style="color:#ef4444;">→</div>
-                    </button>
+                    </a>
                 </aside>
             </div>
         </div>
