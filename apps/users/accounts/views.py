@@ -7,7 +7,6 @@ from django.urls import reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 class UserLogoutView(LoginRequiredMixin, RedirectView):
     """for logout view"""
     def get_redirect_url(self):
@@ -16,7 +15,6 @@ class UserLogoutView(LoginRequiredMixin, RedirectView):
                          "ما همیشه منتظر حضور گرمتان هستیم"
                          )
         return reverse_lazy("site:main")
-
 
 class UserListView(ListView):
     queryset = User.objects.filter(is_active=True, publish=True)
@@ -29,7 +27,6 @@ class UserListView(ListView):
             messages.error(request, "این صفحه غیر فعال میباشد")
             return redirect("site:main")
         return super().dispatch(request, *args, **kwargs)
-
 
 class AuthView(TemplateView):
     """auth view"""

@@ -42,3 +42,4 @@ class EditAccountView(StudentMixin, TemplateView):
             }),
         })
         return data
+
