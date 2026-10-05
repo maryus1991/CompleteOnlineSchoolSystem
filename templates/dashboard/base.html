@@ -8,16 +8,16 @@
     <meta name="description" content="مدیریت حساب کاربری، دوره‌ها و پیشرفت تحصیلی">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
     
-    <link rel="preload" href="../../static/main/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="../../static/main/fonts/Peyda-Bold.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="../../static/main/fonts/Peyda-Medium.woff" as="font" type="font/woff" crossorigin>
-    <link rel="stylesheet" href="../../static/main/fonts/stylesheet.css">
+    <link rel="preload" href="/static/main/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Bold.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Medium.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="/static/main/fonts/stylesheet.css">
     
-    <link rel="stylesheet" href="../../static/main/css/main.css">
-    <link rel="stylesheet" href="../../static/main/css/theme.css">
-    <link rel="stylesheet" href="../../static/main/css/components.css">
-    <link rel="stylesheet" href="../../static/main/css/responsive.css">
-    <link rel="stylesheet" href="../../static/main/css/dashboard.css">
+    <link rel="stylesheet" href="/static/main/css/main.css">
+    <link rel="stylesheet" href="/static/main/css/theme.css">
+    <link rel="stylesheet" href="/static/main/css/components.css">
+    <link rel="stylesheet" href="/static/main/css/responsive.css">
+    <link rel="stylesheet" href="/static/main/css/dashboard.css">
     {% block header %}{% endblock %}
 
 </head>
@@ -117,7 +117,7 @@
                         </div>
                         <div class="menu-arrow">→</div>
                     </button>
-                    <button class="sidebar-menu-item" data-section="support">
+                    <a class="sidebar-menu-item" data-section="support" href="{% url 'student:ticket-list' %}">
                         <div class="menu-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                         </div>
@@ -125,7 +125,7 @@
                             <h4 data-i18n="dashboard.support">تیکت</h4>
                         </div>
                         <div class="menu-arrow">→</div>
-                    </button>
+                    </a>
                                         <a href="/" class="sidebar-menu-item"  >
                         <div class="menu-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9"/></svg>
@@ -153,7 +153,7 @@
 
 
 
-    <script src="../../static/main/js/components.js"></script>
+    <script src="/static/main/js/components.js"></script>
 
     <script>
 

@@ -1,0 +1,434 @@
+{% extends "dashboard/base.html" %}
+
+
+{% block header %}
+
+<style>
+    .ticket-create-page {
+        width: 100%;
+        padding: 10px ;
+    }
+
+    .ticket-create-header {
+        margin-bottom: 22px;
+    }
+
+    .ticket-create-header h2 {
+        margin: 0 0 6px;
+        color: var(--text-primary);
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+    .ticket-create-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .8rem;
+    }
+
+    .ticket-form-card {
+        padding: 22px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+    }
+
+    .ticket-form-group {
+        margin-bottom: 20px;
+    }
+
+    .ticket-form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .ticket-form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .ticket-required {
+        color: #f87171;
+    }
+
+    .ticket-form-group input,
+    .ticket-form-group textarea,
+    .ticket-form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 15px;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 13px;
+        outline: none;
+        font-family: inherit;
+        font-size: .82rem;
+        transition: border-color .2s ease,
+                    box-shadow .2s ease;
+    }
+
+    .ticket-form-group input:focus,
+    .ticket-form-group textarea:focus,
+    .ticket-form-group select:focus {
+        border-color: #4facfe;
+        box-shadow: 0 0 0 3px rgba(79, 172, 254, .08);
+    }
+
+    .ticket-form-group textarea {
+        min-height: 180px;
+        resize: vertical;
+        line-height: 1.9;
+    }
+
+    .ticket-form-group input[type="file"] {
+        padding: 10px;
+    }
+
+    .ticket-help-text {
+        display: block;
+        margin-top: 7px;
+        color: var(--text-secondary);
+        font-size: .68rem;
+    }
+
+    .ticket-errors {
+        margin-top: 7px;
+        color: #f87171;
+        font-size: .7rem;
+        line-height: 1.8;
+    }
+
+    .ticket-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .ticket-form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .ticket-back-btn,
+    .ticket-submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: .8rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .ticket-back-btn {
+        color: var(--text-secondary);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+    }
+
+    .ticket-back-btn:hover {
+        color: var(--text-primary);
+        border-color: rgba(79, 172, 254, .35);
+    }
+
+    .ticket-submit-btn {
+        color: #fff;
+        background: var(--accent-gradient);
+        border: none;
+    }
+
+    .ticket-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(79, 172, 254, .2);
+    }
+
+    .ticket-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 13px 15px;
+        border: 1px solid rgba(79, 172, 254, .15);
+        border-radius: 12px;
+        background: rgba(79, 172, 254, .06);
+        color: var(--text-secondary);
+        font-size: .72rem;
+        line-height: 1.9;
+    }
+
+    .ticket-info svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: #4facfe;
+    }
+
+    @media (max-width: 600px) {
+
+        .ticket-form-card {
+            padding: 15px;
+        }
+
+        .ticket-form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .ticket-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .ticket-back-btn,
+        .ticket-submit-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+{% endblock %}
+
+
+{% block main %}
+
+<div class="ticket-create-page">
+
+    <div class="ticket-create-header">
+
+        <h2>
+            ایجاد تیکت جدید
+        </h2>
+
+        <p>
+            درخواست یا مشکل خود را برای پشتیبانی ارسال کنید.
+        </p>
+
+    </div>
+
+
+    <div class="ticket-info">
+
+        <svg width="18"
+             height="18"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.8">
+
+            <circle cx="12"
+                    cy="12"
+                    r="10"/>
+
+            <path d="M12 16v-4"/>
+
+            <path d="M12 8h.01"/>
+
+        </svg>
+
+        <div>
+            پس از ارسال تیکت، درخواست شما توسط تیم پشتیبانی بررسی خواهد شد
+            و پاسخ آن در همین بخش برای شما نمایش داده می‌شود.
+        </div>
+
+    </div>
+
+
+    <div class="ticket-form-card">
+
+        <form method="post"
+              enctype="multipart/form-data"
+              novalidate>
+
+            {% csrf_token %}
+
+
+            <div class="ticket-form-group">
+
+                <label class="ticket-form-label"
+                       for="{{ form.name.id_for_label }}">
+
+                    موضوع
+                    <span class="ticket-required">*</span>
+
+                </label>
+
+                {{ form.name }}
+
+                {% if form.name.errors %}
+                    <div class="ticket-errors">
+                        {{ form.name.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="ticket-form-row">
+
+                <div class="ticket-form-group">
+
+                    <label class="ticket-form-label"
+                           for="{{ form.priority.id_for_label }}">
+
+                        اهمیت
+                        <span class="ticket-required">*</span>
+
+                    </label>
+
+                    {{ form.priority }}
+
+                    {% if form.priority.errors %}
+                        <div class="ticket-errors">
+                            {{ form.priority.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="ticket-form-group">
+
+                    <label class="ticket-form-label">
+                        وضعیت
+                    </label>
+
+                    <div style="
+                        min-height:44px;
+                        display:flex;
+                        align-items:center;
+                        padding:0 14px;
+                        border:1px solid var(--border-color);
+                        border-radius:13px;
+                        color:#fbbf24;
+                        background:var(--bg-primary);
+                        font-size:.78rem;
+                    ">
+                        در انتظار پاسخ ادمین
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="ticket-form-group">
+
+                <label class="ticket-form-label"
+                       for="{{ form.description.id_for_label }}">
+
+                    توضیحات
+                    <span class="ticket-required">*</span>
+
+                </label>
+
+                {{ form.description }}
+
+                {% if form.description.errors %}
+                    <div class="ticket-errors">
+                        {{ form.description.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="ticket-form-group">
+
+                <label class="ticket-form-label"
+                       for="{{ form.file.id_for_label }}">
+
+                    فایل پیوست
+
+                </label>
+
+                {{ form.file }}
+
+                <span class="ticket-help-text">
+                    در صورت نیاز می‌توانید تصویر، PDF یا فایل مرتبط با درخواست خود را پیوست کنید.
+                </span>
+
+                {% if form.file.errors %}
+                    <div class="ticket-errors">
+                        {{ form.file.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            {% if form.non_field_errors %}
+
+                <div class="ticket-errors"
+                     style="margin-bottom:15px;">
+
+                    {{ form.non_field_errors }}
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="ticket-form-actions">
+
+                <a href="{% url 'student:ticket-list' %}"
+                   class="ticket-back-btn">
+
+                    <svg width="17"
+                         height="17"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M19 12H5"/>
+
+                        <path d="M12 19l-7-7 7-7"/>
+
+                    </svg>
+
+                    بازگشت
+
+                </a>
+
+
+                <button type="submit"
+                        class="ticket-submit-btn">
+
+                    <svg width="17"
+                         height="17"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M22 2L11 13"/>
+
+                        <path d="M22 2l-7 20-4-9-9-4z"/>
+
+                    </svg>
+
+                    ارسال تیکت
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

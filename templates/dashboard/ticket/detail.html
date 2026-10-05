@@ -1,10 +1,973 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "dashboard/base.html" %}
 
-</body>
-</html>
+{% block header %}
+
+<style>
+
+    /* ==========================================================
+       Ticket chat page
+       ========================================================== */
+
+    .ticket-chat-page {
+        width: 100%;
+        min-width: 0;
+        padding: 10px;
+    }
+
+
+    /* -------------------------
+       Header
+    ------------------------- */
+
+    .ticket-chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .ticket-chat-header-info {
+        min-width: 0;
+    }
+
+    .ticket-chat-header-info h2 {
+        margin: 0 0 7px;
+        color: var(--text-primary);
+        font-size: 1.15rem;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ticket-chat-header-info p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .72rem;
+    }
+
+    .ticket-back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 13px;
+        border: 1px solid var(--border-color);
+        border-radius: 11px;
+        color: var(--text-secondary);
+        background: var(--bg-card);
+        text-decoration: none;
+        font-size: .72rem;
+        font-weight: 700;
+        white-space: nowrap;
+        transition: color .2s ease,
+                    border-color .2s ease,
+                    transform .2s ease;
+    }
+
+    .ticket-back-button:hover {
+        color: var(--text-primary);
+        border-color: rgba(79, 172, 254, .35);
+        transform: translateX(-2px);
+    }
+
+    .ticket-back-button:focus-visible {
+        outline: 2px solid #4facfe;
+        outline-offset: 2px;
+    }
+
+
+    /* -------------------------
+       Ticket meta
+    ------------------------- */
+
+    .ticket-chat-info {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+        padding: 12px 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 13px;
+        background: var(--bg-card);
+    }
+
+    .ticket-chat-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 8px;
+        font-size: .67rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* neutral badge (priority, date, ...) */
+    .ticket-chat-badge.is-meta {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, .03);
+        border: 1px solid var(--border-color);
+    }
+
+    .ticket-status-admin {
+        color: #fbbf24;
+        background: rgba(251, 191, 36, .10);
+        border: 1px solid rgba(251, 191, 36, .18);
+    }
+
+    .ticket-status-user {
+        color: #60a5fa;
+        background: rgba(96, 165, 250, .10);
+        border: 1px solid rgba(96, 165, 250, .18);
+    }
+
+    .ticket-status-fixed {
+        color: #34d399;
+        background: rgba(52, 211, 153, .10);
+        border: 1px solid rgba(52, 211, 153, .18);
+    }
+
+    .ticket-status-cancelled {
+        color: #f87171;
+        background: rgba(248, 113, 113, .10);
+        border: 1px solid rgba(248, 113, 113, .18);
+    }
+
+
+    /* -------------------------
+       Chat container
+    ------------------------- */
+
+    .ticket-chat-container {
+        display: flex;
+        flex-direction: column;
+        height: clamp(480px, calc(100vh - 300px), 720px);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+    }
+
+    .ticket-chat-messages {
+        flex: 1;
+        min-height: 0;               /* لازم برای اسکرول درست در flex */
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 22px 18px;
+        scroll-behavior: smooth;
+    }
+
+    .ticket-chat-messages::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .ticket-chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .ticket-chat-messages::-webkit-scrollbar-thumb {
+        border-radius: 20px;
+        background: rgba(255, 255, 255, .08);
+    }
+
+    .ticket-chat-messages::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, .16);
+    }
+
+
+    /* -------------------------
+       Message
+    ------------------------- */
+
+    .ticket-message-row {
+        display: flex;
+        width: 100%;
+        margin-bottom: 18px;
+    }
+
+    .ticket-message-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .ticket-message-row.user {
+        justify-content: flex-start;
+    }
+
+    .ticket-message-row.admin {
+        justify-content: flex-end;
+    }
+
+    .ticket-message {
+        max-width: 78%;
+        min-width: 120px;
+    }
+
+    .ticket-message-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+        color: var(--text-secondary);
+        font-size: .65rem;
+    }
+
+    .ticket-message-row.user .ticket-message-header {
+        justify-content: flex-start;
+    }
+
+    .ticket-message-row.admin .ticket-message-header {
+        justify-content: flex-end;
+    }
+
+    .ticket-message-author {
+        font-weight: 800;
+        color: var(--text-primary);
+    }
+
+    .ticket-message-time {
+        direction: ltr;
+        opacity: .75;
+    }
+
+    .ticket-message-bubble {
+        padding: 12px 14px;
+        border-radius: 15px;
+        font-size: .78rem;
+        line-height: 2;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    .ticket-message-row.user .ticket-message-bubble {
+        color: var(--text-primary);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-top-right-radius: 5px;
+    }
+
+    .ticket-message-row.admin .ticket-message-bubble {
+        color: #fff;
+        background: var(--accent-gradient);
+        border-top-left-radius: 5px;
+    }
+
+    .ticket-message-bubble p {
+        margin: 0 0 8px;
+    }
+
+    .ticket-message-bubble p:last-child {
+        margin-bottom: 0;
+    }
+
+    .ticket-message-bubble img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+
+
+    /* -------------------------
+       Attachment
+    ------------------------- */
+
+    .ticket-attachment {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+        margin-top: 9px;
+        padding: 8px 11px;
+        border-radius: 9px;
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, .04);
+        border: 1px solid var(--border-color);
+        text-decoration: none;
+        font-size: .68rem;
+        transition: color .2s ease, border-color .2s ease;
+    }
+
+    .ticket-attachment:hover {
+        color: #4facfe;
+        border-color: rgba(79, 172, 254, .35);
+    }
+
+    .ticket-attachment svg {
+        flex-shrink: 0;
+    }
+
+    .ticket-attachment span {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    /* روی حباب ادمین رنگ پیوست باید روشن بماند */
+    .ticket-message-row.admin .ticket-attachment {
+        color: rgba(255, 255, 255, .85);
+        background: rgba(255, 255, 255, .12);
+        border-color: rgba(255, 255, 255, .22);
+    }
+
+    .ticket-message-row.admin .ticket-attachment:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, .45);
+    }
+
+
+    /* -------------------------
+       Empty state
+    ------------------------- */
+
+    .ticket-no-message {
+        display: flex;
+        flex: 1;
+        min-height: 260px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: .78rem;
+    }
+
+
+    /* -------------------------
+       Reply
+    ------------------------- */
+
+    .ticket-reply {
+        padding: 14px;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-primary);
+    }
+
+    .ticket-reply textarea {
+        display: block;
+        width: 100%;
+        min-height: 90px;
+        max-height: 200px;
+        box-sizing: border-box;
+        padding: 12px 14px;
+        resize: none;
+        overflow-y: auto;
+        outline: none;
+        border: 1px solid var(--border-color);
+        border-radius: 13px;
+        color: var(--text-primary);
+        background: var(--bg-card);
+        font-family: inherit;
+        font-size: .78rem;
+        line-height: 1.9;
+        transition: border-color .2s ease,
+                    box-shadow .2s ease;
+    }
+
+    .ticket-reply textarea::placeholder {
+        color: var(--text-secondary);
+        opacity: .7;
+    }
+
+    .ticket-reply textarea:focus {
+        border-color: #4facfe;
+        box-shadow: 0 0 0 3px rgba(79, 172, 254, .08);
+    }
+
+    .ticket-reply-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .ticket-reply-hint {
+        color: var(--text-secondary);
+        font-size: .65rem;
+    }
+
+    .ticket-reply-hint kbd {
+        padding: 1px 5px;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, .05);
+        font-family: inherit;
+        font-size: .62rem;
+    }
+
+    .ticket-send-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-width: 120px;
+        height: 40px;
+        padding: 0 15px;
+        border: none;
+        border-radius: 11px;
+        color: #fff;
+        background: var(--accent-gradient);
+        font-family: inherit;
+        font-size: .75rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform .2s ease,
+                    box-shadow .2s ease,
+                    opacity .2s ease;
+    }
+
+    .ticket-send-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 20px rgba(79, 172, 254, .2);
+    }
+
+    .ticket-send-button:focus-visible {
+        outline: 2px solid #4facfe;
+        outline-offset: 2px;
+    }
+
+    .ticket-send-button:disabled {
+        cursor: not-allowed;
+        opacity: .6;
+        transform: none;
+        box-shadow: none;
+    }
+
+
+    /* -------------------------
+       Closed ticket
+    ------------------------- */
+
+    .ticket-closed-message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px;
+        border-top: 1px solid var(--border-color);
+        text-align: center;
+        color: var(--text-secondary);
+        background: var(--bg-primary);
+        font-size: .72rem;
+    }
+
+    .ticket-closed-message strong {
+        color: var(--text-primary);
+    }
+
+
+    /* -------------------------
+       Responsive
+    ------------------------- */
+
+    @media (max-width: 600px) {
+
+        .ticket-chat-header {
+            align-items: flex-start;
+        }
+
+        .ticket-back-button span {
+            display: none;
+        }
+
+        .ticket-chat-container {
+            height: clamp(420px, calc(100vh - 250px), 620px);
+        }
+
+        .ticket-chat-messages {
+            padding: 15px 10px;
+        }
+
+        .ticket-message {
+            max-width: 90%;
+        }
+
+        .ticket-reply {
+            padding: 10px;
+        }
+
+        .ticket-reply-footer {
+            align-items: flex-end;
+        }
+
+        .ticket-reply-hint {
+            display: none;
+        }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .ticket-chat-messages {
+            scroll-behavior: auto;
+        }
+
+        .ticket-back-button,
+        .ticket-send-button {
+            transition: none;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block main %}
+
+<div class="ticket-chat-page">
+
+
+    <!-- ================= Header ================= -->
+
+    <div class="ticket-chat-header">
+
+        <div class="ticket-chat-header-info">
+
+            <h2 title="{{ ticket.name }}">
+                {{ ticket.name }}
+            </h2>
+
+            <p>
+                تیکت #{{ ticket.pk }}
+            </p>
+
+        </div>
+
+
+        <a href="{% url 'student:ticket-list' %}"
+           class="ticket-back-button"
+           aria-label="بازگشت به لیست تیکت‌ها">
+
+            <svg width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 aria-hidden="true">
+
+                <path d="M19 12H5"/>
+                <path d="M12 19l-7-7 7-7"/>
+
+            </svg>
+
+            <span>بازگشت به تیکت‌ها</span>
+
+        </a>
+
+    </div>
+
+
+    <!-- ================= Ticket meta ================= -->
+
+    <div class="ticket-chat-info">
+
+        <span class="ticket-chat-badge
+            {% if ticket.status == 'در انتظار پاسخ ادمین' %}ticket-status-admin
+            {% elif ticket.status == 'در انتظار پاسخ کاربر' %}ticket-status-user
+            {% elif ticket.status == 'حل شده' %}ticket-status-fixed
+            {% elif ticket.status == 'کنسل شده' %}ticket-status-cancelled
+            {% else %}is-meta{% endif %}">
+
+            {{ ticket.get_status_display }}
+
+        </span>
+
+
+        <span class="ticket-chat-badge is-meta">
+
+            اهمیت: {{ ticket.get_priority_display }}
+
+        </span>
+
+
+        <span class="ticket-chat-badge is-meta"
+              title="{{ ticket.created_at|date:'Y/m/d - H:i' }}">
+
+            {{ ticket.created_at|date:"Y/m/d - H:i" }}
+
+        </span>
+
+    </div>
+
+
+    <!-- ================= Chat ================= -->
+
+    <div class="ticket-chat-container">
+
+
+        <div class="ticket-chat-messages"
+             id="ticketMessages"
+             role="log"
+             aria-label="گفتگوی تیکت">
+
+
+            <!-- ---------- پیام اولیه‌ی تیکت ---------- -->
+
+            <div class="ticket-message-row user">
+
+                <div class="ticket-message">
+
+                    <div class="ticket-message-header">
+
+                        <span class="ticket-message-author">شما</span>
+
+                        <span class="ticket-message-time">
+                            {{ ticket.created_at|date:"Y/m/d - H:i" }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="ticket-message-bubble" dir="auto">
+
+                        {{ ticket.description|linebreaksbr }}
+
+                        {% if ticket.file %}
+
+                            <a href="{{ ticket.file.url }}"
+                               class="ticket-attachment"
+                               target="_blank"
+                               rel="noopener noreferrer">
+
+                                <svg width="14"
+                                     height="14"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="1.8"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     aria-hidden="true">
+
+                                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+
+                                </svg>
+
+                                <span>مشاهده فایل پیوست</span>
+
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ---------- پیام‌های گفتگو ---------- -->
+
+            {% for chat in ticket.chats.all %}
+
+                {% if chat.user_message %}
+
+                    <div class="ticket-message-row user">
+
+                        <div class="ticket-message">
+
+                            <div class="ticket-message-header">
+
+                                <span class="ticket-message-author">شما</span>
+
+                                <span class="ticket-message-time">
+                                    {{ chat.created_at|date:"Y/m/d - H:i" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="ticket-message-bubble" dir="auto">
+
+                                {{ chat.user_message|linebreaksbr }}
+
+                                {% if chat.file %}
+
+                                    <a href="{{ chat.file.url }}"
+                                       class="ticket-attachment"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
+
+                                        <svg width="14"
+                                             height="14"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.8"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             aria-hidden="true">
+
+                                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+
+                                        </svg>
+
+                                        <span>مشاهده فایل پیوست</span>
+
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if chat.admin_message %}
+
+                    <div class="ticket-message-row admin">
+
+                        <div class="ticket-message">
+
+                            <div class="ticket-message-header">
+
+                                <span class="ticket-message-author">پشتیبانی</span>
+
+                                <span class="ticket-message-time">
+                                    {{ chat.created_at|date:"Y/m/d - H:i" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="ticket-message-bubble" dir="auto">
+
+                                {# محتوای ادمین به‌صورت HTML ذخیره می‌شود #}
+                                {{ chat.admin_message|safe }}
+
+                                {% if chat.file %}
+
+                                    <a href="{{ chat.file.url }}"
+                                       class="ticket-attachment"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
+
+                                        <svg width="14"
+                                             height="14"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.8"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             aria-hidden="true">
+
+                                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+
+                                        </svg>
+
+                                        <span>مشاهده فایل پیوست</span>
+
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+        </div>
+
+
+        <!-- ================= Reply / Closed ================= -->
+
+        {% if ticket.status == "حل شده" or ticket.status == "کنسل شده" %}
+
+            <div class="ticket-closed-message">
+
+                <svg width="16"
+                     height="16"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+
+                </svg>
+
+                <span>
+                    این تیکت <strong>{{ ticket.get_status_display }}</strong> است
+                    و امکان ارسال پیام جدید وجود ندارد.
+                </span>
+
+            </div>
+
+        {% else %}
+
+            <div class="ticket-reply">
+
+                <form method="post"
+                      id="ticketReplyForm"
+                      autocomplete="off">
+
+                    {% csrf_token %}
+
+                    <label for="ticketMessageInput"
+                           class="sr-only"
+                           style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">
+                        متن پاسخ
+                    </label>
+
+                    <textarea
+                        id="ticketMessageInput"
+                        name="message"
+                        placeholder="پاسخ خود را بنویسید..."
+                        required></textarea>
+
+
+                    <div class="ticket-reply-footer">
+
+                        <span class="ticket-reply-hint">
+                            پیام شما برای تیم پشتیبانی ارسال می‌شود
+                            — <kbd>Ctrl</kbd> + <kbd>Enter</kbd> برای ارسال سریع
+                        </span>
+
+
+                        <button type="submit"
+                                id="ticketSendButton"
+                                class="ticket-send-button">
+
+                            <svg width="16"
+                                 height="16"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+
+                                <path d="M22 2L11 13"/>
+                                <path d="M22 2l-7 20-4-9-9-4z"/>
+
+                            </svg>
+
+                            <span class="ticket-send-label">ارسال پاسخ</span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const messagesBox = document.getElementById("ticketMessages");
+        const form        = document.getElementById("ticketReplyForm");
+        const textarea    = document.getElementById("ticketMessageInput");
+        const sendButton  = document.getElementById("ticketSendButton");
+
+        const MAX_TEXTAREA_HEIGHT = 200;
+
+
+        /* ---------- اسکرول به آخرین پیام ---------- */
+
+        function scrollToBottom(smooth) {
+
+            if (!messagesBox) return;
+
+            messagesBox.scrollTo({
+                top: messagesBox.scrollHeight,
+                behavior: smooth ? "smooth" : "auto"
+            });
+
+        }
+
+        scrollToBottom(false);
+
+
+        if (!form || !textarea) return;
+
+
+        /* ---------- بزرگ‌شدن خودکار textarea ---------- */
+
+        function autoGrow() {
+
+            textarea.style.height = "auto";
+
+            const next = Math.min(
+                textarea.scrollHeight,
+                MAX_TEXTAREA_HEIGHT
+            );
+
+            textarea.style.height = next + "px";
+            textarea.style.overflowY =
+                textarea.scrollHeight > MAX_TEXTAREA_HEIGHT ? "auto" : "hidden";
+
+        }
+
+        textarea.addEventListener("input", autoGrow);
+        autoGrow();
+
+
+        /* ---------- ارسال با Ctrl / Cmd + Enter ---------- */
+
+        textarea.addEventListener("keydown", function (event) {
+
+            if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+
+                event.preventDefault();
+
+                if (typeof form.requestSubmit === "function") {
+                    form.requestSubmit();
+                } else {
+                    form.submit();
+                }
+
+            }
+
+        });
+
+
+        /* ---------- جلوگیری از ارسال دوباره ---------- */
+
+        form.addEventListener("submit", function () {
+
+            if (!sendButton) return;
+
+            sendButton.disabled = true;
+            sendButton.setAttribute("aria-busy", "true");
+
+            const label = sendButton.querySelector(".ticket-send-label");
+
+            if (label) label.textContent = "در حال ارسال...";
+
+        });
+
+    });
+
+</script>
+
+{% endblock %}
