@@ -90,7 +90,7 @@
                         </div>
                         <div class="menu-arrow">→</div>
                     </button>
-                    <button class="sidebar-menu-item" data-section="certificates">
+                    <a class="sidebar-menu-item" data-section="certificates" href="{% url 'student:exam-list' %}">
                         <div class="menu-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z M8 8h8v8H8z"/></svg>
                         </div>
@@ -98,7 +98,7 @@
                             <h4 data-i18n="dashboard.certificates">ازمون ها</h4>
                         </div>
                         <div class="menu-arrow">→</div>
-                    </button>
+                    </a>
                     <button class="sidebar-menu-item" data-section="myCourses">
                         <div class="menu-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a10 10 0 1 0 10 10 10 10 0 0 0-10-10z M12 6v6l4 2"/></svg>

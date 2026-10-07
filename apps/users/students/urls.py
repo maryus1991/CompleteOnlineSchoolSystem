@@ -11,4 +11,9 @@ urlpatterns = [
     path('tickets/', views.ticket.TicketListView.as_view(), name='ticket-list'),
     path('tickets/create/', views.ticket.TicketCreateView.as_view(), name='ticket-create'),
     path('tickets/<int:pk>', views.ticket.TicketChatView.as_view(), name='ticket-chat'),
+
+
+    path('exam/', views.exams.ExamListView.as_view(), name='exam-list'),
+
+
 ]
