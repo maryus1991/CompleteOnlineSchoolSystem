@@ -73,19 +73,19 @@ class Site(BaseModel):
     register_active = models.BooleanField("فعال کردن ثبت نام", default=True)
     forgot_password_active = models.BooleanField("فعال کردن فراموشی رمز", default=True)
 
-    footer_fast_link_1_url = models.URLField("لینک شماره ۱ سریع فوتر", default="/")
-    footer_fast_link_2_url = models.URLField(" لینک شماره ۲ سریع فوتر", default="/courses/")
-    footer_fast_link_3_url = models.URLField(" لینک شماره ۳ سریع فوتر", default="/posts/")
-    footer_fast_link_4_url = models.URLField(" لینک شماره ۴ سریع فوتر", default="/exams/")
+    footer_fast_link_1_url = models.CharField("لینک شماره ۱ سریع فوتر", default="/", max_length=255)
+    footer_fast_link_2_url = models.CharField(" لینک شماره ۲ سریع فوتر", default="/courses/", max_length=255)
+    footer_fast_link_3_url = models.CharField(" لینک شماره ۳ سریع فوتر", default="/posts/", max_length=255)
+    footer_fast_link_4_url = models.CharField(" لینک شماره ۴ سریع فوتر", default="/exams/", max_length=255)
     footer_fast_link_1_name = models.CharField("نام لینک شماره ۱ سریع فوتر", default="خانه", max_length=50)
     footer_fast_link_2_name = models.CharField("نام لینک شماره ۲ سریع فوتر", default="دورها", max_length=50)
     footer_fast_link_3_name = models.CharField("نام لینک شماره ۳ سریع فوتر", default="مقالات", max_length=50)
     footer_fast_link_4_name = models.CharField("نام لینک شماره ۴ سریع فوتر", default="ازمون ها", max_length=50)
 
-    footer_important_1_url = models.URLField("لینک مهم شماره ۱ فوتر", default="/users/auth/")
-    footer_important_2_url = models.URLField(" لینک مهم شماره ۲ فوتر", default="/about/")
-    footer_important_3_url = models.URLField(" لینک مهم شماره ۳ فوتر", default="/contact/")
-    footer_important_4_url = models.URLField(" لینک مهم شماره ۴ فوتر", default="/free-counseling/")
+    footer_important_1_url = models.CharField("لینک مهم شماره ۱ فوتر", default="/users/auth/", max_length=255)
+    footer_important_2_url = models.CharField(" لینک مهم شماره ۲ فوتر", default="/about/", max_length=255)
+    footer_important_3_url = models.CharField(" لینک مهم شماره ۳ فوتر", default="/contact/", max_length=255)
+    footer_important_4_url = models.CharField(" لینک مهم شماره ۴ فوتر", default="/free-counseling/", max_length=255)
     footer_important_1_name = models.CharField("نام لینک مهم شماره ۱ فوتر", default="ورود یا ثبت نام", max_length=50)
     footer_important_2_name = models.CharField("نام لینک مهم شماره ۲ فوتر", default="درباره ما", max_length=50)
     footer_important_3_name = models.CharField("نام لینک مهم شماره ۳ فوتر", default="تماس با ما", max_length=50)
@@ -93,13 +93,13 @@ class Site(BaseModel):
 
     copyright = models.CharField("کپی رایت", default="© ۲۰۲۶ آکادمی فراسو برای اینده ای بهتر", max_length=150)
     developer_message = models.CharField("پیام طراح", default="نوشته شده با ❤️ توسط maryus", max_length=50)
-    link_url = models.URLField("لینک طراح", default="https://github.com/maryus1991/CompleteOnlineSchoolSystem")
+    link_url = models.CharField("لینک طراح", default="https://github.com/maryus1991/CompleteOnlineSchoolSystem", max_length=255)
 
-    instagram_link = models.URLField("لینک اینستاگرام", default="#")
-    telegram_link = models.URLField("لینک تلرام", default="#")
-    other_link = models.URLField("لینک های دیگر", default="#")
+    instagram_link = models.CharField("لینک اینستاگرام", default="#", max_length=255)
+    telegram_link = models.CharField("لینک تلرام", default="#", max_length=255)
+    other_link = models.CharField("لینک های دیگر", default="#", max_length=255)
 
-    main_page_first_button_url = models.URLField("لینک دکمه شماره یک صفحه اصلی", default="/free-counseling/")
+    main_page_first_button_url = models.CharField("لینک دکمه شماره یک صفحه اصلی", default="/free-counseling/", max_length=255)
     main_page_first_button_name = models.CharField("نام دکمه شماره یک صفحه اصلی", default="درخواست مشاوره", max_length=50)
     main_page_first_button_svg = models.TextField("svg دکمه شماره یک صفحه اصلی",  default="""
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -107,7 +107,7 @@ class Site(BaseModel):
         </svg>
     """)
 
-    main_page_second_button_url = models.URLField(" لینک دکمه شماره دو صفحه اصلی", default="/qbank/")
+    main_page_second_button_url = models.CharField(" لینک دکمه شماره دو صفحه اصلی", default="/qbank/", max_length=255)
     main_page_second_button_name = models.CharField("نام دکمه شماره دو صفحه اصلی", default="بانک سوال", max_length=50)
     main_page_second_button_svg = models.TextField("svg دکمه شماره دو صفحه اصلی",  default="""
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -150,7 +150,7 @@ class Site(BaseModel):
         </svg>
     """)
     second_stats_card_number =  models.CharField("عدد نماد امار دوم", default="42", max_length=50)
-    second_stats_card_symbol =  models.CharField("علامت نماد امار دوم", default="", max_length=50)
+    second_stats_card_symbol =  models.CharField("علامت نماد امار دوم", default=" ",null=True, blank=True , max_length=50)
     second_stats_card_name = models.CharField("نام نماد امار دوم", default="مدرسه", max_length=50)
 
 

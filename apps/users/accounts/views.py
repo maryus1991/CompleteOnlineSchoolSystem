@@ -7,6 +7,10 @@ from django.urls import reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+
+
+
 class UserLogoutView(LoginRequiredMixin, RedirectView):
     """for logout view"""
     def get_redirect_url(self):

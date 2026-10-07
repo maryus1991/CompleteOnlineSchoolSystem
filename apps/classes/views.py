@@ -1,6 +1,8 @@
 from django.views.generic import ListView, DetailView
-from apps.classes.models import Class, GradeCategories, MajorCategories, LessonCategories, Student
+from apps.classes.models import Class, Student
 from django.db.models import Q, Exists, Count, OuterRef, Value, BooleanField
+from django.contrib import messages
+from django.shortcuts import redirect
 
 class ClassListView(ListView):
     """for list classes as course"""

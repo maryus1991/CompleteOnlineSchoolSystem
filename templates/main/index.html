@@ -1,4 +1,4 @@
-{% extends "main/Base/Base.html" %}
+    {% extends "main/Base/Base.html" %}
 
 
 {% block main %}
@@ -70,7 +70,10 @@
 {{site.first_stats_card_svg|safe}}
                     </div>
                     <span class="stat-number">
-                        <span class="counter" data-target="{{site.first_stats_card_number}}">0</span>{{site.first_stats_card_symbol}}
+                        <span class="counter" data-target="{{site.first_stats_card_number}}">0</span>
+                        {% if site.first_stats_card_symbol  %}
+                        {{site.first_stats_card_symbol}}
+                        {% endif %}
                     </span>
                     <span class="stat-label" data-i18n="stats.students">{{site.first_stats_card_name}}</span>
                 </div>
@@ -79,7 +82,10 @@
 {{site.second_stats_card_svg|safe}}
                     </div>
                     <span class="stat-number">
-                        <span class="counter" data-target="{{site.second_stats_card_number}}">0</span>{{site.second_stats_card_symbol}}
+                        <span class="counter" data-target="{{site.second_stats_card_number}}">0</span>
+                        {% if site.second_stats_card_symbol  %}
+                        {{site.second_stats_card_symbol}}
+                        {% endif %}
                         <span class="stat-label" data-i18n="stats.companies">{{site.second_stats_card_name}}</span>
                     </span>
                 </div>
@@ -88,7 +94,10 @@
 {{site.third_stats_card_svg|safe}}
                     </div>
                     <span class="stat-number">
-                        <span class="counter" data-target="{{site.third_stats_card_number}}">0</span>{{site.third_stats_card_symbol}}
+                        <span class="counter" data-target="{{site.third_stats_card_number}}">0</span>
+                        {% if site.third_stats_card_symbol  %}
+                        {{site.third_stats_card_symbol}}
+                        {% endif %}
                     </span>
                     <span class="stat-label" data-i18n="stats.satisfaction">{{site.third_stats_card_name}}</span>
                 </div>
@@ -97,7 +106,10 @@
 {{site.fourth_stats_card_svg|safe}}
                     </div>
                     <span class="stat-number">
-                        <span class="counter" data-target="{{site.fourth_stats_card_number}}">0</span>{{site.fourth_stats_card_symbol}}
+                        <span class="counter" data-target="{{site.fourth_stats_card_number}}">0</span>
+                        {% if site.fourth_stats_card_symbol  %}
+                        {{site.fourth_stats_card_symbol}}
+                        {% endif %}
                     </span>
                     <span class="stat-label" data-i18n="stats.projects">{{site.fourth_stats_card_name}}</span>
                 </div>
