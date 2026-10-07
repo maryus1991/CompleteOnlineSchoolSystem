@@ -44,13 +44,11 @@ class Exam(BaseModel):
     capacity = models.PositiveSmallIntegerField(verbose_name='ظرفیت', default=1)
     filled_capacity = models.PositiveSmallIntegerField(verbose_name=' ظرفیت پر شده', default=0)
 
-
-    change_the_order = models.BooleanField(default=True, verbose_name=' عوض کردن ترتیب سوالات')
     have_negative_score = models.BooleanField(default=True, verbose_name='دارای نمره منفی')
+
     allow_to_edit_the_answered_questions = models.BooleanField(default=True,verbose_name='امکان ویرایش پاسخ داده شده')
     allow_return_to_questions = models.BooleanField(default=True, verbose_name='برگشتن به عقب')
-
-
+    change_the_order = models.BooleanField(default=True, verbose_name=' عوض کردن ترتیب سوالات')
 
     reduce_percent_of_negative_score = models.SmallIntegerField(default=30,verbose_name="درصد کم کردن از نمره در ازای هر سوال اشتباه")
 
@@ -100,7 +98,7 @@ class Exam(BaseModel):
 
 class ExamStudentDetails(BaseModel):
 
-    exam = models.ForeignKey('Quiz', on_delete=models.PROTECT, related_name='detail', verbose_name='آزمون', db_index=True)
+    exam = models.ForeignKey('Exam', on_delete=models.PROTECT, related_name='details', verbose_name='آزمون', db_index=True)
     student = models.ForeignKey(Student, on_delete=models.PROTECT, related_name='quiz_detail', verbose_name='دانش اموز', db_index=True)
     student_finished_at = BaseJalaliDateTimeField(verbose_name='زمان خروج کاربر از ازمون', null=True, blank=True)
     # student_start_at = models.DateTimeField(verbose_name='زمان ورود کاربر به ازمون', blank=True, null=True) ### use created_at instead

@@ -7,6 +7,7 @@ class BaseModel(models.Model):
     created_at = BaseJalaliDateTimeField(auto_now_add=True, verbose_name="تاریخ ساخت")
     updated_at = BaseJalaliDateTimeField(auto_now=True, verbose_name="تاریخ اخرین بروزرسانی")
     sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
+
     jalali_object = jalali_models.jManager()
     objects = models.Manager()
 
