@@ -17,17 +17,18 @@ class Question(BaseModel):
 
     class TypeOfQuestions(models.TextChoices):
         MULTIPLE_CHOICE = 'تستی چند گزینه‌ای', 'تستی چند گزینه‌ای'
-        SHORT_ANSWER = 'پاسخ کوتاه', 'پاسخ کوتاه'
-        LONG_ANSWER = 'پاسخ تشریحی', 'پاسخ تشریحی'
+        LONG_ANSWER = 'تشریحی', 'تشریحی'
         IMAGE_BASED = 'مبتنی بر تصویر', 'مبتنی بر تصویر'
         PDF_BASED = 'سوال از فایل PDF', 'سوال از فایل PDF'
 
+    name = models.CharField(max_length=500, verbose_name='عنوان سوال')
     description = CKEditor5Field(blank=True, null=True, verbose_name='متن سوال')
+    score = models.FloatField(default=1, verbose_name='حداکثر نمره سوال')
+
     image = models.ImageField(upload_to=UploadPath("questions"), blank=True, null=True, verbose_name='تصویر سوال')
     pdf_file = models.FileField(upload_to=UploadPath("questions"), blank=True, null=True, verbose_name='فایل PDF سوال')
-    name = models.CharField(max_length=255, verbose_name='عنوان سوال')
     type_of_question = models.CharField(max_length=100, choices=TypeOfQuestions.choices, verbose_name='نوع سوال')
-    score = models.FloatField(default=1, verbose_name='حداکثر نمره سوال')
+
     is_for_qbank = models.BooleanField("سوال جزو بانک سوال ؟", default=False)
 
     exam = models.ForeignKey(Exam, related_name='question', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="ازمون")
@@ -51,7 +52,7 @@ class Question(BaseModel):
 
 class QuestionOption(BaseModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='options', verbose_name='سوال', db_index=True)
-    text = models.CharField(max_length=500, verbose_name='متن گزینه')
+    name = models.CharField(max_length=500, verbose_name='متن گزینه')
     is_correct = models.BooleanField(default=False, verbose_name='گزینه صحیح')
 
     class Meta:
@@ -60,14 +61,14 @@ class QuestionOption(BaseModel):
         verbose_name_plural = 'گزینه‌ها سوالات تستی'
 
     def __str__(self):
-        return f"{self.question.name} - {self.text}"
+        return f"{self.question.name} - {self.name} - {self.is_correct }"
 
 
 class QuestionAnswerKey(BaseModel):
     class TypeOfAnswer(models.TextChoices):
         TEXT_BASED = 'پاسخ تشریحی', 'پاسخ تشریحی'
-        IMAGE_BASED = 'پاسخ تصویری', 'پاسخ تصویری'
-        PDF_BASED = 'پاسخ PDF', 'پاسخ PDF'
+        IMAGE_BASED = 'فایل تصویری', 'پاسخ تصویری'
+        PDF_BASED = 'فایل PDF', 'فایل PDF'
 
     question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='answer_key', verbose_name='سوال')
     type_of_answer = models.CharField(max_length=50, choices=TypeOfAnswer.choices, verbose_name='نوع پاسخ صحیح')
