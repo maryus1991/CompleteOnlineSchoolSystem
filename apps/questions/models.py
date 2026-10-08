@@ -108,6 +108,7 @@ class StudentAnswer(BaseModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='student_answers', null=True,blank=True, verbose_name='سوال')
     description = models.TextField(blank=True, null=True, verbose_name='متن پاسخ')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='answers', verbose_name='دانش‌آموز')
+    exam = models.ForeignKey(Exam, related_name='student_answers', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="ازمون")
 
     sanatorium_message = CKEditor5Field(blank=True, null=True, verbose_name='نظر مصصح')
     corrected = models.CharField(max_length=100, choices=TypeOfCorrect.choices, verbose_name='کیفیت جواب',default=TypeOfCorrect.not_corrected )

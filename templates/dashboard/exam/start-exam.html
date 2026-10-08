@@ -1,214 +1,678 @@
-{% extends "main/base/base.html" %}
-{% load time %}
-{% load tdc %}
- {% load compress %}
- {% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>آزمون - سورنا</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-{% block content %}
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
-</script>
+<style>
+/* ===== Custom SweetAlert2 Replacement ===== */
+.swal-custom-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    direction: rtl;
+}
+.swal-custom-overlay.swal-show {
+    opacity: 1;
+}
+.swal-custom-popup {
+    background: var(--bg-card, #fff);
+    border-radius: 16px;
+    padding: 32px 28px 24px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(10px);
+    transition: transform 0.2s ease;
+    position: relative;
+}
+.swal-custom-overlay.swal-show .swal-custom-popup {
+    transform: scale(1) translateY(0);
+}
+.swal-custom-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    line-height: 1;
+}
+.swal-custom-icon-success {
+    background: rgba(22, 163, 74, 0.12);
+    color: #16a34a;
+}
+.swal-custom-icon-warning {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
+.swal-custom-icon-error {
+    background: rgba(220, 38, 38, 0.12);
+    color: #dc2626;
+}
+.swal-custom-icon-info {
+    background: rgba(14, 165, 233, 0.12);
+    color: #0ea5e9;
+}
+.swal-custom-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary, #1e293b);
+    margin: 0 0 10px;
+    line-height: 1.4;
+}
+.swal-custom-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary, #64748b);
+    margin: 0 0 22px;
+    line-height: 1.7;
+}
+.swal-custom-confirm {
+    display: inline-block;
+    padding: 10px 32px;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+    min-width: 100px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+.swal-custom-confirm:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+.swal-custom-confirm:active {
+    transform: translateY(0);
+}
+body.dark .swal-custom-popup {
+    background: var(--bg-card, #1e293b);
+}
+/* ===== End Custom SweetAlert2 Replacement ===== */
+
+/* ===== Bootstrap 5.3.2 RTL - Selected Utilities (replacement) ===== */
+*,*::before,*::after{box-sizing:border-box;}
+
+body{
+    font-size:1rem;
+    font-weight:400;
+    line-height:1.5;
+    -webkit-text-size-adjust:100%;
+    -webkit-tap-highlight-color:transparent;
+}
+
+/* Container */
+.container-fluid{
+    width:100%;
+    padding-right:.75rem;
+    padding-left:.75rem;
+    margin-right:auto;
+    margin-left:auto;
+}
+
+/* Row */
+.row{
+    --bs-gutter-x:1.5rem;
+    --bs-gutter-y:0;
+    display:flex;
+    flex-wrap:wrap;
+    margin-top:calc(-1 * var(--bs-gutter-y));
+    margin-right:calc(-.5 * var(--bs-gutter-x));
+    margin-left:calc(-.5 * var(--bs-gutter-x));
+}
+.row > *{
+    flex-shrink:0;
+    width:100%;
+    max-width:100%;
+    padding-right:calc(var(--bs-gutter-x) * .5);
+    padding-left:calc(var(--bs-gutter-x) * .5);
+    margin-top:var(--bs-gutter-y);
+}
+.g-3{--bs-gutter-x:1rem;--bs-gutter-y:1rem;}
+
+/* Columns */
+.col-12{flex:0 0 auto;width:100%;}
+.col-6{flex:0 0 auto;width:50%;}
+@media (min-width:992px){
+    .col-lg-8{flex:0 0 auto;width:66.66666667%;}
+    .col-lg-4{flex:0 0 auto;width:33.33333333%;}
+}
+
+/* Display */
+.d-flex{display:flex!important;}
+.d-block{display:block!important;}
+.d-none{display:none!important;}
+@media (min-width:576px){
+    .d-sm-block{display:block!important;}
+    .d-sm-inline{display:inline!important;}
+}
+@media (min-width:992px){
+    .d-lg-none{display:none!important;}
+}
+
+/* Flex */
+.flex-column{flex-direction:column!important;}
+.flex-wrap{flex-wrap:wrap!important;}
+.flex-fill{flex:1 1 auto!important;}
+.align-items-start{align-items:flex-start!important;}
+.align-items-center{align-items:center!important;}
+.justify-content-between{justify-content:space-between!important;}
+.justify-content-center{justify-content:center!important;}
+
+/* Gap */
+.gap-1{gap:.25rem!important;}
+.gap-2{gap:.5rem!important;}
+.gap-3{gap:1rem!important;}
+
+/* Order */
+.order-2{order:2!important;}
+.order-3{order:3!important;}
+@media (min-width:992px){
+    .order-lg-2{order:2!important;}
+    .order-lg-3{order:3!important;}
+}
+
+/* Margin */
+.mb-0{margin-bottom:0!important;}
+.mb-1{margin-bottom:.25rem!important;}
+.mb-2{margin-bottom:.5rem!important;}
+.mb-3{margin-bottom:1rem!important;}
+.mb-4{margin-bottom:1.5rem!important;}
+.mt-1{margin-top:.25rem!important;}
+.mt-3{margin-top:1rem!important;}
+.mt-4{margin-top:1.5rem!important;}
+.me-1{margin-right:.25rem!important;}
+.me-2{margin-right:.5rem!important;}
+.ms-1{margin-left:.25rem!important;}
+@media (min-width:768px){
+    .mb-md-4{margin-bottom:1.5rem!important;}
+}
+@media (min-width:992px){
+    .mb-lg-4{margin-bottom:1.5rem!important;}
+    .mt-lg-4{margin-top:1.5rem!important;}
+}
+
+/* Padding */
+.p-0{padding:0!important;}
+.p-2{padding:.5rem!important;}
+.p-3{padding:1rem!important;}
+.p-4{padding:1.5rem!important;}
+.px-2{padding-right:.5rem!important;padding-left:.5rem!important;}
+.px-3{padding-right:1rem!important;padding-left:1rem!important;}
+.py-2{padding-top:.5rem!important;padding-bottom:.5rem!important;}
+.py-3{padding-top:1rem!important;padding-bottom:1rem!important;}
+@media (min-width:768px){
+    .p-md-3{padding:1rem!important;}
+    .px-md-3{padding-right:1rem!important;padding-left:1rem!important;}
+}
+@media (min-width:992px){
+    .p-lg-4{padding:1.5rem!important;}
+}
+
+/* Text */
+.text-center{text-align:center!important;}
+.text-muted{color:var(--text-muted)!important;}
+.text-secondary{color:var(--text-secondary)!important;}
+.text-decoration-none{text-decoration:none!important;}
+
+/* Font weight */
+.fw-500{font-weight:500!important;}
+.fw-600{font-weight:600!important;}
+.fw-700{font-weight:700!important;}
+.fw-bold{font-weight:700!important;}
+
+/* Borders */
+.border-0{border:0!important;}
+.border-2{border-width:2px!important;}
+.rounded-3{border-radius:.5rem!important;}
+.rounded-4{border-radius:1rem!important;}
+.overflow-hidden{overflow:hidden!important;}
+
+/* Shadows */
+.shadow-sm{box-shadow:0 .125rem .25rem rgba(0,0,0,.075)!important;}
+.shadow-lg{box-shadow:0 1rem 3rem rgba(0,0,0,.175)!important;}
+
+/* Width */
+.w-100{width:100%!important;}
+
+/* Buttons */
+.btn{
+    display:inline-block;
+    padding:.375rem .75rem;
+    font-size:1rem;
+    font-weight:400;
+    line-height:1.5;
+    color:var(--text-primary);
+    text-align:center;
+    text-decoration:none;
+    vertical-align:middle;
+    cursor:pointer;
+    user-select:none;
+    background-color:transparent;
+    border:1px solid transparent;
+    border-radius:.375rem;
+    transition:color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.btn-sm{padding:.25rem .5rem;font-size:.875rem;border-radius:.25rem;}
+.btn-success{color:#fff;background-color:#198754;border-color:#198754;}
+.btn-success:hover{color:#fff;background-color:#157347;border-color:#146c43;}
+.btn-outline-primary{color:#0d6efd;border-color:#0d6efd;}
+.btn-outline-primary:hover{color:#fff;background-color:#0d6efd;border-color:#0d6efd;}
+.btn-outline-success{color:#198754;border-color:#198754;}
+.btn-outline-success:hover{color:#fff;background-color:#198754;border-color:#198754;}
+.btn-outline-danger{color:#dc3545;border-color:#dc3545;}
+.btn-outline-danger:hover{color:#fff;background-color:#dc3545;border-color:#dc3545;}
+.btn-outline-secondary{color:#6c757d;border-color:#6c757d;}
+.btn-outline-secondary:hover{color:#fff;background-color:#6c757d;border-color:#6c757d;}
+
+/* Badge */
+.badge{
+    display:inline-block;
+    padding:.35em .65em;
+    font-size:.75em;
+    font-weight:700;
+    line-height:1;
+    color:#fff;
+    text-align:center;
+    white-space:nowrap;
+    vertical-align:baseline;
+    border-radius:.375rem;
+}
+
+/* Small */
+small{font-size:.875em;}
+/* ===== End Bootstrap replacement ===== */
+
+:root{
+    --bg-primary:#f4f6fa;
+    --bg-secondary:#eef2f7;
+    --bg-card:#ffffff;
+    --bg-hover:#e6ecf3;
+    --border-color:#dbe2ec;
+    --text-primary:#1e293b;
+    --text-secondary:#64748b;
+    --text-muted:#94a3b8;
+    --primary-500:#3b82f6;
+    --success-500:#16a34a;
+    --danger-500:#dc2626;
+    --warning-500:#f59e0b;
+    --info-500:#0ea5e9;
+    --warm-400:#fbbf24;
+    --radius-sm:6px;
+    --radius-lg:14px;
+    --gradient-blue:linear-gradient(135deg,#dbeafe,#bfdbfe);
+    --gradient-green:linear-gradient(135deg,#22c55e,#16a34a);
+}
+body.dark{
+    --bg-primary:#0f172a;
+    --bg-secondary:#1e293b;
+    --bg-card:#1e293b;
+    --bg-hover:#334155;
+    --border-color:#334155;
+    --text-primary:#e2e8f0;
+    --text-secondary:#94a3b8;
+    --text-muted:#64748b;
+    --gradient-blue:linear-gradient(135deg,#1e3a8a,#1e40af);
+}
+*{box-sizing:border-box;}
+body{
+    margin:0;
+    font-family:"Segoe UI",Tahoma,sans-serif;
+    background:var(--bg-primary);
+    color:var(--text-primary);
+    transition:background .3s,color .3s;
+}
+a{text-decoration:none;color:inherit;}
+.theme-toggle{cursor:pointer;padding:6px;border-radius:8px;background:var(--bg-secondary);display:flex;align-items:center;}
+body.dark .sun-icon{display:none;}
+body:not(.dark) .moon-icon{display:none;}
+
+.site-logo{border-radius:8px;}
+
+.timer-display{
+    background:var(--bg-secondary);
+    border-radius:var(--radius-lg);
+    display:flex;flex-direction:column;align-items:center;
+    border:1px solid var(--border-color);
+}
+.timer-numbers{font-weight:700;font-variant-numeric:tabular-nums;color:var(--text-primary);}
+.timer-label{font-size:.75rem;color:var(--text-muted);}
+
+.progress-custom{
+    width:100%;background:var(--bg-secondary);overflow:hidden;
+}
+.progress-fill{
+    height:100%;background:var(--gradient-green);transition:width .4s ease;
+}
+
+.badge-custom{
+    display:inline-block;padding:3px 10px;border-radius:20px;
+    font-size:.7rem;font-weight:600;
+}
+.badge-info{background:rgba(59,130,246,.15);color:var(--primary-500);}
+.badge-success{background:rgba(22,163,74,.15);color:var(--success-500);}
+.badge-warning{background:rgba(245,158,11,.15);color:#b45309;}
+.badge-purple{background:rgba(139,92,246,.15);color:#7c3aed;}
+
+.exam-question-card{
+    background:var(--bg-card);
+    border:1px solid var(--border-color);
+    border-radius:var(--radius-lg);
+    box-shadow:0 2px 10px rgba(0,0,0,.03);
+}
+
+.question-option{
+    display:flex;align-items:center;gap:12px;
+    background:var(--bg-secondary);
+    border:2px solid transparent;
+    border-radius:var(--radius-lg);
+    transition:all .2s ease;
+    cursor:pointer;
+}
+.question-option:hover{
+    background:var(--bg-hover);
+    border-color:rgba(59,130,246,.3);
+}
+.question-option.selected{
+    background:rgba(22,163,74,.1);
+    border-color:var(--success-500);
+}
+.option-dot{
+    width:16px;height:16px;border-radius:50%;
+    border:2px solid var(--border-color);flex-shrink:0;
+    background:var(--bg-card);
+}
+.question-option.selected .option-dot{
+    background:var(--success-500);border-color:var(--success-500);
+    box-shadow:inset 0 0 0 3px var(--bg-card);
+}
+
+.q-nav-btn{
+    background:var(--bg-secondary);
+    border:1px solid var(--border-color);
+    color:var(--text-secondary);
+    font-weight:600;
+    transition:all .2s;
+}
+.q-nav-btn:hover{transform:translateY(-2px);}
+.q-nav-btn.answered{background:var(--gradient-green);color:#fff;border-color:transparent;}
+.q-nav-btn.current{background:var(--gradient-blue);color:var(--primary-500);border-color:var(--primary-500);}
+.q-nav-btn.skipped{background:rgba(245,158,11,.2);border-color:var(--warm-400);color:#b45309;}
+
+.btn-primary-gradient{
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:#fff;border:none;border-radius:var(--radius-lg);font-weight:600;
+}
+.btn-primary-gradient:hover{color:#fff;opacity:.92;}
+.btn-purple-gradient{
+    background:linear-gradient(135deg,#8b5cf6,#7c3aed);
+    color:#fff;border:none;border-radius:var(--radius-lg);font-weight:600;
+}
+.btn-purple-gradient:hover{color:#fff;opacity:.92;}
+
+.card-custom{
+    background:var(--bg-card);
+    border:1px solid var(--border-color);
+    border-radius:var(--radius-lg);
+}
+
+.form-control-custom{
+    width:100%;padding:12px;border:1px solid var(--border-color);
+    background:var(--bg-secondary);color:var(--text-primary);
+    border-radius:12px;font-family:inherit;font-size:.9rem;
+    outline:none;transition:border .2s;
+}
+.form-control-custom:focus{border-color:var(--primary-500);}
+
+.quiz-list-item{
+    background:var(--bg-secondary);
+    border:1px solid transparent;
+    border-radius:var(--radius-lg);
+    transition:all .2s ease;
+}
+.quiz-list-item:hover{
+    background:rgb(99 239 68 / .08)!important;
+    border-color:rgb(99 239 68 / .25)!important;
+    transform:translateX(-3px);
+}
+
+.spinner-border{
+    display:inline-block;width:1rem;height:1rem;
+    border:.15em solid currentColor;border-right-color:transparent;
+    border-radius:50%;animation:spinner-border .75s linear infinite;
+}
+@keyframes spinner-border{to{transform:rotate(360deg);}}
+
+input[type="file"]::file-selector-button{
+    background:var(--bg-secondary);border:1px solid var(--border-color);
+    border-radius:var(--radius-sm);padding:4px 10px;color:var(--text-primary);cursor:pointer;
+}
+input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
+
+@media (max-width:991.98px){
+    .mobile-bottom-bar{display:flex!important;}
+}
+@media (min-width:992px){
+    .mobile-bottom-bar{display:none!important;}
+}
+</style>
+</head>
+<body>
 
 <div class="page-section active" id="page-exam-take">
-    <div style="background:var(--bg-primary);min-height:100vh;">
+<div style="background:var(--bg-primary);min-height:100vh;">
 
-
-        <div style="background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;">
-
-            <div class="d-flex align-items-center gap-2">
-                <div class="navbar-brand-logo" style="width:28px;height:28px;flex-shrink:0;">
-                    <img src="{% url 'site:favicon' %}"
-                    alt="سورنا"
-                    width="40"
-                    height="40"
-                    loading="eager"
-                    decoding="async"
-                    class="site-logo">
-                </div>
-            </div>
-
-
-            <div class="timer-display order-3 order-lg-2" style="padding:8px 16px;flex-grow:1;text-align:center;">
-                <div class="timer-numbers" style="font-size:1.25rem;" id="examTimer" data-minutes="{{remaining_time}}"></div>
-            </div>
-
-
-            <div class="d-flex align-items-center gap-2 order-2 order-lg-3">
-                <div class="theme-toggle d-none d-sm-block" onclick="toggleTheme()">
-                    <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
-                        <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <a class="btn btn-sm" href='{% url "quiz:quiz-finished" quiz.id %}' style="background:rgb(99 239 68 / 0.2);color:var(--success-500);border:none;border-radius:var(--radius-lg);font-family:inherit;padding:6px 12px;font-weight:600;font-size:0.75rem;white-space:nowrap;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span class="d-none d-sm-inline">پایان آزمون
-                        {% if quiz.exam  %}
-                            و رفتن به ازمون بعدی
-                        {% endif %}
-                    </span>
-
-                </a>
+    <!-- ============ هدر بالا ============ -->
+    <div style="background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;">
+        <div class="d-flex align-items-center gap-2">
+            <div style="width:28px;height:28px;flex-shrink:0;">
+                <img src="https://via.placeholder.com/40x40/3b82f6/ffffff?text=S"
+                     alt="سورنا" width="40" height="40" class="site-logo">
             </div>
         </div>
 
-
-        <div class="progress-custom" style="height:4px;">
-            <div class="progress-fill" style="width:{{solved_skipped_questions|percent:all_question}}%;"></div>
+        <div class="timer-display order-3 order-lg-2" style="padding:8px 16px;flex-grow:1;text-align:center;">
+            <div class="timer-numbers" style="font-size:1.25rem;" id="examTimer" data-minutes="45"></div>
         </div>
 
+        <div class="d-flex align-items-center gap-2 order-2 order-lg-3">
+            <div class="theme-toggle d-none d-sm-block" onclick="toggleTheme()">
+                <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <a class="btn btn-sm" href="#" style="background:rgb(99 239 68 / 0.2);color:var(--success-500);border:none;border-radius:var(--radius-lg);padding:6px 12px;font-weight:600;font-size:0.75rem;white-space:nowrap;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="d-none d-sm-inline">پایان آزمون</span>
+            </a>
+        </div>
+    </div>
 
-        <div class="container-fluid px-2 px-md-3 py-3">
-            <div class="row g-3">
+    <!-- ============ نوار پیشرفت ============ -->
+    <div class="progress-custom" style="height:4px;">
+        <div class="progress-fill" style="width:35%;"></div>
+    </div>
 
-                <div class="col-12 col-lg-8">
-                    <div class="exam-question-card mb-3 mb-lg-4 p-2 p-md-3 p-lg-4">
+    <!-- ============ محتوای اصلی ============ -->
+    <div class="container-fluid px-2 px-md-3 py-3">
+        <div class="row g-3">
 
-                        <div class="d-flex justify-content-between align-items-start mb-3 mb-md-4 flex-wrap gap-2">
-                            <div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="badge-custom badge-info">{{question.type_of_question}}</span>
-                                <span class="badge-custom badge-success">{{quiz.grade.name}}</span>
-                                <span class="badge-custom badge-success">{{quiz.major.name}}</span>
-                                <span class="badge-custom badge-success">{{quiz.lession.name}}</span>
-                                <span class="badge-custom badge-warning">{{quiz.section}}</span>
-                                <span class="badge-custom badge-warning">{{quiz.name}}</span>
-                                <span class="badge-custom badge-warning">{{quiz.exam.name}}</span>
-                            </div>
-                        {% if quiz.show_score %}
-                            <div style="font-size:0.75rem;color:var(--text-muted);">نمره: {{question.score}}</div>
-                        {% endif %}
+            <!-- ============ ستون سوال ============ -->
+            <div class="col-12 col-lg-8">
+                <div class="exam-question-card mb-3 mb-lg-4 p-2 p-md-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3 mb-md-4 flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="badge-custom badge-info">چهارگزینه‌ای</span>
+                            <span class="badge-custom badge-success">دهم</span>
+                            <span class="badge-custom badge-success">ریاضی</span>
+                            <span class="badge-custom badge-success">ریاضی ۱</span>
+                            <span class="badge-custom badge-warning">فصل اول</span>
+                            <span class="badge-custom badge-warning">آزمون میان‌ترم</span>
+                            <span class="badge-custom badge-warning">آزمون جامع بهار</span>
                         </div>
-
-
-                        <div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:16px;margin-bottom:20px;">
-                            <p class="mb-0 fw-500" style="font-size:0.95rem;line-height:1.8;word-wrap:break-word;">
-                                {{question.name}}
-                            </p>
-                        </div>
-
-
-                        {% if question.description %}
-                        <div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:16px;margin-bottom:20px;">
-                            <p class="mb-0 fw-500" style="font-size:0.75rem;line-height:1.6;word-wrap:break-word;">
-                                {{question.description|safe}}
-                            </p>
-                        </div>
-                        {% endif %}
-
-
-                        {% if question.image %}
-                        <div style="background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden;max-height:300px;">
-                            <picture>
-                                <source srcset="{{ question.image.url }}" type="image/webp">
-                                <img src="{{ question.image.url }}" style="max-width:100%;max-height:300px;width:auto;height:auto;object-fit:contain;" loading="lazy" alt="Question Image">
-                            </picture>
-                        </div>
-                        <p class='p-2' style="font-size:0.85rem;">عکس اپلود شده
-                            <br>
-                            <a href="{{ question.image.url }}" class="btn btn-success" >دانلود</a>
-                        </p>
-                        {% endif %}
-
-
-                        {% if question.pdf_file %}
-                        <div style="margin-bottom:20px;">
-                            <p class='p-2' style="font-size:0.85rem;">فایل اپلود شده
-                                <br>
-                                <a href="{{ question.pdf_file.url }}" class="btn btn-success" >دانلود</a>
-                            </p>
-                            <iframe src="{{ question.pdf_file.url }}" scrolling="auto" style="width:100%;height:300px;border:2px solid var(--border-color);border-radius:var(--radius-lg);"></iframe>
-                        </div>
-                        {% endif %}
-
-
-                        {% if question.options.exists %}
-                        <div class="d-flex flex-column gap-2">
-                            {% for option in question.options.all %}
-                            <a {% if answer.selected_option is None or quiz.allow_to_edit_the_answered_questions %} href="{% url 'quiz:quiz-set-option-answer-quesion' pk=quiz.id question_id=question.id option_id=option.id %}" {% endif %} class="text-decoration-none">
-                                <div class="question-option {% if answer.selected_option == option %}selected{% endif %}" style="padding:12px 16px;">
-                                    <div class="option-dot"></div>
-                                    <span style="font-size:0.9rem;word-wrap:break-word;">{{ forloop.counter }}) {{option.text}}</span>
-                                </div>
-                            </a>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
+                        <div style="font-size:0.75rem;color:var(--text-muted);">نمره: ۲</div>
                     </div>
 
+                    <!-- صورت سوال -->
+                    <div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:16px;margin-bottom:20px;">
+                        <p class="mb-0 fw-500" style="font-size:0.95rem;line-height:1.8;word-wrap:break-word;">
+                            حاصل عبارت زیر را محاسبه کنید: مجموع اعداد ۱ تا ۱۰ برابر چند است؟
+                        </p>
+                    </div>
 
-                    {% if not question.options.exists %}
-                    <div class="exam-question-card p-2 p-md-3 p-lg-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge-custom badge-purple">تشریحی</span>
-                                <span class="badge-custom badge-purple">آپلود فایل</span>
+                    <!-- توضیحات -->
+                    <div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:16px;margin-bottom:20px;">
+                        <p class="mb-0 fw-500" style="font-size:0.75rem;line-height:1.6;word-wrap:break-word;">
+                            راهنما: از فرمول <strong>n(n+1)/2</strong> استفاده کنید.
+                        </p>
+                    </div>
+
+                    <!-- تصویر سوال -->
+                    <div style="background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden;max-height:300px;">
+                        <img src="https://via.placeholder.com/600x300/3b82f6/ffffff?text=Question+Image"
+                             style="max-width:100%;max-height:300px;width:auto;height:auto;object-fit:contain;"
+                             loading="lazy" alt="Question Image">
+                    </div>
+                    <p class="p-2" style="font-size:0.85rem;">عکس آپلود شده
+                        <br>
+                        <a href="https://via.placeholder.com/600x300/3b82f6/ffffff?text=Question+Image" class="btn btn-success">دانلود</a>
+                    </p>
+<div class="mt-4">
+                                        <div class="border-0 shadow-sm overflow-hidden" style="border-radius:var(--radius-lg); background: var(--bg-card);">
+                        <div class="d-flex align-items-center justify-content-between gap-2 p-3"
+                             style="border-bottom:1px solid var(--border-color);">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center"
+                                     style="width:42px;height:42px;border-radius:12px;background:rgba(220,53,69,.1);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                                        <path d="M4.603 14.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.572.52-.572.24 0 .383.17.445.295.042.09.087.253.072.5a6.4 6.4 0 0 1-.244 1.365 7.4 7.4 0 0 0 .72 1.387 8 8 0 0 1 1.36-.138c.553.017.879.163 1.05.306.17.144.239.318.239.472a.6.6 0 0 1-.13.406c-.116.14-.29.2-.45.2-.43 0-.908-.227-1.443-.62a8 8 0 0 1-1.34.19c-.72 1.26-1.5 2.31-2.42 2.98a3 3 0 0 1-.697.421c-.245.098-.51.104-.755.016"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div>فایل PDF  </div>
+
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود PDF">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">دانلود</span>
+                                </a>
+
+
                             </div>
                         </div>
+                        <div class="p-2">
+                            <iframe src="about:blank" title="پیش‌نمایش فایل PDF پاسخ" scrolling="auto"
+                                    style="width:100%;height:450px;display:block;border:1px solid var(--border-color);border-radius:12px;background:#fff;"></iframe>
+                        </div>
+                    </div>
+</div>
 
-                        {% if quiz.allow_to_edit_the_answered_questions or answer.type_of_answer == status.NOT_ANSWERD %}
+                    <!-- گزینه‌ها -->
+                    <div class="d-flex flex-column gap-2">
+                        <a href="#" class="text-decoration-none">
+                            <div class="question-option selected" style="padding:12px 16px;">
+                                <div class="option-dot"></div>
+                                <span style="font-size:0.9rem;word-wrap:break-word;">۱) ۵۰</span>
+                            </div>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <div class="question-option" style="padding:12px 16px;">
+                                <div class="option-dot"></div>
+                                <span style="font-size:0.9rem;word-wrap:break-word;">۲) ۵۵</span>
+                            </div>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <div class="question-option" style="padding:12px 16px;">
+                                <div class="option-dot"></div>
+                                <span style="font-size:0.9rem;word-wrap:break-word;">۳) ۶۰</span>
+                            </div>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <div class="question-option" style="padding:12px 16px;">
+                                <div class="option-dot"></div>
+                                <span style="font-size:0.9rem;word-wrap:break-word;">۴) ۶۵</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
 
-                        <form action="{% url 'quiz:quiz-set-text-file-answer-quesion' pk=quiz.id question_id=question.id %}"
-                        method="post"
-                        enctype="multipart/form-data"
-                        class="answer-form p-4 rounded-4 shadow-lg"
-                        id="descriptiveAnswerForm">
-                        {% csrf_token %}
+                <!-- ============ کارت سوال تشریحی ============ -->
+                <div class="exam-question-card p-2 p-md-3 p-lg-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge-custom badge-purple">تشریحی</span>
+                            <span class="badge-custom badge-purple">آپلود فایل</span>
+                        </div>
+                    </div>
 
+                    <form action="#" method="post" enctype="multipart/form-data"
+                          class="answer-form p-4 rounded-4 shadow-lg"
+                          id="descriptiveAnswerForm">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="demo-token">
 
                         <div class="mb-4">
-                            <textarea
-                            class="form-control-custom border-2 shadow-sm"
-                            placeholder="پاسخ خود را بنویسید..."
-                            name="answer"
-                            rows="5"
-                            style="resize: none; border-radius: 12px;">{% if answer.description %}{{ answer.description }}{% endif %}</textarea>
+                            <textarea class="form-control-custom border-2 shadow-sm"
+                                      placeholder="پاسخ خود را بنویسید..."
+                                      name="answer" rows="5"
+                                      style="resize: none; border-radius: 12px;"></textarea>
                         </div>
 
-
                         <div class="row g-3 mb-3">
-
                             <div class="col-6">
                                 <label for="fileInput" class="d-block mb-2 fw-bold">انتخاب فایل (عکس یا PDF)</label>
-                                <input type="file"
-                                id="fileInput"
-                                name="file"
-                                accept=".pdf,.jpg,.jpeg,.png,.webp,.heic"
-                                multiple
-                                class="btn btn-outline-primary w-100 py-3">
+                                <input type="file" id="fileInput" name="file"
+                                       accept=".pdf,.jpg,.jpeg,.png,.webp,.heic" multiple
+                                       class="btn btn-outline-primary w-100 py-3">
                                 <small class="d-block text-muted mt-1" style="font-size:0.7rem;">
                                     می‌توانید چندین عکس را هم‌زمان انتخاب کنید
                                 </small>
                             </div>
 
-
-<div class="col-6">
-    <label for="cameraInput" class="d-block mb-2 fw-bold">عکس‌گیری با دوربین (چندتایی)</label>
-    <input type="file"
-           id="cameraInput"
-           name="image"
-           accept="image/*"
-           capture="environment"
-           multiple
-           class="btn btn-outline-success w-100 py-3">
-    <small class="d-block text-muted mt-1" style="font-size:0.7rem;">
-        می‌توانید چندین عکس را پشت‌سر هم بگیرید
-    </small>
-</div>
+                            <div class="col-6">
+                                <label for="cameraInput" class="d-block mb-2 fw-bold">عکس‌گیری با دوربین (چندتایی)</label>
+                                <input type="file" id="cameraInput" name="image"
+                                       accept="image/*" capture="environment" multiple
+                                       class="btn btn-outline-success w-100 py-3">
+                                <small class="d-block text-muted mt-1" style="font-size:0.7rem;">
+                                    می‌توانید چندین عکس را پشت‌سر هم بگیرید
+                                </small>
+                            </div>
                         </div>
-
 
                         <div class="mb-3 p-3 rounded-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
                             <div class="d-flex align-items-start gap-2">
-                                <input type="checkbox"
-                                id="autoConvertToPdf"
-                                name="auto_convert_to_pdf"
-                                checked
-                                style="width:18px;height:18px;margin-top:3px;accent-color:var(--success-500);">
+                                <input type="checkbox" id="autoConvertToPdf"
+                                       name="auto_convert_to_pdf" checked
+                                       style="width:18px;height:18px;margin-top:3px;accent-color:var(--success-500);">
                                 <div>
                                     <label for="autoConvertToPdf" class="fw-bold" style="font-size:0.95rem;cursor:pointer;">
                                         تبدیل خودکار تصاویر انتخاب‌شده به یک فایل PDF
@@ -224,864 +688,603 @@
                             </div>
                         </div>
 
+                        <button type="submit" id="submitAnswerBtn"
+                                class="btn btn-success w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+                                style="border-radius: 12px; font-size: 1.1rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                            </svg>
+                            <span>ارسال پاسخ</span>
+                        </button>
+                    </form>
+                </div>
 
-                        <button type="submit"
-                        id="submitAnswerBtn"
-                        class="btn btn-success w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2"
-                        style="border-radius: 12px; font-size: 1.1rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                            <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                <!-- ============ دکمه‌های ناوبری ============ -->
+                <div class="d-flex justify-content-between mt-3 mt-lg-4 gap-2">
+                    <a id="preview-button" class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
+                        قبلی
+                    </a>
+                    <a href="#" class="btn-purple-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="ms-1">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M14.5 9.5L9 12M9 12l3.5-5.5M9 12l3.5 5.5" stroke="currentColor" stroke-width="2"/>
                         </svg>
-                        <span>ارسال پاسخ</span>
-                    </button>
-                </form>
+                        رد کردن
+                    </a>
+                    <a id="next-button" href="#" class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
+                        بعدی
+                    </a>
+                </div>
 
-                {% endif %}
+                <!-- ============ تصویر پاسخ آپلود شده ============ -->
+                <div class="mt-4">
+                    <div class="border-0 shadow-sm overflow-hidden" style="border-radius:var(--radius-lg); background:var(--bg-card);">
+                        <div class="d-flex align-items-center justify-content-between gap-2 p-3"
+                             style="border-bottom:1px solid var(--border-color);">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center"
+                                     style="width:42px;height:42px;border-radius:12px;background:rgba(13,110,253,.1);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                                        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="fw-700">تصویر پاسخ</div>
+                                    <small>تصویر آپلود شده توسط شما</small>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود تصویر">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">دانلود</span>
+                                </a>
+                                <a href="#" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1" title="حذف تصویر">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">حذف</span>
+                                </a>
+                            </div>
+                        </div>
 
-            </div>
-            {% endif %}
+                        <div class="p-3" style="background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;min-height:180px;max-height:350px;overflow:hidden;">
+                            <a href="#" target="_blank" class="d-flex align-items-center justify-content-center w-100" style="height:100%;">
+                                <img src="https://via.placeholder.com/400x300/22c55e/ffffff?text=Answer+Image"
+                                     style="max-width:100%;max-height:320px;object-fit:contain;border-radius:10px;"
+                                     loading="lazy" alt="تصویر پاسخ">
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-
-            <div class="d-flex justify-content-between mt-3 mt-lg-4 gap-2">
-                {% if quiz.allow_return_to_questions %}
-                <a id="preview-button"  class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
-                    قبلی
-                </a>
-                {% endif %}
-                <a href='{% url "quiz:quiz-skipped-quesion-id" pk=quiz.id question_id=question.id %}' class="btn-purple-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="ms-1">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                        <path d="M14.5 9.5L9 12M9 12l3.5-5.5M9 12l3.5 5.5" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                    رد کردن
-                </a>
-                <a id="next-button" href='{% url "quiz:quiz-start" pk=quiz.pk  %}' class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
-                    بعدی
-                </a>
-
-            </div>
-
-
-{% if answer.image %}
-<div class="mt-4">
-    <div class="  border-0 shadow-sm overflow-hidden"
-         style="border-radius:var(--radius-lg); background:var(--bg-card);">
-
-
-        <div class="d-flex align-items-center justify-content-between gap-2 p-3"
-             style="border-bottom:1px solid var(--border-color);">
-
-            <div class="d-flex align-items-center gap-3">
-                <div class="d-flex align-items-center justify-content-center"
-                     style="
-                        width:42px;
-                        height:42px;
-                        border-radius:12px;
-                        background:rgba(13,110,253,.1);
-
-                     ">
-<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
-    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-    <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
-</svg>                </div>
-
-                <div>
-                    <div class="fw-700">تصویر پاسخ</div>
-                    <small class="">
-                        تصویر آپلود شده توسط شما
-                    </small>
+                <!-- ============ فایل PDF پاسخ ============ -->
+                <div class="mt-4">
+                    <div class="border-0 shadow-sm overflow-hidden" style="border-radius:var(--radius-lg); background: var(--bg-card);">
+                        <div class="d-flex align-items-center justify-content-between gap-2 p-3"
+                             style="border-bottom:1px solid var(--border-color);">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center"
+                                     style="width:42px;height:42px;border-radius:12px;background:rgba(220,53,69,.1);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                                        <path d="M4.603 14.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.572.52-.572.24 0 .383.17.445.295.042.09.087.253.072.5a6.4 6.4 0 0 1-.244 1.365 7.4 7.4 0 0 0 .72 1.387 8 8 0 0 1 1.36-.138c.553.017.879.163 1.05.306.17.144.239.318.239.472a.6.6 0 0 1-.13.406c-.116.14-.29.2-.45.2-.43 0-.908-.227-1.443-.62a8 8 0 0 1-1.34.19c-.72 1.26-1.5 2.31-2.42 2.98a3 3 0 0 1-.697.421c-.245.098-.51.104-.755.016"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div>فایل PDF پاسخ</div>
+                                    <small>پاسخ شما به صورت PDF</small>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود PDF">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">دانلود</span>
+                                </a>
+                                <a href="#" target="_blank" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" title="باز کردن PDF">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">باز کردن</span>
+                                </a>
+                                <a href="#" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1" title="حذف PDF">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">حذف</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <iframe src="about:blank" title="پیش‌نمایش فایل PDF پاسخ" scrolling="auto"
+                                    style="width:100%;height:450px;display:block;border:1px solid var(--border-color);border-radius:12px;background:#fff;"></iframe>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="d-flex gap-2">
+            <!-- ============ ستون کنار ============ -->
+            <div class="col-12 col-lg-4">
+                <div class="timer-display mb-3 p-3" style="background:var(--bg-card);border-radius:var(--radius-lg);">
+                    <div class="timer-label mb-1" style="font-size:0.75rem;color:var(--text-muted);">زمان باقی‌مانده</div>
+                    <div class="timer-numbers" id="sidebarTimer" style="font-size:1.5rem;"></div>
+                </div>
 
-                <a href="{{ answer.image.url }}"
-                   download
-                   class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
-                   title="دانلود تصویر">
-                    <i class="bi bi-download"></i>
-                    <span class="d-none d-sm-inline">دانلود</span>
-                </a>
+                <!-- ناوبری سوالات -->
+                <div class="card-custom mb-3 p-3">
+                    <h6 class="fw-700 mb-3" style="font-size:0.8rem;">ناوبری سوالات</h6>
+                    <div class="mb-3" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(32px,1fr));gap:6px;">
+                        <a href="#" class="question-nav" data-question-id="1">
+                            <div class="q-nav-btn answered" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۱</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="2">
+                            <div class="q-nav-btn answered" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۲</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="3">
+                            <div class="q-nav-btn current" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۳</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="4">
+                            <div class="q-nav-btn skipped" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۴</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="5">
+                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۵</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="6">
+                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۶</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="7">
+                            <div class="q-nav-btn answered" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۷</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="8">
+                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۸</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="9">
+                            <div class="q-nav-btn skipped" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۹</div>
+                        </a>
+                        <a href="#" class="question-nav" data-question-id="10">
+                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۱۰</div>
+                        </a>
+                    </div>
+                    <div class="d-flex flex-column gap-2" style="font-size:0.7rem;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:10px;height:10px;border-radius:2px;background:var(--gradient-green);"></div>
+                            پاسخ داده شده (۳)
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:10px;height:10px;border-radius:2px;background:var(--gradient-blue);"></div>
+                            سوال جاری
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,0.3);border:1px solid var(--warm-400);"></div>
+                            رد شده (۲)
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:10px;height:10px;border-radius:2px;border:1px solid var(--border-color);background:var(--bg-card);"></div>
+                            پاسخ داده نشده
+                        </div>
+                    </div>
+                </div>
 
+                <!-- پیشرفت و اتمام -->
+                <div class="card-custom p-3">
+                    <div class="d-flex justify-content-between mb-2" style="font-size:0.75rem;">
+                        <span class="text-secondary">پیشرفت</span>
+                        <span class="fw-700">5 از 10</span>
+                    </div>
+                    <div class="progress-custom mb-3" style="height:6px;border-radius:3px;background:var(--bg-secondary);">
+                        <div class="progress-fill" style="width:50%;border-radius:3px;"></div>
+                    </div>
 
-                <a href="{% url 'quiz:quiz-remove-answer-image' pk=quiz.id question_id=question.id %}"
-                   class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-                   title="حذف تصویر">
-                    <i class="bi bi-trash3"></i>
-                    <span class="d-none d-sm-inline">حذف</span>
-                </a>
+                    <a href="#" class="btn w-100 mb-3"
+                       style="background:rgb(47 255 0 / 0.1);color:var(--success-500);border:1px solid rgb(99 239 68 / 0.2);border-radius:var(--radius-lg);font-weight:600;padding:10px;font-size:0.85rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="me-1">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
+                            <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        اتمام آزمون
+                    </a>
+
+                    <!-- لیست آزمون‌ها -->
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-secondary" style="font-size:0.75rem;">سایر آزمون‌های این مجموعه</span>
+                        <span class="badge" style="background:var(--bg-secondary);color:var(--text-secondary);font-size:0.7rem;">۳ آزمون</span>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2">
+                        <a href="#" class="quiz-list-item text-decoration-none d-flex align-items-center justify-content-between px-3 py-2"
+                           style="background:rgb(47 255 0 / 0.1);color:var(--success-500);border:1px solid rgb(99 239 68 / 0.2);border-radius:var(--radius-lg);font-weight:600;padding:10px;font-size:0.85rem;">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="d-flex align-items-center justify-content-center"
+                                      style="width:26px;height:26px;border-radius:50%;background:rgb(99 239 68 / 0.15);color:var(--success-500);">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2.5"/>
+                                        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2.5"/>
+                                    </svg>
+                                </span>
+                                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">آزمون میان‌ترم</span>
+                            </div>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
+                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="quiz-list-item text-decoration-none d-flex align-items-center justify-content-between px-3 py-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="d-flex align-items-center justify-content-center"
+                                      style="width:26px;height:26px;border-radius:50%;background:rgb(99 239 68 / 0.15);color:var(--success-500);">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2.5"/>
+                                        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2.5"/>
+                                    </svg>
+                                </span>
+                                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">آزمون پایان‌ترم</span>
+                            </div>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
+                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="quiz-list-item text-decoration-none d-flex align-items-center justify-content-between px-3 py-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="d-flex align-items-center justify-content-center"
+                                      style="width:26px;height:26px;border-radius:50%;background:rgb(99 239 68 / 0.15);color:var(--success-500);">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2.5"/>
+                                        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2.5"/>
+                                    </svg>
+                                </span>
+                                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">آزمون جامع</span>
+                            </div>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
+                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
-
-        <div class="p-3"
-             style="
-                background:var(--gradient-blue);
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                min-height:180px;
-                max-height:350px;
-                overflow:hidden;
-             ">
-
-            <a href="{{ answer.image.url }}"
-               target="_blank"
-               class="d-flex align-items-center justify-content-center w-100"
-               style="height:100%;">
-
-                <img src="{{ answer.image.url }}"
-                     style="
-                        max-width:100%;
-                        max-height:320px;
-                        object-fit:contain;
-                        border-radius:10px;
-                     "
-                     loading="lazy"
-                     alt="تصویر پاسخ">
+    <!-- ============ نوار پایین موبایل ============ -->
+    <div class="mobile-bottom-bar" style="position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--border-color);padding:8px 12px;display:none;justify-content:space-between;align-items:center;z-index:100;">
+        <div style="font-size:0.75rem;color:var(--text-muted);">
+            <span class="fw-700" style="color:var(--success-500);">5</span>/10
+        </div>
+        <div class="d-flex gap-2">
+            <a href="#" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:var(--danger-500);border:none;padding:8px 16px;font-size:0.8rem;">
+                اتمام
             </a>
         </div>
     </div>
-</div>
-{% endif %}
 
-
-
-{% if answer.pdf_file %}
-<div class="mt-4">
-    <div class=" border-0 shadow-sm overflow-hidden"
-         style="border-radius:var(--radius-lg); background: var(--bg-card);">
-
-
-        <div class="d-flex align-items-center justify-content-between gap-2 p-3"
-             style="border-bottom:1px solid var(--border-color);">
-
-            <div class="d-flex align-items-center gap-3">
-                <div class="d-flex align-items-center justify-content-center"
-                     style="
-                        width:42px;
-                        height:42px;
-                        border-radius:12px;
-                        background:rgba(220,53,69,.1);
-
-                     ">
-                    <i class="bi bi-file-earmark-pdf fs-5"></i>
-                </div>
-
-                <div>
-                    <div class="">فایل PDF پاسخ</div>
-                    <small class="">
-                        پاسخ شما به صورت PDF
-                    </small>
-                </div>
-            </div>
-
-            <div class="d-flex gap-2">
-                 <a href="{{ answer.pdf_file.url }}"
-                   download
-                   class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
-                   title="دانلود PDF">
-                    <i class="bi bi-download"></i>
-                    <span class="d-none d-sm-inline">دانلود</span>
-                </a>
-
-                 <a href="{{ answer.pdf_file.url }}"
-                   target="_blank"
-                   class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
-                   title="باز کردن PDF">
-                    <i class="bi bi-box-arrow-up-left"></i>
-                    <span class="d-none d-sm-inline">باز کردن</span>
-                </a>
-
-                 <a href="{% url 'quiz:quiz-remove-answer-file' pk=quiz.id question_id=question.id %}"
-                   class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-                   title="حذف PDF">
-                    <i class="bi bi-trash3"></i>
-                    <span class="d-none d-sm-inline">حذف</span>
-                </a>
-            </div>
-        </div>
-
-         <div class="p-2"
-             >
-
-            <iframe
-                src="{{ answer.pdf_file.url }}"
-                title="پیش‌نمایش فایل PDF پاسخ"
-                scrolling="auto"
-                style="
-                    width:100%;
-                    height:450px;
-                    display:block;
-                    border:1px solid var(--border-color);
-                    border-radius:12px;
-                    background:#fff;
-                ">
-            </iframe>
-        </div>
-    </div>
-</div>
-{% endif %}
-        </div>
-
-         <div class="col-12 col-lg-4">
-             <div class="timer-display mb-3 p-3" style="background:var(--bg-card);border-radius:var(--radius-lg);">
-                <div class="timer-label mb-1" style="font-size:0.75rem;color:var(--text-muted);">زمان باقی‌مانده</div>
-                <div class="timer-numbers" id="sidebarTimer" style="font-size:1.5rem;"></div>
-            </div>
-
-
-            <div class="card-custom mb-3 p-3" style="background:var(--bg-card);border-radius:var(--radius-lg);">
-                <h6 class="fw-700 mb-3" style="font-size:0.8rem;">ناوبری سوالات</h6>
-                <div class="q-nav-grid mb-3" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(32px,1fr));gap:6px;">
-                    {% for item in all_question %}
-                        <a
-                            {% if quiz.allow_return_to_questions %}
-                                href="{% url 'quiz:quiz-start-quesion-id' pk=quiz.id question_id=item %}"
-                            {% endif %}
-                            data-question-id="{{ item }}"
-                            class="text-decoration-none question-nav"
-                        >
-                            <div
-                                class="q-nav-btn {% if item == question.id %}current{% elif item in skipped_question %}skipped{% elif item in solved_question %}answered{% endif %}"
-                                style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;"
-                            >
-                                {{ forloop.counter }}
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
-                <div class="d-flex flex-column gap-2" style="font-size:0.7rem;">
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width:10px;height:10px;border-radius:2px;background:var(--gradient-green);"></div>
-                        پاسخ داده شده ({{solved_question_count}})
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width:10px;height:10px;border-radius:2px;background:var(--gradient-blue);"></div>
-                        سوال جاری
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,0.3);border:1px solid var(--warm-400);"></div>
-                        رد شده ({{skipped_question_count}})
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width:10px;height:10px;border-radius:2px;border:1px solid var(--border-color);background:var(--bg-card);"></div>
-                        پاسخ داده نشده
-                    </div>
-                </div>
-            </div>
-
-
-<div class="card-custom p-3" style="background:var(--bg-card);border-radius:var(--radius-lg);">
-    <!-- نوار پیشرفت -->
-    <div class="d-flex justify-content-between mb-2" style="font-size:0.75rem;">
-        <span class="text-secondary">پیشرفت</span>
-        <span class="fw-700">{{ solved_skipped_questions }} از {{ all_question_count }}</span>
-    </div>
-    <div class="progress-custom mb-3" style="height:6px;border-radius:3px;background:var(--bg-secondary);">
-        <div class="progress-fill" style="width:{{ solved_skipped_questions|percent:all_question_count }}%;border-radius:3px;"></div>
-    </div>
-
-    <!-- دکمه اتمام آزمون -->
-    <a href='{% url "quiz:quiz-finished" quiz.id %}' class="btn w-100 mb-3"
-       style="background:rgb(47 255 0 / 0.1);color:var(--success-500);border:1px solid rgb(99 239 68 / 0.2);border-radius:var(--radius-lg);font-weight:600;padding:10px;font-size:0.85rem;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="me-1">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
-            <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2"/>
-        </svg>
-        اتمام آزمون
-        {% if quiz.exam %} و رفتن به آزمون بعدی {% endif %}
-    </a>
-
-    <!-- لیست آزمون‌ها -->
-    {% if exam_object and exam_object.quiz.all %}
-        <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="text-secondary" style="font-size:0.75rem;">سایر آزمون‌های این مجموعه</span>
-            <span class="badge" style="background:var(--bg-secondary);color:var(--text-secondary);font-size:0.7rem;">
-                {{ exam_object.quiz.count }} آزمون
-            </span>
-        </div>
-
-        <div class="d-flex flex-column gap-2">
-            {% for exam in exam_object.quiz.all %}
-                <a
-                   class="text-decoration-none d-flex align-items-center justify-content-between px-3 py-2 quiz-list-item"
-                   {% if exam.id == quiz.id %}
-                   style="background:rgb(47 255 0 / 0.1);color:var(--success-500);border:1px solid rgb(99 239 68 / 0.2);border-radius:var(--radius-lg);font-weight:600;padding:10px;font-size:0.85rem;"
-                   {% else %}
-                   href='{% url "quiz:set-details" exam.id %}'
-                   style="background:var(--bg-secondary);border:1px solid transparent;border-radius:var(--radius-lg);transition:all .2s ease;"
-                    {% endif %}
-                >
-
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="d-flex align-items-center justify-content-center"
-                              style="width:26px;height:26px;border-radius:50%;background:rgb(99 239 68 / 0.15);color:var(--success-500);">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2.5"/>
-                                <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2.5"/>
-                            </svg>
-                        </span>
-                        <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">
-                            {{ exam.name }}
-                        </span>
-                    </div>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
-                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </a>
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
-
-<style>
-    .quiz-list-item:hover {
-        background: rgb(99 239 68 / 0.08) !important;
-        border-color: rgb(99 239 68 / 0.25) !important;
-        transform: translateX(-3px);
-    }
-</style>
-        </div>
-    </div>
-</div>
-
-
-<div class="d-lg-none" style="position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--border-color);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;z-index:100;">
-    <div style="font-size:0.75rem;color:var(--text-muted);">
-        <span class="fw-700" style="color:var(--success-500);">{{ solved_skipped_questions }}</span>/{{all_question_count}}
-    </div>
-    <div class="d-flex gap-2">
-        <a href='{% url "quiz:quiz-finished" quiz.id %}' class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:var(--danger-500);border:none;padding:8px 16px;font-size:0.8rem;">
-            اتمام
-                                {% if quiz.exam  %}
-                        و رفتن به ازمون بعدی
-                    {% endif %}
-        </a>
-
-    </div>
-
-
-</div>
-
-
-<div class="d-lg-none" style="height:60px;"></div>
+    <div class="d-lg-none" style="height:60px;"></div>
 </div>
 </div>
-
-
- <script src="{% static 'js/main/jspdf.js' %}">
-</script>
-
-{% if quiz.allow_return_to_questions %}
-
-    <script>
-    const currentQuestionId = {{ question.id }};
-    const questions = [...document.querySelectorAll('.question-nav')];
-
-    const currentIndex = questions.findIndex(
-        item => Number(item.dataset.questionId) === currentQuestionId
-    );
-
-    const previewButton = document.getElementById('preview-button');
-    const nextButton = document.getElementById('next-button');
-
-
-    // =========================
-    // سؤال قبلی
-    // =========================
-
-    if (previewButton && currentIndex > 0) {
-
-        const previousQuestion = questions[currentIndex - 1];
-
-        previewButton.href = previousQuestion.href;
-        previewButton.style.display = '';
-
-    } else if (previewButton) {
-
-        previewButton.style.display = 'none';
-
-    }
-
-
-    // =========================
-    // سؤال بعدی
-    // =========================
-
-    if (nextButton && currentIndex < questions.length - 1) {
-
-        const nextQuestion = questions[currentIndex + 1];
-
-        nextButton.href = nextQuestion.href;
-        nextButton.style.display = '';
-
-    } else if (nextButton) {
-
-        nextButton.style.display = 'none';
-
-    }
-</script>
-{% endif %}
 
 <script>
-    (function() {
-        'use strict';
+// ================================================================
+// Custom SweetAlert2 Replacement
+// Drop-in replacement for Swal.fire({...})
+// ================================================================
+(function () {
+    'use strict';
 
+    var ICON_SVGS = {
+        success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+        warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>',
+        info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
+    };
 
-        const form = document.getElementById('descriptiveAnswerForm');
-        const fileInput = document.getElementById('fileInput');
-        const cameraInput = document.getElementById('cameraInput');
-        const autoConvertCheckbox = document.getElementById('autoConvertToPdf');
-        const submitBtn = document.getElementById('submitAnswerBtn');
-        const previewStatus = document.getElementById('pdfPreviewStatus');
-        const selectedImageCount = document.getElementById('selectedImageCount');
-        const pdfGenStatus = document.getElementById('pdfGenerationStatus');
+    var overlay = null;
+    var resolvePromise = null;
 
-
-function collectImageFiles() {
-    const files = [];
-
-    if (fileInput && fileInput.files) {
-        for (const f of fileInput.files) {
-            if (f.type.startsWith('image/')) {
-                files.push(f);
-            }
+    function closeModal() {
+        if (!overlay) return;
+        overlay.classList.remove('swal-show');
+        var o = overlay;
+        overlay = null;
+        setTimeout(function () {
+            if (o && o.parentNode) o.parentNode.removeChild(o);
+        }, 220);
+        if (resolvePromise) {
+            var r = resolvePromise;
+            resolvePromise = null;
+            r({ isConfirmed: true });
         }
     }
 
-    if (cameraInput && cameraInput.files) {
-        for (const f of cameraInput.files) {
-            if (f.type.startsWith('image/')) {
-                files.push(f);
+    function fire(options) {
+        options = options || {};
+        // Remove any existing modal
+        if (overlay) closeModal();
+
+        return new Promise(function (resolve) {
+            resolvePromise = resolve;
+
+            var title = options.title || '';
+            var text = options.text || '';
+            var icon = options.icon || '';
+            var confirmText = options.confirmButtonText || 'تایید';
+            var allowOutside = options.allowOutsideClick !== false;
+
+            var iconClass = 'swal-custom-icon';
+            var iconHTML = '';
+            if (icon && ICON_SVGS[icon]) {
+                iconClass += ' swal-custom-icon-' + icon;
+                iconHTML = ICON_SVGS[icon];
             }
-        }
+
+            var ov = document.createElement('div');
+            ov.className = 'swal-custom-overlay';
+
+            var popup = document.createElement('div');
+            popup.className = 'swal-custom-popup';
+
+            var html = '';
+            if (iconHTML) {
+                html += '<div class="' + iconClass + '" style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">' + iconHTML + '</div>';
+            }
+            if (title) {
+                html += '<div class="swal-custom-title">' + title + '</div>';
+            }
+            if (text) {
+                html += '<div class="swal-custom-text">' + text + '</div>';
+            }
+            html += '<button type="button" class="swal-custom-confirm">' + confirmText + '</button>';
+
+            popup.innerHTML = html;
+            ov.appendChild(popup);
+            document.body.appendChild(ov);
+
+            // Force reflow then show
+            void ov.offsetWidth;
+            ov.classList.add('swal-show');
+
+            overlay = ov;
+
+            var confirmBtn = popup.querySelector('.swal-custom-confirm');
+            confirmBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                closeModal();
+            });
+
+            if (allowOutside) {
+                ov.addEventListener('click', function (e) {
+                    if (e.target === ov) {
+                        closeModal();
+                    }
+                });
+            }
+
+            // Keyboard: Enter / Escape
+            function onKey(e) {
+                if (e.key === 'Enter' || e.key === 'Escape') {
+                    e.preventDefault();
+                    document.removeEventListener('keydown', onKey);
+                    closeModal();
+                }
+            }
+            document.addEventListener('keydown', onKey);
+        });
     }
-    return files;
+
+    // Expose global Swal object
+    window.Swal = { fire: fire };
+})();
+
+// ============ تم تاریک/روشن ============
+function toggleTheme(){
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+}
+if(localStorage.getItem('theme') === 'dark'){
+    document.body.classList.add('dark');
 }
 
-        function hasPdfFiles() {
-            if (fileInput && fileInput.files) {
-                for (const f of fileInput.files) {
-                    if (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+// ============ تایمر ============
+(function(){
+    'use strict';
+    const minutes = 45;
+    let endTime = Date.now() + (minutes * 60 * 1000);
+    let timerInterval = null;
 
-        function hasOtherFiles() {
-            if (fileInput && fileInput.files) {
-                for (const f of fileInput.files) {
-                    const isImage = f.type.startsWith('image/');
-                    const isPdf = (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
-                    if (!isImage && !isPdf) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+    function formatTime(ms){
+        if(ms <= 0) return '00:00:00';
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+        const secs = totalSeconds % 60;
+        const pad = (n) => n.toString().padStart(2, '0');
+        if(hours > 0) return `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+        return `${pad(mins)}:${pad(secs)}`;
+    }
 
-
-        function updatePreviewStatus() {
-            const images = collectImageFiles();
-            const count = images.length;
-            const isChecked = autoConvertCheckbox.checked;
-
-            if (isChecked && count > 0) {
-                previewStatus.style.display = 'block';
-                selectedImageCount.textContent = count;
-                pdfGenStatus.textContent = '⏳ در انتظار ارسال…';
-                pdfGenStatus.style.color = 'var(--info-500)';
-            } else {
-                previewStatus.style.display = 'none';
-            }
-        }
-
-        fileInput.addEventListener('change', updatePreviewStatus);
-        cameraInput.addEventListener('change', updatePreviewStatus);
-        autoConvertCheckbox.addEventListener('change', function() {
-            if (!this.checked) {
-                previewStatus.style.display = 'none';
-            } else {
-                updatePreviewStatus();
+    function updateTimerDisplay(){
+        const remaining = Math.max(0, endTime - Date.now());
+        const formatted = formatTime(remaining);
+        const timers = document.querySelectorAll('#examTimer, #sidebarTimer');
+        timers.forEach(t => {
+            if(t){
+                t.textContent = formatted;
+                if(remaining < 60 * 1000) t.style.color = 'red';
+                else if(remaining < 5 * 60 * 1000) t.style.color = 'var(--danger-500)';
+                else t.style.color = '';
             }
         });
-
-
-        function createPdfFromImages(imageFiles) {
-            return new Promise((resolve, reject) => {
-                if (!imageFiles || imageFiles.length === 0) {
-                    reject(new Error('هیچ تصویری برای تبدیل وجود ندارد.'));
-                    return;
-                }
-
-
-                const loaders = imageFiles.map((file) => {
-                    return new Promise((resolveImg, rejectImg) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const dataUrl = e.target.result;
-                            const img = new Image();
-                            img.onload = function() {
-                                resolveImg({
-                                    data: dataUrl,
-                                    name: file.name,
-                                    type: file.type,
-                                    width: img.naturalWidth,
-                                    height: img.naturalHeight
-                                });
-                            };
-                            img.onerror = function() {
-                                rejectImg(new Error('بارگذاری تصویر ناموفق: ' + file.name));
-                            };
-                            img.src = dataUrl;
-                        };
-                        reader.onerror = function() {
-                            rejectImg(new Error('خطا در خواندن فایل: ' + file.name));
-                        };
-                        reader.readAsDataURL(file);
-                    });
+        if(remaining <= 0){
+            clearInterval(timerInterval);
+            if(typeof Swal !== 'undefined'){
+                Swal.fire({
+                    title: 'پایان زمان!',
+                    text: 'زمان آزمون به پایان رسید.',
+                    icon: 'warning',
+                    confirmButtonText: 'تایید',
+                    allowOutsideClick: false
                 });
-
-                Promise.all(loaders)
-                    .then((results) => {
-                        const { jsPDF } = window.jspdf;
-                        const pdf = new jsPDF('p', 'mm', 'a4');
-                        const pageWidth = 210;
-                        const pageHeight = 297;
-                        const margin = 12;
-                        const maxWidth = pageWidth - 2 * margin;
-                        const maxHeight = pageHeight - 2 * margin;
-
-                        results.forEach((img, idx) => {
-                            if (idx > 0) {
-                                pdf.addPage();
-                            }
-
-
-                            const scaleX = maxWidth / img.width;
-                            const scaleY = maxHeight / img.height;
-                            const scale = Math.min(scaleX, scaleY, 1);
-                            const finalWidth = img.width * scale;
-                            const finalHeight = img.height * scale;
-                            const x = (pageWidth - finalWidth) / 2;
-                            const y = (pageHeight - finalHeight) / 2;
-
-
-                            let format = 'JPEG';
-                            if (img.type === 'image/png') format = 'PNG';
-                            else if (img.type === 'image/webp') format = 'WEBP';
-                            else if (img.type === 'image/gif') format = 'GIF';
-                            else if (img.type === 'image/bmp') format = 'BMP';
-
-                            pdf.addImage(
-                                img.data,
-                                format,
-                                x, y,
-                                finalWidth, finalHeight,
-                                undefined,
-                                'SLOW'
-                            );
-                        });
-
-                        const pdfBlob = pdf.output('blob');
-                        resolve(pdfBlob);
-                    })
-                    .catch((err) => {
-                        reject(err);
-                    });
-            });
-        }
-
-
-        function setLoadingState(loading, message) {
-            if (loading) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML =
-                    `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> ${message || 'در حال پردازش…'}`;
-                submitBtn.style.opacity = '0.7';
             } else {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                            <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-                        </svg>
-                        <span>ارسال پاسخ</span>
-                    `;
-                submitBtn.style.opacity = '1';
+                alert('زمان آزمون به پایان رسید!');
             }
+            return false;
         }
+        return true;
+    }
 
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        if(!updateTimerDisplay()) clearInterval(timerInterval);
+    }, 1000);
+})();
 
-        form.addEventListener('submit', function(e) {
-            const isChecked = autoConvertCheckbox.checked;
-            const imageFiles = collectImageFiles();
-            const hasImages = imageFiles.length > 0;
-            const hasPdf = hasPdfFiles();
+// ============ PDF Helper ============
+(function(){
+    'use strict';
+    const form = document.getElementById('descriptiveAnswerForm');
+    const fileInput = document.getElementById('fileInput');
+    const cameraInput = document.getElementById('cameraInput');
+    const autoConvertCheckbox = document.getElementById('autoConvertToPdf');
+    const submitBtn = document.getElementById('submitAnswerBtn');
+    const previewStatus = document.getElementById('pdfPreviewStatus');
+    const selectedImageCount = document.getElementById('selectedImageCount');
+    const pdfGenStatus = document.getElementById('pdfGenerationStatus');
 
-            if (!isChecked) {
+    function collectImageFiles(){
+        const files = [];
+        if(fileInput && fileInput.files){
+            for(const f of fileInput.files) if(f.type.startsWith('image/')) files.push(f);
+        }
+        if(cameraInput && cameraInput.files){
+            for(const f of cameraInput.files) if(f.type.startsWith('image/')) files.push(f);
+        }
+        return files;
+    }
+
+    function updatePreviewStatus(){
+        const images = collectImageFiles();
+        const count = images.length;
+        if(autoConvertCheckbox.checked && count > 0){
+            previewStatus.style.display = 'block';
+            selectedImageCount.textContent = count;
+            pdfGenStatus.textContent = '⏳ در انتظار ارسال…';
+            pdfGenStatus.style.color = 'var(--info-500)';
+        } else {
+            previewStatus.style.display = 'none';
+        }
+    }
+
+    if(fileInput) fileInput.addEventListener('change', updatePreviewStatus);
+    if(cameraInput) cameraInput.addEventListener('change', updatePreviewStatus);
+    if(autoConvertCheckbox) autoConvertCheckbox.addEventListener('change', function(){
+        if(!this.checked) previewStatus.style.display = 'none';
+        else updatePreviewStatus();
+    });
+
+    function createPdfFromImages(imageFiles){
+        return new Promise((resolve, reject) => {
+            if(!imageFiles || imageFiles.length === 0){
+                reject(new Error('هیچ تصویری برای تبدیل وجود ندارد.'));
                 return;
             }
+            const loaders = imageFiles.map(file => new Promise((resolveImg, rejectImg) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => resolveImg({
+                        data: e.target.result, name: file.name, type: file.type,
+                        width: img.naturalWidth, height: img.naturalHeight
+                    });
+                    img.onerror = () => rejectImg(new Error('بارگذاری تصویر ناموفق: ' + file.name));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => rejectImg(new Error('خطا در خواندن فایل: ' + file.name));
+                reader.readAsDataURL(file);
+            }));
+            Promise.all(loaders).then(results => {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pw = 210, ph = 297, margin = 12;
+                const maxW = pw - 2*margin, maxH = ph - 2*margin;
+                results.forEach((img, idx) => {
+                    if(idx > 0) pdf.addPage();
+                    const scale = Math.min(maxW/img.width, maxH/img.height, 1);
+                    const fw = img.width*scale, fh = img.height*scale;
+                    pdf.addImage(img.data, 'JPEG', (pw-fw)/2, (ph-fh)/2, fw, fh, undefined, 'SLOW');
+                });
+                resolve(pdf.output('blob'));
+            }).catch(reject);
+        });
+    }
 
-            if (!hasImages && hasPdf) {
-                return;
-            }
+    function setLoadingState(loading, message){
+        if(loading){
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> ${message || 'در حال پردازش…'}`;
+            submitBtn.style.opacity = '0.7';
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/><path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/></svg><span>ارسال پاسخ</span>`;
+            submitBtn.style.opacity = '1';
+        }
+    }
 
-            if (!hasImages && !hasPdf) {
-                return;
-            }
-
+    if(form){
+        form.addEventListener('submit', function(e){
             e.preventDefault();
+            const imageFiles = collectImageFiles();
+            if(!autoConvertCheckbox.checked || imageFiles.length === 0){
+                // شبیه‌سازی ارسال عادی
+                if(typeof Swal !== 'undefined'){
+                    Swal.fire({title:'ارسال شد', text:'پاسخ شما با موفقیت ثبت شد (دمو).', icon:'success', confirmButtonText:'تایید'});
+                } else {
+                    alert('پاسخ شما با موفقیت ثبت شد (دمو).');
+                }
+                return;
+            }
 
-            if (pdfGenStatus) {
+            if(pdfGenStatus){
                 pdfGenStatus.textContent = '📄 در حال ساخت PDF…';
                 pdfGenStatus.style.color = 'var(--warning-500)';
             }
             setLoadingState(true, 'در حال ساخت PDF…');
 
             createPdfFromImages(imageFiles)
-                .then((pdfBlob) => {
-                    const formData = new FormData(form);
-                    formData.delete('file');
-                    formData.delete('image');
-
-                    const fileName = `quiz-answer-{{ question.id }}-${Date.now()}.pdf`;
-                    const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
-                    formData.append('file', pdfFile);
-
-                    if (pdfGenStatus) {
-                        pdfGenStatus.textContent = '✅ PDF آماده شد، در حال ارسال…';
+                .then(() => {
+                    if(pdfGenStatus){
+                        pdfGenStatus.textContent = '✅ PDF آماده شد (دمو)';
                         pdfGenStatus.style.color = 'var(--success-500)';
                     }
-                    setLoadingState(true, 'در حال ارسال…');
-
-                    const tempForm = document.createElement('form');
-                    tempForm.method = 'POST';
-                    tempForm.action = form.action;
-                    tempForm.enctype = 'multipart/form-data';
-                    tempForm.style.display = 'none';
-
-                    const csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = 'csrfmiddlewaretoken';
-                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-                    if (csrfToken) {
-                        csrfInput.value = csrfToken.value;
-                    }
-                    tempForm.appendChild(csrfInput);
-
-                    const answerText = form.querySelector('[name=answer]');
-                    if (answerText) {
-                        const ta = document.createElement('textarea');
-                        ta.name = 'answer';
-                        ta.textContent = answerText.value;
-                        tempForm.appendChild(ta);
-                    }
-
-                    const fileField = document.createElement('input');
-                    fileField.type = 'file';
-                    fileField.name = 'file';
-                    const dt = new DataTransfer();
-                    dt.items.add(pdfFile);
-                    fileField.files = dt.files;
-                    tempForm.appendChild(fileField);
-
-                    document.body.appendChild(tempForm);
-                    tempForm.submit();
-
-                    setTimeout(() => {
-                        if (tempForm.parentNode) {
-                            tempForm.parentNode.removeChild(tempForm);
-                        }
-                    }, 2000);
-
                     setLoadingState(false);
+                    if(typeof Swal !== 'undefined'){
+                        Swal.fire({title:'موفق', text:'PDF ساخته شد و پاسخ ارسال شد (دمو).', icon:'success'});
+                    }
                 })
-                .catch((err) => {
-                    console.error('PDF conversion error:', err);
+                .catch(err => {
+                    console.error(err);
                     setLoadingState(false);
-                    if (pdfGenStatus) {
-                        pdfGenStatus.textContent = '❌ خطا: ' + (err.message || 'نامشخص');
+                    if(pdfGenStatus){
+                        pdfGenStatus.textContent = '❌ خطا: ' + err.message;
                         pdfGenStatus.style.color = 'var(--danger-500)';
                     }
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            title: 'خطا در ساخت PDF',
-                            text: err.message || 'لطفاً دوباره تلاش کنید یا گزینه تبدیل خودکار را غیرفعال کنید.',
-                            icon: 'error',
-                            confirmButtonText: 'متوجه شدم'
-                        });
+                    if(typeof Swal !== 'undefined'){
+                        Swal.fire({title:'خطا در ساخت PDF', text: err.message, icon:'error'});
                     } else {
-                        alert('خطا در ساخت PDF: ' + (err.message || 'لطفاً دوباره تلاش کنید.'));
+                        alert('خطا در ساخت PDF: ' + err.message);
                     }
                 });
-        }, false);
+        });
+    }
 
-        setTimeout(updatePreviewStatus, 100);
-
-        window.__quizPdfHelper = {
-            collectImageFiles,
-            createPdfFromImages,
-            updatePreviewStatus
-        };
-
-    })();
+    setTimeout(updatePreviewStatus, 100);
+})();
 </script>
-{% compress css %}
 
-<style>
-
-    .spinner-border {
-        display: inline-block;
-        width: 1rem;
-        height: 1rem;
-        vertical-align: text-bottom;
-        border: 0.15em solid currentColor;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: spinner-border 0.75s linear infinite;
-    }
-    @keyframes spinner-border {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-
-    #pdfPreviewStatus {
-        transition: opacity 0.2s ease;
-    }
-
-
-    #autoConvertToPdf:hover+div label {
-        color: var(--primary-500);
-    }
-
-    input[type="file"][multiple]::file-selector-button {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 4px 10px;
-        color: var(--text-primary);
-        cursor: pointer;
-    }
-    input[type="file"][multiple]::file-selector-button:hover {
-        background: var(--bg-hover);
-    }
-
-
-    .d-flex.align-items-start.gap-2 input[type="checkbox"] {
-        flex-shrink: 0;
-    }
-</style>
-{% endcompress %}
-
-
-<script>
-
-    (function() {
-        'use strict';
-        const FINISH_URL = '{% url "quiz:quiz-finished" quiz.id %}';
-        let endTime = null;
-        let timerInterval = null;
-
-        function getTimerData() {
-            const minutes = {{ remaining_time }};
-            if (endTime === null) {
-                endTime = Date.now() + (minutes * 60 * 1000);
-            }
-            return {
-                quizId: {{ quiz.id }},
-                userId: {{ request.user.id }},
-                endTime: endTime
-            };
-        }
-
-        function formatTime(ms) {
-            if (ms <= 0) return '00:00:00';
-            const totalSeconds = Math.floor(ms / 1000);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            const pad = (n) => n.toString().padStart(2, '0');
-            if (hours > 0) {
-                return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-            }
-            return `${pad(minutes)}:${pad(seconds)}`;
-        }
-
-        function updateTimerDisplay() {
-            const timerData = getTimerData();
-            const now = Date.now();
-            const remaining = Math.max(0, timerData.endTime - now);
-            const formattedTime = formatTime(remaining);
-
-            const timers = document.querySelectorAll('#examTimer, #sidebarTimer, .timer-display, [data-timer]');
-            timers.forEach(timer => {
-                if (timer) {
-                    timer.textContent = formattedTime;
-                    if (remaining < 5 * 60 * 1000) {
-                        timer.style.color = 'var(--danger-500)';
-                    } else if (remaining < 60 * 1000) {
-                        timer.style.color = 'red';
-                    } else {
-                        timer.style.color = '';
-                    }
-                }
-            });
-
-            if (remaining <= 0) {
-                clearInterval(timerInterval);
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        title: 'پایان زمان!',
-                        text: 'زمان آزمون به پایان رسید.',
-                        icon: 'warning',
-                        confirmButtonText: 'تایید',
-                        allowOutsideClick: false
-                    }).then(() => {
-                        window.location.href = FINISH_URL;
-                    });
-                } else {
-                    alert('زمان آزمون به پایان رسید!');
-                    window.location.href = FINISH_URL;
-                }
-                return false;
-            }
-            return true;
-        }
-
-        function initTimer() {
-            getTimerData();
-            updateTimerDisplay();
-            timerInterval = setInterval(() => {
-                if (!updateTimerDisplay()) {
-                    clearInterval(timerInterval);
-                }
-            }, 1000);
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initTimer);
-        } else {
-            initTimer();
-        }
-
-        window.QuizTimer = {
-            getRemaining: function() {
-                const data = getTimerData();
-                return Math.max(0, data.endTime - Date.now());
-            },
-            format: formatTime,
-            stop: function() {
-                clearInterval(timerInterval);
-            }
-        };
-    })();
-</script>
-{% endblock content %}
+</body>
+</html>
