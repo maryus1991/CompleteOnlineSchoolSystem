@@ -427,11 +427,126 @@
     </footer>
     {% block footer %}
     {% endblock %}
-    <script src="../../../static/main/js/theme-switcher.js"></script>
-    <script src="../../../static/main/js/navigation.js"></script>
-    <script src="../../../static/main/js/components.js"></script>
 
-    <script src="../../../static/main/js/main.js"></script>
+    <script src="/static/main/js/theme-switcher.js"></script>
+    <script src="/static/main/js/navigation.js"></script>
+    <script src="/static/main/js/components.js"></script>
 
+    <script src="/static/main/js/main.js"></script>
+{% if messages %}
+    <style>
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;   /* قدیمی بالا، جدید پایین */
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast-item {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            max-width: 90vw;
+            text-align: center;
+            pointer-events: auto;
+            background-size: 200% 200%;
+            animation:
+                toastIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                gradientMove 4s ease infinite;
+        }
+
+        /* موج رنگی که روی پس‌زمینه حرکت می‌کنه */
+        .toast-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 120%, rgba(255,255,255,0.35), transparent 50%),
+                radial-gradient(circle at 80% -20%, rgba(255,255,255,0.25), transparent 50%);
+            animation: waveMove 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .toast-item > * { position: relative; z-index: 1; }
+
+        .toast-item.hide {
+            animation: toastOut 0.4s ease forwards;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(20px); }
+        }
+
+        @keyframes gradientMove {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes waveMove {
+            0%   { transform: translateY(20%) translateX(-10%); }
+            50%  { transform: translateY(-20%) translateX(10%); }
+            100% { transform: translateY(20%) translateX(-10%); }
+        }
+    </style>
+
+    <div id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('toast-container');
+
+            const colors = {
+                success: 'linear-gradient(135deg, #22c55e, #16a34a, #4ade80, #16a34a)',
+                error:   'linear-gradient(135deg, #ef4444, #b91c1c, #f87171, #b91c1c)',
+                danger:  'linear-gradient(135deg, #ef4444, #b91c1c, #f87171, #b91c1c)',
+                warning: 'linear-gradient(135deg, #f59e0b, #d97706, #fbbf24, #d97706)',
+                info:    'linear-gradient(135deg, #3b82f6, #2563eb, #60a5fa, #2563eb)',
+                debug:   'linear-gradient(135deg, #6b7280, #4b5563, #9ca3af, #4b5563)'
+            };
+
+            const DURATION = {{site.MESSAGE_DURATION}}; // مدت نمایش (ms)
+
+            function showToast(msg, tag) {
+                const bg = colors[tag] || colors.info;
+
+                const toast = document.createElement('div');
+                toast.className = 'toast-item';
+                toast.innerHTML = '<span>' + msg + '</span>';
+                toast.style.backgroundImage = bg;
+
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('hide');
+                    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+                }, DURATION);
+            }
+
+            {% for message in messages %}
+                showToast(
+                    "{{ message|escapejs }}",
+                    "{{ message.tags|default:'info' }}"
+                );
+            {% endfor %}
+        });
+    </script>
+{% endif %}
 </body>
 </html>

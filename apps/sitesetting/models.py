@@ -179,6 +179,7 @@ class Site(BaseModel):
 
     main_page_blog_active = models.BooleanField("فعال کردن قسمت مقالات در صفحه اصلی", default=True)
     main_page_blog_name =  models.CharField("نام قسمت مقالات در صفحه اصلی", default="مقالات آموزشی", max_length=100)
+    MESSAGE_DURATION = models.IntegerField("زمان نمایش پیام ms", default=10000)
 
 
     def __str__(self):
