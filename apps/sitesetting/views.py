@@ -16,6 +16,46 @@ from apps.users.students.models import Student
 
 
 
+from django.http import FileResponse, HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+
+
+def logo(request):
+    try:
+        logo_file = request.site.logo
+
+        if logo_file:
+            return FileResponse(
+                logo_file.open("rb"),
+                content_type="image/png",
+            )
+
+    except (AttributeError, ValueError, ObjectDoesNotExist, OSError):
+        pass
+
+    return HttpResponse(
+        """
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="45" height="45"
+             viewBox="0 0 100 100" fill="none">
+            <defs>
+                <linearGradient id="smallGrad"
+                                x1="0%" y1="0%"
+                                x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00f2fe"/>
+                    <stop offset="100%" stop-color="#4facfe"/>
+                </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="46"
+                    stroke="url(#smallGrad)"
+                    stroke-width="4"/>
+            <circle cx="50" cy="50" r="14"
+                    fill="url(#smallGrad)"/>
+        </svg>
+        """,
+        content_type="image/svg+xml",
+    )
+
 class Main(TemplateView):
     template_name = 'main/index.html'
 

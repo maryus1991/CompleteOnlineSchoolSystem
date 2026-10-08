@@ -6,8 +6,12 @@ from apps.common.file_storage_script_for_model import UploadPath
 from django_resized import ResizedImageField
 
 
+
+
 class Site(BaseModel):
     name = models.CharField("نام سایت", max_length=100, default='بنیاد اموزشی فراسو')
+    logo = ResizedImageField("لوگو", upload_to=UploadPath("لوگو"), null=True, blank=True)
+
     description = CKEditor5Field("توضیحات", default="")
     short_description = models.CharField("توضیحات کوتاه", default="بنیادی که برای تضمین اینده شما به وجود امده است", max_length=255)
 

@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>آزمون - سورنا</title>
+<title>
+    {{ site.name }} | {{exam.name}}
+</title>
+
+    {% exam.use_js_image_converter_to_pdf %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+{% endif %}
 
 <style>
 /* ===== Custom SweetAlert2 Replacement ===== */
@@ -481,8 +486,8 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
     <div style="background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;">
         <div class="d-flex align-items-center gap-2">
             <div style="width:28px;height:28px;flex-shrink:0;">
-                <img src="https://via.placeholder.com/40x40/3b82f6/ffffff?text=S"
-                     alt="سورنا" width="40" height="40" class="site-logo">
+                <img src="{% url 'site:logo' %}"
+                     alt="{{site.name}}" width="40" height="40" class="site-logo">
             </div>
         </div>
 
@@ -500,6 +505,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
+
             <a class="btn btn-sm" href="#" style="background:rgb(99 239 68 / 0.2);color:var(--success-500);border:none;border-radius:var(--radius-lg);padding:6px 12px;font-weight:600;font-size:0.75rem;white-space:nowrap;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -507,6 +513,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                 </svg>
                 <span class="d-none d-sm-inline">پایان آزمون</span>
             </a>
+            
         </div>
     </div>
 

@@ -49,6 +49,7 @@ class Exam(BaseModel):
     allow_to_edit_the_answered_questions = models.BooleanField(default=True,verbose_name='امکان ویرایش پاسخ داده شده')
     allow_return_to_questions = models.BooleanField(default=True, verbose_name='برگشتن به عقب')
     change_the_order = models.BooleanField(default=True, verbose_name=' عوض کردن ترتیب سوالات')
+    use_js_image_converter_to_pdf = models.BooleanField(default=False, verbose_name='استفاده از مبدل عکس به pdf')
 
     reduce_percent_of_negative_score = models.SmallIntegerField(default=30,verbose_name="درصد کم کردن از نمره در ازای هر سوال اشتباه")
 
