@@ -33,6 +33,7 @@ class Question(BaseModel):
 
     exam = models.ForeignKey(Exam, related_name='question', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="ازمون")
     practice = models.ForeignKey(ClassPractice, related_name='question', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="تمرین")
+
     grade = models.ForeignKey(GradeCategories, related_name='question', on_delete=models.SET_NULL, null=True , verbose_name='پایه', blank=True)
     major = models.ForeignKey(MajorCategories, related_name='question', on_delete=models.SET_NULL, null=True ,verbose_name='رشته', blank=True)
     lesson = models.ForeignKey(LessonCategories, related_name='question', on_delete=models.SET_NULL, null=True ,verbose_name='درس' , blank=True)

@@ -7,8 +7,8 @@
     {{ site.name }} | {{exam.name}}
 </title>
 
-    {% exam.use_js_image_converter_to_pdf %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+{% if exam.use_js_image_converter_to_pdf %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 {% endif %}
 
 <style>
@@ -482,7 +482,6 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
 <div class="page-section active" id="page-exam-take">
 <div style="background:var(--bg-primary);min-height:100vh;">
 
-    <!-- ============ هدر بالا ============ -->
     <div style="background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;">
         <div class="d-flex align-items-center gap-2">
             <div style="width:28px;height:28px;flex-shrink:0;">
@@ -492,7 +491,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
         </div>
 
         <div class="timer-display order-3 order-lg-2" style="padding:8px 16px;flex-grow:1;text-align:center;">
-            <div class="timer-numbers" style="font-size:1.25rem;" id="examTimer" data-minutes="45"></div>
+            <div class="timer-numbers" style="font-size:1.25rem;" id="examTimer" data-minutes="{{ remaining_minutes }}"></div>
         </div>
 
         <div class="d-flex align-items-center gap-2 order-2 order-lg-3">
@@ -506,20 +505,20 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                 </svg>
             </div>
 
-            <a class="btn btn-sm" href="#" style="background:rgb(99 239 68 / 0.2);color:var(--success-500);border:none;border-radius:var(--radius-lg);padding:6px 12px;font-weight:600;font-size:0.75rem;white-space:nowrap;">
+            <a class="btn btn-sm" href="{% url 'student:exam-finished' exam.id %}" style="background:rgb(99 239 68 / 0.2);color:var(--success-500);border:none;border-radius:var(--radius-lg);padding:6px 12px;font-weight:600;font-size:0.75rem;white-space:nowrap;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span class="d-none d-sm-inline">پایان آزمون</span>
+                <span class="d-none d-sm-inline">اتمام آزمون</span>
             </a>
-            
+
         </div>
     </div>
 
     <!-- ============ نوار پیشرفت ============ -->
     <div class="progress-custom" style="height:4px;">
-        <div class="progress-fill" style="width:35%;"></div>
+        <div class="progress-fill" style="width:{{progress_percent}}%;"></div>
     </div>
 
     <!-- ============ محتوای اصلی ============ -->
@@ -532,43 +531,51 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
 
                     <div class="d-flex justify-content-between align-items-start mb-3 mb-md-4 flex-wrap gap-2">
                         <div class="d-flex align-items-center gap-2 flex-wrap">
-                            <span class="badge-custom badge-info">چهارگزینه‌ای</span>
-                            <span class="badge-custom badge-success">دهم</span>
-                            <span class="badge-custom badge-success">ریاضی</span>
-                            <span class="badge-custom badge-success">ریاضی ۱</span>
-                            <span class="badge-custom badge-warning">فصل اول</span>
-                            <span class="badge-custom badge-warning">آزمون میان‌ترم</span>
-                            <span class="badge-custom badge-warning">آزمون جامع بهار</span>
+                            <span class="badge-custom badge-warning">{{ exam.name }}</span>
+
+                            <span class="badge-custom badge-info">{{ exam.get_categories }}</span>
+                            <span class="badge-custom badge-info">{{question.type_of_question}}</span>
+
+<!--                            <span class="badge-custom badge-success">ریاضی ۱</span>-->
+                            <span class="badge-custom badge-warning">{{exam.section}}</span>
+<!--                            <span class="badge-custom badge-warning">آزمون میان‌ترم</span>-->
                         </div>
-                        <div style="font-size:0.75rem;color:var(--text-muted);">نمره: ۲</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);">نمره: {{question.score}}</div>
                     </div>
 
                     <!-- صورت سوال -->
                     <div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:16px;margin-bottom:20px;">
                         <p class="mb-0 fw-500" style="font-size:0.95rem;line-height:1.8;word-wrap:break-word;">
-                            حاصل عبارت زیر را محاسبه کنید: مجموع اعداد ۱ تا ۱۰ برابر چند است؟
+                            {{question.name}}
                         </p>
                     </div>
 
                     <!-- توضیحات -->
                     <div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:16px;margin-bottom:20px;">
-                        <p class="mb-0 fw-500" style="font-size:0.75rem;line-height:1.6;word-wrap:break-word;">
-                            راهنما: از فرمول <strong>n(n+1)/2</strong> استفاده کنید.
-                        </p>
+
+                        {{question.description|safe}}
+
                     </div>
 
-                    <!-- تصویر سوال -->
+                    {% if question.image %}
                     <div style="background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden;max-height:300px;">
-                        <img src="https://via.placeholder.com/600x300/3b82f6/ffffff?text=Question+Image"
+                        <img src="{{ question.image.url }}"
                              style="max-width:100%;max-height:300px;width:auto;height:auto;object-fit:contain;"
                              loading="lazy" alt="Question Image">
                     </div>
-                    <p class="p-2" style="font-size:0.85rem;">عکس آپلود شده
+
+                    <p class="p-2" style="font-size:0.85rem;">
                         <br>
-                        <a href="https://via.placeholder.com/600x300/3b82f6/ffffff?text=Question+Image" class="btn btn-success">دانلود</a>
+                        <a href="{{ question.image.url }}" target="_blank" class="btn btn-success">  دانلود عکس سوال</a>
                     </p>
-<div class="mt-4">
-                                        <div class="border-0 shadow-sm overflow-hidden" style="border-radius:var(--radius-lg); background: var(--bg-card);">
+                    {% endif %}
+
+
+
+
+                {% if question.pdf_file %}
+                <div class="mt-4">
+                    <div class="border-0 shadow-sm overflow-hidden" style="border-radius:var(--radius-lg); background: var(--bg-card);">
                         <div class="d-flex align-items-center justify-content-between gap-2 p-3"
                              style="border-bottom:1px solid var(--border-color);">
                             <div class="d-flex align-items-center gap-3">
@@ -585,26 +592,30 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود PDF">
+
+                                <a href="{{question.pdf_file.url}}" target="_blank"  class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود PDF">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                                         <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
                                     </svg>
-                                    <span class="d-none d-sm-inline">دانلود</span>
+                                    <span class="d-none d-sm-inline">دانلود فایل PDF</span>
                                 </a>
 
 
                             </div>
                         </div>
                         <div class="p-2">
-                            <iframe src="about:blank" title="پیش‌نمایش فایل PDF پاسخ" scrolling="auto"
+                            <iframe src="{{question.pdf_file.url}}" title="پیش‌نمایش فایل PDF پاسخ" scrolling="auto"
                                     style="width:100%;height:450px;display:block;border:1px solid var(--border-color);border-radius:12px;background:#fff;"></iframe>
                         </div>
                     </div>
-</div>
+                </div>
+                {% endif %}
+
 
                     <!-- گزینه‌ها -->
                     <div class="d-flex flex-column gap-2">
+
                         <a href="#" class="text-decoration-none">
                             <div class="question-option selected" style="padding:12px 16px;">
                                 <div class="option-dot"></div>
@@ -629,6 +640,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                                 <span style="font-size:0.9rem;word-wrap:break-word;">۴) ۶۵</span>
                             </div>
                         </a>
+
                     </div>
                 </div>
 
@@ -831,41 +843,21 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                 <div class="card-custom mb-3 p-3">
                     <h6 class="fw-700 mb-3" style="font-size:0.8rem;">ناوبری سوالات</h6>
                     <div class="mb-3" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(32px,1fr));gap:6px;">
-                        <a href="#" class="question-nav" data-question-id="1">
-                            <div class="q-nav-btn answered" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۱</div>
+
+                        {% for item in all_questions %}
+
+                        <a {% if exam.allow_to_edit_the_answered_questions or exam.allow_return_to_questions %} href="{% url 'student:exam-start-with-question-id' pk=exam.pk question_id=item %}" {% endif %} class="question-nav" data-question-id="{{ item }}">
+                            <div class="q-nav-btn {% if item in answered_ids  %} answered {% elif item in skipped_questions %} skipped {% elif item == question.pk %} current {% endif %}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">
+                                {{ forloop.counter }}
+                            </div>
                         </a>
-                        <a href="#" class="question-nav" data-question-id="2">
-                            <div class="q-nav-btn answered" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۲</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="3">
-                            <div class="q-nav-btn current" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۳</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="4">
-                            <div class="q-nav-btn skipped" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۴</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="5">
-                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۵</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="6">
-                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۶</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="7">
-                            <div class="q-nav-btn answered" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۷</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="8">
-                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۸</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="9">
-                            <div class="q-nav-btn skipped" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۹</div>
-                        </a>
-                        <a href="#" class="question-nav" data-question-id="10">
-                            <div class="q-nav-btn" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">۱۰</div>
-                        </a>
+
+                        {% endfor %}
                     </div>
                     <div class="d-flex flex-column gap-2" style="font-size:0.7rem;">
                         <div class="d-flex align-items-center gap-2">
                             <div style="width:10px;height:10px;border-radius:2px;background:var(--gradient-green);"></div>
-                            پاسخ داده شده (۳)
+                            پاسخ داده شده ({{ answered_ids_count }})
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <div style="width:10px;height:10px;border-radius:2px;background:var(--gradient-blue);"></div>
@@ -873,7 +865,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <div style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,0.3);border:1px solid var(--warm-400);"></div>
-                            رد شده (۲)
+                            رد شده ({{ skipped_questions_count }})
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <div style="width:10px;height:10px;border-radius:2px;border:1px solid var(--border-color);background:var(--bg-card);"></div>
@@ -882,17 +874,18 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                     </div>
                 </div>
 
-                <!-- پیشرفت و اتمام -->
+
                 <div class="card-custom p-3">
                     <div class="d-flex justify-content-between mb-2" style="font-size:0.75rem;">
                         <span class="text-secondary">پیشرفت</span>
-                        <span class="fw-700">5 از 10</span>
+
+                        <span class="fw-700">{{ answered_ids_count_plus_skipped_questions_count }} از {{ all_questions_count }}</span>
                     </div>
                     <div class="progress-custom mb-3" style="height:6px;border-radius:3px;background:var(--bg-secondary);">
-                        <div class="progress-fill" style="width:50%;border-radius:3px;"></div>
+                        <div class="progress-fill" style="width:{{progress_percent}}%;border-radius:3px;"></div>
                     </div>
 
-                    <a href="#" class="btn w-100 mb-3"
+                    <a href="{% url 'student:exam-finished' exam.id %}" class="btn w-100 mb-3"
                        style="background:rgb(47 255 0 / 0.1);color:var(--success-500);border:1px solid rgb(99 239 68 / 0.2);border-radius:var(--radius-lg);font-weight:600;padding:10px;font-size:0.85rem;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="me-1">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
@@ -901,15 +894,40 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                         اتمام آزمون
                     </a>
 
+                    {% if exam.parent %}
                     <!-- لیست آزمون‌ها -->
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <span class="text-secondary" style="font-size:0.75rem;">سایر آزمون‌های این مجموعه</span>
-                        <span class="badge" style="background:var(--bg-secondary);color:var(--text-secondary);font-size:0.7rem;">۳ آزمون</span>
+                        <span class="badge" style="background:var(--bg-secondary);color:var(--text-secondary);font-size:0.7rem;">{{ exam_children_list.count }} آزمون</span>
                     </div>
 
                     <div class="d-flex flex-column gap-2">
-                        <a href="#" class="quiz-list-item text-decoration-none d-flex align-items-center justify-content-between px-3 py-2"
-                           style="background:rgb(47 255 0 / 0.1);color:var(--success-500);border:1px solid rgb(99 239 68 / 0.2);border-radius:var(--radius-lg);font-weight:600;padding:10px;font-size:0.85rem;">
+
+                        {% for item in exam_children_list %}
+                        <a
+                            {% if item.id in started_exams_history_ids  %}
+
+                                {% if exam.allow_to_edit_the_answered_questions or exam.allow_return_to_questions %}
+                                    href="{% url 'student:exam-information' pk=item.id %}"
+                                {% else %}
+                                    href=""
+                                {% endif %}
+
+
+                            {% else %}
+                                href="{% url 'student:exam-information' pk=item.id %}"
+
+                            {% endif %}
+
+
+                                class="quiz-list-item text-decoration-none d-flex align-items-center justify-content-between px-3 py-2"
+
+                            {% if item.id in started_exams_history_ids %}
+                                style="background:rgb(47 255 0 / 0.1);color:var(--success-500);border:1px solid rgb(99 239 68 / 0.2);border-radius:var(--radius-lg);font-weight:600;padding:10px;font-size:0.85rem;"
+                            {% endif %}
+
+                        >
+
                             <div class="d-flex align-items-center gap-2">
                                 <span class="d-flex align-items-center justify-content-center"
                                       style="width:26px;height:26px;border-radius:50%;background:rgb(99 239 68 / 0.15);color:var(--success-500);">
@@ -918,43 +936,22 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                                         <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2.5"/>
                                     </svg>
                                 </span>
-                                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">آزمون میان‌ترم</span>
-                            </div>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
-                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="quiz-list-item text-decoration-none d-flex align-items-center justify-content-between px-3 py-2">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="d-flex align-items-center justify-content-center"
-                                      style="width:26px;height:26px;border-radius:50%;background:rgb(99 239 68 / 0.15);color:var(--success-500);">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2.5"/>
-                                        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2.5"/>
-                                    </svg>
+                                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">
+                                    {{ item.name }}
+                                    {% if item.id in started_exams_history_ids %}
+                                        ( ازمون تموم شده )
+                                    {% endif %}
                                 </span>
-                                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">آزمون پایان‌ترم</span>
                             </div>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
                                 <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </a>
-                        <a href="#" class="quiz-list-item text-decoration-none d-flex align-items-center justify-content-between px-3 py-2">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="d-flex align-items-center justify-content-center"
-                                      style="width:26px;height:26px;border-radius:50%;background:rgb(99 239 68 / 0.15);color:var(--success-500);">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2.5"/>
-                                        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2.5"/>
-                                    </svg>
-                                </span>
-                                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">آزمون جامع</span>
-                            </div>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
-                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </a>
+                        {% endfor %}
+
                     </div>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
@@ -966,8 +963,10 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
             <span class="fw-700" style="color:var(--success-500);">5</span>/10
         </div>
         <div class="d-flex gap-2">
-            <a href="#" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:var(--danger-500);border:none;padding:8px 16px;font-size:0.8rem;">
-                اتمام
+            <a href="{% url 'student:exam-finished' exam.id %}" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:var(--danger-500);border:none;padding:8px 16px;font-size:0.8rem;">
+
+                اتمام ازمون
+
             </a>
         </div>
     </div>
@@ -977,10 +976,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
 </div>
 
 <script>
-// ================================================================
-// Custom SweetAlert2 Replacement
-// Drop-in replacement for Swal.fire({...})
-// ================================================================
+
 (function () {
     'use strict';
 
@@ -1100,7 +1096,7 @@ if(localStorage.getItem('theme') === 'dark'){
 // ============ تایمر ============
 (function(){
     'use strict';
-    const minutes = 45;
+    const minutes = {{remaining_minutes}};
     let endTime = Date.now() + (minutes * 60 * 1000);
     let timerInterval = null;
 
@@ -1117,6 +1113,7 @@ if(localStorage.getItem('theme') === 'dark'){
 
     function updateTimerDisplay(){
         const remaining = Math.max(0, endTime - Date.now());
+
         const formatted = formatTime(remaining);
         const timers = document.querySelectorAll('#examTimer, #sidebarTimer');
         timers.forEach(t => {
@@ -1127,21 +1124,28 @@ if(localStorage.getItem('theme') === 'dark'){
                 else t.style.color = '';
             }
         });
-        if(remaining <= 0){
-            clearInterval(timerInterval);
-            if(typeof Swal !== 'undefined'){
-                Swal.fire({
-                    title: 'پایان زمان!',
-                    text: 'زمان آزمون به پایان رسید.',
-                    icon: 'warning',
-                    confirmButtonText: 'تایید',
-                    allowOutsideClick: false
-                });
-            } else {
-                alert('زمان آزمون به پایان رسید!');
-            }
-            return false;
-        }
+if (remaining <= 0) {
+    clearInterval(timerInterval);
+
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'پایان زمان!',
+            text: 'زمان آزمون به پایان رسید. تا ۵ ثانیه دیگر منتقل می‌شوید.',
+            icon: 'warning',
+            confirmButtonText: 'تایید',
+            allowOutsideClick: false,
+            timer: 5000,
+            timerProgressBar: true
+        }).then(() => {
+            window.location.href = "{% url 'exam:details' pk=exam.pk %}";
+        });
+    } else {
+        alert('زمان آزمون به پایان رسید!');
+        window.location.href = "{% url 'exam:details' pk=exam.pk %}";
+    }
+
+    return false;
+}
         return true;
     }
 

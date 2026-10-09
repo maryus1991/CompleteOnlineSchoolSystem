@@ -19,7 +19,7 @@ class ExamListView(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = Exam.objects.filter(is_active=True, is_public=True, parent__isnull=True).select_related("school", "grade", "major", "lesson").annotate(
+        queryset = Exam.objects.filter(is_active=True, is_public=True).select_related("school", "grade", "major", "lesson").annotate(
             student_count=Count('selected_student', distinct=True),
             questions_count=Count('question', distinct=True),
             is_student=Exists(
@@ -64,7 +64,7 @@ class ExamDetailsView(DetailView):
         queryset = Exam.objects.filter(
             is_active=True,
             is_public=True,
-            parent__isnull=True,
+
         ).select_related("grade", "major", "lesson", "province", "city").annotate(
             student_count=Count('selected_student', distinct=True),
             questions_count=Count('question', distinct=True),

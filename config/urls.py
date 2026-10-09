@@ -29,6 +29,8 @@ urlpatterns = [
     path('exams/', include('apps.exams.urls')),
     path('qbank/', include('apps.questions.urls')),
     path('student/', include('apps.users.students.urls')),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
+
 ]
 
 if settings.DEBUG:

@@ -8,8 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from apps.questions.models import Question, QuestionOption, StudentAnswer
 from apps.common.utils import datetime2jalali
-
-from django.http import HttpResponse
+from django.db.models import Exists, OuterRef
 
 class ExamListView(StudentMixin, ListView):
     """exam list view for student dashboard"""
@@ -57,7 +56,7 @@ class StartExamView(StudentMixin, View):
 
     def get(self, request, *args, **kwargs):
         exam = get_object_or_404(
-            Exam.objects.filter(pk=kwargs['pk'], is_active=True),
+            Exam.objects.filter(pk=kwargs['pk'], is_active=True).select_related("grade", "major", "lesson"),
             pk=kwargs['pk']
         )
 
@@ -75,11 +74,12 @@ class StartExamView(StudentMixin, View):
             messages.error(request, "مهلت ورود به آزمون تمام شده است.")
             return redirect("exam:details", pk=exam.pk)
 
+
         start_exam_history = ExamStudentDetails.objects.filter(exam=exam, student=request.student).first()
 
         if not start_exam_history:
             messages.error(request, "مهلت ورود به آزمون تمام شده است.")
-            return redirect("exam:details", pk=exam.pk)
+            return redirect("student:exam-information", pk=exam.pk)
 
         answered_ids = StudentAnswer.objects.filter(
             exam=exam,
@@ -107,28 +107,49 @@ class StartExamView(StudentMixin, View):
         if question is None:
             question = base_qs.first()
 
+        remaining_time = (
+                start_exam_history.created_at
+                + timedelta(minutes=exam.time_minutes)
+                - now
+        )
 
-        remaining_seconds = (
-            start_exam_history.created_at
-            + timedelta(minutes=exam.time_minutes)
-            - now
-        ).total_seconds()
 
+        skipped_questions = StudentAnswer.objects.filter(
+            exam=exam,
+            student=request.student,
+            type_of_answer=StudentAnswer.TypeOfAnswer.SKIPPED
+        ).values_list('question_id', flat=True)
+
+        all_questions = base_qs.values_list("id", flat=True)
+        exam_children_list = exam.children.filter(is_active=True)
         context = {
             'exam': exam,
-            'exam_question': question,
-            'remaining_seconds': remaining_seconds,
-            "start_exam_history": start_exam_history,
-            "exam_children_list": exam.children.filter(is_active=True).all(),
+            'question': question,
+            'remaining_minutes': max(0, remaining_time.total_seconds() / 60 ),
+            "started_exams_history_ids": ExamStudentDetails.objects.filter(exam__id__in=exam_children_list.values_list("id", flat=True), student=request.student).values_list("exam__id", flat=True),
+            "exam_children_list": exam_children_list.all(),
             "answered_ids": answered_ids,
-            "all_questions": base_qs.values_list("id"),
-            "skipped_questions": StudentAnswer.objects.filter(
-                exam=exam,
-                student=request.student,
-                type_of_answer=StudentAnswer.TypeOfAnswer.SKIPPED
-            ).values_list('question_id', flat=True),
+            "all_questions": all_questions,
+            "skipped_questions": skipped_questions,
 
         }
+
+        context.update({
+            "answered_ids_count": len(answered_ids),
+            "all_questions_count": len(all_questions),
+            "skipped_questions_count": len(skipped_questions),
+        })
+
+        try:
+            progress_percent = (int(context.get("answered_ids_count")) + int(context.get("skipped_questions_count"))) * 100 / int(context.get("answered_ids_count"))
+        except Exception :
+            progress_percent = 0
+
+
+        context.update({
+            "progress_percent": progress_percent,
+            "answered_ids_count_plus_skipped_questions_count": int(context.get("answered_ids_count")) + int(context.get("skipped_questions_count")) ,
+        })
 
         return render(request, self.template_name, context)
 
@@ -210,27 +231,61 @@ class ExamSetSkippedToQuestion(StudentMixin, RedirectView):
         messages.warning(self.request, "سؤال به حالت رد شده تبدیل شد.")
         return reverse("exam:exam-start", kwargs={"pk": exam.pk} )
 
+
 class ExamFinished(StudentMixin, RedirectView):
-        """quiz finished"""
+    """Finish exam and redirect to the next exam."""
 
-        def get_redirect_url(self, *args, **kwargs):
-            pk = kwargs['pk']
-            student = self.request.student
+    def get_redirect_url(self, *args, **kwargs):
+        student = self.request.student
 
-            exam = get_object_or_404(Exam.objects.select_related('exam'), pk=pk, student=student)
+        exam = get_object_or_404(
+            Exam.objects.select_related('parent'),
+            pk=kwargs['pk'],
+        )
 
-            ExamStudentDetails.objects.filter(
-                exam=exam,
+        ExamStudentDetails.objects.filter(
+            exam_id=exam.pk,
+            student=student,
+        ).update(
+            student_finished_at=datetime2jalali(),
+        )
+
+        if exam.parent:
+            completed_exam = ExamStudentDetails.objects.filter(
+                exam_id=OuterRef('pk'),
                 student=student,
-            ).update(
-                student_finished_at=datetime2jalali(),
             )
-            messages.success(
+
+            next_exam = exam.parent.children.filter(
+                is_active=True,
+            ).annotate(
+                has_detail=Exists(completed_exam),
+            ).filter(
+                has_detail=False,
+            ).order_by(
+                '-sort_number', '-pk',
+            ).first()
+
+
+
+            if next_exam:
+                return reverse(
+                    'student:exam-information',
+                    kwargs={'pk': next_exam.pk},
+                )
+            else:
+                messages.info(
+                    self.request,
+                    "ازمون ها را به موفقیت به پایان رساندید, خسته نباشید"
+                )
+        else:
+            messages.info(
                 self.request,
-                'از آزمون با موفقیت به پایان رساندید, خسته نباشید'
+                'آزمون را با موفقیت به پایان رساندید، خسته نباشید.',
             )
-            return reverse(
-                'exam:details',
-                kwargs={'pk': exam.pk}
-            )
+
+        return reverse(
+            'exam:details',
+            kwargs={'pk': exam.pk},
+        )
 
