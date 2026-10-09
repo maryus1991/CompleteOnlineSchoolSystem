@@ -1,4 +1,3 @@
-
 from django.contrib import  messages
 from datetime import timedelta
 from apps.exams.models import Exam, ExamStudentDetails
@@ -8,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from apps.questions.models import Question, QuestionOption, StudentAnswer
 from apps.common.utils import datetime2jalali
+from django.db.models import Q
 from django.db.models import Exists, OuterRef
 
 class ExamListView(StudentMixin, ListView):
@@ -85,8 +85,11 @@ class StartExamView(StudentMixin, View):
             exam=exam,
             student=request.student,
         ).exclude(
-            type_of_answer=StudentAnswer.TypeOfAnswer.NOT_ANSWERED
+            Q(type_of_answer=StudentAnswer.TypeOfAnswer.NOT_ANSWERED) |
+            Q(type_of_answer=StudentAnswer.TypeOfAnswer.SKIPPED)
         ).values_list('question_id', flat=True)
+
+
 
         base_qs = exam.question.filter(
             is_active=True,
@@ -95,24 +98,22 @@ class StartExamView(StudentMixin, View):
 
         question = None
 
-        if exam.change_the_order:
-            question = base_qs.exclude(pk__in=answered_ids).order_by('?').first()
 
-        elif kwargs.get('pk') and not exam.allow_return_to_questions:
-            question = base_qs.get(pk=kwargs['pk'])
-
+        if kwargs.get('question_id') and exam.allow_return_to_questions:
+            question = base_qs.prefetch_related("options").get(pk=kwargs['question_id'])
+        elif exam.change_the_order:
+            question = base_qs.exclude(pk__in=answered_ids).order_by('?').prefetch_related("options").first()
         else:
-            question = base_qs.exclude(pk__in=answered_ids).order_by("-sort_number", "-id").first()
+            question = base_qs.exclude(pk__in=answered_ids).order_by("-sort_number", "-id").prefetch_related("options").first()
 
         if question is None:
-            question = base_qs.first()
+            question = base_qs.prefetch_related("options").first()
 
         remaining_time = (
                 start_exam_history.created_at
                 + timedelta(minutes=exam.time_minutes)
                 - now
         )
-
 
         skipped_questions = StudentAnswer.objects.filter(
             exam=exam,
@@ -122,8 +123,16 @@ class StartExamView(StudentMixin, View):
 
         all_questions = base_qs.values_list("id", flat=True)
         exam_children_list = exam.children.filter(is_active=True)
+
+        student_answer = StudentAnswer.objects.filter(
+            student=request.student,
+            exam=exam,
+            question=question
+        ).first()
+
         context = {
             'exam': exam,
+            'student_answer': student_answer,
             'question': question,
             'remaining_minutes': max(0, remaining_time.total_seconds() / 60 ),
             "started_exams_history_ids": ExamStudentDetails.objects.filter(exam__id__in=exam_children_list.values_list("id", flat=True), student=request.student).values_list("exam__id", flat=True),
@@ -133,6 +142,7 @@ class StartExamView(StudentMixin, View):
             "skipped_questions": skipped_questions,
 
         }
+
 
         context.update({
             "answered_ids_count": len(answered_ids),
@@ -170,19 +180,17 @@ class ExamSetAnswerOptions(StudentMixin, RedirectView):
         answer, created = StudentAnswer.objects.get_or_create(
             exam=question.exam,
             student=self.request.student,
-            corrected_at=datetime2jalali(),
             question=question,
             defaults={
                 "selected_option": option,
-                "type_of_answer": StudentAnswer.TypeOfAnswer.OPTION,
-            },
+            }
         )
 
-        if not created:
-            if not question.exam.allow_to_edit_the_answered_questions:
-                messages.error(self.request, "در این آزمون اجازه تغییر پاسخ ثبت‌ شده را ندارید." )
-                return reverse("exam:exam-start", kwargs={"pk": question.exam.pk})
 
+        if not question.exam.allow_to_edit_the_answered_questions:
+            messages.error(self.request, "در این آزمون اجازه تغییر پاسخ ثبت‌ شده را ندارید." )
+            return reverse("exam:exam-start", kwargs={"pk": question.exam.pk})
+        else:
             answer.selected_option = option
 
         if option.is_correct:
@@ -194,11 +202,13 @@ class ExamSetAnswerOptions(StudentMixin, RedirectView):
             answer.score =   -( question.score * question.exam.reduce_percent_of_negative_score / 100 )
             answer.corrected = StudentAnswer.TypeOfCorrect.wrong
 
-        answer.save(update_fields=["selected_option", "score", "type_of_answer", "corrected"])
+        answer.type_of_answer = StudentAnswer.TypeOfAnswer.OPTION
+        answer.corrected_at=datetime2jalali()
+        answer.save(update_fields=["selected_option", "score", "type_of_answer", "corrected_at", "corrected"])
 
         messages.success( self.request, "پاسخ با موفقیت ثبت شد." if created else "پاسخ با موفقیت تغییر کرد." )
 
-        return reverse("exam:exam-start", kwargs={"pk": question.exam.pk} )
+        return reverse("student:exam-start", kwargs={"pk": question.exam.pk} )
 
 class ExamSetSkippedToQuestion(StudentMixin, RedirectView):
     """ثبت سؤال به عنوان رد شده"""
@@ -216,20 +226,23 @@ class ExamSetSkippedToQuestion(StudentMixin, RedirectView):
         )
 
         answer.type_of_answer = StudentAnswer.TypeOfAnswer.SKIPPED
+        answer.corrected = StudentAnswer.TypeOfCorrect.wrong
+        answer.corrected_at =  datetime2jalali()
         answer.selected_option = None
         answer.score = 0
 
         answer.save(
             update_fields=[
                 "type_of_answer",
-                "is_skipped",
                 "selected_option",
+                "corrected",
+                "corrected_at",
                 "score",
             ]
         )
 
         messages.warning(self.request, "سؤال به حالت رد شده تبدیل شد.")
-        return reverse("exam:exam-start", kwargs={"pk": exam.pk} )
+        return reverse("student:exam-start", kwargs={"pk": exam.pk} )
 
 
 class ExamFinished(StudentMixin, RedirectView):
@@ -289,3 +302,5 @@ class ExamFinished(StudentMixin, RedirectView):
             kwargs={'pk': exam.pk},
         )
 
+
+# todo: add pdf and image for student answer upload and delete

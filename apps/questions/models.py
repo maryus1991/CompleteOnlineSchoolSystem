@@ -9,6 +9,8 @@ from apps.exams.models import Exam
 from apps.content.models import ClassPractice
 from apps.common.file_storage_script_for_model import UploadPath
 from django.urls import reverse_lazy
+from apps.common.models_fields import BaseJalaliDateTimeField
+
 
 
 def photo_path_upload_to(*args, **kwargs): return ""
@@ -113,7 +115,7 @@ class StudentAnswer(BaseModel):
 
     sanatorium_message = CKEditor5Field(blank=True, null=True, verbose_name='نظر مصصح')
     corrected = models.CharField(max_length=100, choices=TypeOfCorrect.choices, verbose_name='کیفیت جواب',default=TypeOfCorrect.not_corrected )
-    corrected_at = models.DateTimeField(null=True, blank=True, verbose_name='زمان تصحیح')
+    corrected_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name='زمان تصحیح')
     score = models.FloatField(default=0, verbose_name='نمره داده شده')
     corrected_by = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True,related_name='corrected_answers', verbose_name='تصحیح‌کننده')
 
@@ -124,5 +126,5 @@ class StudentAnswer(BaseModel):
         unique_together = ('student', "question")
 
     def __str__(self):
-        return f"{self.id} - {str(self.student.PhoneNumber).replace(' ', '')} - {self.quiz.name} - {self.score}"
+        return f"{self.id} - {str(self.student.user.PhoneNumber).replace(' ', '')} - {self.exam.name} - {self.score}"
 

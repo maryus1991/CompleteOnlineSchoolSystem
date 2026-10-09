@@ -5,20 +5,12 @@ from django_jalali.db import models as jalali_models
 
 
 class JalaliDateTime(jdatetime.datetime):
-    """
-    Jalali datetime که نحوه نمایش آن از settings کنترل می‌شود.
-    """
-
     def __str__(self):
-        date_format =  settings.JALALI_DISPLAY["DATETIME_FORMAT"]
-
+        date_format = settings.JALALI_DISPLAY["DATETIME_FORMAT"]
         return self.strftime(date_format)
 
 
 class BaseJalaliDateTimeField(jalali_models.jDateTimeField):
-    """
-    jDateTimeField با نمایش سفارشی برای Template.
-    """
 
     @classmethod
     def parse_date(cls, datetime_obj):

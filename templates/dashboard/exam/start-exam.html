@@ -613,35 +613,24 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                 {% endif %}
 
 
+                    {% if question.options.all %}
                     <!-- گزینه‌ها -->
                     <div class="d-flex flex-column gap-2">
 
-                        <a href="#" class="text-decoration-none">
-                            <div class="question-option selected" style="padding:12px 16px;">
+                        {% for item in question.options.all %}
+                        <a href="{% url 'student:exam-set-option' pk=exam.id question_id=question.id option_id=item.id %}" class="text-decoration-none">
+                            <div class="question-option {% if student_answer.selected_option.id == item.id %} selected {% endif %}" style="padding:12px 16px;">
                                 <div class="option-dot"></div>
-                                <span style="font-size:0.9rem;word-wrap:break-word;">۱) ۵۰</span>
+                                <span style="font-size:0.9rem;word-wrap:break-word;">
+                                    {{ item.name }}
+                                </span>
                             </div>
                         </a>
-                        <a href="#" class="text-decoration-none">
-                            <div class="question-option" style="padding:12px 16px;">
-                                <div class="option-dot"></div>
-                                <span style="font-size:0.9rem;word-wrap:break-word;">۲) ۵۵</span>
-                            </div>
-                        </a>
-                        <a href="#" class="text-decoration-none">
-                            <div class="question-option" style="padding:12px 16px;">
-                                <div class="option-dot"></div>
-                                <span style="font-size:0.9rem;word-wrap:break-word;">۳) ۶۰</span>
-                            </div>
-                        </a>
-                        <a href="#" class="text-decoration-none">
-                            <div class="question-option" style="padding:12px 16px;">
-                                <div class="option-dot"></div>
-                                <span style="font-size:0.9rem;word-wrap:break-word;">۴) ۶۵</span>
-                            </div>
-                        </a>
+                        {% endfor %}
+
 
                     </div>
+                    {% endif %}
                 </div>
 
                 <!-- ============ کارت سوال تشریحی ============ -->
@@ -724,7 +713,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                     <a id="preview-button" class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
                         قبلی
                     </a>
-                    <a href="#" class="btn-purple-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
+                    <a href="{% url 'student:exam-set-skipped' pk=exam.id question_id=question.id %}" class="btn-purple-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="ms-1">
                             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
                             <path d="M14.5 9.5L9 12M9 12l3.5-5.5M9 12l3.5 5.5" stroke="currentColor" stroke-width="2"/>
@@ -736,6 +725,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                     </a>
                 </div>
 
+                {% if student_answer.image %}
                 <!-- ============ تصویر پاسخ آپلود شده ============ -->
                 <div class="mt-4">
                     <div class="border-0 shadow-sm overflow-hidden" style="border-radius:var(--radius-lg); background:var(--bg-card);">
@@ -755,7 +745,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود تصویر">
+                                <a href="{{ student_answer.image.url }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود تصویر">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                                         <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
@@ -774,14 +764,15 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
 
                         <div class="p-3" style="background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;min-height:180px;max-height:350px;overflow:hidden;">
                             <a href="#" target="_blank" class="d-flex align-items-center justify-content-center w-100" style="height:100%;">
-                                <img src="https://via.placeholder.com/400x300/22c55e/ffffff?text=Answer+Image"
+                                <img src="{{ student_answer.image.url }}"
                                      style="max-width:100%;max-height:320px;object-fit:contain;border-radius:10px;"
                                      loading="lazy" alt="تصویر پاسخ">
                             </a>
                         </div>
                     </div>
                 </div>
-
+                {% endif %}
+                {% if student_answer.pdf_file %}
                 <!-- ============ فایل PDF پاسخ ============ -->
                 <div class="mt-4">
                     <div class="border-0 shadow-sm overflow-hidden" style="border-radius:var(--radius-lg); background: var(--bg-card);">
@@ -801,14 +792,14 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود PDF">
+                                <a href="{{ student_answer.pdf_file.url }}" target="_blank" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" title="دانلود PDF">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                                         <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
                                     </svg>
                                     <span class="d-none d-sm-inline">دانلود</span>
                                 </a>
-                                <a href="#" target="_blank" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" title="باز کردن PDF">
+                                <a href="{{ student_answer.pdf_file.url }}" target="_blank" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" title="باز کردن PDF">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
                                         <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
@@ -830,6 +821,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
 
             <!-- ============ ستون کنار ============ -->
@@ -847,7 +839,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                         {% for item in all_questions %}
 
                         <a {% if exam.allow_to_edit_the_answered_questions or exam.allow_return_to_questions %} href="{% url 'student:exam-start-with-question-id' pk=exam.pk question_id=item %}" {% endif %} class="question-nav" data-question-id="{{ item }}">
-                            <div class="q-nav-btn {% if item in answered_ids  %} answered {% elif item in skipped_questions %} skipped {% elif item == question.pk %} current {% endif %}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">
+                            <div class="q-nav-btn {% if item == question.pk %} answered {% elif item in skipped_questions %} skipped {% elif  item in answered_ids  %} current {% endif %}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">
                                 {{ forloop.counter }}
                             </div>
                         </a>
