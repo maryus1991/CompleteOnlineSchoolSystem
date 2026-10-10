@@ -3,6 +3,7 @@ from django.db.models import Count, Exists, OuterRef, Q
 from .models import Exam, Student
 from django.contrib import messages
 from django.shortcuts import redirect
+from apps.common.utils import datetime2jalali
 
 
 class ExamListView(ListView):
@@ -79,10 +80,11 @@ class ExamDetailsView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
 
+
         data = super().get_context_data(*args, **kwargs)
         data.update(
             {
-
+                "now":datetime2jalali(),
                 "related": Exam.objects.filter(
                     Q(lesson=self.object.lesson)|
                     Q(major=self.object.major)|

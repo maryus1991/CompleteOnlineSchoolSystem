@@ -110,14 +110,41 @@
                 <div class="course-price">{{object.get_price_status}} تومان</div>
                 {% else %}
                 <div class="course-price">رایگان</div>
+                    <button class="btn btn-outline" disabled="" style="opacity:0.6;">{{ object.get_status_display }}</button>
 
                 {% endif %}
-<!--                todo: fix the dashboard and add course-->
+
                 {% if object.is_student %}
                     <button class="btn btn-outline" disabled="" style="opacity:0.6;">✓ قبلاً ثبت‌نام کرده‌اید</button>
-                    <a href="dashboard.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">رفتن به داشبورد</a>
+
+
+                {% if now < object.start_at %}
+                    <button class="btn btn-outline" disabled style="opacity:0.6;">
+                        آزمون هنوز شروع نشده است
+                    </button>
+
+                {% elif now <= object.last_enter and now <= object.stop_at %}
+                    <a href="{% url 'student:exam-information' pk=object.pk %}"
+                       class="btn btn-primary"
+                       style="display:block; text-align:center; margin-top:10px;">
+                        ورود به آزمون
+                    </a>
+
+                {% elif now > object.last_enter and now <= object.stop_at %}
+                    <button class="btn btn-outline" disabled style="opacity:0.6;">
+                        مهلت ورود به آزمون به پایان رسیده است
+                    </button>
+
                 {% else %}
-                    <a href="dashboard.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">شرکت در ازمون</a>
+                    <button class="btn btn-outline" disabled style="opacity:0.6;">
+                        آزمون به پایان رسیده است
+                    </button>
+                {% endif %}
+
+                {% else %}
+                    <a href="" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">
+                        برای شرکت در ازمون با پشتیبان در ارتباط باشید
+                    </a>
 
                 {% endif %}
 
@@ -164,9 +191,16 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>
-        <span>هزینه: {{ object.price|default:"-" }}</span>
+        <span>هزینه:                              {% if object.get_price_status  %}
+                <span class="course-price">{{object.get_price_status}} تومان</span>
+                {% else %}
+                <span class="course-price">رایگان</span>
+
+                {% endif %}</span>
     </div>
 </div>
+
+
 
 <div class="curriculum-item">
     <div class="curriculum-title">
@@ -286,14 +320,7 @@
 </div>
 
 
-<div class="curriculum-item">
-    <div class="curriculum-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        <span>رایگان: {% if object.get_price_status is not False %}بله{% elif object.get_price_status is False %}خیر{% else %}-{% endif %}</span>
-    </div>
-</div>
+
 
         </div>
 

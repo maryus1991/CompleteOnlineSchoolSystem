@@ -335,91 +335,91 @@
 
                 <div class="ticket-card">
 
-                    <div class="ticket-main">
+                        <div class="ticket-main">
 
-                        <div class="ticket-top">
+                            <div class="ticket-top">
 
-                            <span class="ticket-id">
-                                #{{ item.pk }}
-                            </span>
-
-                            {% if item.status ==  status.WAITING_START %}
-                                <span class="ticket-badge status-waiting-admin">
-                                    {{ item.get_status_display }}
+                                <span class="ticket-id">
+                                    #{{ item.pk }}
                                 </span>
 
-                            {% elif item.status == status.STARTED  %}
-                                <span class="ticket-badge status-waiting-user">
-                                    {{ item.get_status_display }}
+                                {% if item.status ==  status.WAITING_START %}
+                                    <span class="ticket-badge status-waiting-admin">
+                                        {{ item.get_status_display }}
+                                    </span>
+
+                                {% elif item.status == status.STARTED  %}
+                                    <span class="ticket-badge status-waiting-user">
+                                        {{ item.get_status_display }}
+                                    </span>
+
+                                {% elif item.status ==  status.FINISHED %}
+                                    <span class="ticket-badge status-waiting-adminr">
+                                        {{ item.get_status_display }}
+                                    </span>
+
+                                {% elif item.status == status.WAITING_CORRECTION  %}
+                                    <span class="ticket-badge status-waiting-user">
+                                        {{ item.get_status_display }}
+                                    </span>
+
+                                {% elif item.status == status.RESULTS_PUBLISHED  %}
+                                    <span class="ticket-badge status-fixed">
+                                        {{ item.get_status_display }}
+                                    </span>
+
+                                {% else %}
+                                    <span class="ticket-badge status-cancelled">
+                                        {{ item.get_status_display }}
+                                    </span>
+                                {% endif %}
+
+
+
+                                    <span class="ticket-badge priority-low">
+                                        {% if item.get_price_status %}
+                                             {{ item.get_price_status }}  تومان
+                                        {% else %}
+                                        رایگان
+                                        {% endif %}
+                                    </span>
+
+
+
+
+
+                            </div>
+
+
+                            <a href="{% url 'exam:details' pk=item.pk %}" class="ticket-title">
+                                {{ item.name }}
+                            </a>
+
+
+                            <a  href="{% url 'exam:details' pk=item.pk %}" class="ticket-description">
+                                {{ item.summery }}
+                            </a>
+
+
+                            <div class="ticket-meta">
+
+                                <span class="ticket-date">
+                                    {{ item.start_at|date:"Y/m/d - H:i" }}
                                 </span>
 
-                            {% elif item.status ==  status.FINISHED %}
-                                <span class="ticket-badge status-waiting-adminr">
-                                    {{ item.get_status_display }}
-                                </span>
-
-                            {% elif item.status == status.WAITING_CORRECTION  %}
-                                <span class="ticket-badge status-waiting-user">
-                                    {{ item.get_status_display }}
-                                </span>
-
-                            {% elif item.status == status.RESULTS_PUBLISHED  %}
-                                <span class="ticket-badge status-fixed">
-                                    {{ item.get_status_display }}
-                                </span>
-
-                            {% else %}
-                                <span class="ticket-badge status-cancelled">
-                                    {{ item.get_status_display }}
-                                </span>
-                            {% endif %}
-
-
-
-                                <span class="ticket-badge priority-low">
-                                    {% if item.get_price_status %}
-                                         {{ item.get_price_status }}  تومان
-                                    {% else %}
-                                    رایگان
-                                    {% endif %}
+                                <span class="ticket-badge"
+                                      style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
+                                    {{ item.get_categories }}
                                 </span>
 
 
 
-
+                            </div>
 
                         </div>
 
 
-                        <a class="ticket-title">
-                            {{ item.name }}
-                        </a>
-
-
-                        <p class="ticket-description">
-                            {{ item.summery }}
-                        </p>
-
-
-                        <div class="ticket-meta">
-
-                            <span class="ticket-date">
-                                {{ item.start_at|date:"Y/m/d - H:i" }}
-                            </span>
-
-                            <span class="ticket-badge"
-                                  style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
-                                {{ item.get_categories }}
-                            </span>
-
-
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="ticket-action">
+                        <div class="ticket-action">
 
                         <a href="{% url 'exam:details' pk=item.pk %}"
                            class="ticket-view-btn"
@@ -441,6 +441,7 @@
                     </div>
 
                 </div>
+
 
             {% endfor %}
 
