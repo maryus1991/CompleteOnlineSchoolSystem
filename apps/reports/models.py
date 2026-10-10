@@ -116,10 +116,10 @@ class ExamReport(BaseModel):
         verbose_name_plural = "کارنامه‌های آزمون"
 
         constraints = [
-            models.UniqueConstraint(
-                fields=["exam", "student"],
-                name="unique_exam_report_student",
-            ),
+            # models.UniqueConstraint(
+            #     fields=["exam", "student"],
+            #     name="unique_exam_report_student",
+            # ),
             models.CheckConstraint(
                 condition=Q(percentage__gte=0) & Q(percentage__lte=100),
                 name="exam_report_percentage_range",
