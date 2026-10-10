@@ -125,6 +125,17 @@ class StudentAnswer(BaseModel):
         verbose_name_plural = 'پاسخ‌های دانش‌آموزان'
         unique_together = ('student', "question")
 
+        indexes = [
+            models.Index(
+                fields=["exam", "student"],
+                name="sa_exam_student_idx",
+            ),
+            models.Index(
+                fields=["exam", "student", "type_of_answer"],
+                name="sa_exam_student_type_idx",
+            ),
+        ]
+
     def __str__(self):
         return f"{self.id} - {str(self.student.user.PhoneNumber).replace(' ', '')} - {self.exam.name} - {self.score}"
 

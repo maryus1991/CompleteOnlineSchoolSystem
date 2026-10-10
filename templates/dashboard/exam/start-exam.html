@@ -633,6 +633,8 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                     {% endif %}
                 </div>
 
+{% if exam.use_js_image_converter_to_pdf %}
+
                 <!-- ============ کارت سوال تشریحی ============ -->
                 <div class="exam-question-card p-2 p-md-3 p-lg-4">
                     <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4">
@@ -707,12 +709,17 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                         </button>
                     </form>
                 </div>
+{% endif %}
 
                 <!-- ============ دکمه‌های ناوبری ============ -->
                 <div class="d-flex justify-content-between mt-3 mt-lg-4 gap-2">
+
+                   {% if exam.allow_return_to_questions %}
                     <a id="preview-button" class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
                         قبلی
                     </a>
+                    {% endif %}
+
                     <a href="{% url 'student:exam-set-skipped' pk=exam.id question_id=question.id %}" class="btn-purple-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="ms-1">
                             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
@@ -720,8 +727,12 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                         </svg>
                         رد کردن
                     </a>
-                    <a id="next-button" href="#" class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
+                    <a id="next-button"
+
+                       href="{% url 'student:exam-start' pk=exam.id %}"
+                       class="btn-primary-gradient btn flex-fill text-center" style="padding:12px;font-size:0.85rem;">
                         بعدی
+
                     </a>
                 </div>
 
@@ -816,7 +827,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                             </div>
                         </div>
                         <div class="p-2">
-                            <iframe src="about:blank" title="پیش‌نمایش فایل PDF پاسخ" scrolling="auto"
+                            <iframe src="{{ student_answer.pdf_file.url }}" title="پیش‌نمایش فایل PDF پاسخ" scrolling="auto"
                                     style="width:100%;height:450px;display:block;border:1px solid var(--border-color);border-radius:12px;background:#fff;"></iframe>
                         </div>
                     </div>
@@ -824,7 +835,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                 {% endif %}
             </div>
 
-            <!-- ============ ستون کنار ============ -->
+
             <div class="col-12 col-lg-4">
                 <div class="timer-display mb-3 p-3" style="background:var(--bg-card);border-radius:var(--radius-lg);">
                     <div class="timer-label mb-1" style="font-size:0.75rem;color:var(--text-muted);">زمان باقی‌مانده</div>
@@ -839,12 +850,13 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                         {% for item in all_questions %}
 
                         <a {% if exam.allow_to_edit_the_answered_questions or exam.allow_return_to_questions %} href="{% url 'student:exam-start-with-question-id' pk=exam.pk question_id=item %}" {% endif %} class="question-nav" data-question-id="{{ item }}">
-                            <div class="q-nav-btn {% if item == question.pk %} answered {% elif item in skipped_questions %} skipped {% elif  item in answered_ids  %} current {% endif %}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">
+                            <div class="q-nav-btn {% if item == question.pk %} current {% elif item in skipped_questions %} skipped {% elif  item in answered_ids  %}  answered {% endif %}" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border-radius:6px;">
                                 {{ forloop.counter }}
                             </div>
                         </a>
 
                         {% endfor %}
+
                     </div>
                     <div class="d-flex flex-column gap-2" style="font-size:0.7rem;">
                         <div class="d-flex align-items-center gap-2">
@@ -936,7 +948,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
                                 </span>
                             </div>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--text-secondary);">
-                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M15 18l-6-6 6-6" stroupdateke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </a>
                         {% endfor %}
@@ -949,7 +961,7 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
         </div>
     </div>
 
-    <!-- ============ نوار پایین موبایل ============ -->
+
     <div class="mobile-bottom-bar" style="position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--border-color);padding:8px 12px;display:none;justify-content:space-between;align-items:center;z-index:100;">
         <div style="font-size:0.75rem;color:var(--text-muted);">
             <span class="fw-700" style="color:var(--success-500);">5</span>/10
@@ -968,7 +980,33 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
 </div>
 
 <script>
+                   {% if exam.allow_return_to_questions %}
 
+document.addEventListener('DOMContentLoaded', function () {
+    const questions = [...document.querySelectorAll('.question-nav')];
+
+    const currentIndex = questions.findIndex(el =>
+        el.querySelector('.q-nav-btn.current')
+    );
+
+    const previewButton = document.getElementById('preview-button');
+    const nextButton = document.getElementById('next-button');
+
+    if (previewButton && currentIndex > 0) {
+        previewButton.href = questions[currentIndex - 1].href;
+    } else if (previewButton) {
+        previewButton.removeAttribute('href');
+        previewButton.classList.add('disabled');
+    }
+
+    if (nextButton && currentIndex < questions.length - 1) {
+        nextButton.href = questions[currentIndex + 1].href;
+    } else if (nextButton) {
+        nextButton.removeAttribute('href');
+        nextButton.classList.add('disabled');
+    }
+});
+                   {% endif %}
 (function () {
     'use strict';
 
@@ -1040,7 +1078,6 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
             ov.appendChild(popup);
             document.body.appendChild(ov);
 
-            // Force reflow then show
             void ov.offsetWidth;
             ov.classList.add('swal-show');
 
@@ -1072,11 +1109,11 @@ input[type="file"]::file-selector-button:hover{background:var(--bg-hover);}
         });
     }
 
-    // Expose global Swal object
+
     window.Swal = { fire: fire };
 })();
 
-// ============ تم تاریک/روشن ============
+
 function toggleTheme(){
     document.body.classList.toggle('dark');
     localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
@@ -1085,7 +1122,7 @@ if(localStorage.getItem('theme') === 'dark'){
     document.body.classList.add('dark');
 }
 
-// ============ تایمر ============
+
 (function(){
     'use strict';
     const minutes = {{remaining_minutes}};
@@ -1146,6 +1183,7 @@ if (remaining <= 0) {
         if(!updateTimerDisplay()) clearInterval(timerInterval);
     }, 1000);
 })();
+{% if exam.use_js_image_converter_to_pdf %}
 
 // ============ PDF Helper ============
 (function(){
@@ -1243,7 +1281,7 @@ if (remaining <= 0) {
             e.preventDefault();
             const imageFiles = collectImageFiles();
             if(!autoConvertCheckbox.checked || imageFiles.length === 0){
-                // شبیه‌سازی ارسال عادی
+
                 if(typeof Swal !== 'undefined'){
                     Swal.fire({title:'ارسال شد', text:'پاسخ شما با موفقیت ثبت شد (دمو).', icon:'success', confirmButtonText:'تایید'});
                 } else {
@@ -1287,6 +1325,7 @@ if (remaining <= 0) {
 
     setTimeout(updatePreviewStatus, 100);
 })();
+                   {% endif %}
 </script>
 
 

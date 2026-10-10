@@ -7,8 +7,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from apps.questions.models import Question, QuestionOption, StudentAnswer
 from apps.common.utils import datetime2jalali
-from django.db.models import Q
 from django.db.models import Exists, OuterRef
+import random
+from django.db.models import Subquery
+
 
 class ExamListView(StudentMixin, ListView):
     """exam list view for student dashboard"""
@@ -54,10 +56,14 @@ class StartExamView(StudentMixin, View):
 
     template_name = 'dashboard/exam/start-exam.html'
 
+
     def get(self, request, *args, **kwargs):
+        student = request.student
+
         exam = get_object_or_404(
-            Exam.objects.filter(pk=kwargs['pk'], is_active=True).select_related("grade", "major", "lesson"),
-            pk=kwargs['pk']
+            Exam.objects.select_related("grade", "major", "lesson"),
+            pk=kwargs["pk"],
+            is_active=True,
         )
 
         now = datetime2jalali()
@@ -74,40 +80,95 @@ class StartExamView(StudentMixin, View):
             messages.error(request, "مهلت ورود به آزمون تمام شده است.")
             return redirect("exam:details", pk=exam.pk)
 
+        start_exam_history = (
+            ExamStudentDetails.objects
+            .filter(exam=exam, student=student)
+            .only("created_at")
+            .first()
+        )
 
-        start_exam_history = ExamStudentDetails.objects.filter(exam=exam, student=request.student).first()
-
-        if not start_exam_history:
+        if start_exam_history is None:
             messages.error(request, "مهلت ورود به آزمون تمام شده است.")
             return redirect("student:exam-information", pk=exam.pk)
-
-        answered_ids = StudentAnswer.objects.filter(
-            exam=exam,
-            student=request.student,
-        ).exclude(
-            Q(type_of_answer=StudentAnswer.TypeOfAnswer.NOT_ANSWERED) |
-            Q(type_of_answer=StudentAnswer.TypeOfAnswer.SKIPPED)
-        ).values_list('question_id', flat=True)
-
-
 
         base_qs = exam.question.filter(
             is_active=True,
             is_for_qbank=False,
         )
 
+        # فقط شناسه‌ها را از دیتابیس دریافت می‌کنیم.
+        all_questions = list(
+            base_qs.order_by("-sort_number", "-pk")
+            .values_list("pk", flat=True)
+        )
+        all_question_ids = set(all_questions)
+
+        # همه پاسخ‌های دانش‌آموز را فقط یک‌بار می‌خوانیم.
+        answer_rows = StudentAnswer.objects.filter(
+            exam=exam,
+            student=student,
+        )
+
+        answered_ids = set()
+        skipped_questions = set()
+        student_answers = {}
+
+        NOT_ANSWERED = StudentAnswer.TypeOfAnswer.NOT_ANSWERED
+        SKIPPED = StudentAnswer.TypeOfAnswer.SKIPPED
+
+        for answer in answer_rows:
+            qid = answer.question_id
+
+            if qid not in all_question_ids:
+                continue
+
+            # معادل first() در Query قبلی، در صورت وجود چند پاسخ.
+            student_answers.setdefault(qid, answer)
+
+            if answer.type_of_answer == SKIPPED:
+                skipped_questions.add(qid)
+            elif answer.type_of_answer != NOT_ANSWERED:
+                answered_ids.add(qid)
+
+        # انتخاب سؤال؛ انتخاب تصادفی در حافظه انجام می‌شود.
+        requested_question_id = kwargs.get("question_id")
+        question_id = None
+
+        if (
+                requested_question_id
+                and exam.allow_return_to_questions
+                and requested_question_id in all_question_ids
+        ):
+            question_id = requested_question_id
+        else:
+            available_ids = [
+                qid for qid in all_questions
+                if qid not in answered_ids
+            ]
+
+            if available_ids:
+                question_id = (
+                    random.choice(available_ids)
+                    if exam.change_the_order
+                    else available_ids[0]
+                )
+            elif all_questions:
+                question_id = all_questions[0]
+
         question = None
 
+        if question_id is not None:
+            question = (
+                base_qs.filter(pk=question_id)
+                .prefetch_related("options")
+                .first()
+            )
 
-        if kwargs.get('question_id') and exam.allow_return_to_questions:
-            question = base_qs.prefetch_related("options").get(pk=kwargs['question_id'])
-        elif exam.change_the_order:
-            question = base_qs.exclude(pk__in=answered_ids).order_by('?').prefetch_related("options").first()
-        else:
-            question = base_qs.exclude(pk__in=answered_ids).order_by("-sort_number", "-id").prefetch_related("options").first()
-
-        if question is None:
-            question = base_qs.prefetch_related("options").first()
+        student_answer = (
+            student_answers.get(question.pk)
+            if question is not None
+            else None
+        )
 
         remaining_time = (
                 start_exam_history.created_at
@@ -115,55 +176,57 @@ class StartExamView(StudentMixin, View):
                 - now
         )
 
-        skipped_questions = StudentAnswer.objects.filter(
-            exam=exam,
-            student=request.student,
-            type_of_answer=StudentAnswer.TypeOfAnswer.SKIPPED
-        ).values_list('question_id', flat=True)
-
-        all_questions = base_qs.values_list("id", flat=True)
         exam_children_list = exam.children.filter(is_active=True)
 
-        student_answer = StudentAnswer.objects.filter(
-            student=request.student,
-            exam=exam,
-            question=question
-        ).first()
+        started_exams_history_ids = (
+            ExamStudentDetails.objects
+            .filter(
+                exam_id__in=Subquery(
+                    exam_children_list.values("pk")
+                ),
+                student=student,
+            )
+            .values_list("exam_id", flat=True)
+        )
+
+        answered_ids_count = len(answered_ids)
+        skipped_questions_count = len(skipped_questions)
+        all_questions_count = len(all_questions)
+
+        answered_and_skipped_count = (
+                answered_ids_count + skipped_questions_count
+        )
+
+        progress_percent = (
+            answered_and_skipped_count * 100 / all_questions_count
+            if all_questions_count
+            else 0
+        )
 
         context = {
-            'exam': exam,
-            'student_answer': student_answer,
-            'question': question,
-            'remaining_minutes': max(0, remaining_time.total_seconds() / 60 ),
-            "started_exams_history_ids": ExamStudentDetails.objects.filter(exam__id__in=exam_children_list.values_list("id", flat=True), student=request.student).values_list("exam__id", flat=True),
-            "exam_children_list": exam_children_list.all(),
+            "exam": exam,
+            "question": question,
+            "student_answer": student_answer,
+            "remaining_minutes": max(
+                0,
+                remaining_time.total_seconds() / 60,
+            ),
+            "start_exam_history": start_exam_history,
+            "started_exams_history_ids": started_exams_history_ids,
+            "exam_children_list": exam_children_list,
             "answered_ids": answered_ids,
             "all_questions": all_questions,
             "skipped_questions": skipped_questions,
-
+            "answered_ids_count": answered_ids_count,
+            "all_questions_count": all_questions_count,
+            "skipped_questions_count": skipped_questions_count,
+            "progress_percent": progress_percent,
+            "answered_ids_count_plus_skipped_questions_count": (
+                answered_and_skipped_count
+            ),
         }
 
-
-        context.update({
-            "answered_ids_count": len(answered_ids),
-            "all_questions_count": len(all_questions),
-            "skipped_questions_count": len(skipped_questions),
-        })
-
-        try:
-            progress_percent = (int(context.get("answered_ids_count")) + int(context.get("skipped_questions_count"))) * 100 / int(context.get("answered_ids_count"))
-        except Exception :
-            progress_percent = 0
-
-
-        context.update({
-            "progress_percent": progress_percent,
-            "answered_ids_count_plus_skipped_questions_count": int(context.get("answered_ids_count")) + int(context.get("skipped_questions_count")) ,
-        })
-
         return render(request, self.template_name, context)
-
-
 
 
 class ExamSetAnswerOptions(StudentMixin, RedirectView):
