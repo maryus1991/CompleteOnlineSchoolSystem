@@ -1,64 +1,148 @@
-# from apps.common.models import BaseModel
-# from django.db import models
-#
-# class StudentReport(BaseModel):
-#     class ReportStatus(models.TextChoices):
-#         not_corrected = 'تصحیح نشده', 'تصحیح نشده'
-#         weak = 'نیاز به تلاش بیشتر', 'نیاز به تلاش بیشتر'
-#         average = 'متوسط', 'متوسط'
-#         good = 'خوب', 'خوب'
-#         excellent = 'عالی', 'عالی'
-#
-#     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='کاربر', related_name='reports',db_index=True)
-#     quiz = models.ForeignKey(Quiz, on_delete=models.PROTECT, verbose_name='ازمون', related_name='reports',db_index=True)
-#     grade = models.ForeignKey(GradeCategories, null=True, blank=True, related_name='reports', on_delete=models.PROTECT,verbose_name='پایه', db_index=True)
-#     major = models.ForeignKey(MajorCategories, null=True, blank=True, related_name='reports', on_delete=models.PROTECT,verbose_name='رشته تحصیلی', db_index=True)
-#     lesson = models.ForeignKey(LessionCategories, null=True, blank=True, related_name='reports', on_delete=models.PROTECT, verbose_name='درس', db_index=True)
-#
-#     score = models.IntegerField(verbose_name='نمره')
-#     percent = models.IntegerField(verbose_name='درصد')
-#     teraze = models.PositiveIntegerField(verbose_name='تراز', default=0)
-#     order = models.PositiveIntegerField(verbose_name='رتبه', default=0)
-#     status = models.CharField(max_length=100, choices=ReportStatus.choices, verbose_name='وضعیت عملکردی',default=ReportStatus.not_corrected)
-#     created_at = models.DateTimeField(auto_now_add=True)  # time to answer
-#
-#     def __str__(self):
-#         return f'{self.quiz.name} - {str(self.user.PhoneNumber).replace(" ", "")} - {self.teraze} - {self.percent} - {self.score} - {self.status}'
-#
-#     class Meta:
-#
-#         verbose_name = 'کارنامه '
-#         verbose_name_plural = 'کارنامه ها'
-#         unique_together = ('quiz', 'user')
-#
-#
-# class StudentReport(BaseModel):
-#     class ReportStatus(models.TextChoices):
-#         not_corrected = 'تصحیح نشده', 'تصحیح نشده'
-#         weak = 'نیاز به تلاش بیشتر', 'نیاز به تلاش بیشتر'
-#         average = 'متوسط', 'متوسط'
-#         good = 'خوب', 'خوب'
-#         excellent = 'عالی', 'عالی'
-#
-#     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='کاربر', related_name='reports',db_index=True)
-#     quiz = models.ForeignKey(Quiz, on_delete=models.PROTECT, verbose_name='ازمون', related_name='reports',db_index=True)
-#     grade = models.ForeignKey(GradeCategories, null=True, blank=True, related_name='reports', on_delete=models.PROTECT,verbose_name='پایه', db_index=True)
-#     major = models.ForeignKey(MajorCategories, null=True, blank=True, related_name='reports', on_delete=models.PROTECT,verbose_name='رشته تحصیلی', db_index=True)
-#     lesson = models.ForeignKey(LessionCategories, null=True, blank=True, related_name='reports', on_delete=models.PROTECT, verbose_name='درس', db_index=True)
-#
-#     score = models.IntegerField(verbose_name='نمره')
-#     percent = models.IntegerField(verbose_name='درصد')
-#     teraze = models.PositiveIntegerField(verbose_name='تراز', default=0)
-#     order = models.PositiveIntegerField(verbose_name='رتبه', default=0)
-#     status = models.CharField(max_length=100, choices=ReportStatus.choices, verbose_name='وضعیت عملکردی',
-#                               default=ReportStatus.not_corrected)
-#     created_at = models.DateTimeField(auto_now_add=True)  # time to answer
-#
-#     def __str__(self):
-#         return f'{self.quiz.name} - {str(self.user.PhoneNumber).replace(" ", "")} - {self.teraze} - {self.percent} - {self.score} - {self.status}'
-#
-#     class Meta:
-#         ordering = ["order", "-teraze", "-percent", "-score", ]
-#         verbose_name = 'کارنامه '
-#         verbose_name_plural = 'کارنامه ها'
-#         unique_together = ('quiz', 'user')
+from django.db import models
+from django.db.models import Q
+
+from apps.common.models import BaseModel
+from apps.common.models_fields import BaseJalaliDateTimeField
+from apps.exams.models import Exam
+from apps.users.students.models import Student
+
+
+class ExamReport(BaseModel):
+
+    class ReportStatus(models.TextChoices):
+        PENDING = "pending", "در انتظار محاسبه"
+        CALCULATED = "calculated", "محاسبه شده"
+        PUBLISHED = "published", "منتشر شده"
+
+    exam = models.ForeignKey(
+        Exam,
+        on_delete=models.PROTECT,
+        related_name="reports",
+        verbose_name="آزمون",
+    )
+
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.PROTECT,
+        related_name="exam_reports",
+        verbose_name="دانش‌آموز",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=ReportStatus.choices,
+        default=ReportStatus.PENDING,
+        db_index=True,
+        verbose_name="وضعیت کارنامه",
+    )
+
+    total_questions = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد کل سوالات",
+    )
+
+    correct_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد پاسخ‌های صحیح",
+    )
+
+    wrong_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد پاسخ‌های غلط",
+    )
+
+    unanswered_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد سوالات بی‌پاسخ",
+    )
+
+    skipped_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد سوالات ردشده",
+    )
+
+    uncorrected_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد پاسخ‌های تصحیح‌نشده",
+    )
+
+
+    score = models.FloatField(
+        default=0,
+        verbose_name="نمره کسب‌شده",
+    )
+
+    max_score = models.FloatField(
+        default=0,
+        verbose_name="حداکثر نمره",
+    )
+
+    percentage = models.FloatField(
+        default=0,
+        verbose_name="درصد نهایی",
+    )
+
+    answered_percentage = models.FloatField(
+        default=0,
+        verbose_name="درصد پاسخ‌گویی",
+    )
+
+    rank = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="رتبه در آزمون",
+    )
+
+    teraze = models.FloatField(
+        null=True,
+        blank=True,
+        verbose_name="تراز",
+    )
+
+    calculated_at = BaseJalaliDateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="زمان محاسبه کارنامه",
+    )
+
+    published_at = BaseJalaliDateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="زمان انتشار کارنامه",
+    )
+
+    class Meta:
+        verbose_name = "کارنامه آزمون"
+        verbose_name_plural = "کارنامه‌های آزمون"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["exam", "student"],
+                name="unique_exam_report_student",
+            ),
+            models.CheckConstraint(
+                condition=Q(percentage__gte=0) & Q(percentage__lte=100),
+                name="exam_report_percentage_range",
+            ),
+            models.CheckConstraint(
+                condition=Q(
+                    answered_percentage__gte=0,
+                    answered_percentage__lte=100,
+                ),
+                name="exam_report_answered_percentage_range",
+            ),
+        ]
+
+        indexes = [
+            models.Index(
+                fields=["exam", "status", "rank"],
+                name="report_exam_status_rank_idx",
+            ),
+            models.Index(
+                fields=["student", "-created_at"],
+                name="report_student_created_idx",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.exam.name} - {self.student} - {self.score}"
