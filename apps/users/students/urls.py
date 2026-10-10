@@ -24,4 +24,5 @@ urlpatterns = [
 
     # reports
     path("reports/", views.reports.ExamReportListView.as_view(), name="report-list" ),
+    path("reports/<int:pk>", views.reports.ExamReportDetailsView.as_view(), name="report-details" ),
 ]

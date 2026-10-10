@@ -495,7 +495,13 @@ section {
                                     </td>
 
                                     <td>
+{% if report.status == status.PUBLISHED %}
                                         <a
+
+
+                                                href="{% url 'student:report-details' report.id %}"
+
+
                                             class="report-button"
                                         >
                                             <span class="report-button__icon" aria-hidden="true">
@@ -509,6 +515,7 @@ section {
                                             </span>
                                             مشاهده کارنامه
                                         </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
