@@ -1,0 +1,755 @@
+
+{% extends "dashboard/base.html" %}
+
+{% block header %}
+<style>
+
+/* ==============================
+   Dark Theme
+   ============================== */
+
+/* پشتیبانی از تم با data-theme */
+[data-theme="dark"] .comprehensive-page,
+
+/* پشتیبانی از تم با کلاس dark */
+.dark .comprehensive-page {
+    --exam-primary: #91b4ff;
+    --exam-success: #55d6a5;
+    --exam-text: #e6eaf2;
+    --exam-muted: #a0abc0;
+    --exam-border: #343d4e;
+    --exam-surface: #1c2330;
+    --exam-background: #252e3d;
+
+    color: var(--exam-text);
+}
+
+/* کارت اصلی */
+[data-theme="dark"] .comprehensive-card,
+.dark .comprehensive-card {
+    background: var(--exam-surface);
+    border-color: var(--exam-border);
+    box-shadow: 0 4px 18px rgb(0 0 0 / 12%);
+}
+
+/* سربرگ کارت */
+[data-theme="dark"] .comprehensive-card__header,
+.dark .comprehensive-card__header {
+    border-bottom-color: var(--exam-border);
+}
+
+/* برچسب‌ها */
+[data-theme="dark"] .comprehensive-badge--primary,
+.dark .comprehensive-badge--primary {
+    color: #b5cbff;
+    background: #293c60;
+}
+
+[data-theme="dark"] .comprehensive-badge--success,
+.dark .comprehensive-badge--success {
+    color: #75e4b7;
+    background: #1c4038;
+}
+
+[data-theme="dark"] .comprehensive-badge--pending,
+.dark .comprehensive-badge--pending {
+    color: #f2cc7b;
+    background: #493b25;
+}
+
+/* آمار */
+[data-theme="dark"] .comprehensive-stat,
+.dark .comprehensive-stat {
+    background: var(--exam-background);
+    border-color: var(--exam-border);
+}
+
+/* بخش مقایسه */
+[data-theme="dark"] .comprehensive-results,
+.dark .comprehensive-results {
+    border-color: var(--exam-border);
+}
+
+[data-theme="dark"] .comprehensive-results__toggle,
+.dark .comprehensive-results__toggle {
+    color: var(--exam-primary);
+}
+
+[data-theme="dark"] .comprehensive-results__toggle:hover,
+.dark .comprehensive-results__toggle:hover {
+    background: rgb(255 255 255 / 3%);
+}
+
+/* جدول */
+[data-theme="dark"] .comprehensive-table,
+.dark .comprehensive-table {
+    color: var(--exam-text);
+    background: var(--exam-surface);
+}
+
+[data-theme="dark"] .comprehensive-table th,
+.dark .comprehensive-table th {
+    color: #c2cde0;
+    background: #252e3d;
+}
+
+[data-theme="dark"] .comprehensive-table td,
+.dark .comprehensive-table td {
+    border-top-color: var(--exam-border);
+}
+
+[data-theme="dark"] .comprehensive-table tbody tr:hover,
+.dark .comprehensive-table tbody tr:hover {
+    background: #252e3d;
+}
+
+/* نوار پیشرفت */
+[data-theme="dark"] .comprehensive-progress,
+.dark .comprehensive-progress {
+    background: #3a4558;
+}
+
+[data-theme="dark"] .comprehensive-progress__bar,
+.dark .comprehensive-progress__bar {
+    background: var(--exam-success);
+}
+
+/* صفحه بدون نتیجه */
+[data-theme="dark"] .comprehensive-empty,
+.dark .comprehensive-empty {
+    background: var(--exam-surface);
+    border-color: var(--exam-border);
+}
+
+/* سازگاری با تنظیمات سیستم در صورت نبود تم صریح */
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme]) .comprehensive-page {
+        --exam-primary: #91b4ff;
+        --exam-success: #55d6a5;
+        --exam-text: #e6eaf2;
+        --exam-muted: #a0abc0;
+        --exam-border: #343d4e;
+        --exam-surface: #1c2330;
+        --exam-background: #252e3d;
+
+        color: var(--exam-text);
+    }
+
+    html:not([data-theme]) .comprehensive-card {
+        background: var(--exam-surface);
+        border-color: var(--exam-border);
+    }
+
+    html:not([data-theme]) .comprehensive-card__header {
+        border-bottom-color: var(--exam-border);
+    }
+
+    html:not([data-theme]) .comprehensive-stat {
+        background: var(--exam-background);
+        border-color: var(--exam-border);
+    }
+
+    html:not([data-theme]) .comprehensive-results,
+    html:not([data-theme]) .comprehensive-table td {
+        border-color: var(--exam-border);
+    }
+
+    html:not([data-theme]) .comprehensive-table {
+        color: var(--exam-text);
+        background: var(--exam-surface);
+    }
+
+    html:not([data-theme]) .comprehensive-table th {
+        color: #c2cde0;
+        background: #252e3d;
+    }
+
+    html:not([data-theme]) .comprehensive-table tbody tr:hover {
+        background: #252e3d;
+    }
+
+    html:not([data-theme]) .comprehensive-progress {
+        background: #3a4558;
+    }
+
+    html:not([data-theme]) .comprehensive-empty {
+        background: var(--exam-surface);
+        border-color: var(--exam-border);
+    }
+}
+section {
+    padding: 0;
+}
+
+.comprehensive-page {
+    --exam-primary: #3157a4;
+    --exam-success: #16856b;
+    --exam-text: #253047;
+    --exam-muted: #778196;
+    --exam-border: #e7eaf0;
+    --exam-surface: #ffffff;
+    --exam-background: #f7f8fb;
+
+    width: 100%;
+    padding: 24px 0;
+    color: var(--exam-text);
+}
+
+.comprehensive-page,
+.comprehensive-page * {
+    box-sizing: border-box;
+}
+
+.comprehensive-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.comprehensive-page__title {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.8;
+}
+
+.comprehensive-page__description {
+    margin: 0;
+    color: var(--exam-muted);
+    font-size: 0.9rem;
+    line-height: 1.9;
+}
+
+.comprehensive-card {
+    margin-bottom: 24px;
+    overflow: hidden;
+    background: var(--exam-surface);
+    border: 1px solid var(--exam-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgb(30 45 75 / 4%);
+}
+
+.comprehensive-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px;
+    border-bottom: 1px solid var(--exam-border);
+}
+
+.comprehensive-card__heading {
+    min-width: 0;
+}
+
+.comprehensive-card__title {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.comprehensive-card__metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--exam-muted);
+    font-size: 0.82rem;
+}
+
+.comprehensive-card__metadata span:not(:last-child)::after {
+    content: "·";
+    margin-right: 8px;
+}
+
+.comprehensive-card__body {
+    padding: 22px;
+}
+
+.comprehensive-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    line-height: 1.6;
+    white-space: nowrap;
+}
+
+.comprehensive-badge--primary {
+    color: var(--exam-primary);
+    background: #edf2ff;
+}
+
+.comprehensive-badge--success {
+    color: #117252;
+    background: #e7f7ef;
+}
+
+.comprehensive-badge--pending {
+    color: #946316;
+    background: #fff4dc;
+}
+
+.comprehensive-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.comprehensive-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    min-width: 0;
+    min-height: 112px;
+    padding: 18px;
+    background: var(--exam-background);
+    border: 1px solid #edf0f5;
+    border-radius: 12px;
+}
+
+.comprehensive-stat__label {
+    color: var(--exam-muted);
+    font-size: 0.82rem;
+    line-height: 1.8;
+}
+
+.comprehensive-stat__value {
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.comprehensive-stat__value--success {
+    color: var(--exam-success);
+}
+
+.comprehensive-stat__empty {
+    color: var(--exam-muted);
+    font-size: 0.82rem;
+    line-height: 1.8;
+}
+
+.comprehensive-results {
+    border: 1px solid var(--exam-border);
+    border-radius: 12px;
+}
+
+.comprehensive-results__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    color: var(--exam-primary);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.8;
+    cursor: pointer;
+    list-style: none;
+}
+
+.comprehensive-results__toggle::-webkit-details-marker {
+    display: none;
+}
+
+.comprehensive-results__icon {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 180ms ease;
+}
+
+.comprehensive-results[open] .comprehensive-results__icon {
+    transform: rotate(225deg);
+}
+
+.comprehensive-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-top: 1px solid var(--exam-border);
+    border-radius: 0 0 12px 12px;
+}
+
+.comprehensive-table {
+    width: 100%;
+    min-width: 780px;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 0.84rem;
+}
+
+.comprehensive-table th {
+    padding: 15px 16px;
+    color: #536078;
+    background: #f7f8fb;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.comprehensive-table td {
+    padding: 16px;
+    border-top: 1px solid #edf0f5;
+    vertical-align: middle;
+}
+
+.comprehensive-table tbody tr {
+    transition: background-color 150ms ease;
+}
+
+.comprehensive-table tbody tr:hover {
+    background: #fafbfe;
+}
+
+.comprehensive-table__exam-name {
+    min-width: 160px;
+    font-weight: 700;
+}
+
+.comprehensive-table__muted {
+    color: var(--exam-muted);
+    font-size: 0.8rem;
+    line-height: 1.8;
+}
+
+.comprehensive-percentage {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 90px;
+}
+
+.comprehensive-percentage strong {
+    font-weight: 800;
+}
+
+.comprehensive-progress {
+    width: 100%;
+    height: 6px;
+    overflow: hidden;
+    background: #e9edf4;
+    border-radius: 999px;
+}
+
+.comprehensive-progress__bar {
+    display: block;
+    height: 100%;
+    background: var(--exam-success);
+    border-radius: inherit;
+    transition: width 250ms ease;
+}
+
+.comprehensive-table__empty {
+    padding: 28px 16px !important;
+    color: var(--exam-muted);
+    text-align: center;
+}
+
+.comprehensive-empty {
+    padding: 48px 24px;
+    background: var(--exam-surface);
+    border: 1px dashed #cfd6e2;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.comprehensive-empty h2 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.comprehensive-empty p {
+    margin: 0;
+    color: var(--exam-muted);
+    font-size: 0.9rem;
+    line-height: 1.9;
+}
+
+@media (max-width: 767px) {
+    .comprehensive-page {
+        padding: 16px 0;
+    }
+
+    .comprehensive-page__header {
+        margin-bottom: 18px;
+    }
+
+    .comprehensive-page__title {
+        font-size: 1.2rem;
+    }
+
+    .comprehensive-card {
+        margin-bottom: 18px;
+        border-radius: 12px;
+    }
+
+    .comprehensive-card__header,
+    .comprehensive-card__body {
+        padding: 16px;
+    }
+
+    .comprehensive-card__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .comprehensive-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .comprehensive-stat {
+        min-height: 100px;
+        padding: 14px;
+        gap: 8px;
+    }
+
+    .comprehensive-stat:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .comprehensive-stat__value {
+        font-size: 1.3rem;
+    }
+
+    .comprehensive-results__toggle {
+        padding: 14px;
+        font-size: 0.83rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .comprehensive-page *,
+    .comprehensive-page *::before,
+    .comprehensive-page *::after {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="comprehensive-page" dir="rtl">
+
+    <header class="comprehensive-page__header">
+
+        <div>
+            <a href="{% url 'student:report-list' %}" class="analysis-back">
+                <span aria-hidden="true">→</span>
+                بازگشت به کارنامه‌ها
+            </a>
+            <h1 class="comprehensive-page__title">کارنامه آزمون‌های جامع</h1>
+            <p class="comprehensive-page__description">
+                بررسی و مقایسه عملکرد شما در آزمون‌های جامع و زیرآزمون‌ها
+            </p>
+        </div>
+
+
+    </header>
+    {% for exam in comprehensive_exams %}
+        <article class="comprehensive-card">
+
+            <header class="comprehensive-card__header">
+                <div class="comprehensive-card__heading">
+                    <h2 class="comprehensive-card__title">
+                        {{ exam.name }}
+                    </h2>
+
+                    <div class="comprehensive-card__metadata">
+                        {% if exam.grade %}
+                            <span>{{ exam.grade.name }}</span>
+                        {% endif %}
+
+                        {% if exam.major %}
+                            <span>{{ exam.major.name }}</span>
+                        {% endif %}
+
+                        {% if exam.lesson %}
+                            <span>{{ exam.lesson.name }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <span class="comprehensive-badge comprehensive-badge--primary">
+                    آزمون جامع
+                </span>
+            </header>
+
+            <div class="comprehensive-card__body">
+
+                <div class="comprehensive-stats">
+
+                    <div class="comprehensive-stat">
+                        <span class="comprehensive-stat__label">
+                            تعداد زیرآزمون‌ها
+                        </span>
+                        <strong class="comprehensive-stat__value">
+                            {{ exam.comparison.total }}
+                        </strong>
+                    </div>
+
+                    <div class="comprehensive-stat">
+                        <span class="comprehensive-stat__label">
+                            کارنامه‌های منتشرشده
+                        </span>
+                        <strong class="comprehensive-stat__value">
+                            {{ exam.comparison.published }}
+                        </strong>
+                    </div>
+
+                    <div class="comprehensive-stat">
+                        <span class="comprehensive-stat__label">
+                            میانگین درصد
+                        </span>
+
+                        {% if exam.comparison.average_percentage != None %}
+                            <strong class="comprehensive-stat__value comprehensive-stat__value--success">
+                                {{ exam.comparison.average_percentage }}٪
+                            </strong>
+                        {% else %}
+                            <span class="comprehensive-stat__empty">
+                                نتیجه‌ای منتشر نشده است
+                            </span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <details class="comprehensive-results">
+                    <summary class="comprehensive-results__toggle">
+                        <span>مشاهده و مقایسه زیرآزمون‌ها</span>
+                        <span class="comprehensive-results__icon" aria-hidden="true"></span>
+                    </summary>
+
+                    <div class="comprehensive-table-wrapper">
+                        <table class="comprehensive-table">
+                            <thead>
+                                <tr>
+                                    <th>نام آزمون</th>
+                                    <th>نمره</th>
+                                    <th>درصد</th>
+                                    <th>پاسخ‌گویی</th>
+                                    <th>تراز</th>
+                                    <th>رتبه</th>
+                                    <th>وضعیت</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for child in exam.comprehensive_children %}
+                                    <tr>
+                                        <td class="comprehensive-table__exam-name">
+                                            {{ child.name }}
+                                        </td>
+
+                                        {% with report=child.student_reports.0 %}
+                                            {% if report %}
+                                                <td>
+                                                    {{ report.score|floatformat:2 }}
+                                                    <span class="comprehensive-table__muted">
+                                                        از {{ report.max_score|floatformat:2 }}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <div class="comprehensive-percentage">
+                                                        <strong>
+                                                            {{ report.percentage|floatformat:1 }}٪
+                                                        </strong>
+
+                                                        <div class="comprehensive-progress"
+                                                             role="progressbar"
+                                                             aria-valuenow="{{ report.percentage }}"
+                                                             aria-valuemin="0"
+                                                             aria-valuemax="100">
+                                                            <span
+                                                                class="comprehensive-progress__bar"
+                                                                style="width: {{ report.percentage }}%;">
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    {{ report.answered_percentage|floatformat:1 }}٪
+                                                </td>
+
+                                                <td>
+                                                    {% if report.teraze != None %}
+                                                        {{ report.teraze|floatformat:0 }}
+                                                    {% else %}
+                                                        —
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    {% if report.rank %}
+                                                        {{ report.rank }}
+                                                    {% else %}
+                                                        —
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    <span class="comprehensive-badge comprehensive-badge--success">
+                                                        منتشرشده
+                                                    </span>
+                                                </td>
+                                            {% else %}
+                                                <td colspan="5">
+                                                    <span class="comprehensive-table__muted">
+                                                        کارنامه هنوز منتشر نشده است.
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="comprehensive-badge comprehensive-badge--pending">
+                                                        در انتظار نتیجه
+                                                    </span>
+                                                </td>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="comprehensive-table__empty">
+                                            هنوز زیرآزمونی ثبت نشده است.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+
+            </div>
+        </article>
+
+    {% empty %}
+        <div class="comprehensive-empty">
+            <h2>آزمون جامعی یافت نشد</h2>
+            <p>در حال حاضر آزمون جامعی برای شما ثبت نشده است.</p>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

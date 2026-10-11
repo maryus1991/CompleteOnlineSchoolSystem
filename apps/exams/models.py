@@ -78,6 +78,9 @@ class Exam(BaseModel):
 
     parent = models.ForeignKey("self", related_name='children', null=True, blank=True, on_delete=models.CASCADE, verbose_name="مادر")
 
+    comprehensive_exam  = models.BooleanField("ازمون جامع", default=False)
+
+
     def get_absolute_url(self):
         return reverse_lazy("exam:details", kwargs={'pk': self.pk})
 

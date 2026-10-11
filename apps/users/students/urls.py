@@ -26,4 +26,8 @@ urlpatterns = [
     path("reports/", views.reports.ExamReportListView.as_view(), name="report-list" ),
     path("reports/<int:pk>", views.reports.ExamReportDetailsView.as_view(), name="report-details" ),
     path("reports/<int:pk>/questions", views.reports.ExamReportQuestionView.as_view(), name="report-details-question" ),
+
+    # comprehensive exam reports
+    path("comprehensive/", views.reports.ComprehensiveExamListView.as_view(), name="comprehensive-list"),
+
 ]

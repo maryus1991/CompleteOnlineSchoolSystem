@@ -4,7 +4,115 @@ from apps.reports.models import ExamReport, Exam
 from apps.questions.models import StudentAnswer
 from apps.users.students.mixins import StudentMixin
 from django.shortcuts import get_object_or_404, redirect, render
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, Prefetch
+
+class ComprehensiveExamListView(StudentMixin, ListView):
+
+    template_name = "dashboard/report/comprehensive_exam_list.html"
+    context_object_name = "comprehensive_exams"
+
+    def get_queryset(self):
+        student = self.request.student
+
+        published_reports = ExamReport.objects.filter(
+            student=student,
+            status=ExamReport.ReportStatus.PUBLISHED,
+        ).only(
+            "id",
+            "exam_id",
+            "student_id",
+            "score",
+            "max_score",
+            "percentage",
+            "answered_percentage",
+            "rank",
+            "teraze",
+            "status",
+        )
+
+        children_queryset = (
+            Exam.objects.filter(is_active=True)
+            .prefetch_related(
+                Prefetch(
+                    "reports",
+                    queryset=published_reports,
+                    to_attr="student_reports",
+                )
+            )
+            .only(
+                "id",
+                "name",
+                "parent_id",
+                "start_at",
+                "stop_at",
+                "max_score",
+                "sort_number",
+            )
+            .order_by("-sort_number", "-pk")
+        )
+
+        return (
+            Exam.objects.filter(
+                is_active=True,
+                selected_student=student,
+                comprehensive_exam=True,
+                parent__isnull=True,
+            )
+            .prefetch_related(
+                Prefetch(
+                    "children",
+                    queryset=children_queryset,
+                    to_attr="comprehensive_children",
+                )
+            )
+            .order_by("-sort_number", "-pk")
+            .distinct()
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        for exam in context["comprehensive_exams"]:
+            reports = [
+                child.student_reports[0]
+                for child in exam.comprehensive_children
+                if child.student_reports
+            ]
+
+            exam.comparison = {
+                "total": len(exam.comprehensive_children),
+                "published": len(reports),
+                "average_percentage": (
+                    round(
+                        sum(report.percentage for report in reports)
+                        / len(reports),
+                        1,
+                    )
+                    if reports
+                    else None
+                ),
+                "average_teraze": (
+                    round(
+                        sum(
+                            report.teraze
+                            for report in reports
+                            if report.teraze is not None
+                        )
+                        / len([
+                            report for report in reports
+                            if report.teraze is not None
+                        ]),
+                        1,
+                    )
+                    if any(
+                        report.teraze is not None
+                        for report in reports
+                    )
+                    else None
+                ),
+            }
+
+        return context
 
 
 class ExamReportQuestionView(StudentMixin, View):
