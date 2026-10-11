@@ -5,6 +5,8 @@ from apps.users.students.models import Student
 from apps.common.models import BaseModel
 from apps.common.models_fields import BaseJalaliDateTimeField
 from apps.common.file_storage_script_for_model import UploadPath
+from apps.users.accounts.models import User
+
 
 
 class Practice(BaseModel):
@@ -22,6 +24,8 @@ class Practice(BaseModel):
     selected_students = models.ManyToManyField(Student, blank=True, related_name="assigned_practices", verbose_name="دانش‌آموزان انتخاب‌شده", )
     start_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان شروع", )
     deadline = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="مهلت انجام تمرین", )
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="practices", verbose_name="سازنده", db_index=True, null=True, blank=True)
+
 
     class Meta:
         ordering = ["-sort_number", "-pk"]
@@ -40,7 +44,9 @@ class PracticeStudentDetails(BaseModel):
         CORRECTING = "correcting", "در حال تصحیح"
         CORRECTED = "corrected", "تصحیح‌شده"
 
-    practice = models.ForeignKey(Practice, on_delete=models.CASCADE, related_name="student_details",verbose_name="تمرین")
+    practice = models.ForeignKey(Practice, on_delete=models.CASCADE, related_name="student_details", verbose_name="تمرین")
+    question = models.ForeignKey("questions.Question",on_delete=models.CASCADE, related_name="practice_student_details", verbose_name="سوال" )
+
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="practice_details",verbose_name="دانش‌آموز")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NOT_STARTED,verbose_name="وضعیت")
     started_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان شروع")
@@ -52,7 +58,6 @@ class PracticeStudentDetails(BaseModel):
     answer_image = models.ImageField(upload_to=UploadPath("practice_answers"), blank=True, null=True, verbose_name="تصویر پاسخ")
     answer_pdf = models.FileField(upload_to=UploadPath("practice_answers"), blank=True, null=True, verbose_name="فایل PDF پاسخ")
     submitted_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان ارسال")
-
 
     class Meta:
         ordering = ["-pk"]

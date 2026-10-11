@@ -31,4 +31,8 @@ urlpatterns = [
     path("comprehensive/", views.reports.ComprehensiveExamListView.as_view(), name="comprehensive-list"),
     path("comprehensive/<int:pk>/analysis/", views.reports.ComprehensiveExamAnalysisView.as_view(), name="comprehensive-analysis"),
 
+    # practice
+    path("practice/", views.practice.StudentPracticeListView.as_view(), name="practice-list"),
+    path("practice/<int:pk>", views.practice.StudentPracticeDetailView.as_view(), name="practice-details"),
+
 ]

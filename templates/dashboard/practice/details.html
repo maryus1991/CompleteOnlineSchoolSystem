@@ -1,0 +1,676 @@
+{% extends "dashboard/base.html" %}
+{% load practice_tags %}
+
+
+{% block header %}
+
+<style>
+
+.practice-detail {
+    --surface: #151a2d;
+    --surface-soft: #1c2339;
+    --border: rgba(255, 255, 255, .08);
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #8b7cff;
+    --primary-soft: rgba(139, 124, 255, .12);
+    --success: #34d399;
+
+    color: var(--text);
+    padding: 24px;
+}
+
+.practice-header,
+.question-sidebar,
+.question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+}
+
+.practice-header {
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 20px;
+}
+
+.practice-header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 16px;
+}
+
+.practice-description,
+.question-description {
+    line-height: 2;
+    overflow-wrap: anywhere;
+}
+
+.practice-description {
+    color: #cbd5e1;
+}
+
+.practice-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.practice-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    background: var(--surface-soft);
+    color: #cbd5e1;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.practice-layout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.question-sidebar {
+    padding: 18px;
+    position: sticky;
+    top: 20px;
+}
+
+.question-sidebar h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 18px;
+}
+
+.question-links {
+    display: grid;
+    gap: 8px;
+}
+
+.question-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: .2s;
+}
+
+.question-link > span:first-child {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--surface-soft);
+    font-size: 13px;
+}
+
+.question-link:hover,
+.question-link.active {
+    background: var(--primary-soft);
+    border-color: rgba(139, 124, 255, .25);
+    color: #c4baff;
+}
+
+.question-link.active > span:first-child {
+    background: var(--primary);
+    color: white;
+}
+
+.questions-content {
+    min-width: 0;
+}
+
+.question-card {
+    padding: 26px;
+    margin-bottom: 20px;
+    scroll-margin-top: 20px;
+}
+
+.question-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.question-number {
+    color: #b9adff;
+    background: var(--primary-soft);
+    padding: 8px 12px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.question-score {
+    color: var(--success);
+    font-size: 13px;
+}
+
+.question-card h3 {
+    font-size: 19px;
+    line-height: 1.9;
+    margin: 0 0 16px;
+}
+
+.question-description {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+.question-description img,
+.practice-description img {
+    max-width: 100%;
+    height: auto;
+}
+
+.question-image {
+    display: block;
+    max-width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin: 18px 0;
+}
+
+.question-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #c4baff;
+    text-decoration: none;
+    margin: 10px 0 20px;
+}
+
+.question-options {
+    display: grid;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.option-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    line-height: 1.9;
+    transition: .2s;
+}
+
+.option-item:has(input:checked) {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+}
+
+.option-item input {
+    margin-top: 7px;
+    accent-color: var(--primary);
+}
+
+.answer-label {
+    display: block;
+    margin: 22px 0 10px;
+    font-weight: 700;
+}
+
+.question-card textarea {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    padding: 14px;
+    color: var(--text);
+    background: #101527;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    resize: vertical;
+    font: inherit;
+    line-height: 1.9;
+    outline: none;
+}
+
+.question-card textarea:focus {
+    border-color: var(--primary);
+}
+
+.answer-files {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.answer-files label {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    background: var(--surface-soft);
+    border: 1px dashed #47516b;
+    border-radius: 12px;
+    color: #cbd5e1;
+    font-size: 13px;
+}
+
+.answer-files input {
+    max-width: 100%;
+    font-size: 12px;
+}
+
+.question-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.question-footer a {
+    color: #c4baff;
+    text-decoration: none;
+}
+
+.practice-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 20px 0;
+}
+
+.practice-actions button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--surface-soft);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.practice-actions .submit-practice {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.empty-questions {
+    padding: 60px 20px;
+    text-align: center;
+    background: var(--surface);
+    border-radius: 18px;
+    color: var(--muted);
+}
+
+.empty-questions svg {
+    font-size: 40px;
+}
+
+@media (max-width: 900px) {
+    .practice-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .question-sidebar {
+        position: static;
+    }
+
+    .question-links {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .question-link {
+        justify-content: center;
+    }
+
+    .question-link > span:nth-child(2) {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .practice-detail {
+        padding: 12px;
+    }
+
+    .practice-header,
+    .question-card {
+        padding: 18px;
+    }
+
+    .practice-header h1 {
+        font-size: 21px;
+    }
+
+    .question-links {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .answer-files {
+        grid-template-columns: 1fr;
+    }
+
+    .practice-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+{% endblock %}
+
+{% block main %}
+<div class="practice-detail" dir="rtl">
+
+    <header class="practice-header">
+        <a href="{% url 'student:practice-list' %}" class="back-link">
+            <svg class="bi bi-arrow-right" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+            </svg>
+            بازگشت به تمرین‌ها
+        </a>
+
+        <h1>{{ practice.name }}</h1>
+
+        {% if practice.description %}
+            <div class="practice-description">
+                {{ practice.description|safe }}
+            </div>
+        {% endif %}
+
+        <div class="practice-meta">
+            <span>
+                <svg class="bi bi-list-check" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+                    <path d="M1.713 11.865a.5.5 0 0 1 .708 0L3 12.444l1.579-1.579a.5.5 0 0 1 .708.708l-1.933 1.933a.5.5 0 0 1-.708 0l-.933-.933a.5.5 0 0 1 0-.708m0-4a.5.5 0 0 1 .708 0L3 8.444l1.579-1.579a.5.5 0 0 1 .708.708L3.354 9.506a.5.5 0 0 1-.708 0l-.933-.933a.5.5 0 0 1 0-.708m0-4a.5.5 0 0 1 .708 0L3 4.444l1.579-1.579a.5.5 0 1 1 .708.708L3.354 5.506a.5.5 0 0 1-.708 0l-.933-.933a.5.5 0 0 1 0-.708"/>
+                </svg>
+                {{ questions|length }} سؤال
+            </span>
+
+            <span>
+                نوع تمرین:
+                {{practice.get_type_of_practice_display}}
+
+            </span>
+            <span>
+                <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                </svg>
+                زمان شروع:
+                {% if practice.start_at %}
+                    {{ practice.start_at }}
+                {% else %}
+                    تعیین نشده
+                {% endif %}
+            </span>
+            <span>
+                <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                </svg>
+                مهلت:
+                {% if practice.deadline %}
+                    {{ practice.deadline }}
+                {% else %}
+                    تعیین نشده
+                {% endif %}
+            </span>
+
+            {% if practice.section %}
+                <span>
+                    <svg class="bi bi-book" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                    </svg>
+                    {{ practice.section }}
+                </span>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="practice-layout">
+
+        <aside class="question-sidebar">
+            <h2>سؤال‌های تمرین</h2>
+
+            <div class="question-links">
+                {% for question in questions %}
+                    <a href="#question-{{ question.pk }}"
+                       class="question-link {% if forloop.first %}active{% endif %}"
+                       data-question-link="{{ question.pk }}">
+                        <span>{{ forloop.counter }}</span>
+                        <span>سؤال {{ forloop.counter }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <main class="questions-content">
+            {% if questions %}
+                <form method="post"
+                      enctype="multipart/form-data"
+                      action=""
+                      id="practiceForm">
+
+                    {% csrf_token %}
+
+                    {% for question in questions %}
+                        {% with answer=answers|get_item:question.pk %}
+                        <section class="question-card"
+                                 id="question-{{ question.pk }}">
+
+                            <div class="question-heading">
+                                <span class="question-number">
+                                    سؤال {{ forloop.counter }}
+                                </span>
+
+                                <span class="question-score">
+                                    {{ question.score }} نمره
+                                </span>
+                            </div>
+
+                            <h3>{{ question.name }}</h3>
+
+                            {% if question.description %}
+                                <div class="question-description">
+                                    {{ question.description|safe }}
+                                </div>
+                            {% endif %}
+
+                            {% if question.image %}
+                                <a href="{{ question.image.url }}" target="_blank" rel="noopener">
+                                    <img src="{{ question.image.url }}"
+                                         class="question-image"
+                                         alt="تصویر سؤال {{ forloop.counter }}"
+                                         loading="lazy">
+                                </a>
+                            {% endif %}
+
+                            {% if question.pdf_file %}
+                                <a class="question-file"
+                                   href="{{ question.pdf_file.url }}"
+                                   target="_blank"
+                                   rel="noopener">
+                                    <svg class="bi bi-file-earmark-pdf" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                                        <path d="M4.603 14.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.115-.52 1.676a6.5 6.5 0 0 0 1.232 1.359c.36.297.706.51.982.633.13.059.256.107.375.14a.7.7 0 0 1 .063.72c-.15.32-.514.42-.855.363-.34-.056-.7-.213-1.05-.446a8.5 8.5 0 0 1-1.36-1.243 20 20 0 0 1-1.222 2.5 8 8 0 0 1-1.6.9 2.2 2.2 0 0 1-1.06.24"/>
+                                    </svg>
+                                    مشاهده فایل PDF سؤال
+                                </a>
+                            {% endif %}
+
+                            {% if question.type_of_question == "تستی چند گزینه‌ای" %}
+                                <div class="question-options">
+                                    {% for option in question.options.all %}
+                                        <label class="option-item">
+                                            <input type="radio"
+                                                   name="option_{{ question.pk }}"
+                                                   value="{{ option.pk }}"
+                                                   {% if answer and answer.question_id == question.pk and answer.answer_text == option.pk|stringformat:"s" %}
+                                                       checked
+                                                   {% endif %}>
+                                            <span>{{ option.name }}</span>
+                                        </label>
+                                    {% empty %}
+                                        <p>برای این سؤال گزینه‌ای ثبت نشده است.</p>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <label class="answer-label"
+                                       for="answer-{{ question.pk }}">
+                                    پاسخ شما
+                                </label>
+
+                                <textarea
+                                    id="answer-{{ question.pk }}"
+                                    name="answer_{{ question.pk }}"
+                                    rows="6"
+                                    placeholder="پاسخ خود را بنویسید...">{% if answer %}{{ answer.answer_text }}{% endif %}</textarea>
+
+                                <div class="answer-files">
+                                    <label>
+                                        <span>تصویر پاسخ</span>
+                                        <input type="file"
+                                               name="image_{{ question.pk }}"
+                                               accept="image/*">
+                                    </label>
+
+                                    <label>
+                                        <span>فایل PDF پاسخ</span>
+                                        <input type="file"
+                                               name="pdf_{{ question.pk }}"
+                                               accept="application/pdf">
+                                    </label>
+                                </div>
+                            {% endif %}
+
+                            <div class="question-footer">
+                                {% if not forloop.first %}
+                                    <a href="#question-{{ questions|slice:forloop.counter0|last }}"
+                                       class="previous-question">
+                                        سؤال قبلی
+                                    </a>
+                                {% endif %}
+
+                                {% if not forloop.last %}
+                                    <a href="#question-{{ questions|slice:forloop.counter|first }}"
+                                       class="next-question">
+                                        سؤال بعدی
+                                        <svg class="bi bi-arrow-left" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                             fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                                        </svg>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </section>
+                        {% endwith %}
+                    {% endfor %}
+
+                    <div class="practice-actions">
+                        <button type="submit" name="action" value="save">
+                            <svg class="bi bi-save" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                                <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1z"/>
+                            </svg>
+                            ذخیره پاسخ‌ها
+                        </button>
+
+                        <button type="submit" name="action" value="submit"
+                                class="submit-practice"
+                                onclick="return confirm('آیا از ارسال نهایی پاسخ‌ها مطمئن هستید؟')">
+                            <svg class="bi bi-check-circle" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="m10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                            </svg>
+                            ارسال نهایی تمرین
+                        </button>
+                    </div>
+
+                </form>
+            {% else %}
+                <div class="empty-questions">
+                    <svg class="bi bi-journal-x" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <path fill-rule="evenodd" d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708"/>
+                        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+                        <path d="M5 13.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    <h3>سؤالی برای این تمرین ثبت نشده است.</h3>
+                </div>
+            {% endif %}
+        </main>
+
+    </div>
+</div>
+
+<script >
+document.addEventListener("DOMContentLoaded", () => {
+    const links = document.querySelectorAll("[data-question-link]");
+
+    links.forEach((link) => {
+        link.addEventListener("click", () => {
+            links.forEach((item) => item.classList.remove("active"));
+            link.classList.add("active");
+        });
+    });
+
+    const questionCards = document.querySelectorAll(".question-card");
+
+    if (!("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+
+                const id = entry.target.id.replace("question-", "");
+
+                links.forEach((link) => {
+                    link.classList.toggle(
+                        "active",
+                        link.dataset.questionLink === id
+                    );
+                });
+            });
+        },
+        { threshold: 0.35 }
+    );
+
+    questionCards.forEach((card) => observer.observe(card));
+});
+
+</script>
+{% endblock %}
