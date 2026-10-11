@@ -75,6 +75,7 @@ MAIN_APPS = [
     "apps.common",
     "apps.sitesetting",
     "apps.ticket",
+    "apps.practice",
 
 ]
 if DEBUG:

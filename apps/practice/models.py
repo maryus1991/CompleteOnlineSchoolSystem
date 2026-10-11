@@ -1,12 +1,6 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
-
 from apps.content.models import Section
-from apps.categories.models import (
-    GradeCategories,
-    MajorCategories,
-    LessonCategories,
-)
 from apps.users.students.models import Student
 from apps.common.models import BaseModel
 from apps.common.models_fields import BaseJalaliDateTimeField
@@ -21,19 +15,12 @@ class Practice(BaseModel):
         IMAGE_BASED = "image_based", "مبتنی بر تصویر"
         PDF_BASED = "pdf_based", "سوال از فایل PDF"
 
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="practices", verbose_name="جلسه", db_index=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="practices", verbose_name="جلسه", db_index=True, null=True, blank=True)
+    description = CKEditor5Field(blank=True, null=True, verbose_name='متن سوال')
     name = models.CharField(max_length=255, verbose_name="نام تمرین")
-    content = CKEditor5Field(verbose_name="توضیحات تمرین")
-    image = models.ImageField(upload_to=UploadPath("questions"), blank=True, null=True, verbose_name="تصویر سوال")
-    pdf_file = models.FileField(upload_to=UploadPath("questions"), blank=True, null=True, verbose_name="فایل PDF سوال")
     type_of_practice = models.CharField(max_length=30, choices=TypeOfQuestions.choices,  default=TypeOfQuestions.LONG_ANSWER, verbose_name="نوع تمرین",)
-
-    grade = models.ForeignKey(GradeCategories, on_delete=models.SET_NULL, related_name="practices", null=True, blank=True, verbose_name="پایه")
-    major = models.ForeignKey(MajorCategories, on_delete=models.SET_NULL, related_name="practices", null=True, blank=True, verbose_name="رشته")
-    lesson = models.ForeignKey(LessonCategories, on_delete=models.SET_NULL, related_name="practices", null=True, blank=True, verbose_name="درس")
     selected_students = models.ManyToManyField(Student, blank=True, related_name="assigned_practices", verbose_name="دانش‌آموزان انتخاب‌شده", )
     start_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان شروع", )
-
     deadline = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="مهلت انجام تمرین", )
 
     class Meta:
