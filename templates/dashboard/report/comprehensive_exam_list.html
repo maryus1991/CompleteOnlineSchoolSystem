@@ -571,7 +571,11 @@ section {
             <header class="comprehensive-card__header">
                 <div class="comprehensive-card__heading">
                     <h2 class="comprehensive-card__title">
-                        {{ exam.name }}
+
+
+                        <a href="{% url 'student:comprehensive-analysis' exam.pk %}">
+                            تحلیل آزمون {{ exam.name }}
+                        </a>
                     </h2>
 
                     <div class="comprehensive-card__metadata">
@@ -589,9 +593,10 @@ section {
                     </div>
                 </div>
 
-                <span class="comprehensive-badge comprehensive-badge--primary">
-                    آزمون جامع
-                </span>
+                <a class="comprehensive-badge comprehensive-badge--primary" href="{% url 'student:comprehensive-analysis' exam.pk %}">
+                    تحلیل آزمون {{ exam.name }}
+                </a>
+
             </header>
 
             <div class="comprehensive-card__body">
@@ -659,6 +664,7 @@ section {
                                     <tr>
                                         <td class="comprehensive-table__exam-name">
                                             {{ child.name }}
+
                                         </td>
 
                                         {% with report=child.student_reports.0 %}

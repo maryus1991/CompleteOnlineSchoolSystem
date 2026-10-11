@@ -1,10 +1,202 @@
-from django.views.generic import ListView, View
+from django.views.generic import ListView, View, DetailView
 from django.contrib import messages
 from apps.reports.models import ExamReport, Exam
 from apps.questions.models import StudentAnswer
 from apps.users.students.mixins import StudentMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Sum, Count, Q, Prefetch
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+
+
+class ComprehensiveExamAnalysisView(StudentMixin, DetailView):
+    model = Exam
+    template_name = "dashboard/report/comprehensive-analysis.html"
+    context_object_name = "exam"
+
+    def get_queryset(self):
+        student = self.request.student
+
+        published_reports = (
+            ExamReport.objects.filter(
+                student=student,
+                status=ExamReport.ReportStatus.PUBLISHED,
+            )
+            .only(
+                "id",
+                "exam_id",
+                "student_id",
+                "score",
+                "max_score",
+                "percentage",
+                "answered_percentage",
+                "rank",
+                "teraze",
+                "total_questions",
+                "correct_count",
+                "wrong_count",
+                "unanswered_count",
+                "skipped_count",
+                "uncorrected_count",
+                "calculated_at",
+                "published_at",
+            )
+        )
+
+        children = (
+            Exam.objects.filter(is_active=True)
+            .prefetch_related(
+                Prefetch(
+                    "reports",
+                    queryset=published_reports,
+                    to_attr="student_reports",
+                )
+            )
+            .only(
+                "id",
+                "name",
+                "parent_id",
+                "sort_number",
+                "max_score",
+                "start_at",
+            )
+            .order_by("start_at", "pk")
+        )
+
+        return (
+            Exam.objects.filter(
+                is_active=True,
+                selected_student=student,
+                comprehensive_exam=True,
+                parent__isnull=True,
+            )
+            .prefetch_related(
+                Prefetch(
+                    "children",
+                    queryset=children,
+                    to_attr="analysis_children",
+                )
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        exam = self.object
+
+        children = exam.analysis_children
+        reports = []
+
+        for child in children:
+            child_reports = child.student_reports
+            report = child_reports[0] if child_reports else None
+
+            child.analysis_report = report
+
+            if report:
+                reports.append((child, report))
+
+        report_objects = [report for _, report in reports]
+        percentages = [r.percentage for r in report_objects]
+        terazes = [
+            r.teraze for r in report_objects
+            if r.teraze is not None
+        ]
+
+        def average(values):
+            return round(sum(values) / len(values), 1) if values else None
+
+        total_questions = sum(
+            r.total_questions for r in report_objects
+        )
+        correct = sum(r.correct_count for r in report_objects)
+        wrong = sum(r.wrong_count for r in report_objects)
+        unanswered = sum(r.unanswered_count for r in report_objects)
+        skipped = sum(r.skipped_count for r in report_objects)
+        uncorrected = sum(r.uncorrected_count for r in report_objects)
+
+        answered = correct + wrong
+        average_percentage = average(percentages)
+
+        # رتبه کمتر به معنی جایگاه بهتر است.
+        ranked_reports = [
+            (child, report)
+            for child, report in reports
+            if report.rank is not None
+        ]
+
+        best_result = max(
+            reports,
+            key=lambda item: item[1].percentage,
+            default=None,
+        )
+        weakest_result = min(
+            reports,
+            key=lambda item: item[1].percentage,
+            default=None,
+        )
+
+        def chart_data(value):
+            return json.dumps(
+                value,
+                cls=DjangoJSONEncoder,
+                ensure_ascii=False,
+            )
+
+        context.update({
+            "children": children,
+            "reports": report_objects,
+            "report_count": len(report_objects),
+            "child_count": len(children),
+            "average_percentage": average_percentage,
+            "average_teraze": average(terazes),
+            "average_rank": average([
+                r.rank for r in report_objects
+                if r.rank is not None
+            ]),
+            "total_questions": total_questions,
+            "correct_count": correct,
+            "wrong_count": wrong,
+            "unanswered_count": unanswered,
+            "skipped_count": skipped,
+            "uncorrected_count": uncorrected,
+            "answered_count": answered,
+            "overall_answered_percentage": (
+                round(answered * 100 / total_questions, 1)
+                if total_questions else 0
+            ),
+            "best_result": best_result,
+            "weakest_result": weakest_result,
+            "ranked_count": len(ranked_reports),
+
+            "chart_labels": chart_data([
+                child.name for child, report in reports
+            ]),
+            "chart_percentages": chart_data([
+                report.percentage for child, report in reports
+            ]),
+            "chart_scores": chart_data([
+                report.score for child, report in reports
+            ]),
+            "chart_max_scores": chart_data([
+                report.max_score for child, report in reports
+            ]),
+            "chart_terazes": chart_data([
+                report.teraze for child, report in reports
+            ]),
+            "chart_ranks": chart_data([
+                report.rank for child, report in reports
+            ]),
+            "chart_answered_percentages": chart_data([
+                report.answered_percentage for child, report in reports
+            ]),
+            "chart_answer_distribution": chart_data([
+                correct, wrong, unanswered, skipped, uncorrected
+            ]),
+        })
+
+        return context
+
+
 
 class ComprehensiveExamListView(StudentMixin, ListView):
 

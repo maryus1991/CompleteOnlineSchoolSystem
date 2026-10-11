@@ -1,0 +1,1341 @@
+
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block header %}
+
+<style>
+section{
+    padding: 0;
+}
+.analysis-page {
+    --analysis-bg: #f5f7fc;
+    --analysis-card: #ffffff;
+    --analysis-text: #202b40;
+    --analysis-muted: #7d879b;
+    --analysis-border: #e7ebf3;
+    --analysis-primary: #536dfe;
+    --analysis-green: #19a77b;
+    --analysis-purple: #9067e8;
+    --analysis-orange: #ed9b45;
+    --analysis-red: #ed6477;
+    --analysis-shadow: 0 8px 30px rgb(29 42 75 / 4%);
+
+    width: 100%;
+    padding: 24px 0 40px;
+    color: var(--analysis-text);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.analysis-page,
+.analysis-page * {
+    box-sizing: border-box;
+}
+
+.analysis-page h1,
+.analysis-page h2,
+.analysis-page h3,
+.analysis-page p {
+    margin-top: 0;
+}
+
+.analysis-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+}
+
+.analysis-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: var(--analysis-muted);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.analysis-back:hover {
+    color: var(--analysis-primary);
+}
+
+.analysis-eyebrow {
+    margin-bottom: 5px;
+    color: var(--analysis-primary);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+.analysis-title {
+    margin-bottom: 8px;
+    font-size: clamp(21px, 3vw, 30px);
+    font-weight: 850;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.analysis-subtitle {
+    margin-bottom: 0;
+    color: var(--analysis-muted);
+    font-size: 13px;
+}
+
+.analysis-header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 13px;
+    color: var(--analysis-green);
+    background: color-mix(in srgb, var(--analysis-green) 10%, var(--analysis-card));
+    border: 1px solid color-mix(in srgb, var(--analysis-green) 22%, var(--analysis-border));
+    border-radius: 10px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.analysis-header-badge__dot {
+    width: 8px;
+    height: 8px;
+    background: var(--analysis-green);
+    border-radius: 50%;
+}
+
+.analysis-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.analysis-stat {
+    position: relative;
+    min-width: 0;
+    padding: 20px;
+    overflow: hidden;
+    background: var(--analysis-card);
+    border: 1px solid var(--analysis-border);
+    border-radius: 16px;
+    box-shadow: var(--analysis-shadow);
+}
+
+.analysis-stat--featured {
+    border-top: 3px solid var(--analysis-primary);
+}
+
+.analysis-stat__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 17px;
+    color: var(--analysis-muted);
+    font-size: 12px;
+}
+
+.analysis-stat__icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: var(--analysis-primary);
+    background: color-mix(in srgb, var(--analysis-primary) 10%, var(--analysis-card));
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.analysis-stat strong {
+    display: block;
+    margin-bottom: 9px;
+    font-size: clamp(22px, 2.5vw, 30px);
+    font-weight: 850;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.analysis-stat--featured strong {
+    color: var(--analysis-primary);
+}
+
+.analysis-stat__caption {
+    display: block;
+    color: var(--analysis-muted);
+    font-size: 11px;
+    line-height: 1.9;
+}
+
+.analysis-insights {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 36px;
+}
+
+.analysis-insight {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    min-width: 0;
+    padding: 17px;
+    background: var(--analysis-card);
+    border: 1px solid var(--analysis-border);
+    border-radius: 14px;
+}
+
+.analysis-insight__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.analysis-insight__icon--success {
+    color: var(--analysis-green);
+    background: color-mix(in srgb, var(--analysis-green) 12%, var(--analysis-card));
+}
+
+.analysis-insight__icon--warning {
+    color: var(--analysis-orange);
+    background: color-mix(in srgb, var(--analysis-orange) 12%, var(--analysis-card));
+}
+
+.analysis-insight__icon--info {
+    color: var(--analysis-purple);
+    background: color-mix(in srgb, var(--analysis-purple) 12%, var(--analysis-card));
+}
+
+.analysis-insight__label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--analysis-muted);
+    font-size: 11px;
+}
+
+.analysis-insight strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.analysis-insight p {
+    margin: 5px 0 0;
+    color: var(--analysis-muted);
+    font-size: 12px;
+}
+
+.analysis-section {
+    margin-bottom: 36px;
+}
+
+.analysis-section__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.analysis-section__heading h2 {
+    margin-bottom: 5px;
+    font-size: 19px;
+    font-weight: 850;
+}
+
+.analysis-section__heading p {
+    margin-bottom: 0;
+    color: var(--analysis-muted);
+    font-size: 12px;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.analysis-panel {
+    min-width: 0;
+    padding: 21px;
+    background: var(--analysis-card);
+    border: 1px solid var(--analysis-border);
+    border-radius: 16px;
+    box-shadow: var(--analysis-shadow);
+}
+
+.analysis-panel--wide {
+    grid-column: span 1;
+}
+
+.analysis-panel__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.analysis-panel__header h3 {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.analysis-panel__header p {
+    margin-bottom: 0;
+    color: var(--analysis-muted);
+    font-size: 11px;
+}
+
+.analysis-panel__tag {
+    padding: 4px 9px;
+    color: var(--analysis-primary);
+    background: color-mix(in srgb, var(--analysis-primary) 10%, var(--analysis-card));
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.analysis-chart {
+    position: relative;
+    width: 100%;
+    height: 270px;
+}
+
+.analysis-chart--large {
+    height: 330px;
+}
+
+.analysis-chart--donut {
+    height: 245px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.analysis-chart canvas {
+    display: block;
+    max-width: 100%;
+}
+
+.analysis-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+    margin-top: 20px;
+}
+
+.analysis-legend__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: var(--analysis-muted);
+    font-size: 11px;
+}
+
+.analysis-legend__dot {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    border-radius: 3px;
+}
+
+.analysis-table-panel {
+    overflow: hidden;
+    background: var(--analysis-card);
+    border: 1px solid var(--analysis-border);
+    border-radius: 16px;
+    box-shadow: var(--analysis-shadow);
+}
+
+.analysis-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.analysis-table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 12px;
+}
+
+.analysis-table th {
+    padding: 16px;
+    color: var(--analysis-muted);
+    background: var(--analysis-bg);
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.analysis-table td {
+    padding: 16px;
+    border-top: 1px solid var(--analysis-border);
+    white-space: nowrap;
+}
+
+.analysis-table tbody tr {
+    transition: background 150ms ease;
+}
+
+.analysis-table tbody tr:hover {
+    background: color-mix(in srgb, var(--analysis-primary) 4%, var(--analysis-card));
+}
+
+.analysis-table__name {
+    max-width: 240px;
+    font-weight: 750;
+    white-space: normal !important;
+}
+
+.analysis-percent {
+    color: var(--analysis-green);
+    font-weight: 850;
+}
+
+.analysis-muted {
+    color: var(--analysis-muted);
+    font-size: 11px;
+}
+
+.analysis-table__empty {
+    padding: 28px !important;
+    color: var(--analysis-muted);
+    text-align: center;
+}
+
+.analysis-empty {
+    padding: 60px 24px;
+    background: var(--analysis-card);
+    border: 1px dashed var(--analysis-border);
+    border-radius: 18px;
+    text-align: center;
+}
+
+.analysis-empty__icon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 18px;
+    color: var(--analysis-primary);
+    background: color-mix(in srgb, var(--analysis-primary) 10%, var(--analysis-card));
+    border-radius: 18px;
+    font-size: 28px;
+}
+
+.analysis-empty h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 850;
+}
+
+.analysis-empty p {
+    max-width: 500px;
+    margin: 0 auto;
+    color: var(--analysis-muted);
+    font-size: 13px;
+    line-height: 2;
+}
+
+/* دارک‌تم */
+[data-theme="dark"] .analysis-page,
+.dark .analysis-page,
+[data-bs-theme="dark"] .analysis-page {
+    --analysis-bg: #202938;
+    --analysis-card: #1a2230;
+    --analysis-text: #e6ebf5;
+    --analysis-muted: #a1aec3;
+    --analysis-border: #303b4d;
+    --analysis-primary: #91a8ff;
+    --analysis-green: #52d6a7;
+    --analysis-purple: #bd9bff;
+    --analysis-orange: #f3b96c;
+    --analysis-red: #ff8495;
+    --analysis-shadow: 0 8px 25px rgb(0 0 0 / 10%);
+
+    color: var(--analysis-text);
+}
+
+[data-theme="dark"] .analysis-stat,
+.dark .analysis-stat,
+[data-bs-theme="dark"] .analysis-stat,
+[data-theme="dark"] .analysis-insight,
+.dark .analysis-insight,
+[data-bs-theme="dark"] .analysis-insight,
+[data-theme="dark"] .analysis-panel,
+.dark .analysis-panel,
+[data-bs-theme="dark"] .analysis-panel,
+[data-theme="dark"] .analysis-table-panel,
+.dark .analysis-table-panel,
+[data-bs-theme="dark"] .analysis-table-panel,
+[data-theme="dark"] .analysis-empty,
+.dark .analysis-empty,
+[data-bs-theme="dark"] .analysis-empty {
+    background: var(--analysis-card);
+    border-color: var(--analysis-border);
+}
+
+[data-theme="dark"] .analysis-table th,
+.dark .analysis-table th,
+[data-bs-theme="dark"] .analysis-table th {
+    color: var(--analysis-muted);
+    background: var(--analysis-bg);
+}
+
+[data-theme="dark"] .analysis-table td,
+.dark .analysis-table td,
+[data-bs-theme="dark"] .analysis-table td {
+    border-top-color: var(--analysis-border);
+}
+
+[data-theme="dark"] .analysis-table tbody tr:hover,
+.dark .analysis-table tbody tr:hover,
+[data-bs-theme="dark"] .analysis-table tbody tr:hover {
+    background: #252f40;
+}
+
+@media (max-width: 1100px) {
+    .analysis-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .analysis-insights {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767px) {
+    .analysis-page {
+        padding-top: 16px;
+    }
+
+    .analysis-header {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .analysis-header-badge {
+        white-space: normal;
+    }
+
+    .analysis-summary {
+        gap: 10px;
+    }
+
+    .analysis-stat {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .analysis-stat__top {
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .analysis-stat strong {
+        font-size: 23px;
+    }
+
+    .analysis-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 13px;
+    }
+
+    .analysis-panel {
+        padding: 16px;
+        border-radius: 13px;
+    }
+
+    .analysis-chart,
+    .analysis-chart--large {
+        height: 270px;
+    }
+
+    .analysis-chart--donut {
+        height: 235px;
+    }
+
+    .analysis-section__heading h2 {
+        font-size: 17px;
+    }
+
+    .analysis-insight {
+        padding: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .analysis-page *,
+    .analysis-page *::before,
+    .analysis-page *::after {
+        transition: none !important;
+    }
+}
+
+</style>
+
+{% endblock %}
+
+{% block main %}
+<div class="analysis-page" dir="rtl">
+
+    <header class="analysis-header">
+        <div>
+            <a class="analysis-back" href="{% url 'student:comprehensive-list' %}">
+                <span aria-hidden="true">→</span>
+                بازگشت به کارنامه‌ها
+            </a>
+
+            <div class="analysis-eyebrow">گزارش تحلیلی عملکرد</div>
+            <h1 class="analysis-title">{{ exam.name }}</h1>
+
+            <p class="analysis-subtitle">
+                بررسی عملکرد شما در زیرآزمون‌های این آزمون جامع
+            </p>
+        </div>
+
+        <div class="analysis-header-badge">
+            <span class="analysis-header-badge__dot"></span>
+            تحلیل نتایج منتشرشده
+        </div>
+    </header>
+
+    {% if report_count %}
+
+    <section class="analysis-summary">
+        <article class="analysis-stat analysis-stat--featured">
+            <div class="analysis-stat__top">
+                <span>میانگین درصد</span>
+                <span class="analysis-stat__icon">%</span>
+            </div>
+            <strong>{{ average_percentage }}٪</strong>
+            <span class="analysis-stat__caption">
+                بر اساس {{ report_count }} زیرآزمون دارای کارنامه
+            </span>
+        </article>
+
+        <article class="analysis-stat">
+            <div class="analysis-stat__top">
+                <span>میانگین تراز</span>
+                <span class="analysis-stat__icon">↗</span>
+            </div>
+            <strong>
+                {% if average_teraze != None %}
+                    {{ average_teraze|floatformat:0 }}
+                {% else %}
+                    —
+                {% endif %}
+            </strong>
+            <span class="analysis-stat__caption">میانگین ترازهای ثبت‌شده</span>
+        </article>
+
+        <article class="analysis-stat">
+            <div class="analysis-stat__top">
+                <span>پاسخ صحیح</span>
+                <span class="analysis-stat__icon">✓</span>
+            </div>
+            <strong>{{ correct_count }}</strong>
+            <span class="analysis-stat__caption">
+                از {{ total_questions }} سؤال ثبت‌شده
+            </span>
+        </article>
+
+        <article class="analysis-stat">
+            <div class="analysis-stat__top">
+                <span>پوشش پاسخ‌گویی</span>
+                <span class="analysis-stat__icon">◎</span>
+            </div>
+            <strong>{{ overall_answered_percentage }}٪</strong>
+            <span class="analysis-stat__caption">
+                پاسخ صحیح یا غلط ثبت‌شده
+            </span>
+        </article>
+    </section>
+
+    <section class="analysis-insights">
+        <article class="analysis-insight">
+            <span class="analysis-insight__icon analysis-insight__icon--success">★</span>
+            <div>
+                <span class="analysis-insight__label">بهترین عملکرد</span>
+                {% if best_result %}
+                    <strong>{{ best_result.0.name }}</strong>
+                    <p>{{ best_result.1.percentage|floatformat:1 }}٪ درصد</p>
+                {% else %}
+                    <strong>اطلاعاتی موجود نیست</strong>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="analysis-insight">
+            <span class="analysis-insight__icon analysis-insight__icon--warning">↗</span>
+            <div>
+                <span class="analysis-insight__label">نیازمند تمرین بیشتر</span>
+                {% if weakest_result %}
+                    <strong>{{ weakest_result.0.name }}</strong>
+                    <p>{{ weakest_result.1.percentage|floatformat:1 }}٪ درصد</p>
+                {% else %}
+                    <strong>اطلاعاتی موجود نیست</strong>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="analysis-insight">
+            <span class="analysis-insight__icon analysis-insight__icon--info">#</span>
+            <div>
+                <span class="analysis-insight__label">رتبه‌های ثبت‌شده</span>
+                <strong>{{ ranked_count }} زیرآزمون</strong>
+                <p>دارای رتبه منتشرشده</p>
+            </div>
+        </article>
+    </section>
+
+    <section class="analysis-section">
+        <div class="analysis-section__heading">
+            <div>
+                <h2>روند و مقایسه عملکرد</h2>
+                <p>مقایسه درصد، نمره و تراز در زیرآزمون‌های منتشرشده</p>
+            </div>
+        </div>
+
+        <div class="analysis-grid">
+            <article class="analysis-panel analysis-panel--wide">
+                <div class="analysis-panel__header">
+                    <div>
+                        <h3>مقایسه درصد زیرآزمون‌ها</h3>
+                        <p>درصد نهایی ثبت‌شده برای هر آزمون</p>
+                    </div>
+                    <span class="analysis-panel__tag">درصد</span>
+                </div>
+                <div class="analysis-chart analysis-chart--large">
+                    <canvas id="percentageChart" role="img"
+                            aria-label="نمودار مقایسه درصد زیرآزمون‌ها"></canvas>
+                </div>
+            </article>
+
+            <article class="analysis-panel">
+                <div class="analysis-panel__header">
+                    <div>
+                        <h3>توزیع وضعیت پاسخ‌ها</h3>
+                        <p>مجموع پاسخ‌های زیرآزمون‌ها</p>
+                    </div>
+                </div>
+                <div class="analysis-chart analysis-chart--donut">
+                    <canvas id="answerChart" role="img"
+                            aria-label="نمودار وضعیت پاسخ‌ها"></canvas>
+                </div>
+                <div id="answerLegend" class="analysis-legend"></div>
+            </article>
+
+            <article class="analysis-panel analysis-panel--wide">
+                <div class="analysis-panel__header">
+                    <div>
+                        <h3>مقایسه نمره کسب‌شده و حداکثر نمره</h3>
+                        <p>مقایسه نمره خام هر زیرآزمون</p>
+                    </div>
+                </div>
+                <div class="analysis-chart">
+                    <canvas id="scoreChart" role="img"
+                            aria-label="مقایسه نمره و حداکثر نمره"></canvas>
+                </div>
+            </article>
+
+            <article class="analysis-panel">
+                <div class="analysis-panel__header">
+                    <div>
+                        <h3>درصد پاسخ‌گویی</h3>
+                        <p>میزان پاسخ‌گویی ثبت‌شده در هر زیرآزمون</p>
+                    </div>
+                </div>
+                <div class="analysis-chart">
+                    <canvas id="answeredChart" role="img"
+                            aria-label="درصد پاسخ‌گویی در زیرآزمون‌ها"></canvas>
+                </div>
+            </article>
+
+            <article class="analysis-panel analysis-panel--wide">
+                <div class="analysis-panel__header">
+                    <div>
+                        <h3>روند تراز</h3>
+                        <p>تغییر تراز در ترتیب زمانی زیرآزمون‌ها</p>
+                    </div>
+                </div>
+                <div class="analysis-chart">
+                    <canvas id="terazeChart" role="img"
+                            aria-label="نمودار تغییرات تراز"></canvas>
+                </div>
+            </article>
+
+            <article class="analysis-panel">
+                <div class="analysis-panel__header">
+                    <div>
+                        <h3>مقایسه رتبه</h3>
+                        <p>رتبه ثبت‌شده در هر زیرآزمون؛ عدد کمتر بهتر است</p>
+                    </div>
+                </div>
+                <div class="analysis-chart">
+                    <canvas id="rankChart" role="img"
+                            aria-label="نمودار مقایسه رتبه‌ها"></canvas>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="analysis-section">
+        <div class="analysis-section__heading">
+            <div>
+                <h2>جزئیات زیرآزمون‌ها</h2>
+                <p>مشاهده نتایج و مقایسه مستقیم آزمون‌ها</p>
+            </div>
+        </div>
+
+        <div class="analysis-table-panel">
+            <div class="analysis-table-wrapper">
+                <table class="analysis-table">
+                    <thead>
+                        <tr>
+                            <th>زیرآزمون</th>
+                            <th>نمره</th>
+                            <th>درصد</th>
+                            <th>پاسخ‌گویی</th>
+                            <th>تراز</th>
+                            <th>رتبه</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for child in children %}
+                            {% with report=child.analysis_report %}
+                                <tr>
+                                    <td class="analysis-table__name">
+                                        {{ child.name }}
+                                    </td>
+
+                                    {% if report %}
+                                        <td>
+                                            {{ report.score|floatformat:2 }}
+                                            <span class="analysis-muted">
+                                                / {{ report.max_score|floatformat:2 }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="analysis-percent">
+                                                {{ report.percentage|floatformat:1 }}٪
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{ report.answered_percentage|floatformat:1 }}٪
+                                        </td>
+                                        <td>
+                                            {% if report.teraze != None %}
+                                                {{ report.teraze|floatformat:0 }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if report.rank %}
+                                                {{ report.rank }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                    {% else %}
+                                        <td colspan="5">
+                                            <span class="analysis-muted">
+                                                کارنامه هنوز منتشر نشده است
+                                            </span>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endwith %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="analysis-table__empty">
+                                    زیرآزمونی برای این آزمون جامع ثبت نشده است.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    {% else %}
+        <div class="analysis-empty">
+            <div class="analysis-empty__icon">◷</div>
+            <h2>هنوز داده‌ای برای تحلیل وجود ندارد</h2>
+            <p>
+                پس از انتشار کارنامه زیرآزمون‌ها، نمودارها و تحلیل عملکرد شما
+                در این صفحه نمایش داده می‌شوند.
+            </p>
+        </div>
+    {% endif %}
+
+</div>
+
+{{ chart_labels|json_script:"chart-labels" }}
+{{ chart_percentages|json_script:"chart-percentages" }}
+{{ chart_scores|json_script:"chart-scores" }}
+{{ chart_max_scores|json_script:"chart-max-scores" }}
+{{ chart_terazes|json_script:"chart-terazes" }}
+{{ chart_ranks|json_script:"chart-ranks" }}
+{{ chart_answered_percentages|json_script:"chart-answered-percentages" }}
+{{ chart_answer_distribution|json_script:"chart-answer-distribution" }}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
+<script>
+
+
+(() => {
+    "use strict";
+
+    const readJson = (id) => {
+        const element = document.getElementById(id);
+
+        if (!element) {
+            return [];
+        }
+
+        let value = JSON.parse(element.textContent);
+
+        // سازگار با حالتی که داده‌ها قبل از json_script
+        // به رشته JSON تبدیل شده‌اند.
+        if (typeof value === "string") {
+            value = JSON.parse(value);
+        }
+
+        return value;
+    };
+
+    const labels = readJson("chart-labels");
+    const percentages = readJson("chart-percentages");
+    const scores = readJson("chart-scores");
+    const maxScores = readJson("chart-max-scores");
+    const terazes = readJson("chart-terazes");
+    const ranks = readJson("chart-ranks");
+    const answeredPercentages = readJson("chart-answered-percentages");
+    const distribution = readJson("chart-answer-distribution");
+
+    const root = document.querySelector(".analysis-page");
+
+    if (!root || typeof Chart === "undefined" || !labels.length) {
+        return;
+    }
+
+    const css = getComputedStyle(root);
+
+    const colors = {
+        primary: css.getPropertyValue("--analysis-primary").trim(),
+        green: css.getPropertyValue("--analysis-green").trim(),
+        purple: css.getPropertyValue("--analysis-purple").trim(),
+        orange: css.getPropertyValue("--analysis-orange").trim(),
+        red: css.getPropertyValue("--analysis-red").trim(),
+        text: css.getPropertyValue("--analysis-muted").trim(),
+        border: css.getPropertyValue("--analysis-border").trim(),
+    };
+
+    const palette = [
+        colors.primary,
+        colors.green,
+        colors.purple,
+        colors.orange,
+        colors.red,
+    ];
+
+    Chart.defaults.font.family =
+        "Vazirmatn, IRANSans, Tahoma, sans-serif";
+
+    Chart.defaults.font.size = 11;
+    Chart.defaults.color = colors.text;
+
+    const gridColor = colors.border;
+
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+            duration: 650,
+        },
+        interaction: {
+            intersect: false,
+            mode: "index",
+        },
+        plugins: {
+            legend: {
+                display: false,
+            },
+            tooltip: {
+                rtl: true,
+                titleAlign: "right",
+                bodyAlign: "right",
+                padding: 12,
+                cornerRadius: 9,
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+                border: {
+                    display: false,
+                },
+                ticks: {
+                    color: colors.text,
+                    maxRotation: 35,
+                    minRotation: 0,
+                },
+            },
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: gridColor,
+                    drawTicks: false,
+                },
+                border: {
+                    display: false,
+                    dash: [4, 4],
+                },
+                ticks: {
+                    color: colors.text,
+                    padding: 10,
+                },
+            },
+        },
+    };
+
+    const createChart = (id, config) => {
+        const canvas = document.getElementById(id);
+
+        if (!canvas) {
+            return null;
+        }
+
+        return new Chart(canvas, config);
+    };
+
+    // 1. مقایسه درصد زیرآزمون‌ها
+    createChart("percentageChart", {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: "درصد",
+                data: percentages,
+                backgroundColor: labels.map(
+                    (_, index) => palette[index % palette.length]
+                ),
+                borderRadius: 7,
+                borderSkipped: false,
+                maxBarThickness: 42,
+            }],
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                ...commonOptions.scales,
+                y: {
+                    ...commonOptions.scales.y,
+                    min: 0,
+                    max: 100,
+                    ticks: {
+                        ...commonOptions.scales.y.ticks,
+                        callback: (value) => `${value}%`,
+                    },
+                },
+            },
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    ...commonOptions.plugins.tooltip,
+                    callbacks: {
+                        label: (item) => `درصد: ${item.raw}%`,
+                    },
+                },
+            },
+        },
+    });
+
+    // 2. توزیع وضعیت پاسخ‌ها
+    const answerLabels = [
+        "صحیح",
+        "غلط",
+        "بی‌پاسخ",
+        "ردشده",
+        "تصحیح‌نشده",
+    ];
+
+    const answerColors = [
+        colors.green,
+        colors.red,
+        colors.orange,
+        colors.purple,
+        colors.primary,
+    ];
+
+    const answerCanvas = document.getElementById("answerChart");
+
+    if (
+        answerCanvas &&
+        distribution.some((value) => Number(value) > 0)
+    ) {
+        createChart("answerChart", {
+            type: "doughnut",
+            data: {
+                labels: answerLabels,
+                datasets: [{
+                    data: distribution,
+                    backgroundColor: answerColors,
+                    borderColor: css.getPropertyValue(
+                        "--analysis-card"
+                    ).trim(),
+                    borderWidth: 4,
+                    hoverOffset: 7,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "72%",
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        rtl: true,
+                        titleAlign: "right",
+                        bodyAlign: "right",
+                        callbacks: {
+                            label: (item) =>
+                                `${item.label}: ${item.raw}`,
+                        },
+                    },
+                },
+            },
+        });
+
+        const legend = document.getElementById("answerLegend");
+
+        if (legend) {
+            legend.innerHTML = answerLabels.map((label, index) => `
+                <div class="analysis-legend__item">
+                    <span
+                        class="analysis-legend__dot"
+                        style="background:${answerColors[index]}"
+                    ></span>
+                    <span>${label}: ${Number(distribution[index] || 0)}</span>
+                </div>
+            `).join("");
+        }
+    } else if (answerCanvas) {
+        const parent = answerCanvas.parentElement;
+
+        if (parent) {
+            parent.innerHTML = `
+                <div class="analysis-empty">
+                    اطلاعات پاسخ‌ها موجود نیست.
+                </div>
+            `;
+        }
+    }
+
+    // 3. نمره کسب‌شده در برابر حداکثر نمره
+    createChart("scoreChart", {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: "نمره کسب‌شده",
+                    data: scores,
+                    backgroundColor: colors.primary,
+                    borderRadius: 6,
+                    maxBarThickness: 25,
+                },
+                {
+                    label: "حداکثر نمره",
+                    data: maxScores,
+                    backgroundColor: `${colors.primary}45`,
+                    borderRadius: 6,
+                    maxBarThickness: 25,
+                },
+            ],
+        },
+        options: {
+            ...commonOptions,
+            plugins: {
+                ...commonOptions.plugins,
+                legend: {
+                    display: true,
+                    position: "bottom",
+                    rtl: true,
+                    labels: {
+                        usePointStyle: true,
+                        padding: 18,
+                    },
+                },
+            },
+        },
+    });
+
+    // 4. درصد پاسخ‌گویی
+    createChart("answeredChart", {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: "پاسخ‌گویی",
+                data: answeredPercentages,
+                backgroundColor: `${colors.green}CC`,
+                borderRadius: 6,
+                maxBarThickness: 30,
+            }],
+        },
+        options: {
+            ...commonOptions,
+            indexAxis: "y",
+            scales: {
+                x: {
+                    ...commonOptions.scales.y,
+                    min: 0,
+                    max: 100,
+                    ticks: {
+                        color: colors.text,
+                        callback: (value) => `${value}%`,
+                    },
+                },
+                y: {
+                    ...commonOptions.scales.x,
+                    ticks: {
+                        ...commonOptions.scales.x.ticks,
+                        autoSkip: false,
+                    },
+                },
+            },
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    ...commonOptions.plugins.tooltip,
+                    callbacks: {
+                        label: (item) => `پاسخ‌گویی: ${item.raw}%`,
+                    },
+                },
+            },
+        },
+    });
+
+    // 5. روند تراز
+    const validTerazes = terazes.some(
+        (value) => value !== null && value !== undefined
+    );
+
+    if (validTerazes) {
+        createChart("terazeChart", {
+            type: "line",
+            data: {
+                labels,
+                datasets: [{
+                    label: "تراز",
+                    data: terazes,
+                    borderColor: colors.purple,
+                    backgroundColor: `${colors.purple}20`,
+                    fill: true,
+                    tension: 0.35,
+                    spanGaps: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: colors.purple,
+                    borderWidth: 3,
+                }],
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: {
+                        ...commonOptions.plugins.tooltip,
+                        callbacks: {
+                            label: (item) =>
+                                `تراز: ${item.raw ?? "ثبت نشده"}`,
+                        },
+                    },
+                },
+            },
+        });
+    } else {
+        const canvas = document.getElementById("terazeChart");
+
+        if (canvas) {
+            canvas.parentElement.innerHTML =
+                '<div class="analysis-empty">ترازی برای نمایش ثبت نشده است.</div>';
+        }
+    }
+
+    // 6. مقایسه رتبه؛ رتبه کمتر بهتر است.
+    const hasRanks = ranks.some(
+        (value) => value !== null && value !== undefined
+    );
+
+    if (hasRanks) {
+        createChart("rankChart", {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [{
+                    label: "رتبه",
+                    data: ranks,
+                    backgroundColor: `${colors.orange}CC`,
+                    borderRadius: 6,
+                    maxBarThickness: 35,
+                }],
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    ...commonOptions.scales,
+                    y: {
+                        ...commonOptions.scales.y,
+                        reverse: true,
+                        min: 1,
+                        ticks: {
+                            ...commonOptions.scales.y.ticks,
+                            precision: 0,
+                        },
+                    },
+                },
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: {
+                        ...commonOptions.plugins.tooltip,
+                        callbacks: {
+                            label: (item) =>
+                                `رتبه: ${item.raw ?? "ثبت نشده"}`,
+                        },
+                    },
+                },
+            },
+        });
+    } else {
+        const canvas = document.getElementById("rankChart");
+
+        if (canvas) {
+            canvas.parentElement.innerHTML =
+                '<div class="analysis-empty">رتبه‌ای برای نمایش ثبت نشده است.</div>';
+        }
+    }
+})();
+
+</script>
+
+{% endblock %}
+

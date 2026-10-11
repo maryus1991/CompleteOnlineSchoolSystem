@@ -29,5 +29,6 @@ urlpatterns = [
 
     # comprehensive exam reports
     path("comprehensive/", views.reports.ComprehensiveExamListView.as_view(), name="comprehensive-list"),
+    path("comprehensive/<int:pk>/analysis/", views.reports.ComprehensiveExamAnalysisView.as_view(), name="comprehensive-analysis"),
 
 ]
