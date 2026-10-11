@@ -45,16 +45,4 @@ class ClassFile(BaseModel):
         verbose_name = 'فایل کلاس'
         verbose_name_plural = 'فایل های کلاس'
 
-class ClassPractice(BaseModel):
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='practice', verbose_name="تمرین")
-    content = CKEditor5Field("توضیحات")
-    name = models.CharField("نام", max_length=255 )
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ["-sort_number", 'pk']
-        verbose_name = 'تمرین'
-        verbose_name_plural = 'تمرینات'
 

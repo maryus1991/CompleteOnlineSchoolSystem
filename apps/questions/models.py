@@ -6,7 +6,7 @@ from apps.categories.models import GradeCategories, MajorCategories, LessonCateg
 from apps.users.teachers.models import Teacher
 from apps.users.students.models import Student
 from apps.exams.models import Exam
-from apps.content.models import ClassPractice
+from apps.practice.models import Practice
 from apps.common.file_storage_script_for_model import UploadPath
 from django.urls import reverse_lazy
 from apps.common.models_fields import BaseJalaliDateTimeField
@@ -34,7 +34,7 @@ class Question(BaseModel):
     is_for_qbank = models.BooleanField("سوال جزو بانک سوال ؟", default=False)
 
     exam = models.ForeignKey(Exam, related_name='question', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="ازمون")
-    practice = models.ForeignKey(ClassPractice, related_name='question', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="تمرین")
+    practice = models.ForeignKey(Practice, related_name='question', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="تمرین")
 
     grade = models.ForeignKey(GradeCategories, related_name='question', on_delete=models.SET_NULL, null=True , verbose_name='پایه', blank=True)
     major = models.ForeignKey(MajorCategories, related_name='question', on_delete=models.SET_NULL, null=True ,verbose_name='رشته', blank=True)
