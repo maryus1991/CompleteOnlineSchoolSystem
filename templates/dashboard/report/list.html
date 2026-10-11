@@ -238,11 +238,7 @@
     outline-offset: 3px;
 }
 
-.report-button__icon {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-}
+
 
 /* Empty state */
 
@@ -439,7 +435,8 @@ section {
                                 <th>تراز</th>
                                 <th>رتبه</th>
                                 <th>تاریخ انتشار</th>
-                                <th>عملیات</th>
+                                <th>کارنامه</th>
+                                <th>تحلیل سوالات</th>
                             </tr>
                         </thead>
 
@@ -495,26 +492,17 @@ section {
                                     </td>
 
                                     <td>
-{% if report.status == status.PUBLISHED %}
-                                        <a
-
-
-                                                href="{% url 'student:report-details' report.id %}"
-
-
-                                            class="report-button"
-                                        >
-                                            <span class="report-button__icon" aria-hidden="true">
-                                                <svg viewBox="0 0 24 24" width="17" height="17"
-                                                     fill="none" stroke="currentColor"
-                                                     stroke-width="1.8" stroke-linecap="round"
-                                                     stroke-linejoin="round">
-                                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
-                                                    <circle cx="12" cy="12" r="3"/>
-                                                </svg>
-                                            </span>
-                                            مشاهده کارنامه
-                                        </a>
+                                        {% if report.status == status.PUBLISHED %}
+                                            <a href="{% url 'student:report-details' report.id %}" class="report-button" >
+                                                مشاهده کارنامه
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if report.status == status.PUBLISHED %}
+                                            <a href="{% url 'student:report-details-question' report.id %}" class="report-button" >
+                                                تحلیل سوالات
+                                            </a>
                                         {% endif %}
                                     </td>
                                 </tr>

@@ -321,6 +321,38 @@ section {
     margin-bottom: 22px;
 }
 
+
+.report-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 8px 13px;
+    border: 1px solid #28558a;
+    border-radius: 9px;
+    background: #142d4c;
+    color: var(--report-primary);
+    font-family: inherit;
+    font-size: 0.83rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease;
+}
+
+.report-button:hover {
+    border-color: #3976b8;
+    background: #1b3c63;
+    color: var(--report-primary-hover);
+    text-decoration: none;
+}
+
+.report-button:focus-visible,
+
 .analysis-panel__header h2,
 .analysis-note h2 {
     margin: 0 0 7px;
@@ -650,10 +682,13 @@ section {
                 {{ report.exam.name }}
             </p>
         </div>
-
+        <a href="{% url 'student:report-details-question' report.id %}" class="report-button" >
+            تحلیل سوالات
+        </a>
         <span class="analysis-status">
             کارنامه منتشر شده
         </span>
+
     </header>
 
     <section class="analysis-hero">

@@ -1,0 +1,1282 @@
+
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}تحلیل پاسخ‌های آزمون{% endblock %}
+
+{% block header %}
+<style>
+
+    section{
+        padding: 0;
+    }
+
+.answers-page {
+    --ans-bg: #0b1020;
+    --ans-card: #111827;
+    --ans-card-hover: #172238;
+    --ans-border: #263247;
+    --ans-text: #e5eaf3;
+    --ans-muted: #94a3b8;
+    --ans-purple: #a78bfa;
+    --ans-green: #34d399;
+    --ans-red: #fb7185;
+    --ans-yellow: #fbbf24;
+    --ans-blue: #60a5fa;
+
+    min-height: 100vh;
+    padding: 28px;
+    background: var(--ans-bg);
+    color: var(--ans-text);
+    color-scheme: dark;
+    font-family: inherit;
+    direction: rtl;
+}
+
+.answers-page *,
+.answers-page *::before,
+.answers-page *::after {
+    box-sizing: border-box;
+}
+
+.answers-page [hidden] {
+    display: none !important;
+}
+
+/* Header */
+
+.answers-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+}
+
+.answers-header__main {
+    min-width: 0;
+}
+
+.answers-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--ans-muted);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 160ms ease;
+}
+
+.answers-back:hover {
+    color: var(--ans-purple);
+}
+
+.answers-eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--ans-purple);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.answers-title {
+    margin: 0 0 8px;
+    color: var(--ans-text);
+    font-size: 25px;
+    font-weight: 800;
+    line-height: 1.8;
+}
+
+.answers-description {
+    margin: 0;
+    color: var(--ans-muted);
+    font-size: 13px;
+    line-height: 2;
+}
+
+.answers-header__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    border: 1px solid #423879;
+    border-radius: 18px;
+    background: #211d46;
+    color: var(--ans-purple);
+}
+
+.answers-header__icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+/* Summary cards */
+
+.answers-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.answers-summary__card {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--ans-border);
+    border-radius: 15px;
+    background: var(--ans-card);
+}
+
+.answers-summary__card::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #6d4aff,
+        transparent
+    );
+    content: "";
+    opacity: 0.8;
+}
+
+.answers-summary__label,
+.answers-summary__caption {
+    display: block;
+    color: var(--ans-muted);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.answers-summary__value {
+    display: block;
+    margin: 12px 0 8px;
+    color: var(--ans-text);
+    font-size: 30px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.answers-color--purple {
+    color: var(--ans-purple);
+}
+
+.answers-color--yellow {
+    color: var(--ans-yellow);
+}
+
+/* Toolbar */
+
+.answers-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.answers-toolbar__text h2 {
+    margin: 0 0 7px;
+    color: var(--ans-text);
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.answers-toolbar__text p {
+    margin: 0;
+    color: var(--ans-muted);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.answers-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ans-muted);
+    font-size: 12px;
+}
+
+.answers-filter select {
+    min-width: 150px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid var(--ans-border);
+    border-radius: 9px;
+    outline: none;
+    background: #141e31;
+    color: var(--ans-text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.answers-filter select:focus-visible {
+    border-color: var(--ans-purple);
+    outline: 2px solid rgb(167 139 250 / 20%);
+}
+
+/* Answer card */
+
+.answers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.answer-card {
+    overflow: hidden;
+    min-width: 0;
+    border: 1px solid var(--ans-border);
+    border-radius: 16px;
+    background: var(--ans-card);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 10%);
+}
+
+.answer-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--ans-border);
+    background: #141e31;
+}
+
+.answer-card__question-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.answer-card__number {
+    color: var(--ans-text);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.answer-card__type {
+    padding: 5px 9px;
+    border: 1px solid #34435a;
+    border-radius: 7px;
+    background: #1a263b;
+    color: #bdc9da;
+    font-size: 11px;
+}
+
+.answer-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    padding: 7px 11px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+.answer-status--correct {
+    border-color: #17664d;
+    background: #102d27;
+    color: var(--ans-green);
+}
+
+.answer-status--wrong {
+    border-color: #713044;
+    background: #351824;
+    color: var(--ans-red);
+}
+
+.answer-status--pending {
+    border-color: #6c5320;
+    background: #322713;
+    color: var(--ans-yellow);
+}
+
+.answer-status--other {
+    border-color: #35445c;
+    background: #1b273b;
+    color: #bdc9da;
+}
+
+.answer-card__body {
+    padding: 24px;
+}
+
+/* Question and rich text */
+
+.answer-question h3,
+.answer-response h3,
+.answer-key h3,
+.answer-teacher h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 17px;
+    color: var(--ans-text);
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.9;
+}
+
+.answer-question h4 {
+    margin: 0 0 12px;
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 2;
+}
+
+.answer-rich-text {
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 2.2;
+    overflow-wrap: anywhere;
+}
+
+.answer-rich-text > :first-child {
+    margin-top: 0;
+}
+
+.answer-rich-text > :last-child {
+    margin-bottom: 0;
+}
+
+.answer-rich-text img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 9px;
+}
+
+.answer-rich-text table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+}
+
+.answer-rich-text th,
+.answer-rich-text td {
+    padding: 9px;
+    border: 1px solid var(--ans-border);
+}
+
+.answer-rich-text a {
+    color: var(--ans-blue);
+    overflow-wrap: anywhere;
+}
+
+.answer-rich-text pre,
+.answer-rich-text code {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.answer-divider {
+    height: 1px;
+    margin: 25px 0;
+    background: var(--ans-border);
+}
+
+/* Sections */
+
+.answer-section-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border: 1px solid #3c3674;
+    border-radius: 8px;
+    background: #211d46;
+    color: var(--ans-purple);
+    font-size: 12px;
+}
+
+.answer-section-icon--green {
+    border-color: #17664d;
+    background: #102d27;
+    color: var(--ans-green);
+}
+
+.answer-section-icon--blue {
+    border-color: #254d7d;
+    background: #142b48;
+    color: var(--ans-blue);
+}
+
+/* Options */
+
+.answer-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.answer-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--ans-border);
+    border-radius: 11px;
+    background: #131d2f;
+}
+
+.answer-option--selected {
+    border-color: #5545a0;
+    background: #201c3e;
+}
+
+.answer-option--correct {
+    border-color: #17664d;
+    background: #102d27;
+}
+
+.answer-option--selected-wrong {
+    border-color: #713044;
+    background: #351824;
+}
+
+.answer-option__marker {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    flex: 0 0 27px;
+    border: 1px solid #34435a;
+    border-radius: 8px;
+    background: #1c293e;
+    color: #cbd5e1;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.answer-option--selected .answer-option__marker {
+    border-color: #5545a0;
+    background: #30275d;
+    color: var(--ans-purple);
+}
+
+.answer-option--correct .answer-option__marker {
+    border-color: #17664d;
+    background: #164536;
+    color: var(--ans-green);
+}
+
+.answer-option--selected-wrong .answer-option__marker {
+    border-color: #713044;
+    background: #512538;
+    color: var(--ans-red);
+}
+
+.answer-option > div {
+    min-width: 0;
+    flex: 1;
+}
+
+.answer-option p {
+    margin: 0;
+    color: var(--ans-text);
+    font-size: 13px;
+    line-height: 2;
+    overflow-wrap: anywhere;
+}
+
+.answer-option__label {
+    display: inline-block;
+    margin-top: 6px;
+    color: var(--ans-muted);
+    font-size: 11px;
+}
+
+/* Text response */
+
+.answer-text-response {
+    padding: 17px;
+    border: 1px solid var(--ans-border);
+    border-radius: 11px;
+    background: #0e1728;
+    color: #dbe4f0;
+    font-size: 13px;
+    line-height: 2.2;
+    overflow-wrap: anywhere;
+}
+
+/* Images and files */
+
+.answer-media-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 100%;
+    color: var(--ans-blue);
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.answer-media-link:hover {
+    color: #93c5fd;
+}
+
+.answer-question-image,
+.answer-response-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: contain;
+    border: 1px solid var(--ans-border);
+    border-radius: 11px;
+    background: #0e1728;
+}
+
+.answer-response-image {
+    max-height: 520px;
+}
+
+.answer-file {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    max-width: 440px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--ans-border);
+    border-radius: 11px;
+    background: #131d2f;
+    color: var(--ans-text);
+    font-size: 12px;
+    text-decoration: none;
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease;
+}
+
+.answer-file:hover {
+    border-color: #3b5275;
+    background: var(--ans-card-hover);
+}
+
+.answer-file > span:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.answer-file__icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 44px;
+    flex: 0 0 40px;
+    border: 1px solid #713044;
+    border-radius: 8px;
+    background: #351824;
+    color: var(--ans-red);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* Empty and warning */
+
+.answer-empty,
+.answer-warning {
+    padding: 15px;
+    border: 1px dashed #35445c;
+    border-radius: 10px;
+    background: #131d2f;
+    color: var(--ans-muted);
+    font-size: 12px;
+    line-height: 2;
+}
+
+.answer-warning {
+    border-color: #6c5320;
+    background: #322713;
+    color: var(--ans-yellow);
+}
+
+/* Explanation */
+
+.answer-explanation {
+    margin-top: 17px;
+    padding: 17px;
+    border: 1px solid #17664d;
+    border-radius: 11px;
+    background: #10251f;
+}
+
+.answer-explanation__title {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--ans-green);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* Teacher feedback */
+
+.answer-teacher__content {
+    padding: 17px;
+    border: 1px solid #254d7d;
+    border-radius: 11px;
+    background: #12243a;
+    color: #dbeafe;
+    font-size: 13px;
+    line-height: 2.2;
+    overflow-wrap: anywhere;
+}
+
+.answer-teacher__content > :first-child {
+    margin-top: 0;
+}
+
+.answer-teacher__content > :last-child {
+    margin-bottom: 0;
+}
+
+.answer-teacher__name {
+    display: block;
+    margin-top: 12px;
+    color: var(--ans-muted);
+    font-size: 11px;
+}
+
+/* Footer */
+
+.answer-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 17px 24px;
+    border-top: 1px solid var(--ans-border);
+    background: #0e1728;
+}
+
+.answer-score {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.answer-score > span:first-child {
+    color: var(--ans-muted);
+    font-size: 12px;
+}
+
+.answer-score strong {
+    color: var(--ans-green);
+    font-size: 20px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.answer-score__max {
+    color: var(--ans-muted);
+    font-size: 12px;
+}
+
+.answer-correction-date {
+    color: var(--ans-muted);
+    font-size: 11px;
+    line-height: 1.9;
+}
+
+/* Empty state */
+
+.answers-empty-state {
+    padding: 65px 24px;
+    border: 1px solid var(--ans-border);
+    border-radius: 16px;
+    background: var(--ans-card);
+    text-align: center;
+}
+
+.answers-empty-state__icon {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 20px;
+    border: 1px solid #34435a;
+    border-radius: 19px;
+    background: #172238;
+    color: var(--ans-muted);
+}
+
+.answers-empty-state__icon svg {
+    width: 31px;
+    height: 31px;
+}
+
+.answers-empty-state h2 {
+    margin: 0 0 10px;
+    color: var(--ans-text);
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.answers-empty-state p {
+    margin: 0;
+    color: var(--ans-muted);
+    font-size: 12px;
+    line-height: 2;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .answers-page {
+        padding: 22px;
+    }
+
+    .answers-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .answers-page {
+        padding: 15px 11px;
+    }
+
+    .answers-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .answers-header__icon {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+        border-radius: 13px;
+    }
+
+    .answers-header__icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .answers-title {
+        font-size: 21px;
+    }
+
+    .answers-description {
+        font-size: 12px;
+    }
+
+    .answers-summary {
+        gap: 9px;
+    }
+
+    .answers-summary__card {
+        padding: 15px;
+    }
+
+    .answers-summary__value {
+        font-size: 25px;
+    }
+
+    .answers-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .answers-filter {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .answers-filter select {
+        flex: 1;
+        max-width: 220px;
+    }
+
+    .answer-card__header {
+        padding: 14px;
+    }
+
+    .answer-card__body {
+        padding: 17px 14px;
+    }
+
+    .answer-card__footer {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .answer-divider {
+        margin: 20px 0;
+    }
+
+    .answer-status {
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .answers-back,
+    .answer-file,
+    .answers-summary__card {
+        transition: none;
+    }
+}
+
+
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="answers-page" dir="rtl">
+
+    <header class="answers-header">
+        <div class="answers-header__main">
+            <a href="{% url 'student:report-list' %}" class="answers-back">
+                <span aria-hidden="true">→</span>
+                بازگشت به کارنامه‌ها
+            </a>
+
+            <span class="answers-eyebrow">گزارش عملکرد آموزشی</span>
+            <h1 class="answers-title">تحلیل پاسخ‌های آزمون</h1>
+            <p class="answers-description">
+                پاسخ‌های ثبت‌شده، کلید سؤالات و نتیجه تصحیح خود را بررسی کنید.
+            </p>
+        </div>
+
+        <div class="answers-header__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M8 4H5.5A1.5 1.5 0 0 0 4 5.5v14A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-14A1.5 1.5 0 0 0 18.5 4H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <rect x="8" y="2.5" width="8" height="4" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+                <path d="m8 12 2 2 4-4M8 17h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+    </header>
+
+    <section class="answers-summary">
+        <div class="answers-summary__card">
+            <span class="answers-summary__label">تعداد پاسخ‌ها</span>
+            <strong class="answers-summary__value">{{ items|length }}</strong>
+            <span class="answers-summary__caption">پاسخ ثبت‌شده در این آزمون</span>
+        </div>
+
+        <div class="answers-summary__card">
+            <span class="answers-summary__label">نمره کسب‌شده</span>
+            <strong class="answers-summary__value answers-color--purple">
+                {{ total_score|default:"—" }}
+            </strong>
+            <span class="answers-summary__caption">مجموع نمرات پاسخ‌ها</span>
+        </div>
+
+        <div class="answers-summary__card">
+            <span class="answers-summary__label">تصحیح‌نشده</span>
+            <strong class="answers-summary__value answers-color--yellow">
+                {{ uncorrected_count|default:"—" }}
+            </strong>
+            <span class="answers-summary__caption">پاسخ‌های نیازمند بررسی</span>
+        </div>
+    </section>
+
+    <section class="answers-toolbar">
+        <div class="answers-toolbar__text">
+            <h2>پاسخ‌های شما</h2>
+            <p>برای هر سؤال، پاسخ ثبت‌شده و نتیجه بررسی را ببینید.</p>
+        </div>
+
+        <label class="answers-filter">
+            <span>نمایش</span>
+            <select id="answerFilter" aria-label="فیلتر پاسخ‌ها">
+                <option value="all">همه پاسخ‌ها</option>
+                <option value="correct">کاملاً درست</option>
+                <option value="wrong">کاملاً اشتباه</option>
+                <option value="pending">تصحیح‌نشده</option>
+                <option value="other">سایر وضعیت‌ها</option>
+            </select>
+        </label>
+    </section>
+
+    <div class="answers-list" id="answersList">
+
+        {% for item in items %}
+            <article
+                class="answer-card"
+                data-status="{% if item.corrected == 'کاملا درست' %}correct{% elif item.corrected == 'کاملا اشتباه' %}wrong{% elif item.corrected == 'تصحیح نشده' %}pending{% else %}other{% endif %}"
+            >
+                <div class="answer-card__header">
+                    <div class="answer-card__question-info">
+                        <span class="answer-card__number">
+                            سؤال {{ forloop.counter }}
+                        </span>
+
+                        {% if item.question %}
+                            <span class="answer-card__type">
+                                {{ item.question.get_type_of_question_display }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <span class="answer-status
+                        {% if item.corrected == 'کاملا درست' %}
+                            answer-status--correct
+                        {% elif item.corrected == 'کاملا اشتباه' %}
+                            answer-status--wrong
+                        {% elif item.corrected == 'تصحیح نشده' %}
+                            answer-status--pending
+                        {% else %}
+                            answer-status--other
+                        {% endif %}
+                    ">
+                        {{ item.get_corrected_display }}
+                    </span>
+                </div>
+
+                <div class="answer-card__body">
+
+                    {% if item.question %}
+                        <div class="answer-question">
+                            <h3>صورت سؤال</h3>
+
+                            {% if item.question.name %}
+                                <h4>{{ item.question.name }}</h4>
+                            {% endif %}
+
+                            {% if item.question.description %}
+                                <div class="answer-rich-text">
+                                    {{ item.question.description|safe }}
+                                </div>
+                            {% endif %}
+
+                            {% if item.question.image %}
+                                <a href="{{ item.question.image.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="answer-media-link">
+                                    <img src="{{ item.question.image.url }}"
+                                         alt="تصویر سؤال"
+                                         class="answer-question-image"
+                                         loading="lazy">
+                                    <span>مشاهده تصویر در اندازه اصلی</span>
+                                </a>
+                            {% endif %}
+
+                            {% if item.question.pdf_file %}
+                                <a href="{{ item.question.pdf_file.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="answer-file">
+                                    <span class="answer-file__icon">PDF</span>
+                                    <span>مشاهده فایل PDF سؤال</span>
+                                    <span aria-hidden="true">↗</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="answer-warning">
+                            اطلاعات سؤال برای این پاسخ در دسترس نیست.
+                        </div>
+                    {% endif %}
+
+                    <div class="answer-divider"></div>
+
+                    <section class="answer-response">
+                        <h3>
+                            <span class="answer-section-icon">۱</span>
+                            پاسخ ثبت‌شده شما
+                        </h3>
+
+                        {% if item.type_of_answer == 'انتخاب گزینه' %}
+                            {% if item.selected_option %}
+                                <div class="answer-option answer-option--selected">
+                                    <span class="answer-option__marker">✓</span>
+                                    <div>
+                                        <span class="answer-option__label">
+                                            گزینه انتخاب‌شده
+                                        </span>
+                                        <p>{{ item.selected_option.name }}</p>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="answer-empty">
+                                    گزینه‌ای برای این سؤال ثبت نشده است.
+                                </div>
+                            {% endif %}
+
+                        {% elif item.type_of_answer == 'پاسخ متنی' %}
+                            {% if item.description %}
+                                <div class="answer-text-response">
+                                    {{ item.description|linebreaksbr }}
+                                </div>
+                            {% else %}
+                                <div class="answer-empty">
+                                    پاسخ متنی ثبت نشده است.
+                                </div>
+                            {% endif %}
+
+                        {% elif item.type_of_answer == 'پاسخ تصویری' %}
+                            {% if item.image %}
+                                <a href="{{ item.image.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="answer-media-link">
+                                    <img src="{{ item.image.url }}"
+                                         alt="تصویر پاسخ دانش‌آموز"
+                                         class="answer-response-image"
+                                         loading="lazy">
+                                    <span>مشاهده تصویر پاسخ</span>
+                                </a>
+                            {% else %}
+                                <div class="answer-empty">
+                                    فایل تصویر پاسخ موجود نیست.
+                                </div>
+                            {% endif %}
+
+                        {% elif item.type_of_answer == 'پاسخ PDF' %}
+                            {% if item.pdf_file %}
+                                <a href="{{ item.pdf_file.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="answer-file">
+                                    <span class="answer-file__icon">PDF</span>
+                                    <span>مشاهده فایل پاسخ شما</span>
+                                    <span aria-hidden="true">↗</span>
+                                </a>
+                            {% else %}
+                                <div class="answer-empty">
+                                    فایل PDF پاسخ موجود نیست.
+                                </div>
+                            {% endif %}
+
+                        {% elif item.type_of_answer == 'رد شده' %}
+                            <div class="answer-empty">
+                                این سؤال توسط شما رد شده است.
+                            </div>
+
+                        {% else %}
+                            <div class="answer-empty">
+                                برای این سؤال پاسخی ثبت نشده است.
+                            </div>
+                        {% endif %}
+                    </section>
+
+                    {% if item.question and item.type_of_answer == 'انتخاب گزینه' %}
+                        {% if item.question.answer_key %}
+                            {% if item.question.answer_key.description or item.question.options.all %}
+                                <div class="answer-divider"></div>
+
+                                <section class="answer-key">
+                                    <h3>
+                                        <span class="answer-section-icon answer-section-icon--green">۲</span>
+                                        پاسخ صحیح و کلید سؤال
+                                    </h3>
+
+                                    {% if item.question.options.all %}
+                                        <div class="answer-options-list">
+                                            {% for option in item.question.options.all %}
+                                                <div class="answer-option
+                                                    {% if option.is_correct %}
+                                                        answer-option--correct
+                                                    {% elif option.pk == item.selected_option_id %}
+                                                        answer-option--selected-wrong
+                                                    {% endif %}
+                                                ">
+                                                    <span class="answer-option__marker">
+                                                        {% if option.is_correct %}
+                                                            ✓
+                                                        {% elif option.pk == item.selected_option_id %}
+                                                            ×
+                                                        {% else %}
+                                                            {{ forloop.counter }}
+                                                        {% endif %}
+                                                    </span>
+
+                                                    <div>
+                                                        <p>{{ option.name }}</p>
+                                                        {% if option.is_correct %}
+                                                            <span class="answer-option__label">
+                                                                گزینه صحیح
+                                                            </span>
+                                                        {% elif option.pk == item.selected_option_id %}
+                                                            <span class="answer-option__label">
+                                                                گزینه انتخابی شما
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+
+                            {% if item.question.answer_key.image %}
+                                <a href="{{ item.image.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="answer-media-link">
+                                    <img src="{{ item.image.url }}"
+                                         alt="تصویر پاسخ دانش‌آموز"
+                                         class="answer-response-image"
+                                         loading="lazy">
+                                    <span>مشاهده تصویر پاسخ کلیدی</span>
+                                </a>
+
+                            {% endif %}
+
+                            {% if item.question.answer_key.pdf_file %}
+                                <a href="{{ item.pdf_file.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="answer-file">
+                                    <span class="answer-file__icon">PDF</span>
+                                    <span>مشاهده فایل پاسخ شما</span>
+                                    <span aria-hidden="true">↗</span>
+                                </a>
+
+                            {% endif %}
+
+                                    {% if item.question.answer_key.description %}
+                                        <div class="answer-explanation">
+                                            <span class="answer-explanation__title">
+                                                توضیح پاسخ
+                                            </span>
+                                            <div class="answer-rich-text">
+                                                {{ item.question.answer_key.description|safe }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </section>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if item.sanatorium_message %}
+                        <div class="answer-divider"></div>
+
+                        <section class="answer-teacher">
+                            <h3>
+                                <span class="answer-section-icon answer-section-icon--blue">۳</span>
+                                نظر مصحح
+                            </h3>
+
+                            <div class="answer-teacher__content">
+                                {{ item.sanatorium_message|safe }}
+                            </div>
+
+                            {% if item.corrected_by %}
+                                <span class="answer-teacher__name">
+                                    مصحح: {{ item.corrected_by }}
+                                </span>
+                            {% endif %}
+                        </section>
+                    {% endif %}
+
+                </div>
+
+                <footer class="answer-card__footer">
+                    <div class="answer-score">
+                        <span>نمره کسب‌شده</span>
+                        <strong>{{ item.score|default:"0" }}</strong>
+
+                        {% if item.question %}
+                            <span class="answer-score__max">
+                                از {{ item.question.score }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="answer-correction-date">
+                        {% if item.corrected_at %}
+                            زمان تصحیح: {{ item.corrected_at }}
+                        {% else %}
+                            {% if item.corrected == 'تصحیح نشده' %}
+                                هنوز تصحیح نشده
+                            {% else %}
+                                زمان تصحیح ثبت نشده
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="answer-correction-date">
+
+                        زمان ثیت پاسخ : {{ item.created_at }}
+
+                    </div>
+                </footer>
+            </article>
+
+        {% empty %}
+            <div class="answers-empty-state">
+                <div class="answers-empty-state__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M8 4H5.5A1.5 1.5 0 0 0 4 5.5v14A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-14A1.5 1.5 0 0 0 18.5 4H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                        <rect x="8" y="2.5" width="8" height="4" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h2>پاسخی برای نمایش وجود ندارد</h2>
+                <p>
+                    هنوز پاسخی برای این آزمون ثبت نشده یا اطلاعات آن در دسترس نیست.
+                </p>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <div id="answersNoFilterResults" class="answers-empty-state" hidden>
+        <h2>موردی پیدا نشد</h2>
+        <p>با فیلتر انتخاب‌شده پاسخی برای نمایش وجود ندارد.</p>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    const filter = document.getElementById("answerFilter");
+    const list = document.getElementById("answersList");
+    const emptyMessage = document.getElementById("answersNoFilterResults");
+
+    if (!filter || !list || !emptyMessage) return;
+
+    filter.addEventListener("change", function () {
+        const selected = filter.value;
+        const cards = list.querySelectorAll(".answer-card");
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+            const status = card.dataset.status;
+            let visible = selected === "all";
+
+            if (selected === "correct") visible = status === "correct";
+            if (selected === "wrong") visible = status === "wrong";
+            if (selected === "pending") visible = status === "pending";
+            if (selected === "other") visible = status === "other";
+
+            card.hidden = !visible;
+
+            if (visible) visibleCount++;
+        });
+
+        emptyMessage.hidden = visibleCount !== 0;
+    });
+})();
+</script>
+{% endblock %}

@@ -1,9 +1,58 @@
 from django.views.generic import ListView, View
 from django.contrib import messages
-from apps.reports.models import ExamReport
-
+from apps.reports.models import ExamReport, Exam
+from apps.questions.models import StudentAnswer
 from apps.users.students.mixins import StudentMixin
 from django.shortcuts import get_object_or_404, redirect, render
+from django.db.models import Sum, Count, Q
+
+
+class ExamReportQuestionView(StudentMixin, View):
+    template_name = "dashboard/report/questions.html"
+
+    def get(self, request, *args, **kwargs):
+        exam = get_object_or_404(
+            Exam.objects.only("pk", "status", "name"),
+            pk=kwargs["pk"],
+            status=Exam.ExamStatus.RESULTS_PUBLISHED,
+        )
+
+        items = (
+            StudentAnswer.objects.filter(
+                exam=exam,
+                student=request.student,
+            )
+            .select_related(
+                "question",
+                "question__answer_key",
+                "selected_option",
+                "corrected_by",
+            )
+            .prefetch_related(
+                "question__options",
+            )
+            .order_by("question_id", "pk")
+        )
+
+        stats = items.aggregate(
+            total_score=Sum("score"),
+            uncorrected_count=Count(
+                "pk",
+                filter=Q(
+                    corrected=StudentAnswer.TypeOfCorrect.not_corrected
+                ),
+            ),
+        )
+
+        context = {
+            "items": items,
+            "exam": exam,
+            "total_score": stats["total_score"] or 0,
+            "uncorrected_count": stats["uncorrected_count"] or 0,
+        }
+
+        return render(request, self.template_name, context)
+
 
 class ExamReportDetailsView(StudentMixin, View):
     template_name = "dashboard/report/detail.html"
