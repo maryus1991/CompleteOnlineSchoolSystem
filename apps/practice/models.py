@@ -46,6 +46,7 @@ class PracticeStudentDetails(BaseModel):
 
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE, related_name="student_details", verbose_name="تمرین")
     question = models.ForeignKey("questions.Question",on_delete=models.CASCADE, related_name="practice_student_details", verbose_name="سوال" )
+    selected_option = models.ForeignKey('questions.QuestionOption', on_delete=models.SET_NULL, null=True, blank=True,verbose_name='گزینه انتخاب‌شده')
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="practice_details",verbose_name="دانش‌آموز")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NOT_STARTED,verbose_name="وضعیت")
@@ -63,12 +64,7 @@ class PracticeStudentDetails(BaseModel):
         ordering = ["-pk"]
         verbose_name = "پاسخ دانش‌آموز"
         verbose_name_plural = "پاسخ های دانش‌آموزان"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["practice", "student"],
-                name="unique_practice_student",
-            ),
-        ]
+
 
     def __str__(self):
         return f"{self.practice.name} - {self.student}"

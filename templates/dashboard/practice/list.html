@@ -1205,29 +1205,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const filteredEmpty = document.getElementById("filteredEmpty");
     const resetButton = document.getElementById("resetFilters");
 
-    const countElements = {
-        in_progress: document.getElementById("inProgressCount"),
-        submitted: document.getElementById("submittedCount"),
-        corrected: document.getElementById("correctedCount"),
-    };
+const countElements = {
+    in_progress: document.getElementById("inProgressCount"),
+    submitted: document.getElementById("submittedCount"),
+    corrected: document.getElementById("correctedCount"),
+};
 
-    const normalize = (value) =>
-        (value || "")
-            .toLocaleLowerCase("fa")
-            .replace(/ي/g, "ی")
-            .replace(/ك/g, "ک")
-            .trim();
+const counts = {
+    in_progress: 0,
+    submitted: 0,
+    corrected: 0,
+};
 
-    // آمار بر اساس تمام تمرین‌های صفحه جاری
-    cards.forEach((card) => {
-        const status = card.dataset.status;
+// شمارش تمرین‌ها
+cards.forEach((card) => {
+    const status = card.dataset.status;
 
-        if (countElements[status]) {
-            countElements[status].textContent =
-                Number(countElements[status].textContent) + 1;
-        }
-    });
+    if (Object.hasOwn(counts, status)) {
+        counts[status]++;
+    }
+});
 
+// نمایش آمار
+Object.entries(countElements).forEach(([status, element]) => {
+    if (element) {
+        element.textContent = counts[status];
+    }
+});
     function filterPractices() {
         const query = normalize(searchInput.value);
         const selectedStatus = statusFilter.value;

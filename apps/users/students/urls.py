@@ -34,5 +34,6 @@ urlpatterns = [
     # practice
     path("practice/", views.practice.StudentPracticeListView.as_view(), name="practice-list"),
     path("practice/<int:pk>", views.practice.StudentPracticeDetailView.as_view(), name="practice-details"),
+    path("practice/<int:pk>/solve/questions/<int:question_pk>", views.practice.StudentPracticeSolveView.as_view(), name="practice-solve"),
 
 ]
