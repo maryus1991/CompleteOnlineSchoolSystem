@@ -120,7 +120,7 @@
 </a>
 
 <!-- کلاس‌ها و محتوای آموزشی -->
-<button type="button" class="sidebar-menu-item" data-section="myCourses">
+<a href="{% url 'student:class-list' %}" type="button" class="sidebar-menu-item" data-section="myCourses">
     <div class="menu-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.8">
@@ -134,7 +134,7 @@
         <p>دوره‌ها، جزوه‌ها و جلسات</p>
     </div>
     <div class="menu-arrow">←</div>
-</button>
+</a>
 
 <!-- کارنامه و عملکرد -->
 <a href="{% url 'student:report-list' %}" class="sidebar-menu-item">

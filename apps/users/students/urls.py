@@ -36,4 +36,9 @@ urlpatterns = [
     path("practice/<int:pk>", views.practice.StudentPracticeDetailView.as_view(), name="practice-details"),
     path("practice/<int:pk>/solve/questions/<int:question_pk>", views.practice.StudentPracticeSolveView.as_view(), name="practice-solve"),
 
+    # class
+    path("class/", views.klass.ListStudentClass.as_view(), name="class-list"),
+    path("class/<int:pk>", views.klass.ListStudentClass.as_view(), name="class-content-list"),
+
+
 ]

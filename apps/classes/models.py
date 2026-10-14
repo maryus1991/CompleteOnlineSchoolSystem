@@ -29,6 +29,10 @@ class Class(BaseModel):
 
     def get_absolute_url(self):
         return reverse_lazy("class:details", kwargs={'pk': self.pk})
+
+    def get_categories(self):
+        return f'{self.lesson.name if self.lesson else ""} {self.grade.name if self.grade else ""} {self.major.name if self.major else "" } '
+
     def get_price(self):
         if self.is_free or self.price <= 0:
             return 0
