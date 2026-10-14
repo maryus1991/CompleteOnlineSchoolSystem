@@ -1,9 +1,10 @@
 from apps.classes.models import Class
-from apps.content.models import Section, ClassArticle, ClassFile
-from apps.live_classes.models import LiveClass, StreamServers
+from apps.content.models import Section
+
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 from apps.users.students.mixins import StudentMixin
+
 
 
 class ListStudentClass(StudentMixin, ListView):
@@ -17,10 +18,10 @@ class ListStudentClass(StudentMixin, ListView):
     def get_queryset(self):
         return (
         Class.objects
-            .filter(student__user=self.request.user)
+            .filter(student=self.request.student)
             .select_related(
                 "school",
-                "teacher",
+                "teacher__user",
                 "grade",
                 "major",
                 "lesson",
@@ -53,7 +54,6 @@ class ListSectionStudentClass(StudentMixin, ListView):
         context["klass"] = self.klass
         return context
 
-
 class StudentSectionContentView(StudentMixin, DetailView):
     model = Section
     template_name = "dashboard/class/details.html"
@@ -68,8 +68,17 @@ class StudentSectionContentView(StudentMixin, DetailView):
                 klass__student__user=self.request.user,
                 klass_id=self.kwargs["pk"],
             )
-            .select_related("klass", "klass__school", "klass__teacher")
-            .prefetch_related("article", "file", "practices")
+            .select_related(
+                "klass",
+                "klass__school",
+                "klass__teacher",
+            )
+            .prefetch_related(
+                "article",
+                "file",
+                "practices",
+                "live__server",
+            )
             .distinct()
         )
 
@@ -85,5 +94,7 @@ class StudentSectionContentView(StudentMixin, DetailView):
             .filter(creator__isnull=False)
             .distinct()
         )
+
+        context["live_classes"] = section.live.all()
 
         return context

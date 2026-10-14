@@ -1,10 +1,16 @@
-from django.db import models
-from apps.common.models import BaseModel
-from apps.classes.models import Class
-from apps.users.students.models import Student
-from apps.users.teachers.models import Teacher
-from urllib.parse import urljoin
+import secrets
+import string
 
+from apps.common.models import BaseModel
+from apps.content.models import Section
+from apps.common.file_storage_script_for_model import UploadPath
+from urllib.parse import urlsplit, urlunsplit, urlencode, urljoin
+from django.db import models
+from django.core.exceptions import ValidationError
+
+def generate_session_code():
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(72))
 
 
 class StreamServers(BaseModel):
@@ -20,13 +26,21 @@ class StreamServers(BaseModel):
     def monitor_url(self):
         return urljoin(f'{self.base_url.rstrip("/")}/', self.server_stats_check.lstrip('/') ) + f'?token={self.MONITOR_TOKEN}'
 
-    @property
-    def teacher_url(self):
-        return urljoin(f'{self.base_url.rstrip("/")}/', self.teacher_url_name.lstrip('/') )
+    def build_meeting_url(self, page, **params):
+        base_url = urljoin(
+            f"{self.base_url.rstrip('/')}/",
+            page.lstrip("/"),
+        )
 
-    @property
-    def student_url(self):
-        return urljoin(f'{self.base_url.rstrip("/")}/', self.student_url_name.lstrip('/') )
+        parts = urlsplit(base_url)
+
+        return urlunsplit((
+            parts.scheme,
+            parts.netloc,
+            parts.path,
+            urlencode(params),
+            parts.fragment,
+        ))
 
     def __str__(self):
         return self.name
@@ -38,14 +52,76 @@ class StreamServers(BaseModel):
 
 
 
+
 class LiveClass(BaseModel):
-    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='live', verbose_name="کلاس")
-    server = models.ForeignKey(StreamServers, on_delete=models.CASCADE, related_name='live', verbose_name="سرور")
-    student = models.ManyToManyField(Student, related_name='live', verbose_name="دانش اموز")
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='live', null=True, blank=True, verbose_name="معلم")
-    content = models.TextField("متن")
+
+    class Status(models.TextChoices):
+        SCHEDULED = "scheduled", "برنامه‌ریزی‌شده"
+        LIVE = "live", "در حال برگزاری"
+        COMPLETED = "completed", "برگزارشده"
+        CANCELLED = "cancelled", "لغوشده"
+
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="live", verbose_name="جلسه")
+    server = models.ForeignKey(StreamServers, on_delete=models.CASCADE, related_name="live", verbose_name="سرور")
+    status = models.CharField("وضعیت",max_length=20, choices=Status.choices, default=Status.SCHEDULED, db_index=True)
+    session_code = models.CharField("کد اختصاصی جلسه", max_length=72, unique=True, default=generate_session_code, editable=False )
+    recording_file = models.FileField("فایل ضبط‌شده جلسه", upload_to=UploadPath("live_classes/recordings/"), blank=True, null=True)
+    chat_report = models.FileField("گزارش چت (PDF)", upload_to=UploadPath("live_classes/chat_reports/"), blank=True, null=True)
+    attendance_report = models.FileField("گزارش حضور کاربران (PDF)", upload_to=UploadPath("live_classes/attendance_reports/"), blank=True, null=True)
 
     class Meta:
-        ordering = ['pk']
-        verbose_name = 'کلاس انلاین'
-        verbose_name_plural = 'کلاس های انلاین'
+        ordering = ["pk"]
+        verbose_name = "کلاس آنلاین"
+        verbose_name_plural = "کلاس‌های آنلاین"
+
+    def __str__(self):
+        return f"{self.section.name} - {self.get_status_display()}"
+
+    def save(self, *args, **kwargs):
+        # جلوگیری از تغییر کد بعد از ایجاد رکورد
+        if self.pk:
+            old_code = (
+                type(self).objects
+                .filter(pk=self.pk)
+                .values_list("session_code", flat=True)
+                .first()
+            )
+
+            if old_code and self.session_code != old_code:
+                raise ValidationError(
+                    "کد اختصاصی جلسه قابل تغییر نیست."
+                )
+
+        super().save(*args, **kwargs)
+
+    @property
+    def is_available(self):
+        return (
+                self.status == self.Status.LIVE
+                and bool(self.session_code)
+                and bool(self.server_id)
+        )
+
+    @property
+    def student_meeting_url(self):
+        if not self.is_available:
+            return None
+
+        return self.server.build_meeting_url(
+            self.server.student_url_name,
+            room=self.session_code,
+            name="نام دانش‌آموز",
+        )
+
+    @property
+    def teacher_meeting_url(self):
+        if not self.is_available:
+            return None
+
+        return self.server.build_meeting_url(
+            self.server.teacher_url_name,
+            room=self.session_code,
+            name=self.section.klass.teacher.user.get_full_name(),
+            title=self.section.name,
+            key=self.server.TEACHER_KEY,
+        )
