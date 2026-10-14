@@ -32,7 +32,7 @@
             {% for class_obj in classes %}
                 <article class="class-card">
 
-                    <a href="{{ class_obj.get_absolute_url }}"
+             <a href="{% url 'student:class-content-list' class_obj.id %}"
                        class="class-image-link"
                        aria-label="مشاهده کلاس {{ class_obj.name }}">
 
@@ -138,7 +138,7 @@
                             </div>
                         </div>
 
-                        <a href="{{ class_obj.get_absolute_url }}"
+                        <a href="{% url 'student:class-content-list' class_obj.id %}"
                            class="class-detail-link">
                             مشاهده کلاس
                             <span aria-hidden="true">←</span>

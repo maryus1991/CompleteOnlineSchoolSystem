@@ -1,0 +1,455 @@
+
+{% extends "dashboard/base.html" %}
+
+
+{% block main %}
+<section class="section-page" dir="rtl">
+
+    <header class="section-header">
+        <div class="header-content">
+            <a href="{% url 'student:class-list' %}" class="back-link">
+                <span>→</span>
+                بازگشت به کلاس
+            </a>
+
+            <span class="eyebrow">فضای آموزشی</span>
+            <h1>{{ klass.name }}</h1>
+            <p>جلسات منتشرشده این کلاس را مشاهده و برای یادگیری انتخاب کنید.</p>
+        </div>
+
+        <button type="button" class="theme-toggle" id="sectionThemeToggle">
+            <span id="sectionThemeIcon">☀️</span>
+            <span id="sectionThemeText">تم روشن</span>
+        </button>
+    </header>
+
+    <div class="section-summary">
+        <div class="summary-icon">▤</div>
+        <div>
+            <span>جلسات قابل مشاهده</span>
+            <strong>{{ page_obj.paginator.count }}</strong>
+        </div>
+    </div>
+
+    {% if sections %}
+        <div class="section-list">
+            {% for section in sections %}
+            <a href="{% url 'student:class-content-details' pk=klass.id  section_id=section.id %}">
+                <article class="section-card">
+
+                    <div class="section-number">
+                        <span>{{ forloop.counter }}</span>
+                    </div>
+
+                    <div class="section-info">
+                        <span class="section-label">جلسه آموزشی</span>
+                        <h2>{{ section.name }}</h2>
+
+                        <div class="section-meta">
+                            <span class="published-dot"></span>
+                            <span>منتشرشده</span>
+
+                            {% if section.created_at %}
+                                <span class="meta-separator">•</span>
+                                <span>
+                                    ایجاد:
+                                    {{ section.created_at|date:"Y/m/d" }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="section-action">
+                        {# آدرس جزئیات جلسه را پس از مشخص شدن URL پروژه قرار بده #}
+                        <span class="available-label">آماده مشاهده</span>
+                    </div>
+
+                </article>
+            </a>
+                {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="section-pagination" aria-label="صفحه‌بندی جلسات">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+                {% endif %}
+
+                <span>
+                    صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">بعدی</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="section-empty">
+            <div class="empty-icon">📚</div>
+            <h2>هنوز جلسه‌ای منتشر نشده است</h2>
+            <p>جلسات این کلاس پس از انتشار توسط مدرس در این بخش نمایش داده می‌شوند.</p>
+            <a href="{% url 'student:class-list' %}" class="empty-back">
+                بازگشت به کلاس
+            </a>
+        </div>
+    {% endif %}
+
+</section>
+
+<style>
+    .section-page {
+        --page-bg: #f5f7fc;
+        --card-bg: #fff;
+        --surface-bg: #f8f9fd;
+        --text-main: #192238;
+        --text-muted: #7b8498;
+        --border: #e6eaf2;
+        --accent: #6658e8;
+        --accent-soft: #efedff;
+        --shadow: 0 8px 26px rgba(25, 35, 65, .045);
+
+        padding: 24px;
+        color: var(--text-main);
+        background: var(--page-bg);
+        border-radius: 20px;
+        font-family: inherit;
+        transition: background .2s, color .2s;
+    }
+
+    .section-page.dark-theme {
+        --page-bg: #101522;
+        --card-bg: #191f2e;
+        --surface-bg: #202839;
+        --text-main: #edf1fa;
+        --text-muted: #9ba7bc;
+        --border: #30394c;
+        --accent: #b0a4ff;
+        --accent-soft: #302c50;
+        --shadow: 0 8px 26px rgba(0, 0, 0, .12);
+    }
+
+    .section-page * {
+        box-sizing: border-box;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 26px;
+    }
+
+    .header-content {
+        min-width: 0;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        color: var(--accent);
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    .eyebrow {
+        display: block;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .section-header h1 {
+        margin: 8px 0;
+        color: var(--text-main);
+        font-size: clamp(23px, 3vw, 32px);
+        font-weight: 850;
+        overflow-wrap: anywhere;
+    }
+
+    .section-header p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 13px;
+        line-height: 2;
+    }
+
+    .theme-toggle {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        color: var(--text-main);
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+    }
+
+    .section-summary {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        width: fit-content;
+        min-width: 200px;
+        margin-bottom: 22px;
+        padding: 15px 18px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+    }
+
+    .summary-icon {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 12px;
+        font-size: 23px;
+    }
+
+    .section-summary div:last-child {
+        display: grid;
+        gap: 5px;
+    }
+
+    .section-summary span {
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    .section-summary strong {
+        color: var(--text-main);
+        font-size: 23px;
+    }
+
+    .section-list {
+        display: grid;
+        gap: 13px;
+    }
+
+    .section-card {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        min-width: 0;
+        padding: 19px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        transition: border-color .2s, transform .2s;
+    }
+
+    .section-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+    }
+
+    .section-number {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 54px;
+        height: 54px;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 14px;
+        font-size: 20px;
+        font-weight: 850;
+    }
+
+    .section-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .section-label {
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .section-info h2 {
+        margin: 6px 0 10px;
+        color: var(--text-main);
+        font-size: 16px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .section-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 7px;
+        color: var(--text-muted);
+        font-size: 11px;
+    }
+
+    .published-dot {
+        width: 7px;
+        height: 7px;
+        background: #19a974;
+        border-radius: 50%;
+    }
+
+    .meta-separator {
+        opacity: .6;
+    }
+
+    .section-action {
+        flex-shrink: 0;
+    }
+
+    .available-label {
+        display: inline-block;
+        padding: 8px 11px;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .section-empty {
+        padding: 55px 20px;
+        text-align: center;
+        background: var(--card-bg);
+        border: 1px dashed var(--border);
+        border-radius: 18px;
+    }
+
+    .empty-icon {
+        margin-bottom: 12px;
+        font-size: 40px;
+    }
+
+    .section-empty h2 {
+        color: var(--text-main);
+        font-size: 19px;
+    }
+
+    .section-empty p {
+        color: var(--text-muted);
+        font-size: 13px;
+        line-height: 2;
+    }
+
+    .empty-back {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 15px;
+        color: #fff;
+        background: #6658e8;
+        border-radius: 10px;
+        font-size: 12px;
+        text-decoration: none;
+    }
+
+    .section-pagination {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 25px;
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    .section-pagination a {
+        padding: 9px 14px;
+        color: var(--text-main);
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        text-decoration: none;
+    }
+
+    @media (max-width: 650px) {
+        .section-page {
+            padding: 15px;
+            border-radius: 14px;
+        }
+
+        .section-header {
+            flex-direction: column;
+        }
+
+        .section-card {
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px;
+        }
+
+        .section-number {
+            width: 43px;
+            height: 43px;
+            border-radius: 11px;
+            font-size: 17px;
+        }
+
+        .section-info h2 {
+            font-size: 14px;
+        }
+
+        .section-action {
+            display: none;
+        }
+
+        .section-summary {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    (() => {
+        const root = document.querySelector(".section-page");
+        const toggle = document.getElementById("sectionThemeToggle");
+        const icon = document.getElementById("sectionThemeIcon");
+        const label = document.getElementById("sectionThemeText");
+
+        if (!root || !toggle) return;
+
+        const key = "theme";
+
+        function applyTheme(theme) {
+            const dark = theme === "dark";
+            root.classList.toggle("dark-theme", dark);
+            icon.textContent = dark ? "🌙" : "☀️";
+            label.textContent = dark ? "تم تاریک" : "تم روشن";
+        }
+
+        try {
+            applyTheme(localStorage.getItem(key) || "light");
+        } catch (error) {
+            applyTheme("light");
+        }
+
+        toggle.addEventListener("click", () => {
+            const theme = root.classList.contains("dark-theme")
+                ? "light"
+                : "dark";
+
+            applyTheme(theme);
+
+            try {
+                localStorage.setItem(key, theme);
+            } catch (error) {
+                // تغییر تم صفحه بدون ذخیره‌سازی نیز انجام می‌شود.
+            }
+        });
+    })();
+</script>
+{% endblock %}
