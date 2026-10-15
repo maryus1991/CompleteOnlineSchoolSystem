@@ -530,7 +530,7 @@
             </h2>
 
             <p>
-                تیکت #{{ ticket.pk }}
+                درخواست #{{ ticket.pk }}
             </p>
 
         </div>
@@ -538,7 +538,7 @@
 
         <a href="{% url 'student:ticket-list' %}"
            class="ticket-back-button"
-           aria-label="بازگشت به لیست تیکت‌ها">
+           aria-label="بازگشت به لیست درخواست‌ها">
 
             <svg width="16"
                  height="16"
@@ -555,7 +555,7 @@
 
             </svg>
 
-            <span>بازگشت به تیکت‌ها</span>
+            <span>بازگشت به درخواست‌ها</span>
 
         </a>
 
@@ -603,10 +603,10 @@
         <div class="ticket-chat-messages"
              id="ticketMessages"
              role="log"
-             aria-label="گفتگوی تیکت">
+             aria-label="گفتگوی درخواست">
 
 
-            <!-- ---------- پیام اولیه‌ی تیکت ---------- -->
+            <!-- ---------- پیام اولیه‌ی درخواست ---------- -->
 
             <div class="ticket-message-row user">
 
@@ -807,7 +807,7 @@
                 </svg>
 
                 <span>
-                    این تیکت <strong>{{ ticket.get_status_display }}</strong> است
+                    این درخواست <strong>{{ ticket.get_status_display }}</strong> است
                     و امکان ارسال پیام جدید وجود ندارد.
                 </span>
 
