@@ -2,7 +2,7 @@ from django.db import models
 from apps.users.students.models import Student
 from apps.users.teachers.models import Teacher
 from django_ckeditor_5.fields import CKEditor5Field
-from apps.categories.models import GradeCategories, MajorCategories, LessonCategories, ProvinceCategories, CityCategories
+from apps.categories.models import GradeCategories, MajorCategories, LessonCategories
 from apps.common.models import BaseModel
 from apps.schools.models import School
 from apps.common.models_fields import BaseJalaliDateTimeField
@@ -64,8 +64,9 @@ class Exam(BaseModel):
     selected_student = models.ManyToManyField(Student, blank=True, related_name='exam', verbose_name='دانش اموز انتخاب شده')
 
     teacher = models.ManyToManyField(Teacher, blank=True, null=True, related_name='exam', verbose_name='معلم' )
-    province = models.ForeignKey(ProvinceCategories, related_name='exam', on_delete=models.SET_NULL, null=True , verbose_name=' نام استان محل برگذاری')
-    city = models.ForeignKey(CityCategories, related_name='exam', on_delete=models.SET_NULL, null=True , verbose_name='نام شهر محل برگذاری')
+
+    province = models.CharField(null=True, blank=True , max_length=255, verbose_name='استان')
+    city = models.CharField(null=True, blank=True ,  max_length=255, verbose_name='شهر')
 
     description = CKEditor5Field("توضیحات", null=True, blank=True)
 

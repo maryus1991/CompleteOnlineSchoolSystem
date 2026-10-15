@@ -1,5 +1,4 @@
 from django.db import models
-from apps.categories.models import ProvinceCategories, CityCategories
 from apps.users.managers.models import Manager as UserManager
 from apps.common.models import BaseModel
 
@@ -7,8 +6,9 @@ from apps.common.models import BaseModel
 class School(BaseModel):
     user_manager = models.ForeignKey(UserManager, on_delete=models.CASCADE, related_name='schools', verbose_name="مدیر مدرسه")
     name = models.CharField("نام", max_length=100)
-    province = models.ForeignKey(ProvinceCategories, related_name='schools',blank=True, null=True, on_delete=models.SET_NULL, verbose_name='استان')
-    city = models.ForeignKey(CityCategories, related_name='schools', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='شهر')
+
+    province = models.CharField(null=True, blank=True , max_length=255, verbose_name='استان')
+    city = models.CharField(null=True, blank=True ,  max_length=255, verbose_name='شهر')
 
     is_active = models.BooleanField(default=True)
 

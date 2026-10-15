@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
-from apps.categories.models import GradeCategories, MajorCategories, ProvinceCategories, CityCategories
+from apps.categories.models import GradeCategories, MajorCategories
 from apps.schools.models import School
 from apps.users.accounts.models import User
 from phonenumber_field.formfields import PhoneNumberField
@@ -35,19 +35,16 @@ class StudentForm(forms.Form):
 
     )
 
-    province = forms.ModelChoiceField(
-        queryset=ProvinceCategories.objects.filter(is_active=True),
+    province = forms.CharField(
         required=True,
-        widget=forms.Select(),
-        empty_label="انتخاب استان"
+        widget=forms.TextInput()
     )
 
-    city = forms.ModelChoiceField(
-        queryset=CityCategories.objects.filter(is_active=True),
+    city = forms.CharField(
         required=True,
-        widget=forms.Select(),
-        empty_label="انتخاب شهر"
+        widget=forms.TextInput()
     )
+
 
     school = forms.ModelChoiceField(
         queryset=School.objects.filter(is_active=True),

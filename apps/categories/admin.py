@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import GradeCategories, MajorCategories, ProvinceCategories, CityCategories, BlogCategories, LessonCategories
+from .models import GradeCategories, MajorCategories,  BlogCategories, LessonCategories
 
 
 # Register your models here.
@@ -7,6 +7,5 @@ from .models import GradeCategories, MajorCategories, ProvinceCategories, CityCa
 admin.site.register(MajorCategories)
 admin.site.register(GradeCategories)
 admin.site.register(LessonCategories)
-admin.site.register(ProvinceCategories)
-admin.site.register(CityCategories)
+
 admin.site.register(BlogCategories)
