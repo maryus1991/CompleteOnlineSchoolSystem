@@ -15,7 +15,7 @@
     </div>
 </div>
 <div style="padding:25px">
-    <form id="editProfileForm" class="edit-profile-form">
+    <form id="editProfileForm" method="post" class="edit-profile-form">
         {% csrf_token %}
         <div class="form-group-glass">
             {{ form.first_name }}

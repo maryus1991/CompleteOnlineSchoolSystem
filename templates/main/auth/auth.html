@@ -48,7 +48,7 @@
                             <div class="form-group">
                                 {{login_form.phone_number}}
                                 <label>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                                     <span data-i18n="auth.email">شماره</span>
                                 </label>
                             </div>
@@ -80,38 +80,44 @@
                     <!-- فرم ثبت‌نام -->
                     <div class="auth-form" id="registerForm">
                         <div id="registerMessage" class="auth-message"></div>
-                        <form id="registerFormElement">
-                            <div class="form-group">
-                                <input type="text" id="regName" placeholder=" " required>
-                                <label>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                    <span data-i18n="auth.fullname">نام و نام خانوادگی</span>
-                                </label>
+                        <form id="registerFormElement" action="{% url 'user:register' %}" method="POST" >
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group half">
+ {{register_form.first_name}}
+                                     <label>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                        <span data-i18n="auth.password">نام</span>
+                                    </label>
+                                </div>
+                                <div class="form-group half">
+ {{register_form.last_name}}
+                                     <label>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                        <span data-i18n="auth.confirmPassword">نام خانوادگی</span>
+                                    </label>
+                                </div>
                             </div>
+
                             <div class="form-group">
-                                <input type="email" id="regEmail" placeholder=" " required>
-                                <label>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                                    <span data-i18n="auth.email">ایمیل</span>
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <input style="direction: rtl;" type="tel" id="regPhone" placeholder=" ">
+
+                                {{register_form.phone_number}}
+
                                 <label>
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                                    <span data-i18n="auth.phone">شماره تماس (اختیاری)</span>
+                                    <span data-i18n="auth.phone">شماره تماس </span>
                                 </label>
                             </div>
                             <div class="form-row">
                                 <div class="form-group half">
-                                    <input type="password" id="regPassword" placeholder=" " required>
+{{register_form.password}}
                                     <label>
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                                         <span data-i18n="auth.password">رمز عبور</span>
                                     </label>
                                 </div>
                                 <div class="form-group half">
-                                    <input type="password" id="regConfirmPassword" placeholder=" " required>
+{{register_form.confirm_password}}
                                     <label>
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                                         <span data-i18n="auth.confirmPassword">تکرار رمز</span>

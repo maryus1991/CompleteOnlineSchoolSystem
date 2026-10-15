@@ -38,7 +38,7 @@ class UserManager(DjangoUserManager):
         extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("is_verified", False)
 
-        return self._create_user(PhoneNumber, password ** extra_fields)
+        return self._create_user(PhoneNumber, password, **extra_fields)
 
     def create_staff_user(self, PhoneNumber, password, **extra_fields):
         extra_fields.setdefault("is_staff", True)

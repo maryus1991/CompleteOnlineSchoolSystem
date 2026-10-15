@@ -66,7 +66,7 @@ class ExamDetailsView(DetailView):
             is_active=True,
             is_public=True,
 
-        ).select_related("grade", "major", "lesson", "province", "city").annotate(
+        ).select_related("grade", "major", "lesson").annotate(
             student_count=Count('selected_student', distinct=True),
             questions_count=Count('question', distinct=True),
             is_student=Exists(
