@@ -1,7 +1,7 @@
 
 {% extends "dashboard/base.html" %}
 
-
+{% load live_class_tags %}
 
 {% block main %}
 <section class="lesson-content-page" dir="rtl">
@@ -226,23 +226,23 @@
         </div>
 
         <div class="live-class-actions">
-
-            {% if live_class.status == "live" and live_class.student_meeting_url %}
-                <a href="{{ live_class.student_meeting_url }}"
-                   class="live-btn live-btn-primary"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    <!-- log-in -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+{% if live_class.is_available %}
+<a href="{{ live_class|get_student_meeting_url:request.user }}"
+       class="live-btn live-btn-primary"
+       rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                          fill="none" stroke="currentColor" stroke-width="2"
                          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                         <polyline points="10 17 15 12 10 7"/>
                         <line x1="15" x2="3" y1="12" y2="12"/>
                     </svg>
-                    ورود به کلاس آنلاین
-                </a>
-            {% endif %}
+        ورود به کلاس آنلاین
+    </a>
+
+
+{% endif %}
+
 
             {% if live_class.recording_file %}
                 <a href="{{ live_class.recording_file.url }}"

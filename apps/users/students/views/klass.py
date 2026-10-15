@@ -78,6 +78,7 @@ class StudentSectionContentView(StudentMixin, DetailView):
                 "file",
                 "practices",
                 "live__server",
+
             )
             .distinct()
         )
@@ -95,6 +96,11 @@ class StudentSectionContentView(StudentMixin, DetailView):
             .distinct()
         )
 
-        context["live_classes"] = section.live.all()
+        context["live_classes"] = section.live.select_related(
+            "server",
+            "section__klass__teacher__user",
+        ).all()
+
+
 
         return context

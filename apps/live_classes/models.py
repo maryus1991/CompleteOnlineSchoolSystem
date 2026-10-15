@@ -102,26 +102,30 @@ class LiveClass(BaseModel):
                 and bool(self.server_id)
         )
 
-    @property
-    def student_meeting_url(self):
+    def get_student_meeting_url(self, student):
         if not self.is_available:
             return None
+
 
         return self.server.build_meeting_url(
             self.server.student_url_name,
             room=self.session_code,
-            name="نام دانش‌آموز",
+            name=student.get_full_name(),
         )
+
+
 
     @property
     def teacher_meeting_url(self):
         if not self.is_available:
             return None
 
+        teacher = self.section.klass.teacher
+
         return self.server.build_meeting_url(
             self.server.teacher_url_name,
             room=self.session_code,
-            name=self.section.klass.teacher.user.get_full_name(),
+            name=teacher.user.get_full_name(),
             title=self.section.name,
             key=self.server.TEACHER_KEY,
         )
