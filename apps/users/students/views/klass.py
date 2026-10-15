@@ -1,10 +1,40 @@
 from apps.classes.models import Class
 from apps.content.models import Section
-
+from apps.live_classes.models import LiveClass
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 from apps.users.students.mixins import StudentMixin
 
+
+class LiveClassListView(StudentMixin, ListView):
+    """for list live classes """
+
+    model = LiveClass
+    template_name = "dashboard/class/live-classes-list.html"
+    context_object_name = "live_classes"
+
+
+    def get_queryset(self):
+
+        live_classes = (
+            LiveClass.objects
+            .filter(
+                status=LiveClass.Status.LIVE,
+                section__klass__student=self.request.student,
+                )
+            .select_related("server", "section")
+            .order_by("-pk")
+        )
+        return live_classes
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        data.update({
+            "student": self.request.user
+        })
+
+        return data
 
 
 class ListStudentClass(StudentMixin, ListView):

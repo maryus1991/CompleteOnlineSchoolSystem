@@ -1,0 +1,354 @@
+
+{% extends "dashboard/base.html" %}
+{% load live_class_tags %}
+
+
+{% block main %}
+<section class="live-classes-page" dir="rtl">
+
+    <header class="live-page-header">
+        <div>
+            <span class="live-eyebrow">آموزش آنلاین</span>
+            <h1>کلاس‌های در حال برگزاری</h1>
+            <p>برای ورود به جلسه، کلاس موردنظر خود را انتخاب کنید.</p>
+        </div>
+
+        <div class="live-count">
+            <span class="live-indicator"></span>
+            {{ live_classes|length }} کلاس فعال
+        </div>
+    </header>
+
+    {% if live_classes %}
+        <div class="live-classes-grid">
+            {% for live_class in live_classes %}
+                <article class="live-class-card">
+
+                    <div class="live-card-top">
+                        <span class="live-status">
+                            <span class="live-indicator"></span>
+                            در حال برگزاری
+                        </span>
+
+                        <span class="live-session-number">
+                            جلسه {{ forloop.counter }}
+                        </span>
+                    </div>
+
+                    <div class="live-card-body">
+                        <div class="live-class-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="28" height="28"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.7"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+                                <rect x="3" y="5" width="13" height="14" rx="2"/>
+                                <path d="m16 10 5-3v10l-5-3"/>
+                            </svg>
+                        </div>
+
+                        <h2>{{ live_class.section.name }}</h2>
+                        <p class="live-class-description">
+                            کلاس آنلاین شما آماده ورود است.
+                        </p>
+                    </div>
+
+                    <footer class="live-card-footer">
+                        <div class="live-session-info">
+                            <span>وضعیت جلسه</span>
+                            <strong>فعال</strong>
+                        </div>
+
+                        {% with meeting_url=live_class|get_student_meeting_url:student %}
+                            {% if live_class.is_available and meeting_url %}
+                                <a href="{{ meeting_url }}"
+                                   class="live-join-button"
+                                   rel="noopener noreferrer">
+                                    ورود به کلاس
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="18" height="18"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         aria-hidden="true">
+                                        <path d="M5 12h14"/>
+                                        <path d="m12 5 7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            {% else %}
+                                <span class="live-join-disabled">
+                                    ورود در دسترس نیست
+                                </span>
+                            {% endif %}
+                        {% endwith %}
+                    </footer>
+
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="live-empty-state">
+            <div class="live-empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="42" height="42"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.5"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <rect x="3" y="5" width="13" height="14" rx="2"/>
+                    <path d="m16 10 5-3v10l-5-3"/>
+                </svg>
+            </div>
+
+            <h2>در حال حاضر کلاس فعالی نداریم</h2>
+            <p>به‌محض شروع کلاس توسط مدرس، جلسه در این صفحه نمایش داده می‌شود.</p>
+        </div>
+    {% endif %}
+
+</section>
+
+<style>
+
+    section{
+        padding: 10px 10px 10px 10px;
+    }
+.live-classes-page {
+    --live-bg: #111827;
+    --live-card: #1b2434;
+    --live-border: #303b4e;
+    --live-text: #f1f5f9;
+    --live-muted: #9ca9bd;
+    --live-primary: #818cf8;
+    color: var(--live-text);
+    padding: 28px 0;
+}
+
+.live-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.live-eyebrow {
+    color: var(--live-primary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.live-page-header h1 {
+    margin: 8px 0;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800;
+}
+
+.live-page-header p,
+.live-class-description {
+    color: var(--live-muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.live-count,
+.live-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.live-count {
+    background: var(--live-card);
+    border: 1px solid var(--live-border);
+    border-radius: 12px;
+    padding: 11px 15px;
+}
+
+.live-indicator {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 0 4px rgb(52 211 153 / 12%);
+}
+
+.live-classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: 18px;
+}
+
+.live-class-card {
+    background: var(--live-card);
+    border: 1px solid var(--live-border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: border-color .2s, transform .2s;
+}
+
+.live-class-card:hover {
+    border-color: #5968a7;
+    transform: translateY(-3px);
+}
+
+.live-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--live-border);
+}
+
+.live-status {
+    color: #6ee7b7;
+    font-weight: 700;
+}
+
+.live-session-number {
+    color: var(--live-muted);
+    font-size: 12px;
+}
+
+.live-card-body {
+    padding: 22px 20px;
+}
+
+.live-class-icon,
+.live-empty-icon {
+    display: grid;
+    place-items: center;
+    color: var(--live-primary);
+    background: rgb(129 140 248 / 12%);
+    border: 1px solid rgb(129 140 248 / 20%);
+    border-radius: 14px;
+}
+
+.live-class-icon {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 18px;
+}
+
+.live-card-body h2 {
+    font-size: 19px;
+    line-height: 1.8;
+    font-weight: 750;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.live-class-description {
+    margin: 8px 0 0;
+}
+
+.live-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 16px 18px;
+    border-top: 1px solid var(--live-border);
+}
+
+.live-session-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 12px;
+}
+
+.live-session-info span {
+    color: var(--live-muted);
+}
+
+.live-session-info strong {
+    color: #6ee7b7;
+}
+
+.live-join-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 15px;
+    border-radius: 11px;
+    background: var(--live-primary);
+    color: #111827;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background .2s;
+}
+
+.live-join-button:hover {
+    background: #a5b4fc;
+    color: #111827;
+    text-decoration: none;
+}
+
+.live-join-disabled {
+    color: var(--live-muted);
+    font-size: 12px;
+}
+
+.live-empty-state {
+    text-align: center;
+    padding: 55px 20px;
+    background: var(--live-card);
+    border: 1px dashed var(--live-border);
+    border-radius: 18px;
+}
+
+.live-empty-icon {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 20px;
+}
+
+.live-empty-state h2 {
+    font-size: 19px;
+    margin: 0 0 10px;
+}
+
+.live-empty-state p {
+    color: var(--live-muted);
+    font-size: 14px;
+    line-height: 1.9;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .live-classes-page {
+        padding: 18px 0;
+    }
+
+    .live-page-header {
+        align-items: flex-start;
+    }
+
+    .live-card-footer {
+        align-items: stretch;
+    }
+
+    .live-join-button {
+        flex: 1;
+    }
+}
+</style>
+{% endblock %}

@@ -40,6 +40,7 @@ urlpatterns = [
     path("class/", views.klass.ListStudentClass.as_view(), name="class-list"),
     path("class/<int:pk>", views.klass.ListSectionStudentClass.as_view(), name="class-content-list"),
     path("class/<int:pk>/sections/<int:section_id>", views.klass.StudentSectionContentView.as_view(), name="class-content-details"),
+    path("class/live-list", views.klass.LiveClassListView.as_view(), name="class-live-list"),
 
 
 ]

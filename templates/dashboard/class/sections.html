@@ -9,18 +9,42 @@
         <div class="header-content">
             <a href="{% url 'student:class-list' %}" class="back-link">
                 <span>→</span>
-                بازگشت به کلاس
+                بازگشت به لیست کلاس ها
             </a>
 
             <span class="eyebrow">فضای آموزشی</span>
             <h1>{{ klass.name }}</h1>
             <p>جلسات منتشرشده این کلاس را مشاهده و برای یادگیری انتخاب کنید.</p>
         </div>
+                <div>
 
         <button type="button" class="theme-toggle" id="sectionThemeToggle">
             <span id="sectionThemeIcon">☀️</span>
             <span id="sectionThemeText">تم روشن</span>
         </button>
+
+
+<a href="{% url 'student:class-live-list' %}" class="theme-toggle"
+   aria-label="کلاس‌های آنلاین">
+
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="20"
+         height="20"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="1.8"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         aria-hidden="true">
+        <rect x="3" y="5" width="13" height="14" rx="2"/>
+        <path d="m16 10 5-3v10l-5-3"/>
+        <path d="M7 2h5"/>
+    </svg>
+
+    <span>کلاس‌های آنلاین در حال برگزاری</span>
+</a>
+            </div>
     </header>
 
     <div class="section-summary">
@@ -411,6 +435,20 @@
             width: 100%;
         }
     }
+
+    .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.theme-toggle svg {
+    display: block;
+    flex-shrink: 0;
+}
 </style>
 
 <script>
