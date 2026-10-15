@@ -118,19 +118,21 @@
 </section>
 
 <style>
+section {
+    padding: 10px;
+}
 
-    section{
-        padding: 10px 10px 10px 10px;
-    }
 .live-classes-page {
-    --live-bg: #111827;
-    --live-card: #1b2434;
-    --live-border: #303b4e;
-    --live-text: #f1f5f9;
-    --live-muted: #9ca9bd;
-    --live-primary: #818cf8;
+    --live-bg: var(--bg-primary);
+    --live-card: var(--bg-card);
+    --live-border: var(--border-color);
+    --live-text: var(--text-primary);
+    --live-muted: var(--text-muted);
+    --live-primary: var(--accent-color);
+
     color: var(--live-text);
     padding: 28px 0;
+    background: transparent;
 }
 
 .live-page-header {
@@ -150,6 +152,7 @@
 
 .live-page-header h1 {
     margin: 8px 0;
+    color: var(--live-text);
     font-size: clamp(22px, 3vw, 30px);
     font-weight: 800;
 }
@@ -174,6 +177,7 @@
     border: 1px solid var(--live-border);
     border-radius: 12px;
     padding: 11px 15px;
+    color: var(--live-text);
 }
 
 .live-indicator {
@@ -183,7 +187,7 @@
     flex-shrink: 0;
     border-radius: 50%;
     background: #34d399;
-    box-shadow: 0 0 0 4px rgb(52 211 153 / 12%);
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.12);
 }
 
 .live-classes-grid {
@@ -197,12 +201,13 @@
     border: 1px solid var(--live-border);
     border-radius: 18px;
     overflow: hidden;
-    transition: border-color .2s, transform .2s;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
 }
 
 .live-class-card:hover {
-    border-color: #5968a7;
+    border-color: var(--live-primary);
     transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover, 0 12px 28px rgba(0, 0, 0, 0.08));
 }
 
 .live-card-top {
@@ -215,7 +220,7 @@
 }
 
 .live-status {
-    color: #6ee7b7;
+    color: #34d399;
     font-weight: 700;
 }
 
@@ -233,8 +238,8 @@
     display: grid;
     place-items: center;
     color: var(--live-primary);
-    background: rgb(129 140 248 / 12%);
-    border: 1px solid rgb(129 140 248 / 20%);
+    background: var(--accent-glow);
+    border: 1px solid color-mix(in srgb, var(--live-primary) 20%, transparent);
     border-radius: 14px;
 }
 
@@ -249,6 +254,7 @@
     line-height: 1.8;
     font-weight: 750;
     margin: 0;
+    color: var(--live-text);
     overflow-wrap: anywhere;
 }
 
@@ -278,7 +284,7 @@
 }
 
 .live-session-info strong {
-    color: #6ee7b7;
+    color: #34d399;
 }
 
 .live-join-button {
@@ -289,16 +295,16 @@
     padding: 11px 15px;
     border-radius: 11px;
     background: var(--live-primary);
-    color: #111827;
+    color: #fff;
     font-size: 13px;
     font-weight: 800;
     text-decoration: none;
-    transition: background .2s;
+    transition: background .2s, filter .2s;
 }
 
 .live-join-button:hover {
-    background: #a5b4fc;
-    color: #111827;
+    filter: brightness(1.08);
+    color: #fff;
     text-decoration: none;
 }
 
@@ -324,6 +330,7 @@
 .live-empty-state h2 {
     font-size: 19px;
     margin: 0 0 10px;
+    color: var(--live-text);
 }
 
 .live-empty-state p {

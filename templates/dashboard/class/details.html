@@ -987,43 +987,35 @@
 
 </style>
 
+
 <script>
-    (() => {
-        const root = document.querySelector(".lesson-content-page");
-        const toggle = document.getElementById("lessonThemeToggle");
-        const icon = document.getElementById("lessonThemeIcon");
-        const label = document.getElementById("lessonThemeText");
+(() => {
+    const root = document.querySelector(".lesson-content-page");
+    if (!root) return;
 
-        if (!root || !toggle) return;
+    const STORAGE_KEY = "dashboard-theme";
 
-        const key = "theme";
+    function syncFromGlobal() {
+        const theme =
+            document.documentElement.getAttribute("data-theme") ||
+            localStorage.getItem(STORAGE_KEY) ||
+            "dark";
 
-        function applyTheme(theme) {
-            const dark = theme === "dark";
-            root.classList.toggle("dark-theme", dark);
-            icon.textContent = dark ? "🌙" : "☀️";
-            label.textContent = dark ? "تم تاریک" : "تم روشن";
-        }
+        root.classList.toggle("dark-theme", theme === "dark");
+    }
 
-        try {
-            applyTheme(localStorage.getItem(key) || "light");
-        } catch (error) {
-            applyTheme("light");
-        }
+    syncFromGlobal();
 
-        toggle.addEventListener("click", () => {
-            const nextTheme = root.classList.contains("dark-theme")
-                ? "light"
-                : "dark";
+    const observer = new MutationObserver(syncFromGlobal);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+    });
 
-            applyTheme(nextTheme);
-
-            try {
-                localStorage.setItem(key, nextTheme);
-            } catch (error) {
-                // تغییر تم حتی بدون ذخیره‌سازی انجام می‌شود.
-            }
-        });
-    })();
+    window.addEventListener("storage", (e) => {
+        if (e.key === STORAGE_KEY) syncFromGlobal();
+    });
+})();
 </script>
+
 {% endblock %}

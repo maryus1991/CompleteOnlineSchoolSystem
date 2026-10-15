@@ -13,11 +13,7 @@
         </div>
         <div>
 
-        <button type="button" class="theme-toggle" id="themeToggle"
-                aria-label="تغییر تم">
-            <span id="themeIcon">☀️</span>
-            <span id="themeText">تم روشن</span>
-        </button>
+
 <a href="{% url 'student:class-live-list' %}" class="theme-toggle"
    aria-label="کلاس‌های آنلاین">
 
@@ -640,48 +636,39 @@
 }
 </style>
 
+
+
 <script>
-    (() => {
-        const root = document.querySelector(".student-classes");
-        const toggle = document.getElementById("themeToggle");
-        const icon = document.getElementById("themeIcon");
-        const text = document.getElementById("themeText");
+(() => {
+    const root = document.querySelector(".student-classes");
+    if (!root) return;
 
-        if (!root || !toggle) return;
+    const STORAGE_KEY = "dashboard-theme";
 
-        const storageKey = "theme";
+    function syncFromGlobal() {
+        const theme =
+            document.documentElement.getAttribute("data-theme") ||
+            localStorage.getItem(STORAGE_KEY) ||
+            "dark";
 
-        function applyTheme(theme) {
-            const isDark = theme === "dark";
+        root.classList.toggle("dark-theme", theme === "dark");
+    }
 
-            root.classList.toggle("dark-theme", isDark);
-            icon.textContent = isDark ? "🌙" : "☀️";
-            text.textContent = isDark ? "تم تاریک" : "تم روشن";
-        }
+    // همگام‌سازی اولیه
+    syncFromGlobal();
 
-        let savedTheme = "dark";
+    // اگر تم سراسری عوض شد (دکمه سایدبار)، این صفحه هم آپدیت شود
+    const observer = new MutationObserver(syncFromGlobal);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+    });
 
-        try {
-            savedTheme = localStorage.getItem(storageKey) || "light";
-        } catch (error) {
-            // در صورت مسدود بودن localStorage، تم روشن استفاده می‌شود.
-        }
-
-        applyTheme(savedTheme);
-
-        toggle.addEventListener("click", () => {
-            const nextTheme = root.classList.contains("dark-theme")
-                ? "light"
-                : "dark";
-
-            applyTheme(nextTheme);
-
-            try {
-                localStorage.setItem(storageKey, nextTheme);
-            } catch (error) {
-                // تغییر تم در همین صفحه همچنان کار می‌کند.
-            }
-        });
-    })();
+    // همگام‌سازی بین تب‌ها
+    window.addEventListener("storage", (e) => {
+        if (e.key === STORAGE_KEY) syncFromGlobal();
+    });
+})();
 </script>
+
 {% endblock %}

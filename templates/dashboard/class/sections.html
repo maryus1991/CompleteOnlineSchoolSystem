@@ -18,10 +18,7 @@
         </div>
                 <div>
 
-        <button type="button" class="theme-toggle" id="sectionThemeToggle">
-            <span id="sectionThemeIcon">☀️</span>
-            <span id="sectionThemeText">تم روشن</span>
-        </button>
+
 
 
 <a href="{% url 'student:class-live-list' %}" class="theme-toggle"
@@ -451,43 +448,34 @@
 }
 </style>
 
+
 <script>
-    (() => {
-        const root = document.querySelector(".section-page");
-        const toggle = document.getElementById("sectionThemeToggle");
-        const icon = document.getElementById("sectionThemeIcon");
-        const label = document.getElementById("sectionThemeText");
+(() => {
+    const root = document.querySelector(".section-page");
+    if (!root) return;
 
-        if (!root || !toggle) return;
+    const STORAGE_KEY = "dashboard-theme";
 
-        const key = "theme";
+    function syncFromGlobal() {
+        const theme =
+            document.documentElement.getAttribute("data-theme") ||
+            localStorage.getItem(STORAGE_KEY) ||
+            "dark";
 
-        function applyTheme(theme) {
-            const dark = theme === "dark";
-            root.classList.toggle("dark-theme", dark);
-            icon.textContent = dark ? "🌙" : "☀️";
-            label.textContent = dark ? "تم تاریک" : "تم روشن";
-        }
+        root.classList.toggle("dark-theme", theme === "dark");
+    }
 
-        try {
-            applyTheme(localStorage.getItem(key) || "light");
-        } catch (error) {
-            applyTheme("light");
-        }
+    syncFromGlobal();
 
-        toggle.addEventListener("click", () => {
-            const theme = root.classList.contains("dark-theme")
-                ? "light"
-                : "dark";
+    const observer = new MutationObserver(syncFromGlobal);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+    });
 
-            applyTheme(theme);
-
-            try {
-                localStorage.setItem(key, theme);
-            } catch (error) {
-                // تغییر تم صفحه بدون ذخیره‌سازی نیز انجام می‌شود.
-            }
-        });
-    })();
+    window.addEventListener("storage", (e) => {
+        if (e.key === STORAGE_KEY) syncFromGlobal();
+    });
+})();
 </script>
 {% endblock %}

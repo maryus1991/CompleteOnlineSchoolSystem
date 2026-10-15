@@ -1384,3 +1384,12 @@ a {
 .dashboard-mobile-toggle.is-active .menu-icon-close {
     display: inline-block;
 }
+
+.theme-toggle-btn .menu-icon {
+    background: var(--accent-glow);
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--accent-color);
+    background: var(--accent-glow);
+}

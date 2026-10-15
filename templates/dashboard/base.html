@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" data-theme="dark">
+<script>
+    (function () {
+        const t = localStorage.getItem('dashboard-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+    })();
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -115,12 +121,36 @@
         <div class="online-dot"></div>
 
     </div>
+
+        <!-- بعد از profile-card و قبل از منوی داشبورد -->
+
+
+
     <h3 >{{user.get_full_name}}</h3>
     <h4  dir="ltr" >{{user.PhoneNumber}}</h4>
 
 
 </div>
-
+<button type="button" class="sidebar-menu-item theme-toggle-btn" id="themeToggle" aria-label="تغییر تم">
+    <div class="menu-icon">
+        <!-- آیکون ماه (برای تم تاریک) -->
+        <svg class="theme-icon-moon" width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <!-- آیکون خورشید (برای تم روشن) -->
+        <svg class="theme-icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4 id="themeToggleText">تم روشن</h4>
+        <p>تغییر بین حالت تاریک و روشن</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</button>
 <!-- داشبورد -->
 <a href="{% url 'student:account' %}" class="sidebar-menu-item">
     <div class="menu-icon">
@@ -409,6 +439,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
         link.classList.toggle('active', isActive);
     });
+
+    // ===== Theme Toggle =====
+(function () {
+    const html = document.documentElement;
+    const toggleBtn = document.getElementById("themeToggle");
+    const textEl = document.getElementById("themeToggleText");
+    const moonIcon = document.querySelector(".theme-icon-moon");
+    const sunIcon = document.querySelector(".theme-icon-sun");
+    const STORAGE_KEY = "dashboard-theme";
+
+    function applyTheme(theme) {
+        html.setAttribute("data-theme", theme);
+        try { localStorage.setItem(STORAGE_KEY, theme); } catch (e) {}
+
+        if (theme === "dark") {
+            if (textEl) textEl.textContent = "تم روشن";
+            if (moonIcon) moonIcon.style.display = "block";
+            if (sunIcon) sunIcon.style.display = "none";
+        } else {
+            if (textEl) textEl.textContent = "تم تاریک";
+            if (moonIcon) moonIcon.style.display = "none";
+            if (sunIcon) sunIcon.style.display = "block";
+        }
+    }
+
+    let saved = "dark";
+    try {
+        saved = localStorage.getItem(STORAGE_KEY) ||
+                html.getAttribute("data-theme") ||
+                "dark";
+    } catch (e) {}
+    applyTheme(saved === "light" ? "light" : "dark");
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+            const current = html.getAttribute("data-theme") || "dark";
+            applyTheme(current === "dark" ? "light" : "dark");
+        });
+    }
+})();
+
 });
 
     </script>
