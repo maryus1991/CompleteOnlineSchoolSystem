@@ -23,6 +23,54 @@
 </head>
 <body>
 
+<button
+    type="button"
+    class="dashboard-mobile-toggle"
+    id="dashboardMenuToggle"
+    aria-label="باز کردن منوی داشبورد"
+    aria-controls="dashboardSidebar"
+    aria-expanded="false"
+>
+    <svg
+        class="menu-icon-open"
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+
+    <svg
+        class="menu-icon-close"
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="m18 6-12 12M6 6l12 12"/>
+    </svg>
+
+    <span>منو</span>
+</button>
+
+<!-- لایه تاریک پشت منو -->
+<div
+    class="dashboard-sidebar-overlay"
+    id="sidebarOverlay"
+    aria-hidden="true"
+></div>
+
     <div class="scroll-progress" id="scrollProgress"></div>
 
     <div class="preloader" id="preloader">
@@ -53,20 +101,25 @@
                     </div>
                 </div>
 
-                <aside class="dashboard-sidebar-right">
-                    <div class="sidebar-card profile-card">
-                        <div class="profile-avatar-large">
-                            {% if user.profile_image %}
-                            <img src="{{user.profile_image.url}}" alt="آواتار">
-                            {% endif %}
-                            <div class="online-dot"></div>
+<aside
+    class="dashboard-sidebar-right"
+    id="dashboardSidebar"
+    aria-label="منوی داشبورد دانش‌آموز"
+>
 
-                        </div>
-                        <h3 >{{user.get_full_name}}</h3>
-                        <h4  dir="ltr" >{{user.PhoneNumber}}</h4>
+    <div class="sidebar-card profile-card">
+    <div class="profile-avatar-large">
+        {% if user.profile_image %}
+        <img src="{{user.profile_image.url}}" alt="آواتار">
+        {% endif %}
+        <div class="online-dot"></div>
+
+    </div>
+    <h3 >{{user.get_full_name}}</h3>
+    <h4  dir="ltr" >{{user.PhoneNumber}}</h4>
 
 
-                    </div>
+</div>
 
 <!-- داشبورد -->
 <a href="{% url 'student:account' %}" class="sidebar-menu-item">
@@ -274,6 +327,91 @@
 
 
     <script src="/static/main/js/components.js"></script>
+    <script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('dashboardSidebar');
+    const toggleButton = document.getElementById('dashboardMenuToggle');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if (!sidebar || !toggleButton || !overlay) {
+        console.error('منوی داشبورد: یکی از عناصر HTML پیدا نشد.', {
+            sidebar,
+            toggleButton,
+            overlay
+        });
+        return;
+    }
+
+    function openSidebar() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        toggleButton.classList.add('is-active');
+
+        toggleButton.setAttribute('aria-expanded', 'true');
+        toggleButton.setAttribute('aria-label', 'بستن منوی داشبورد');
+        document.body.classList.add('sidebar-open');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        toggleButton.classList.remove('is-active');
+
+        toggleButton.setAttribute('aria-expanded', 'false');
+        toggleButton.setAttribute('aria-label', 'باز کردن منوی داشبورد');
+        document.body.classList.remove('sidebar-open');
+    }
+
+    toggleButton.addEventListener('click', () => {
+        if (sidebar.classList.contains('is-open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    overlay.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+
+    sidebar.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 1100) {
+                closeSidebar();
+            }
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 1100) {
+            closeSidebar();
+        }
+    });
+
+    const currentUrl = new URL(window.location.href);
+    const currentPath = currentUrl.pathname.replace(/\/+$/, '') || '/';
+
+    document.querySelectorAll('.dashboard-sidebar-right a[href]').forEach(link => {
+        const linkUrl = new URL(link.href, window.location.origin);
+        const linkPath = linkUrl.pathname.replace(/\/+$/, '') || '/';
+
+        const isActive =
+            linkUrl.origin === currentUrl.origin &&
+            (
+                currentPath === linkPath ||
+                (linkPath !== '/' && currentPath.startsWith(linkPath + '/'))
+            );
+
+        link.classList.toggle('active', isActive);
+    });
+});
+
+    </script>
 
 {% if messages %}
     <style>

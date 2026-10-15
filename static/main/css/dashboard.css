@@ -1221,3 +1221,166 @@ a {
         height: 70px;
     }
 }
+
+
+.dashboard-mobile-toggle,
+.dashboard-sidebar-overlay {
+    display: none;
+}
+
+@media (max-width: 1100px) {
+
+    /* حفظ چیدمان تک‌ستونه محتوای اصلی */
+    .dashboard-wrapper {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* دکمه منوی موبایل */
+    .dashboard-mobile-toggle {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 1202;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        padding: 11px 15px;
+        min-height: 48px;
+
+        font: inherit;
+        font-weight: 700;
+        color: var(--text-primary);
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+
+    .dashboard-mobile-toggle .menu-icon-close {
+        display: none;
+    }
+
+    .dashboard-mobile-toggle[aria-expanded="true"]
+    .menu-icon-open {
+        display: none;
+    }
+
+    .dashboard-mobile-toggle[aria-expanded="true"]
+    .menu-icon-close {
+        display: block;
+    }
+
+    /* پس‌زمینه پشت منو */
+    .dashboard-sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+        transition: opacity 0.3s ease,
+                    visibility 0.3s ease;
+    }
+
+    .dashboard-sidebar-overlay.is-visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* تبدیل سایدبار به منوی کشویی */
+    .dashboard-sidebar-right {
+        position: fixed !important;
+        top: 0;
+        right: 0;
+
+        width: min(340px, 88vw);
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+
+        display: flex !important;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        grid-template-columns: none !important;
+        gap: 12px;
+
+        box-sizing: border-box;
+        margin: 0 !important;
+        padding: 82px 16px 24px;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+
+        background: var(--bg-secondary);
+        border: none;
+        border-left: 1px solid var(--border-color);
+        border-radius: 0 !important;
+
+        box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25);
+
+        z-index: 1201;
+
+        transform: translateX(105%);
+        visibility: hidden;
+        pointer-events: none;
+
+        transition: transform 0.3s ease,
+                    visibility 0.3s ease;
+    }
+
+    .dashboard-sidebar-right.is-open {
+        transform: translateX(0);
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* آیتم‌های منو تمام عرض باشند */
+    .dashboard-sidebar-right .sidebar-menu-item {
+        display: flex;
+        flex-shrink: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .dashboard-sidebar-right .profile-card {
+        flex-shrink: 0;
+    }
+
+    /* قفل اسکرول صفحه پشت منو */
+    body.dashboard-menu-open {
+        overflow: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-sidebar-right,
+    .dashboard-sidebar-overlay {
+        transition: none !important;
+    }
+}
+
+.menu-icon-close {
+    display: none;
+}
+
+.dashboard-mobile-toggle.is-active .menu-icon-open {
+    display: none;
+}
+
+.dashboard-mobile-toggle.is-active .menu-icon-close {
+    display: inline-block;
+}
