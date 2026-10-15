@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl" data-theme="dark">
 <script>
     (function () {
-        const t = localStorage.getItem('dashboard-theme') || 'dark';
+        const t = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', t);
     })();
 </script>
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const textEl = document.getElementById("themeToggleText");
     const moonIcon = document.querySelector(".theme-icon-moon");
     const sunIcon = document.querySelector(".theme-icon-sun");
-    const STORAGE_KEY = "dashboard-theme";
+    const STORAGE_KEY = "theme";
 
     function applyTheme(theme) {
         html.setAttribute("data-theme", theme);
