@@ -1,0 +1,783 @@
+
+{% extends "dashboard/base.html" %}
+
+
+{% block header %}
+<style>
+section {
+    padding: 0;
+}
+
+.analysis-page {
+    --a-bg: var(--bg-primary);
+    --a-card: var(--bg-card);
+    --a-card-hover: var(--bg-card-hover);
+    --a-border: var(--border-color);
+    --a-text: var(--text-primary);
+    --a-muted: var(--text-muted);
+    --a-purple: var(--accent-color);
+    --a-green: #10b981;
+    --a-red: #f43f5e;
+    --a-yellow: #f59e0b;
+    --a-blue: #60a5fa;
+
+    min-height: 100%;
+    padding: 28px;
+    background: transparent;
+    color: var(--a-text);
+    font-family: inherit;
+}
+
+.analysis-page *,
+.analysis-page *::before,
+.analysis-page *::after {
+    box-sizing: border-box;
+}
+
+.analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.analysis-heading {
+    min-width: 0;
+}
+
+.analysis-back {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    color: var(--a-muted);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 160ms ease;
+}
+
+.analysis-back:hover {
+    color: var(--a-purple);
+}
+
+.analysis-title {
+    margin: 0 0 6px;
+    color: var(--a-text);
+    font-size: 25px;
+    font-weight: 800;
+    line-height: 1.7;
+}
+
+.analysis-subtitle {
+    margin: 0;
+    color: var(--a-muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.analysis-status {
+    padding: 8px 13px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 9px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #34d399;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Exam overview */
+.analysis-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 24px;
+    padding: 26px;
+    margin-bottom: 18px;
+    border: 1px solid var(--a-border);
+    border-radius: 16px;
+    background:
+        radial-gradient(
+            ellipse at top left,
+            var(--accent-glow),
+            transparent 55%
+        ),
+        var(--a-card);
+}
+
+.analysis-hero__info {
+    min-width: 0;
+}
+
+.analysis-eyebrow,
+.analysis-score__label {
+    color: var(--a-muted);
+    font-size: 12px;
+}
+
+.analysis-hero__info h2 {
+    margin: 8px 0;
+    color: var(--a-text);
+    font-size: 20px;
+    line-height: 1.8;
+}
+
+.analysis-hero__info p {
+    margin: 0 0 12px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.analysis-date {
+    display: block;
+    color: var(--a-muted);
+    font-size: 12px;
+    line-height: 2;
+}
+
+.analysis-score {
+    min-width: 180px;
+    padding-right: 24px;
+    border-right: 1px solid var(--a-border);
+}
+
+.analysis-score__value {
+    margin: 10px 0;
+    color: var(--a-purple);
+    font-size: 32px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.analysis-score__value span {
+    color: var(--a-muted);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.analysis-score__caption {
+    color: var(--a-muted);
+    font-size: 12px;
+}
+
+/* Metric cards */
+.analysis-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.analysis-card {
+    min-width: 0;
+    padding: 21px;
+    border: 1px solid var(--a-border);
+    border-radius: 14px;
+    background: var(--a-card);
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        background-color 160ms ease;
+}
+
+.analysis-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--a-purple);
+    background: var(--a-card-hover);
+}
+
+.analysis-card__label,
+.analysis-card__hint {
+    display: block;
+    color: var(--a-muted);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.analysis-card__value {
+    display: block;
+    margin: 12px 0 8px;
+    color: var(--a-text);
+    font-size: 27px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+}
+
+.analysis-purple {
+    color: var(--a-purple) !important;
+}
+
+.analysis-green {
+    color: var(--a-green) !important;
+}
+
+.analysis-red {
+    color: var(--a-red) !important;
+}
+
+.analysis-yellow {
+    color: var(--a-yellow) !important;
+}
+
+.analysis-blue {
+    color: var(--a-blue) !important;
+}
+
+/* Panels */
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.analysis-panel {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--a-border);
+    border-radius: 15px;
+    background: var(--a-card);
+}
+
+.analysis-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.analysis-panel__header h2,
+.analysis-note h2 {
+    margin: 0 0 7px;
+    color: var(--a-text);
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.analysis-panel__header p {
+    margin: 0;
+    color: var(--a-muted);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+/* Donut chart */
+.analysis-donut-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 24px;
+}
+
+.analysis-donut {
+    display: grid;
+    place-items: center;
+    width: 184px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--a-green) 0 25%,
+        var(--a-red) 25% 45%,
+        var(--a-yellow) 45% 65%,
+        #64748b 65% 100%
+    );
+    position: relative;
+}
+
+.analysis-donut::before {
+    content: "";
+    position: absolute;
+    inset: 17px;
+    border-radius: 50%;
+    background: var(--a-card);
+}
+
+.analysis-donut__center {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+}
+
+.analysis-donut__center strong {
+    color: var(--a-text);
+    font-size: 28px;
+}
+
+.analysis-donut__center span {
+    color: var(--a-muted);
+    font-size: 12px;
+}
+
+.analysis-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.analysis-legend > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.analysis-legend strong {
+    margin-right: auto;
+    color: var(--a-text);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+.analysis-dot {
+    width: 9px;
+    height: 9px;
+    flex: 0 0 9px;
+    border-radius: 3px;
+}
+
+.analysis-dot--correct {
+    background: var(--a-green);
+}
+
+.analysis-dot--wrong {
+    background: var(--a-red);
+}
+
+.analysis-dot--empty {
+    background: var(--a-yellow);
+}
+
+.analysis-dot--pending {
+    background: #64748b;
+}
+
+/* Statistics */
+.analysis-stat-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.analysis-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 0;
+    border-bottom: 1px solid var(--a-border);
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.analysis-stat-row:first-child {
+    padding-top: 0;
+}
+
+.analysis-stat-row:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.analysis-stat-row strong {
+    color: var(--a-text);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Percentage comparison */
+.analysis-percentages {
+    margin-bottom: 18px;
+}
+
+.analysis-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.analysis-progress-item {
+    min-width: 0;
+}
+
+.analysis-progress__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 11px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.analysis-progress__header strong {
+    color: var(--a-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.analysis-progress__track {
+    height: 9px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--bg-secondary);
+}
+
+.analysis-progress__bar {
+    height: 100%;
+    max-width: 100%;
+    min-width: 0;
+    border-radius: inherit;
+}
+
+.analysis-progress__bar--purple {
+    background: var(--accent-gradient-horizontal, linear-gradient(90deg, var(--a-purple), color-mix(in srgb, var(--a-purple) 60%, white)));
+}
+
+.analysis-progress__bar--green {
+    background: linear-gradient(90deg, #059669, #34d399);
+}
+
+/* Explanation */
+.analysis-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.analysis-note__icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border: 1px solid color-mix(in srgb, var(--a-purple) 30%, transparent);
+    border-radius: 11px;
+    background: var(--accent-glow);
+    color: var(--a-purple);
+    font-weight: 800;
+}
+
+.analysis-note p {
+    margin: 0;
+    color: var(--a-muted);
+    font-size: 13px;
+    line-height: 2.1;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .analysis-page {
+        padding: 22px;
+    }
+
+    .analysis-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .analysis-page {
+        padding: 15px 12px;
+    }
+
+    .analysis-title {
+        font-size: 21px;
+    }
+
+    .analysis-hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+        padding: 19px;
+    }
+
+    .analysis-score {
+        min-width: 0;
+        padding: 18px 0 0;
+        border-top: 1px solid var(--a-border);
+        border-right: 0;
+    }
+
+    .analysis-score__value {
+        font-size: 29px;
+    }
+
+    .analysis-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .analysis-card {
+        padding: 16px;
+    }
+
+    .analysis-card__value {
+        font-size: 23px;
+    }
+
+    .analysis-panel {
+        padding: 17px;
+    }
+
+    .analysis-donut {
+        width: 160px;
+    }
+}
+
+@media (max-width: 380px) {
+    .analysis-metrics {
+        gap: 9px;
+    }
+
+    .analysis-card {
+        padding: 13px;
+    }
+
+    .analysis-card__value {
+        font-size: 21px;
+    }
+
+    .analysis-legend {
+        gap: 12px 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .analysis-card {
+        transition: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="analysis-page" dir="rtl">
+
+    <header class="analysis-header">
+        <div class="analysis-heading">
+            <a href="{% url 'student:report-list' %}"
+               class="analysis-back">
+                <span aria-hidden="true">→</span>
+                بازگشت به کارنامه‌ها
+            </a>
+
+            <h1 class="analysis-title">تحلیل کارنامه آزمون</h1>
+            <p class="analysis-subtitle">
+                {{ report.exam.name }}
+            </p>
+        </div>
+        <a href="{% url 'student:report-details-question' report.id %}" class="report-button" >
+            تحلیل سوالات
+        </a>
+        <span class="analysis-status">
+            کارنامه منتشر شده
+        </span>
+
+    </header>
+
+    <section class="analysis-hero">
+        <div class="analysis-hero__info">
+            <span class="analysis-eyebrow">آزمون</span>
+            <h2>{{ report.exam.name }}</h2>
+
+            {% if report.exam %}
+                <p>{{ report.exam.get_categories }}</p>
+            {% endif %}
+
+            <span class="analysis-date">
+                زمان انتشار:
+                {{ report.published_at|default:"—" }}
+            </span>
+        </div>
+
+        <div class="analysis-score">
+            <span class="analysis-score__label">نمره کسب‌شده</span>
+
+            <div class="analysis-score__value">
+                {{ report.score }}
+                <span>/ {{ report.max_score }}</span>
+            </div>
+
+            <span class="analysis-score__caption">
+                نمره نهایی آزمون
+            </span>
+        </div>
+    </section>
+
+    <section class="analysis-metrics">
+        <article class="analysis-card">
+            <span class="analysis-card__label">درصد نهایی</span>
+            <strong class="analysis-card__value">
+                {{ report.percentage|floatformat:2 }}%
+            </strong>
+            <span class="analysis-card__hint">عملکرد در آزمون</span>
+        </article>
+
+        <article class="analysis-card">
+            <span class="analysis-card__label">تراز</span>
+            <strong class="analysis-card__value analysis-purple">
+                {{ report.teraze|default:"—" }}
+            </strong>
+            <span class="analysis-card__hint">تراز ثبت‌شده</span>
+        </article>
+
+        <article class="analysis-card">
+            <span class="analysis-card__label">رتبه</span>
+            <strong class="analysis-card__value">
+                {{ report.rank|default:"—" }}
+            </strong>
+            <span class="analysis-card__hint">رتبه ثبت‌شده</span>
+        </article>
+
+        <article class="analysis-card">
+            <span class="analysis-card__label">درصد پاسخ‌گویی</span>
+            <strong class="analysis-card__value analysis-green">
+                {{ report.answered_percentage|floatformat:2 }}%
+            </strong>
+            <span class="analysis-card__hint">میزان پاسخ‌گویی</span>
+        </article>
+    </section>
+
+    <section class="analysis-grid">
+        <article class="analysis-panel analysis-distribution">
+            <div class="analysis-panel__header">
+                <div>
+                    <h2>توزیع پاسخ‌ها</h2>
+                    <p>وضعیت پاسخ‌گویی به سؤالات</p>
+                </div>
+            </div>
+
+            <div class="analysis-donut-wrap">
+                <div class="analysis-donut"
+                     role="img"
+                     aria-label="نمودار توزیع پاسخ‌ها">
+                    <div class="analysis-donut__center">
+                        <strong>{{ report.total_questions }}</strong>
+                        <span>کل سؤالات</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-legend">
+                <div>
+                    <span class="analysis-dot analysis-dot--correct"></span>
+                    <span>صحیح</span>
+                    <strong>{{ report.correct_count }}</strong>
+                </div>
+                <div>
+                    <span class="analysis-dot analysis-dot--wrong"></span>
+                    <span>غلط</span>
+                    <strong>{{ report.wrong_count }}</strong>
+                </div>
+                <div>
+                    <span class="analysis-dot analysis-dot--empty"></span>
+                    <span>بدون پاسخ</span>
+                    <strong>{{ report.unanswered_count }}</strong>
+                </div>
+                <div>
+                    <span class="analysis-dot analysis-dot--pending"></span>
+                    <span>تصحیح‌نشده</span>
+                    <strong>{{ report.uncorrected_count }}</strong>
+                </div>
+            </div>
+        </article>
+
+        <article class="analysis-panel">
+            <div class="analysis-panel__header">
+                <div>
+                    <h2>جزئیات پاسخ‌گویی</h2>
+                    <p>تعداد و وضعیت پاسخ‌ها</p>
+                </div>
+            </div>
+
+            <div class="analysis-stat-list">
+                <div class="analysis-stat-row">
+                    <span>تعداد کل سؤالات</span>
+                    <strong>{{ report.total_questions }}</strong>
+                </div>
+
+                <div class="analysis-stat-row">
+                    <span>پاسخ‌های صحیح</span>
+                    <strong class="analysis-green">
+                        {{ report.correct_count }}
+                    </strong>
+                </div>
+
+                <div class="analysis-stat-row">
+                    <span>پاسخ‌های غلط</span>
+                    <strong class="analysis-red">
+                        {{ report.wrong_count }}
+                    </strong>
+                </div>
+
+                <div class="analysis-stat-row">
+                    <span>بدون پاسخ</span>
+                    <strong class="analysis-yellow">
+                        {{ report.unanswered_count }}
+                    </strong>
+                </div>
+
+                <div class="analysis-stat-row">
+                    <span>در انتظار تصحیح</span>
+                    <strong class="analysis-blue">
+                        {{ report.uncorrected_count }}
+                    </strong>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="analysis-panel analysis-percentages">
+        <div class="analysis-panel__header">
+            <div>
+                <h2>مقایسه درصدها</h2>
+                <p>درصد نهایی و میزان پاسخ‌گویی</p>
+            </div>
+        </div>
+
+        <div class="analysis-progress-list">
+            <div class="analysis-progress-item">
+                <div class="analysis-progress__header">
+                    <span>درصد نهایی</span>
+                    <strong>{{ report.percentage|floatformat:2 }}%</strong>
+                </div>
+                <div class="analysis-progress__track">
+                    <div class="analysis-progress__bar analysis-progress__bar--purple"
+                         style="width: {{ report.percentage }}%">
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-progress-item">
+                <div class="analysis-progress__header">
+                    <span>درصد پاسخ‌گویی</span>
+                    <strong>{{ report.answered_percentage|floatformat:2 }}%</strong>
+                </div>
+                <div class="analysis-progress__track">
+                    <div class="analysis-progress__bar analysis-progress__bar--green"
+                         style="width: {{ report.answered_percentage }}%">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="analysis-panel analysis-note">
+        <div class="analysis-note__icon" aria-hidden="true">i</div>
+        <div>
+            <h2>درباره این کارنامه</h2>
+            <p>
+                نتیجه نمایش‌داده‌شده بر اساس اطلاعات ثبت‌شده و
+                وضعیت تصحیح پاسخ‌های آزمون است.
+                اگر تعدادی از پاسخ‌ها هنوز تصحیح نشده باشند،
+                ممکن است نتیجه نهایی تغییر کند.
+            </p>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

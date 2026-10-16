@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<script>
+    (function () {
+        const t = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+    })();
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="dashboard.pageTitle">داشبورد دانش اموزی</title>
+<!--    todo: add name in setting-->
+    <meta name="description" content="مدیریت حساب کاربری، دوره‌ها و پیشرفت تحصیلی">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
+    
+    <link rel="preload" href="/static/main/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Bold.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Medium.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="/static/main/fonts/stylesheet.css">
+    
+    <link rel="stylesheet" href="/static/main/css/main.css">
+    <link rel="stylesheet" href="/static/main/css/theme.css">
+    <link rel="stylesheet" href="/static/main/css/components.css">
+    <link rel="stylesheet" href="/static/main/css/responsive.css">
+    <link rel="stylesheet" href="/static/main/css/dashboard.css">
+    {% block header %}{% endblock %}
+
+</head>
+<body>
+
+<button
+    type="button"
+    class="dashboard-mobile-toggle"
+    id="dashboardMenuToggle"
+    aria-label="باز کردن منوی داشبورد"
+    aria-controls="dashboardSidebar"
+    aria-expanded="false"
+>
+    <svg
+        class="menu-icon-open"
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+
+    <svg
+        class="menu-icon-close"
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="m18 6-12 12M6 6l12 12"/>
+    </svg>
+
+    <span>منو</span>
+</button>
+
+<!-- لایه تاریک پشت منو -->
+<div
+    class="dashboard-sidebar-overlay"
+    id="sidebarOverlay"
+    aria-hidden="true"
+></div>
+
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">
+                <svg width="50" height="50" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="plGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="50%" stop-color="#4facfe"/><stop offset="100%" stop-color="#f093fb"/></linearGradient></defs><circle cx="50" cy="50" r="46" stroke="url(#plGrad)" stroke-width="3" fill="none" stroke-dasharray="289"><animate attributeName="stroke-dashoffset" from="289" to="0" dur="2s" fill="freeze"/></circle><circle cx="50" cy="50" r="14" fill="url(#plGrad)"><animate attributeName="r" values="10;16;10" dur="2s" repeatCount="indefinite"/></circle></svg>
+                <span class="gradient-text">{{site.name}}</span>
+            </div>
+            <div class="preloader-bar"><div class="preloader-progress"></div></div>
+            <div class="preloader-percent">۰٪</div>
+        </div>
+    </div>
+
+    <!-- پنل تنظیمات حذف شد -->
+
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <main class="dashboard-premium">
+        <div class="container">
+            <div class="dashboard-wrapper">
+                
+                <div class="dashboard-main-content">
+                    <div id="dynamicContent">
+
+                        {% block main %}
+                        {% endblock %}
+
+                    </div>
+                </div>
+
+<aside
+    class="dashboard-sidebar-right"
+    id="dashboardSidebar"
+    aria-label="منوی داشبورد دانش‌آموز"
+>
+
+    <div class="sidebar-card profile-card">
+    <div class="profile-avatar-large">
+        {% if user.profile_image %}
+        <img src="{{user.profile_image.url}}" alt="آواتار">
+        {% endif %}
+        <div class="online-dot"></div>
+
+    </div>
+
+        <!-- بعد از profile-card و قبل از منوی داشبورد -->
+
+
+
+    <h3 >{{user.get_full_name}}</h3>
+    <h4  dir="ltr" >{{user.PhoneNumber}}</h4>
+
+
+</div>
+<button type="button" class="sidebar-menu-item theme-toggle-btn" id="themeToggle" aria-label="تغییر تم">
+    <div class="menu-icon">
+        <!-- آیکون ماه (برای تم تاریک) -->
+        <svg class="theme-icon-moon" width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <!-- آیکون خورشید (برای تم روشن) -->
+        <svg class="theme-icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4 id="themeToggleText">تم روشن</h4>
+        <p>تغییر بین حالت تاریک و روشن</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</button>
+
+
+<!-- آزمون‌ها -->
+<a href="{% url 'student:exam-list' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <rect x="4" y="3" width="16" height="18" rx="2"/>
+            <path d="M8 8h8M8 12h8M8 16h5"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>آزمون‌ها</h4>
+        <p>آزمون‌های فعال و پیش رو</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- تکالیف و تمرین‌ها -->
+<a href="{% url 'student:practice-list' %}" type="button" class="sidebar-menu-item" data-section="assignments">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <path d="M9 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"/>
+            <rect x="9" y="2" width="6" height="6" rx="1"/>
+            <path d="m7 13 2 2 4-4M15 14h3"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>تکالیف و تمرین‌ها</h4>
+        <p>انجام و ارسال تمرین‌ها</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- کلاس‌ها و محتوای آموزشی -->
+<a href="{% url 'student:class-list' %}" type="button" class="sidebar-menu-item" data-section="myCourses">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H21v16H5.5A2.5 2.5 0 0 0 3 21z"/>
+            <path d="M3 5.5v13A2.5 2.5 0 0 1 5.5 16H21"/>
+            <path d="M8 7h8M8 11h6"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>کلاس‌ها و محتوای آموزشی</h4>
+        <p>دوره‌ها، جزوه‌ها و جلسات</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- کارنامه و عملکرد -->
+<a href="{% url 'student:report-list' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <path d="M3 3v18h18"/>
+            <path d="m7 14 4-4 4 3 5-7"/>
+            <path d="M16 6h4v4"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>کارنامه و گزارش عملکرد</h4>
+        <p>نتایج، رتبه و پیشرفت تحصیلی</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- برنامه هفتگی و تقویم -->
+<!--<button type="button" class="sidebar-menu-item" data-section="calendar">-->
+<!--    <div class="menu-icon">-->
+<!--        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"-->
+<!--             stroke="currentColor" stroke-width="1.8">-->
+<!--            <rect x="3" y="5" width="18" height="16" rx="2"/>-->
+<!--            <path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h6"/>-->
+<!--        </svg>-->
+<!--    </div>-->
+<!--    <div class="menu-info">-->
+<!--        <h4>برنامه هفتگی و تقویم</h4>-->
+<!--        <p>زمان‌بندی آزمون‌ها و کلاس‌ها</p>-->
+<!--    </div>-->
+<!--    <div class="menu-arrow">←</div>-->
+<!--</button>-->
+
+<!-- مشاوره تحصیلی -->
+<!--<button type="button" class="sidebar-menu-item" data-section="counseling">-->
+<!--    <div class="menu-icon">-->
+<!--        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"-->
+<!--             stroke="currentColor" stroke-width="1.8">-->
+<!--            <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>-->
+<!--            <path d="M8 11h8M12 7v8"/>-->
+<!--        </svg>-->
+<!--    </div>-->
+<!--    <div class="menu-info">-->
+<!--        <h4>مشاوره تحصیلی</h4>-->
+<!--        <p>جلسات و برنامه مطالعاتی</p>-->
+<!--    </div>-->
+<!--    <div class="menu-arrow">←</div>-->
+<!--</button>-->
+
+<!-- درخواست‌های پشتیبانی -->
+<a href="{% url 'student:ticket-list' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>
+            <path d="M8 10h8M8 14h5"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>درخواست‌های پشتیبانی</h4>
+        <p>پیگیری درخواست‌ها و مشکلات</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- اعلان‌ها -->
+<!--<button type="button" class="sidebar-menu-item" data-section="notifications">-->
+<!--    <div class="menu-icon">-->
+<!--        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"-->
+<!--             stroke="currentColor" stroke-width="1.8">-->
+<!--            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>-->
+<!--            <path d="M10 21h4"/>-->
+<!--        </svg>-->
+<!--    </div>-->
+<!--    <div class="menu-info">-->
+<!--        <h4>اعلان‌ها</h4>-->
+<!--        <p>اطلاعیه‌ها و پیام‌های جدید</p>-->
+<!--    </div>-->
+<!--    <div class="menu-arrow">←</div>-->
+<!--</button>-->
+
+<!-- ویرایش حساب کاربری -->
+<a href="{% url 'student:account' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>حساب کاربری</h4>
+        <p>اطلاعات فردی و تنظیمات حساب</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- صفحه اصلی سایت -->
+<a href="/" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <path d="m3 10 9-7 9 7"/>
+            <path d="M5 9v12h14V9M9 21v-7h6v7"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>صفحه اصلی سایت</h4>
+        <p>بازگشت به وب‌سایت</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- خروج از حساب -->
+<a href="{% url 'user:logout' %}" class="sidebar-menu-item logout">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="#ef4444" stroke-width="1.8">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <path d="m16 17 5-5-5-5M21 12H9"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4 style="color:#ef4444;">خروج از حساب</h4>
+        <p>خروج امن از پنل دانش‌آموز</p>
+    </div>
+    <div class="menu-arrow" style="color:#ef4444;">←</div>
+</a>
+
+                </aside>
+            </div>
+        </div>
+    </main>
+
+
+
+
+    <script src="/static/main/js/components.js"></script>
+    <script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('dashboardSidebar');
+    const toggleButton = document.getElementById('dashboardMenuToggle');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if (!sidebar || !toggleButton || !overlay) {
+        console.error('منوی داشبورد: یکی از عناصر HTML پیدا نشد.', {
+            sidebar,
+            toggleButton,
+            overlay
+        });
+        return;
+    }
+
+    function openSidebar() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        toggleButton.classList.add('is-active');
+
+        toggleButton.setAttribute('aria-expanded', 'true');
+        toggleButton.setAttribute('aria-label', 'بستن منوی داشبورد');
+        document.body.classList.add('sidebar-open');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        toggleButton.classList.remove('is-active');
+
+        toggleButton.setAttribute('aria-expanded', 'false');
+        toggleButton.setAttribute('aria-label', 'باز کردن منوی داشبورد');
+        document.body.classList.remove('sidebar-open');
+    }
+
+    toggleButton.addEventListener('click', () => {
+        if (sidebar.classList.contains('is-open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    overlay.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+
+    sidebar.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 1100) {
+                closeSidebar();
+            }
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 1100) {
+            closeSidebar();
+        }
+    });
+
+    const currentUrl = new URL(window.location.href);
+    const currentPath = currentUrl.pathname.replace(/\/+$/, '') || '/';
+
+    document.querySelectorAll('.dashboard-sidebar-right a[href]').forEach(link => {
+        const linkUrl = new URL(link.href, window.location.origin);
+        const linkPath = linkUrl.pathname.replace(/\/+$/, '') || '/';
+
+        const isActive =
+            linkUrl.origin === currentUrl.origin &&
+            (
+                currentPath === linkPath ||
+                (linkPath !== '/' && currentPath.startsWith(linkPath + '/'))
+            );
+
+        link.classList.toggle('active', isActive);
+    });
+
+    // ===== Theme Toggle =====
+(function () {
+    const html = document.documentElement;
+    const toggleBtn = document.getElementById("themeToggle");
+    const textEl = document.getElementById("themeToggleText");
+    const moonIcon = document.querySelector(".theme-icon-moon");
+    const sunIcon = document.querySelector(".theme-icon-sun");
+    const STORAGE_KEY = "theme";
+
+    function applyTheme(theme) {
+        html.setAttribute("data-theme", theme);
+        try { localStorage.setItem(STORAGE_KEY, theme); } catch (e) {}
+
+        if (theme === "dark") {
+            if (textEl) textEl.textContent = "تم روشن";
+            if (moonIcon) moonIcon.style.display = "block";
+            if (sunIcon) sunIcon.style.display = "none";
+        } else {
+            if (textEl) textEl.textContent = "تم تاریک";
+            if (moonIcon) moonIcon.style.display = "none";
+            if (sunIcon) sunIcon.style.display = "block";
+        }
+    }
+
+    let saved = "dark";
+    try {
+        saved = localStorage.getItem(STORAGE_KEY) ||
+                html.getAttribute("data-theme") ||
+                "dark";
+    } catch (e) {}
+    applyTheme(saved === "light" ? "light" : "dark");
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+            const current = html.getAttribute("data-theme") || "dark";
+            applyTheme(current === "dark" ? "light" : "dark");
+        });
+    }
+})();
+
+});
+
+    </script>
+
+{% if messages %}
+    <style>
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;   /* قدیمی بالا، جدید پایین */
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast-item {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            max-width: 90vw;
+            text-align: center;
+            pointer-events: auto;
+            background-size: 200% 200%;
+            animation:
+                toastIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                gradientMove 4s ease infinite;
+        }
+
+        /* موج رنگی که روی پس‌زمینه حرکت می‌کنه */
+        .toast-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 120%, rgba(255,255,255,0.35), transparent 50%),
+                radial-gradient(circle at 80% -20%, rgba(255,255,255,0.25), transparent 50%);
+            animation: waveMove 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .toast-item > * { position: relative; z-index: 1; }
+
+        .toast-item.hide {
+            animation: toastOut 0.4s ease forwards;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(20px); }
+        }
+
+        @keyframes gradientMove {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes waveMove {
+            0%   { transform: translateY(20%) translateX(-10%); }
+            50%  { transform: translateY(-20%) translateX(10%); }
+            100% { transform: translateY(20%) translateX(-10%); }
+        }
+    </style>
+
+    <div id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('toast-container');
+
+            const colors = {
+                success: 'linear-gradient(135deg, #22c55e, #16a34a, #4ade80, #16a34a)',
+                error:   'linear-gradient(135deg, #ef4444, #b91c1c, #f87171, #b91c1c)',
+                danger:  'linear-gradient(135deg, #ef4444, #b91c1c, #f87171, #b91c1c)',
+                warning: 'linear-gradient(135deg, #f59e0b, #d97706, #fbbf24, #d97706)',
+                info:    'linear-gradient(135deg, #3b82f6, #2563eb, #60a5fa, #2563eb)',
+                debug:   'linear-gradient(135deg, #6b7280, #4b5563, #9ca3af, #4b5563)'
+            };
+
+            const DURATION = 6000; // مدت نمایش (ms)
+
+            function showToast(msg, tag) {
+                const bg = colors[tag] || colors.info;
+
+                const toast = document.createElement('div');
+                toast.className = 'toast-item';
+                toast.innerHTML = '<span>' + msg + '</span>';
+                toast.style.backgroundImage = bg;
+
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('hide');
+                    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+                }, DURATION);
+            }
+
+            {% for message in messages %}
+                showToast(
+                    "{{ message|escapejs }}",
+                    "{{ message.tags|default:'info' }}"
+                );
+            {% endfor %}
+        });
+    </script>
+{% endif %}
+
+    {% block footer %}
+    {% endblock %}
+</body>
+</html>

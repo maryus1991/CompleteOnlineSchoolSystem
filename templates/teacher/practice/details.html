@@ -1,0 +1,504 @@
+{% extends "dashboard/base.html" %}
+
+
+
+{% block header %}
+
+<style>
+section {
+    padding: 0;
+}
+
+.practice-detail {
+    --surface: var(--bg-card);
+    --surface-soft: var(--bg-secondary);
+    --border: var(--border-color);
+    --text: var(--text-primary);
+    --muted: var(--text-muted);
+    --primary: var(--accent-color);
+    --primary-soft: var(--accent-glow);
+    --success: #34d399;
+
+    color: var(--text);
+    padding: 24px;
+    background: transparent;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.practice-detail *,
+.practice-detail *::before,
+.practice-detail *::after {
+    box-sizing: border-box;
+}
+
+.practice-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: color .2s;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
+.practice-header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 16px;
+    color: var(--text);
+}
+
+.practice-description {
+    line-height: 2;
+    overflow-wrap: anywhere;
+    color: var(--text-secondary);
+}
+
+.practice-description img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+
+.practice-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.practice-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    background: var(--surface-soft);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.practice-layout {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+.questions-content {
+    display: block;
+    width: 100%;
+    min-width: 0;
+}
+
+.question-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.question-list-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.question-list-header > span {
+    padding: 7px 12px;
+    border-radius: 9px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 13px;
+}
+
+.question-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+}
+
+.question-list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    width: 100%;
+    max-width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color .2s, background .2s, transform .2s;
+}
+
+.question-list-item:hover {
+    background: var(--surface-soft);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.question-index {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.question-info {
+    display: grid;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+}
+
+.question-info strong {
+    font-size: 14px;
+    color: var(--text);
+}
+
+.question-info small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.question-list-item > svg {
+    flex-shrink: 0;
+    color: var(--muted);
+}
+
+/* Sidebar style (if used) */
+.question-sidebar h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 18px;
+    color: var(--text);
+}
+
+.question-link > span:first-child {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--surface-soft);
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.question-link.active > span:first-child {
+    background: var(--primary);
+    color: white;
+}
+
+.question-card h3 {
+    font-size: 19px;
+    line-height: 1.9;
+    margin: 0 0 16px;
+    color: var(--text);
+}
+
+.question-description img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+
+.option-item input {
+    margin-top: 7px;
+    accent-color: var(--primary);
+}
+
+.question-card textarea {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    padding: 14px;
+    color: var(--text);
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    resize: vertical;
+    font: inherit;
+    line-height: 1.9;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.question-card textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.answer-files label {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    background: var(--surface-soft);
+    border: 1px dashed var(--border-hover, var(--border));
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.answer-files input {
+    max-width: 100%;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.question-footer a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.practice-actions button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--surface-soft);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+}
+
+.practice-actions button:hover {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+}
+
+.empty-questions {
+    padding: 40px 20px;
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--muted);
+}
+
+.empty-questions svg {
+    font-size: 40px;
+    color: var(--primary);
+}
+
+@media (max-width: 900px) {
+    .practice-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .question-link > span:nth-child(2) {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .practice-detail {
+        padding: 12px;
+    }
+
+    .practice-header {
+        padding: 18px;
+    }
+
+    .practice-header h1 {
+        font-size: 21px;
+    }
+
+    .question-list-item {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .question-index {
+        width: 36px;
+        height: 36px;
+    }
+
+    .question-info small {
+        font-size: 11px;
+    }
+}
+</style>
+
+{% endblock %}
+
+{% block main %}
+<div class="practice-detail" dir="rtl">
+
+    <header class="practice-header">
+        <a href="{% url 'student:practice-list' %}" class="back-link">
+            <svg class="bi bi-arrow-right" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+            </svg>
+            بازگشت به تمرین‌ها
+        </a>
+
+        <h1>{{ practice.name }}</h1>
+
+        {% if practice.description %}
+            <div class="practice-description">
+                {{ practice.description|safe }}
+            </div>
+        {% endif %}
+
+        <div class="practice-meta">
+            <span>
+                <svg class="bi bi-list-check" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+                    <path d="M1.713 11.865a.5.5 0 0 1 .708 0L3 12.444l1.579-1.579a.5.5 0 0 1 .708.708l-1.933 1.933a.5.5 0 0 1-.708 0l-.933-.933a.5.5 0 0 1 0-.708m0-4a.5.5 0 0 1 .708 0L3 8.444l1.579-1.579a.5.5 0 0 1 .708.708L3.354 9.506a.5.5 0 0 1-.708 0l-.933-.933a.5.5 0 0 1 0-.708m0-4a.5.5 0 0 1 .708 0L3 4.444l1.579-1.579a.5.5 0 1 1 .708.708L3.354 5.506a.5.5 0 0 1-.708 0l-.933-.933a.5.5 0 0 1 0-.708"/>
+                </svg>
+                {{ questions|length }} سؤال
+            </span>
+
+            <span>
+                نوع تمرین:
+                {{practice.get_type_of_practice_display}}
+
+            </span>
+            <span>
+                <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                </svg>
+                زمان شروع:
+                {% if practice.start_at %}
+                    {{ practice.start_at }}
+                {% else %}
+                    تعیین نشده
+                {% endif %}
+            </span>
+            <span>
+                <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                </svg>
+                مهلت:
+                {% if practice.deadline %}
+                    {{ practice.deadline }}
+                {% else %}
+                    تعیین نشده
+                {% endif %}
+            </span>
+
+            {% if practice.section %}
+                <span>
+                    <svg class="bi bi-book" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                    </svg>
+                    {{ practice.section }}
+                </span>
+            {% endif %}
+        </div>
+    </header>
+
+
+<div class="practice-layout">
+    <section class="questions-content">
+        <div class="question-list-header">
+            <h2>سؤال‌های تمرین</h2>
+            <span>{{ questions|length }} سؤال</span>
+        </div>
+
+        <div class="question-list">
+            {% for question in questions %}
+                <a href="{% url 'student:practice-solve' pk=practice.pk question_pk=question.pk %}"
+                   class="question-list-item">
+
+                    <span class="question-index">
+                        {{ forloop.counter }}
+                    </span>
+
+                    <span class="question-info">
+                        <strong>سؤال {{ forloop.counter }}</strong>
+                        <small>برای مشاهده و پاسخ‌گویی کلیک کنید</small>
+                    </span>
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="20" height="20"
+                         fill="currentColor"
+                         viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                    </svg>
+                </a>
+            {% empty %}
+                <div class="empty-questions">
+                    سؤالی برای این تمرین ثبت نشده است.
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+</div>
+
+<script >
+document.addEventListener("DOMContentLoaded", () => {
+    const links = document.querySelectorAll("[data-question-link]");
+
+    links.forEach((link) => {
+        link.addEventListener("click", () => {
+            links.forEach((item) => item.classList.remove("active"));
+            link.classList.add("active");
+        });
+    });
+
+    const questionCards = document.querySelectorAll(".question-card");
+
+    if (!("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+
+                const id = entry.target.id.replace("question-", "");
+
+                links.forEach((link) => {
+                    link.classList.toggle(
+                        "active",
+                        link.dataset.questionLink === id
+                    );
+                });
+            });
+        },
+        { threshold: 0.35 }
+    );
+
+    questionCards.forEach((card) => observer.observe(card));
+});
+
+</script>
+{% endblock %}
