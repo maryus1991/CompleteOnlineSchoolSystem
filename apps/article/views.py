@@ -24,7 +24,7 @@ class ArticleListView(ListView):
     def get_queryset(self):
         if q:=self.request.GET.get("q"):
             print(q)
-            return Article.objects.filter(is_active=True).filter(
+            return Article.objects.filter(is_active=True, publish=True).filter(
                 Q(name__icontains=q) |
                 Q(summery__icontains=q) |
                 Q(text__icontains=q) |

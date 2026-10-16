@@ -1,4 +1,4 @@
-{% extends "dashboard/base.html" %}
+{% extends "teacher/base.html" %}
 
 {% block header %}
 <style>
@@ -324,7 +324,7 @@
             <p>درخواست‌ها و گفتگوهای شما با پشتیبانی</p>
         </div>
 
-        <a href="{% url 'student:ticket-create' %}" class="ticket-new-btn">
+        <a href="{% url 'teacher:ticket-create' %}" class="ticket-new-btn">
             <svg width="17" height="17"
                  viewBox="0 0 24 24"
                  fill="none"
@@ -402,7 +402,7 @@
                         </div>
 
 
-                        <a href="{% url 'student:ticket-chat' pk=ticket.pk %}"
+                        <a href="{% url 'teacher:ticket-chat' pk=ticket.pk %}"
                            class="ticket-title">
                             {{ ticket.name }}
                         </a>
@@ -438,7 +438,7 @@
 
                     <div class="ticket-action">
 
-                        <a href="{% url 'student:ticket-chat' pk=ticket.pk %}"
+                        <a href="{% url 'teacher:ticket-chat' pk=ticket.pk %}"
                            class="ticket-view-btn"
                            title="مشاهده درخواست">
 

@@ -17,6 +17,7 @@ class Article(BaseModel):
     image = ResizedImageField("عکس", upload_to=UploadPath("articles-images"))
     file = models.FileField("فایل", upload_to=UploadPath("article-files"), null=True, blank=True)
     name_for_file = models.CharField(max_length=255, verbose_name='عنوان فایل', null=True, blank=True)
+    publish = models.BooleanField(default=False, verbose_name="انتشار")
 
     def __str__(self):
         return self.name
