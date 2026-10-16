@@ -3,26 +3,20 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 from apps.users.teachers.models import Teacher
-from django.core.exceptions import PermissionDenied
 
-
-class SiteArticlePermissionMixin:
-    """بررسی دسترسی انتشار مقالهٔ سایت، بدون override کردن dispatch."""
-
-    def get_teacher(self):
-        teacher = Teacher.objects.filter(user=self.request.user).first()
-
-        if teacher is None or not teacher.can_site_article:
-            raise PermissionDenied("اجازهٔ افزودن مقالهٔ سایت را ندارید.")
-
-        return teacher
-
-    def get_form_kwargs(self):
-        # هنگام نمایش فرم و ارسال فرم اجرا می‌شود.
-        self.get_teacher()
-        return super().get_form_kwargs()
 
 class TeacherMixin(AccessMixin):
+    """
+    بررسی دسترسی معلم بر اساس فیلدی که در کلاس فرزند تعریف می‌شود.
+    مثال:
+        class ArticleCreateView(SitePermissionMixin, CreateView):
+            permission_field = "can_site_article"
+    """
+    permission_field = None
+    message_info = None
+    message_success = None
+    message_error = None
+    message_warning = None
 
     def dispatch(self, request, *args, **kwargs):
 
@@ -53,6 +47,21 @@ class TeacherMixin(AccessMixin):
 
             )
             return redirect("user:login")
+
+        if self.permission_field != "ok":
+            if teacher is None or not getattr(teacher, self.permission_field, False):
+                messages.warning(request, "شما اجازه ورود به این صفحه ندارید")
+                return redirect("teacher:main")
+
+        if request.method == "GET":
+            if self.message_info :
+                messages.info(request, self.message_info)
+            if self.message_success :
+                messages.success(request, self.message_success)
+            if self.message_error :
+                messages.error(request, self.message_error)
+            if self.message_warning :
+                messages.warning(request, self.message_warning)
 
         request.teacher = teacher
 

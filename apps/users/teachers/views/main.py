@@ -12,13 +12,14 @@ from django.shortcuts import redirect
 
 class MainView(TeacherMixin, TemplateView):
     template_name = "teacher/main.html"
-
+    permission_field = "ok"
 
 class EditAccountView(TeacherMixin, TemplateView):
     """edit account dashboard view"""
 
     template_name = 'teacher/account/account.html'
     redirect_url = "teacher:account"
+    permission_field = "can_change_account"
 
 
     def get_context_data(self, **kwargs):

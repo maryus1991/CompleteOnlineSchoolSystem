@@ -32,7 +32,7 @@ class ArticleListView(ListView):
                 Q(category__name__icontains=q)
             ).select_related("category").distinct()
         else:
-            return Article.objects.filter(is_active=True).select_related("category")
+            return Article.objects.filter(is_active=True, publish=True).select_related("category")
 
     def get_context_data( self, *args, **kwargs ) :
         data = super().get_context_data(*args, **kwargs)
@@ -61,7 +61,7 @@ class ArticleCategoryListView(ListView):
 
         try:
             if q := self.request.GET.get("q"):
-                return BlogCategories.objects.get(is_active=True, pk=self.kwargs.get("pk")).posts.filter(is_active=True).filter(
+                return BlogCategories.objects.get(is_active=True, pk=self.kwargs.get("pk")).posts.filter(is_active=True, publish=True).filter(
                 Q(name__icontains=q) |
                 Q(summery__icontains=q) |
                 Q(text__icontains=q) |
@@ -69,7 +69,7 @@ class ArticleCategoryListView(ListView):
                 Q(category__name__icontains=q)
             ).select_related("category").distinct()
             else:
-                return BlogCategories.objects.get(is_active=True, pk=self.kwargs.get("pk")).posts.filter(is_active=True).select_related("category")
+                return BlogCategories.objects.get(is_active=True, pk=self.kwargs.get("pk")).posts.filter(is_active=True, publish=True).select_related("category")
 
         except BlogCategories.DoesNotExist:
             raise Http404()
@@ -86,7 +86,7 @@ class ArticleCategoryListView(ListView):
 class ArticleDetailView(DetailView):
     """detail view for articles"""
 
-    queryset = Article.objects.filter(is_active=True).select_related("category", "user").prefetch_related("tags")
+    queryset = Article.objects.filter(is_active=True, publish=True).select_related("category", "user").prefetch_related("tags")
     template_name = "main/blog/details.html"
     context_object_name = "item"
 
@@ -100,6 +100,6 @@ class ArticleDetailView(DetailView):
         data = super().get_context_data(*args, **kwargs)
 
         data.update({
-            "related_posts" :  self.object.category.posts.filter(is_active=True).all(),
+            "related_posts" :  self.object.category.posts.filter(is_active=True, publish=True).all(),
         })
         return data

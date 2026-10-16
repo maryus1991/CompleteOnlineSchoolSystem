@@ -20,6 +20,7 @@ class Teacher( BaseModel):
     can_start_live_class = models.BooleanField("اجازه شروع جلسه انلاین", default=True)
     can_issuing_report = models.BooleanField("اجازه صدور کارنامه", default=True)
     can_site_article = models.BooleanField("اجازه افزودن مقاله برای سایت", default=False)
+    can_change_account = models.BooleanField("اجازه ویرایش اطلاعات", default=True)
 
 
     def __str__(self):

@@ -168,6 +168,20 @@
     </div>
     <div class="menu-arrow">←</div>
 </a>
+<a href="{% url 'teacher:article-list' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <rect x="4" y="3" width="16" height="18" rx="2"/>
+            <path d="M8 8h8M8 12h8M8 16h5"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>مقالات</h4>
+        <p>نوشتن و انتشار مقالات توسط شما</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
 
 <!-- تکالیف و تمرین‌ها -->
 <a href="{% url 'student:practice-list' %}" type="button" class="sidebar-menu-item" data-section="assignments">

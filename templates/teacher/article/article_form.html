@@ -1,10 +1,477 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "teacher/base.html" %}
 
-</body>
-</html>
+{% block header %}
+<style>
+    .article-form-page {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .article-form-header {
+        margin-bottom: 22px;
+    }
+
+    .article-form-header h2 {
+        margin: 0 0 6px;
+        color: var(--text-primary);
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+    .article-form-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .8rem;
+    }
+
+    .article-form-card {
+        padding: 22px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+    }
+
+    .article-form-group {
+        margin-bottom: 20px;
+    }
+
+    .article-form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .article-form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .article-required {
+        color: #f87171;
+    }
+
+    .article-form-group input,
+    .article-form-group textarea,
+    .article-form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 15px;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 13px;
+        outline: none;
+        font-family: inherit;
+        font-size: .82rem;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .article-form-group input:focus,
+    .article-form-group textarea:focus,
+    .article-form-group select:focus {
+        border-color: #4facfe;
+        box-shadow: 0 0 0 3px rgba(79, 172, 254, .08);
+    }
+
+    .article-form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.9;
+    }
+
+    .article-form-group input[type="file"] {
+        padding: 10px;
+    }
+
+    .article-form-group input[type="checkbox"] {
+        width: auto;
+        margin-left: 8px;
+        accent-color: #4facfe;
+    }
+
+    .article-checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 13px;
+        background: var(--bg-primary);
+    }
+
+    .article-checkbox-row label {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: .82rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .article-help-text {
+        display: block;
+        margin-top: 7px;
+        color: var(--text-secondary);
+        font-size: .68rem;
+    }
+
+    .article-errors {
+        margin-top: 7px;
+        color: #f87171;
+        font-size: .7rem;
+        line-height: 1.8;
+    }
+
+    .article-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .article-form-row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+    }
+
+    .article-current-file {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(79, 172, 254, .08);
+        border: 1px solid rgba(79, 172, 254, .15);
+        color: #4facfe;
+        font-size: .72rem;
+        text-decoration: none;
+    }
+
+    .article-current-file:hover {
+        border-color: rgba(79, 172, 254, .35);
+    }
+
+    .article-current-image {
+        margin-top: 10px;
+        max-width: 180px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    .article-current-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .article-form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .article-back-btn,
+    .article-submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: .8rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .article-back-btn {
+        color: var(--text-secondary);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+    }
+
+    .article-back-btn:hover {
+        color: var(--text-primary);
+        border-color: rgba(79, 172, 254, .35);
+    }
+
+    .article-submit-btn {
+        color: #fff;
+        background: var(--accent-gradient);
+        border: none;
+    }
+
+    .article-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(79, 172, 254, .2);
+    }
+
+    .article-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 13px 15px;
+        border: 1px solid rgba(79, 172, 254, .15);
+        border-radius: 12px;
+        background: rgba(79, 172, 254, .06);
+        color: var(--text-secondary);
+        font-size: .72rem;
+        line-height: 1.9;
+    }
+
+    .article-info svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: #4facfe;
+    }
+
+    .article-form-group .django-ckeditor-5-widget,
+    .article-form-group .ck-editor {
+        width: 100%;
+    }
+
+    .article-form-group .ck-editor__editable {
+        min-height: 280px;
+        border-radius: 0 0 12px 12px !important;
+        background: var(--bg-primary) !important;
+        color: var(--text-primary) !important;
+    }
+
+    @media (max-width: 700px) {
+        .article-form-card {
+            padding: 15px;
+        }
+
+        .article-form-row,
+        .article-form-row-3 {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .article-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .article-back-btn,
+        .article-submit-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block main %}
+
+<div class="article-form-page">
+
+    <div class="article-form-header">
+        <h2>
+            {% if object %}
+                ویرایش مقاله
+            {% else %}
+                ایجاد مقاله جدید
+            {% endif %}
+        </h2>
+        <p>
+            {% if object %}
+                اطلاعات مقاله «{{ object.name }}» را ویرایش کنید.
+            {% else %}
+                مقاله آموزشی جدید بنویسید و در صورت تمایل منتشر کنید.
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="article-info">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+        </svg>
+        <div>
+            مقالات منتشرشده در بخش بلاگ سایت برای دانش‌آموزان و بازدیدکنندگان نمایش داده می‌شوند.
+            تا زمانی که گزینه «انتشار» را فعال نکرده‌اید، مقاله به صورت پیش‌نویس ذخیره می‌شود.
+        </div>
+    </div>
+
+    <div class="article-form-card">
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+
+            {% csrf_token %}
+
+            <div class="article-form-group">
+                <label class="article-form-label" for="{{ form.name.id_for_label }}">
+                    عنوان مقاله
+                    <span class="article-required">*</span>
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="article-errors">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="article-form-group">
+                <label class="article-form-label" for="{{ form.summery.id_for_label }}">
+                    خلاصه
+                    <span class="article-required">*</span>
+                </label>
+                {{ form.summery }}
+                <span class="article-help-text">یک توضیح کوتاه برای نمایش در لیست مقالات (حداکثر ۵۰۰ کاراکتر).</span>
+                {% if form.summery.errors %}
+                    <div class="article-errors">{{ form.summery.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="article-form-row">
+                <div class="article-form-group">
+                    <label class="article-form-label" for="{{ form.category.id_for_label }}">
+                        دسته‌بندی
+                        <span class="article-required">*</span>
+                    </label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <div class="article-errors">{{ form.category.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="article-form-group">
+                    <label class="article-form-label" for="{{ form.reading_time.id_for_label }}">
+                        زمان مطالعه (دقیقه)
+                    </label>
+                    {{ form.reading_time }}
+                    {% if form.reading_time.errors %}
+                        <div class="article-errors">{{ form.reading_time.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="article-form-group">
+                <label class="article-form-label" for="{{ form.text.id_for_label }}">
+                    متن مقاله
+                    <span class="article-required">*</span>
+                </label>
+                {{ form.text }}
+                {% if form.text.errors %}
+                    <div class="article-errors">{{ form.text.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="article-form-group">
+                <label class="article-form-label" for="{{ form.image.id_for_label }}">
+                    تصویر شاخص
+                    {% if not object %}<span class="article-required">*</span>{% endif %}
+                </label>
+                {{ form.image }}
+                {% if object and object.image %}
+                    <div class="article-current-image">
+                        <img src="{{ object.image.url }}" alt="تصویر فعلی">
+                    </div>
+                    <span class="article-help-text">در صورت انتخاب تصویر جدید، تصویر قبلی جایگزین می‌شود.</span>
+                {% else %}
+                    <span class="article-help-text">تصویر اصلی مقاله که در لیست و جزئیات نمایش داده می‌شود.</span>
+                {% endif %}
+                {% if form.image.errors %}
+                    <div class="article-errors">{{ form.image.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="article-form-row">
+                <div class="article-form-group">
+                    <label class="article-form-label" for="{{ form.file.id_for_label }}">
+                        فایل پیوست
+                    </label>
+                    {{ form.file }}
+                    {{ form.media }}
+                    {% if object and object.file %}
+                        <a href="{{ object.file.url }}" class="article-current-file" target="_blank" rel="noopener">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <path d="M14 2v6h6"/>
+                            </svg>
+                            دانلود فایل فعلی
+                        </a>
+                    {% endif %}
+                    <span class="article-help-text">اختیاری — PDF، ورد یا فایل مرتبط با مقاله.</span>
+                    {% if form.file.errors %}
+                        <div class="article-errors">{{ form.file.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="article-form-group">
+                    <label class="article-form-label" for="{{ form.name_for_file.id_for_label }}">
+                        عنوان فایل
+                    </label>
+                    {{ form.name_for_file }}
+                    <span class="article-help-text">نام نمایشی فایل پیوست برای کاربران.</span>
+                    {% if form.name_for_file.errors %}
+                        <div class="article-errors">{{ form.name_for_file.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="article-form-group">
+                <div class="article-checkbox-row">
+                     {{ form.publish }}
+                    <label for="{{ form.publish.id_for_label }}">
+                        انتشار مقاله (قابل مشاهده برای همه)
+                    </label>
+                </div>
+                {% if form.publish.errors %}
+                    <div class="article-errors">{{ form.publish.errors }}</div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="article-errors" style="margin-bottom:15px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="article-form-actions">
+
+                <a href="{% url 'teacher:article-list' %}" class="article-back-btn">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M19 12H5"/>
+                        <path d="M12 19l-7-7 7-7"/>
+                    </svg>
+                    بازگشت
+                </a>
+
+                <button type="submit" class="article-submit-btn">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        {% if object %}
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <path d="M17 21v-8H7v8"/>
+                            <path d="M7 3v5h8"/>
+                        {% else %}
+                            <path d="M12 5v14"/>
+                            <path d="M5 12h14"/>
+                        {% endif %}
+                    </svg>
+                    {% if object %}
+                        ذخیره تغییرات
+                    {% else %}
+                        ایجاد مقاله
+                    {% endif %}
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
