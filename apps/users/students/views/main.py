@@ -16,10 +16,6 @@ class MainStudentDashboardView(StudentMixin, TemplateView):
 
     template_name = 'dashboard/main.html'
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-
-        return data
 
 class EditAccountView(StudentMixin, TemplateView):
     """edit account dashboard view"""

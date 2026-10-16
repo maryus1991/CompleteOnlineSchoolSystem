@@ -281,11 +281,11 @@ a {
 
 .online-dot {
     position: absolute;
-    bottom: 5px;
-    right: 5px;
-    width: 14px;
-    height: 14px;
-    background: #22c55e;
+    bottom: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    background: #ff0000;
     border-radius: 50%;
     border: 2px solid var(--bg-card);
     animation: pulse 2s infinite;

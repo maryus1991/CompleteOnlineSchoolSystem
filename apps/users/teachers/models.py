@@ -1,11 +1,15 @@
 from django.db import models
 from apps.users.accounts.models import User
-from apps.categories.models import  MajorCategories
+from apps.schools.models import School
 from apps.common.models import BaseModel
 
 
 class Teacher( BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="حساب")
+
+    province = models.CharField(null=True, blank=True , max_length=255, verbose_name='استان')
+    city = models.CharField(null=True, blank=True ,  max_length=255, verbose_name='شهر')
+    school =  models.ForeignKey(School, verbose_name='مدرسه', null=True, blank=True, on_delete=models.CASCADE)
 
     can_add_exam = models.BooleanField("اجاره افزودن ازمون", default=True)
     can_add_practice = models.BooleanField("اجازه افزودن تمرین", default=True)

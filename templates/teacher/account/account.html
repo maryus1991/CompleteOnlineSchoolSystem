@@ -29,14 +29,7 @@
             {{ form.email }}
             <label for="{{ form.email.id_for_label }}"> ایمیل</label>
         </div>
-        <div class="form-group-glass">
-            {{ form.grade }}
-            <label for="{{form.grade.id_for_label}}">رشته</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.major }}
-            <label for="{{form.major.id_for_label}}">پایه</label>
-        </div>
+
         <div class="form-group-glass">
             {{ form.province }}
             <label for="{{form.province.id_for_label}}">استان</label>
@@ -65,10 +58,7 @@
             {{ form.biography }}
             <label for="{{form.biography.id_for_label}}">بیوگرافی</label>
         </div>
-        <div class="form-group-glass">
-            {{ form.parent_phone_number }}
-            <label for="{{form.parent_phone_number.id_for_label}}">شماره ای از والدین</label>
-        </div>
+
         <div class="form-group-glass">
             {{ form.telegram_link }}
             <label for="{{form.telegram_link.id_for_label}}">ایدی تلگرام</label>
@@ -92,7 +82,7 @@
         </div>
         <div class="form-buttons">
             <button type="submit" class="btn-save">ذخیره تغییرات</button>
-            <a   class="btn-cancel" href="{% url 'student:account' %}" >انصراف</a>
+            <a   class="btn-cancel" href="{% url 'teacher:account' %}" >انصراف</a>
         </div>
     </form>
 </div>
