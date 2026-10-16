@@ -3,7 +3,24 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 from apps.users.teachers.models import Teacher
+from django.core.exceptions import PermissionDenied
 
+
+class SiteArticlePermissionMixin:
+    """بررسی دسترسی انتشار مقالهٔ سایت، بدون override کردن dispatch."""
+
+    def get_teacher(self):
+        teacher = Teacher.objects.filter(user=self.request.user).first()
+
+        if teacher is None or not teacher.can_site_article:
+            raise PermissionDenied("اجازهٔ افزودن مقالهٔ سایت را ندارید.")
+
+        return teacher
+
+    def get_form_kwargs(self):
+        # هنگام نمایش فرم و ارسال فرم اجرا می‌شود.
+        self.get_teacher()
+        return super().get_form_kwargs()
 
 class TeacherMixin(AccessMixin):
 
