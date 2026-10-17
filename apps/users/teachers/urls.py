@@ -23,4 +23,5 @@ urlpatterns = [
     path("questions/create/", views.questions.QuestionCreateView.as_view(), name="question-create"),
     path("questions/update/<int:pk>/", views.questions.QuestionUpdateView.as_view(), name="question-update"),
     path("questions/delete/<int:pk>/", views.questions.QuestionDeleteView.as_view(), name="question-delete"),
+    path("questions/publish/<int:pk>/", views.questions.AddQuestionToQbankView.as_view(), name="question-publish"),
 ]

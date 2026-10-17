@@ -1,8 +1,11 @@
+from typing import Any
+
 from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView, RedirectView
 
 from apps.questions.models import Question
 from apps.users.teachers.forms.questions import (
@@ -13,6 +16,36 @@ from apps.users.teachers.forms.questions import (
 )
 from apps.users.teachers.mixins import TeacherMixin
 
+
+class AddQuestionToQbankView(TeacherMixin, RedirectView):
+    """  add question with its options and key to qbank"""
+
+    permission_field = "can_add_qbank"
+
+    def get_redirect_url(self, *args, **kwargs) :
+
+        obj = get_object_or_404(
+            Question,
+            pk=kwargs.get("pk"),
+        )
+        if obj.is_active:
+            if obj.is_for_qbank:
+                obj.is_for_qbank = False
+            else:
+                obj.is_for_qbank = True
+            obj.save(update_fields=["is_for_qbank"])
+            messages.success(
+                self.request,
+                "سوال شما با موفقیت انتشار یافت"
+            )
+
+        else:
+            messages.info(
+                self.request, "ایتم غیرفعال است"
+            )
+
+
+        return reverse_lazy("teacher:question-list")
 
 class QuestionListView(TeacherMixin, ListView):
     """list the teacher's questions"""
@@ -37,6 +70,7 @@ class QuestionCreateView(TeacherMixin, CreateView):
     form_class = QuestionForm
     template_name = "teacher/question/form.html"
     success_url = reverse_lazy("teacher:question-list")
+    message_info = "هر چه قدر عدد موجود در قسمت ترتیب گزینه ها بزرگتر باشد بالاتر قرار داده میشود"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -98,6 +132,7 @@ class QuestionUpdateView(TeacherMixin, UpdateView):
     template_name = "teacher/question/form.html"
     success_url = reverse_lazy("teacher:question-list")
     context_object_name = "question"
+    message_info = "هر چه قدر عدد موجود در قسمت ترتیب گزینه ها بزرگتر باشد بالاتر قرار داده میشود"
 
     def get_queryset(self):
         return Question.objects.filter(
