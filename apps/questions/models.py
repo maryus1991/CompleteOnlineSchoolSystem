@@ -23,6 +23,8 @@ class Question(BaseModel):
         IMAGE_BASED = 'مبتنی بر تصویر', 'مبتنی بر تصویر'
         PDF_BASED = 'سوال از فایل PDF', 'سوال از فایل PDF'
 
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True, related_name='questions', verbose_name='نویسنده')
+
     name = models.CharField(max_length=500, verbose_name='عنوان سوال')
     description = CKEditor5Field(blank=True, null=True, verbose_name='متن سوال')
     score = models.FloatField(default=1, verbose_name='حداکثر نمره سوال')

@@ -26,7 +26,7 @@ class QuestionBankListView(ListView):
     def get_queryset(self):
         queryset = (
             Question.objects
-            .filter(is_for_qbank=True)
+            .filter(is_for_qbank=True, is_active=True)
             .select_related(
                 "grade",
                 "major",
@@ -104,7 +104,7 @@ class QuestionBankDetailsView(DetailView):
     def get_queryset(self):
         queryset = (
             Question.objects
-            .filter(is_for_qbank=True)
+            .filter(is_for_qbank=True, is_active=True)
             .select_related(
                 "grade",
                 "major",

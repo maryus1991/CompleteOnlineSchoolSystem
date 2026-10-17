@@ -14,6 +14,7 @@ class Teacher( BaseModel):
     can_add_exam = models.BooleanField("اجاره افزودن ازمون", default=True)
     can_add_practice = models.BooleanField("اجازه افزودن تمرین", default=True)
     can_add_qbank = models.BooleanField("اجازه افزودن سوال به بانک سوال", default=False)
+    can_add_question = models.BooleanField("اجازه افزودن سوال", default=True)
     can_add_class_section = models.BooleanField("اجازه افزودن جلسه برای کلاس", default=True)
     can_add_class_article = models.BooleanField("اجازه افزودن مقاله کلاسی", default=True)
     can_add_class_file = models.BooleanField("اجازه افزودن فایل کلاسی", default=True)
