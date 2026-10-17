@@ -1,0 +1,60 @@
+{% extends "teacher/base.html" %}
+{% block header %}
+<style>
+.pr-page{width:100%;padding:10px}
+.pr-header{margin-bottom:22px}
+.pr-header h2{margin:0 0 6px;color:var(--text-primary);font-size:1.3rem;font-weight:800}
+.pr-header p{margin:0;color:var(--text-secondary);font-size:.8rem}
+.pr-card{padding:22px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card)}
+.pr-info{display:flex;gap:10px;margin-bottom:18px;padding:13px 15px;border:1px solid rgba(79,172,254,.15);border-radius:12px;background:rgba(79,172,254,.06);color:var(--text-secondary);font-size:.72rem;line-height:1.9}
+.pr-group{margin-bottom:18px}
+.pr-label{display:block;margin-bottom:8px;color:var(--text-primary);font-size:.8rem;font-weight:700}
+.pr-req{color:#f87171}
+.pr-group input,.pr-group select,.pr-group textarea{width:100%;box-sizing:border-box;padding:13px 15px;color:var(--text-primary);background:var(--bg-primary);border:1px solid var(--border-color);border-radius:13px;outline:none;font-family:inherit;font-size:.82rem}
+.pr-group textarea{min-height:120px;resize:vertical;line-height:1.9}
+.pr-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pr-actions{display:flex;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--border-color)}
+.pr-back,.pr-submit{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;font-family:inherit;font-size:.8rem;font-weight:700;text-decoration:none;cursor:pointer;border:none}
+.pr-back{color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border-color)}
+.pr-submit{color:#fff;background:var(--accent-gradient)}
+@media(max-width:600px){.pr-row{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+{% block main %}
+<div class="pr-page">
+  <div class="pr-header">
+    <h2>{{ page_title }}</h2>
+    <p>درخواست برای بررسی و تأیید ادمین ارسال می‌شود</p>
+  </div>
+  <div class="pr-info">پس از تأیید ادمین، کلاس آنلاین برای جلسه انتخاب‌شده راه‌اندازی می‌شود و می‌توانید از بخش جلسات وارد شوید.</div>
+  <form method="post" class="pr-card">
+    {% csrf_token %}
+    <div class="pr-group">
+      <label class="pr-label">جلسه <span class="pr-req">*</span></label>
+      {{ form.section }}
+    </div>
+    <div class="pr-group">
+      <label class="pr-label">عنوان درخواست <span class="pr-req">*</span></label>
+      {{ form.title }}
+    </div>
+    <div class="pr-group">
+      <label class="pr-label">توضیحات</label>
+      {{ form.description }}
+    </div>
+    <div class="pr-row">
+      <div class="pr-group">
+        <label class="pr-label">زمان پیشنهادی</label>
+        {{ form.preferred_at }}
+      </div>
+      <div class="pr-group">
+        <label class="pr-label">مدت (دقیقه)</label>
+        {{ form.duration_minutes }}
+      </div>
+    </div>
+    <div class="pr-actions">
+      <a href="{% url 'teacher:live-request-list' %}" class="pr-back">بازگشت</a>
+      <button type="submit" class="pr-submit">{% if is_update %}ذخیره{% else %}ارسال درخواست{% endif %}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

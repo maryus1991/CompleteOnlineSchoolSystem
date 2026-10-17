@@ -1,0 +1,46 @@
+{% extends "teacher/base.html" %}
+{% block header %}
+<style>
+.pr-page{width:100%;padding:10px}
+.pr-header{margin-bottom:22px}
+.pr-header h2{margin:0 0 6px;color:var(--text-primary);font-size:1.3rem;font-weight:800}
+.pr-header p{margin:0;color:var(--text-secondary);font-size:.8rem}
+.pr-card{padding:22px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card)}
+.pr-group{margin-bottom:18px}
+.pr-label{display:block;margin-bottom:8px;color:var(--text-primary);font-size:.8rem;font-weight:700}
+.pr-req{color:#f87171}
+.pr-group input,.pr-group select,.pr-group textarea{width:100%;box-sizing:border-box;padding:13px 15px;color:var(--text-primary);background:var(--bg-primary);border:1px solid var(--border-color);border-radius:13px;outline:none;font-family:inherit;font-size:.82rem}
+.pr-group input[type=checkbox]{width:auto}
+.check{display:flex;align-items:center;gap:8px;color:var(--text-secondary);font-size:.8rem}
+.pr-actions{display:flex;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--border-color)}
+.pr-back,.pr-submit{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;font-family:inherit;font-size:.8rem;font-weight:700;text-decoration:none;cursor:pointer;border:none}
+.pr-back{color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border-color)}
+.pr-submit{color:#fff;background:var(--accent-gradient)}
+</style>
+{% endblock %}
+{% block main %}
+<div class="pr-page">
+  <div class="pr-header">
+    <h2>{{ page_title }}</h2>
+    <p>{{ klass.name }}</p>
+  </div>
+  <form method="post" class="pr-card">
+    {% csrf_token %}
+    <div class="pr-group">
+      <label class="pr-label">نام جلسه <span class="pr-req">*</span></label>
+      {{ form.name }}
+    </div>
+    <div class="pr-group">
+      <label class="check">{{ form.is_publish }} انتشار برای دانش‌آموزان</label>
+    </div>
+    <div class="pr-group">
+      <label class="pr-label">ترتیب</label>
+      {{ form.sort_number }}
+    </div>
+    <div class="pr-actions">
+      <a href="{% url 'teacher:class-sections' pk=klass.pk %}" class="pr-back">بازگشت</a>
+      <button type="submit" class="pr-submit">{% if is_update %}ذخیره{% else %}ثبت جلسه{% endif %}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -134,10 +134,6 @@ class LiveClass(BaseModel):
             key=self.server.TEACHER_KEY,
         )
 
-
-
-
-
 class LiveClassRequest(BaseModel):
 
     class Status(models.TextChoices):

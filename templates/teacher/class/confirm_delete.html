@@ -1,0 +1,35 @@
+{% extends "teacher/base.html" %}
+{% block header %}
+<style>
+.pr-page{width:100%;padding:10px}
+.pr-header{margin-bottom:22px}
+.pr-header h2{margin:0 0 6px;color:var(--text-primary);font-size:1.3rem;font-weight:800}
+.pr-header p{margin:0;color:var(--text-secondary);font-size:.8rem}
+.pr-card{padding:22px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card)}
+.warn{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;padding:14px 16px;border:1px solid rgba(248,113,113,.25);border-radius:12px;background:rgba(248,113,113,.08);color:var(--text-secondary);font-size:.78rem;line-height:1.9}
+.preview{margin-bottom:20px;padding:14px 16px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-primary);color:var(--text-primary);font-weight:700}
+.pr-actions{display:flex;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--border-color)}
+.pr-back,.pr-submit{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;font-family:inherit;font-size:.8rem;font-weight:700;text-decoration:none;cursor:pointer;border:none}
+.pr-back{color:var(--text-secondary);background:var(--bg-primary);border:1px solid var(--border-color)}
+.pr-submit{color:#fff;background:linear-gradient(135deg,#f87171,#ef4444)}
+</style>
+{% endblock %}
+{% block main %}
+<div class="pr-page">
+  <div class="pr-header">
+    <h2>حذف</h2>
+    <p>حذف نرم — is_active=False</p>
+  </div>
+  <div class="pr-card">
+    <div class="warn">با تأیید، مورد از لیست فعال خارج می‌شود.</div>
+    <div class="preview">{{ object_label }}</div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="pr-actions">
+        <a href="{{ back_url }}" class="pr-back">انصراف</a>
+        <button type="submit" class="pr-submit">تأیید حذف</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

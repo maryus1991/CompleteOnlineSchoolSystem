@@ -1,0 +1,47 @@
+{% extends "teacher/base.html" %}
+{% block header %}
+<style>
+.pr-page{width:100%;padding:10px}
+.pr-header{display:flex;justify-content:space-between;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.pr-header h2{margin:0 0 6px;color:var(--text-primary);font-size:1.3rem;font-weight:800}
+.pr-header p{margin:0;color:var(--text-secondary);font-size:.78rem}
+.pr-btn-ghost{display:inline-flex;padding:10px 14px;border-radius:11px;font-size:.78rem;font-weight:700;color:var(--text-secondary);background:var(--bg-card);border:1px solid var(--border-color);text-decoration:none}
+.pr-card{padding:22px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card)}
+.line{margin-bottom:12px;color:var(--text-secondary);font-size:.8rem;line-height:1.9}
+.line strong{color:var(--text-primary)}
+.badge{display:inline-flex;padding:5px 10px;border-radius:8px;font-size:.7rem;font-weight:700}
+.b-pending{color:#fbbf24;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.18)}
+.b-ok{color:#34d399;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.18)}
+.b-no{color:#f87171;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.18)}
+.note{margin-top:16px;padding:14px;border-radius:12px;background:var(--bg-primary);border:1px solid var(--border-color);color:var(--text-secondary);font-size:.78rem;line-height:1.9}
+</style>
+{% endblock %}
+{% block main %}
+<div class="pr-page">
+  <div class="pr-header">
+    <div>
+      <h2>{{ live_request.title }}</h2>
+      <p>جزئیات درخواست کلاس آنلاین</p>
+    </div>
+    <a href="{% url 'teacher:live-request-list' %}" class="pr-btn-ghost">بازگشت</a>
+  </div>
+  <div class="pr-card">
+    <div class="line">وضعیت:
+      {% if live_request.status == "pending" %}<span class="badge b-pending">{{ live_request.get_status_display }}</span>
+      {% elif live_request.status == "approved" %}<span class="badge b-ok">{{ live_request.get_status_display }}</span>
+      {% else %}<span class="badge b-no">{{ live_request.get_status_display }}</span>{% endif %}
+    </div>
+    <div class="line">کلاس / جلسه: <strong>{{ live_request.section.klass.name }} — {{ live_request.section.name }}</strong></div>
+    {% if live_request.preferred_at %}
+    <div class="line">زمان پیشنهادی: <strong>{{ live_request.preferred_at|date:"Y/m/d H:i" }}</strong></div>
+    {% endif %}
+    <div class="line">مدت: <strong>{{ live_request.duration_minutes }} دقیقه</strong></div>
+    {% if live_request.description %}
+    <div class="line">توضیحات: <strong>{{ live_request.description }}</strong></div>
+    {% endif %}
+    {% if live_request.admin_note %}
+    <div class="note"><strong>یادداشت ادمین:</strong><br>{{ live_request.admin_note }}</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

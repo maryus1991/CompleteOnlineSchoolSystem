@@ -1,0 +1,139 @@
+{% extends "teacher/base.html" %}
+{% block header %}
+<style>
+.pr-page{width:100%;padding:10px}
+.pr-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.pr-header h2{margin:0 0 6px;color:var(--text-primary);font-size:1.3rem;font-weight:800}
+.pr-header p{margin:0;color:var(--text-secondary);font-size:.78rem}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pr-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:11px;font-size:.78rem;font-weight:700;color:#fff;background:var(--accent-gradient);text-decoration:none}
+.pr-btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:11px;font-size:.78rem;font-weight:700;color:var(--text-secondary);background:var(--bg-card);border:1px solid var(--border-color);text-decoration:none}
+.join-bar{margin-bottom:18px;padding:14px 16px;border-radius:12px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.join-bar span{color:var(--text-secondary);font-size:.8rem}
+.join-btn{display:inline-flex;padding:10px 18px;border-radius:11px;font-size:.8rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#34d399,#10b981);text-decoration:none}
+.section-card{margin-bottom:18px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card);overflow:hidden}
+.section-card-h{padding:13px 18px;border-bottom:1px solid var(--border-color);font-size:.88rem;font-weight:800;color:var(--text-primary);background:rgba(79,172,254,.04);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.section-card-h a{font-size:.75rem;font-weight:700;color:#4facfe;text-decoration:none}
+.item-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--border-color)}
+.item-row:last-child{border-bottom:none}
+.item-title{margin:0 0 4px;color:var(--text-primary);font-size:.85rem;font-weight:700}
+.item-meta{color:var(--text-secondary);font-size:.72rem}
+.actions{display:flex;gap:8px}
+.icon-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border-color);border-radius:10px;color:var(--text-secondary);text-decoration:none;font-size:.85rem}
+.icon-btn:hover{color:#fff;background:var(--accent-gradient);border-color:transparent}
+.icon-btn.danger:hover{background:linear-gradient(135deg,#f87171,#ef4444)}
+.empty{padding:24px 18px;text-align:center;color:var(--text-secondary);font-size:.78rem}
+.badge{display:inline-flex;padding:4px 8px;border-radius:8px;font-size:.66rem;font-weight:700;color:var(--text-secondary);background:rgba(255,255,255,.04);border:1px solid var(--border-color)}
+</style>
+{% endblock %}
+{% block main %}
+<div class="pr-page">
+  <div class="pr-header">
+    <div>
+      <h2>{{ section.name }}</h2>
+      <p>{{ section.klass.name }} · {{ section.klass.get_categories }}</p>
+    </div>
+    <div class="header-actions">
+      <a href="{% url 'teacher:class-sections' pk=section.klass_id %}" class="pr-btn-ghost">جلسات کلاس</a>
+      <a href="{% url 'teacher:section-update' pk=section.pk %}" class="pr-btn-ghost">ویرایش جلسه</a>
+      <a href="{% url 'teacher:live-request-create' %}" class="pr-btn">درخواست کلاس آنلاین</a>
+    </div>
+  </div>
+
+  {% if teacher_join_url %}
+  <div class="join-bar">
+    <span>کلاس آنلاین در حال برگزاری است — می‌توانید وارد شوید.</span>
+    <a href="{{ teacher_join_url }}" class="join-btn" target="_blank" rel="noopener">ورود به کلاس آنلاین</a>
+  </div>
+  {% elif live_classes %}
+  <div class="join-bar" style="border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.08)">
+    <span>
+      {% for live in live_classes %}
+        وضعیت: {{ live.get_status_display }}{% if not forloop.last %} · {% endif %}
+      {% endfor %}
+      — ورود فقط در وضعیت «در حال برگزاری» فعال است.
+    </span>
+    {% for live in live_classes %}
+      <a href="{% url 'teacher:live-join' pk=live.pk %}" class="pr-btn-ghost">تلاش ورود</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# مقالات #}
+  <div class="section-card">
+    <div class="section-card-h">
+      <span>مقالات کلاسی</span>
+      <a href="{% url 'teacher:class-article-create' section_id=section.pk %}">+ افزودن مقاله</a>
+    </div>
+    {% if articles %}
+      {% for a in articles %}
+      <div class="item-row">
+        <div>
+          <p class="item-title">{{ a.name }}</p>
+          <p class="item-meta">{{ a.content|striptags|truncatewords:20 }}</p>
+        </div>
+        <div class="actions">
+          <a href="{% url 'teacher:class-article-update' pk=a.pk %}" class="icon-btn">✎</a>
+          <a href="{% url 'teacher:class-article-delete' pk=a.pk %}" class="icon-btn danger">🗑</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">مقاله‌ای ثبت نشده است.</div>
+    {% endif %}
+  </div>
+
+  {# فایل‌ها #}
+  <div class="section-card">
+    <div class="section-card-h">
+      <span>فایل‌های کلاسی</span>
+      <a href="{% url 'teacher:class-file-create' section_id=section.pk %}">+ افزودن فایل</a>
+    </div>
+    {% if files %}
+      {% for f in files %}
+      <div class="item-row">
+        <div>
+          <p class="item-title">{{ f.name }}</p>
+          <p class="item-meta">
+            {% if f.file %}<a href="{{ f.file.url }}" target="_blank" style="color:#4facfe">دانلود فایل</a>{% endif %}
+          </p>
+        </div>
+        <div class="actions">
+          <a href="{% url 'teacher:class-file-update' pk=f.pk %}" class="icon-btn">✎</a>
+          <a href="{% url 'teacher:class-file-delete' pk=f.pk %}" class="icon-btn danger">🗑</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">فایلی ثبت نشده است.</div>
+    {% endif %}
+  </div>
+
+  {# تمرین‌ها #}
+  <div class="section-card">
+    <div class="section-card-h">
+      <span>تمرین‌های این جلسه</span>
+      <a href="{% url 'teacher:practice-create-section' section_id=section.pk %}">+ تعریف تمرین</a>
+    </div>
+    {% if practices %}
+      {% for p in practices %}
+      <div class="item-row">
+        <div>
+          <p class="item-title">{{ p.name }}</p>
+          <p class="item-meta">
+            <span class="badge">{{ p.get_type_of_practice_display }}</span>
+            {% if p.deadline %}مهلت: {{ p.deadline|date:"Y/m/d H:i" }}{% endif %}
+          </p>
+        </div>
+        <div class="actions">
+          <a href="{% url 'teacher:practice-detail' pk=p.pk %}" class="icon-btn" title="جزئیات">👁</a>
+          <a href="{% url 'teacher:practice-questions' pk=p.pk %}" class="icon-btn" title="سوالات">?</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">تمرینی برای این جلسه تعریف نشده است.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

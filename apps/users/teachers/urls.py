@@ -44,4 +44,33 @@ urlpatterns = [
     path("practices/<int:pk>/questions/", views.practice.PracticeQuestionsView.as_view(), name="practice-questions"),
     path("practices/grade/<int:pk>/", views.practice.PracticeGradeView.as_view(), name="practice-grade"),
 
+    # ── classes ──
+    path("classes/", views.classes.ClassListView.as_view(), name="class-list"),
+    path("classes/<int:pk>/sections/", views.classes.SectionListView.as_view(), name="class-sections"),
+    path("classes/<int:pk>/sections/create/", views.classes.SectionCreateView.as_view(), name="section-create"),
+    path("sections/update/<int:pk>/", views.classes.SectionUpdateView.as_view(), name="section-update"),
+    path("sections/delete/<int:pk>/", views.classes.SectionDeleteView.as_view(), name="section-delete"),
+    path("sections/<int:pk>/", views.classes.SectionDetailView.as_view(), name="section-detail"),
+
+    # class articles
+    path("sections/<int:section_id>/articles/create/", views.classes.ArticleCreateView.as_view(),
+         name="class-article-create"),
+    path("class-articles/update/<int:pk>/", views.classes.ArticleUpdateView.as_view(), name="class-article-update"),
+    path("class-articles/delete/<int:pk>/", views.classes.ArticleDeleteView.as_view(), name="class-article-delete"),
+
+    # class files
+    path("sections/<int:section_id>/files/create/", views.classes.FileCreateView.as_view(), name="class-file-create"),
+    path("class-files/update/<int:pk>/", views.classes.FileUpdateView.as_view(), name="class-file-update"),
+    path("class-files/delete/<int:pk>/", views.classes.FileDeleteView.as_view(), name="class-file-delete"),
+
+    # live class requests
+    path("live-requests/", views.classes.LiveRequestListView.as_view(), name="live-request-list"),
+    path("live-requests/create/", views.classes.LiveRequestCreateView.as_view(), name="live-request-create"),
+    path("live-requests/<int:pk>/", views.classes.LiveRequestDetailView.as_view(), name="live-request-detail"),
+    path("live-requests/update/<int:pk>/", views.classes.LiveRequestUpdateView.as_view(), name="live-request-update"),
+    path("live-requests/delete/<int:pk>/", views.classes.LiveRequestDeleteView.as_view(), name="live-request-delete"),
+
+    # live classes
+    path("live-classes/", views.classes.LiveClassListView.as_view(), name="live-class-list"),
+    path("live-classes/<int:pk>/join/", views.classes.LiveJoinView.as_view(), name="live-join"),
 ]
