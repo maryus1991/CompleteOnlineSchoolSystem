@@ -333,6 +333,7 @@ class PracticeQuestionsView(TeacherMixin, View):
 
     permission_field = "can_add_practice"
     template_name = "teacher/practice/questions.html"
+    message_info = "توجه فرمایید که دسته بندی های رشته پایه و درس باید یکی باشند با دسته بندی های کلاس تا سوالش نمایش داده بشنوند"
 
     def get_practice(self):
         return get_object_or_404(
@@ -442,6 +443,7 @@ class PracticeGradeView(TeacherMixin, View):
 
     permission_field = "can_add_practice"
     template_name = "teacher/practice/grade.html"
+    message_info = "توجه فرمایید در صورت ثبت نمره به صورت خودکار وضعیت به تصحیح شده تبدیل خواهد شد"
 
     def _get_detail(self, request, pk):
         return get_object_or_404(
@@ -472,9 +474,15 @@ class PracticeGradeView(TeacherMixin, View):
         detail = self._get_detail(request, pk)
         form = PracticeGradeForm(request.POST, instance=detail)
         if form.is_valid():
+
             obj = form.save(commit=False)
+
+            if int(form.cleaned_data.get("score")) >= 0:
+                obj.status = PracticeStudentDetails.Status.CORRECTED
+
             if obj.status == PracticeStudentDetails.Status.CORRECTED:
                 obj.corrected_at = timezone.now()
+
             obj.save()
             messages.success(request, "نمره و بازخورد ذخیره شد.")
             return redirect("teacher:practice-detail", pk=detail.practice_id)

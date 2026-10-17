@@ -19,7 +19,7 @@ class ExamListView(StudentMixin, ListView):
     context_object_name = 'items'
 
     def get_queryset(self):
-        return self.request.student.exam.select_related("grade", "major", "lesson")
+        return self.request.student.exam.filter(is_active=True).select_related("grade", "major", "lesson")
 
     def get_context_data(self, *args, **kwargs) :
 
