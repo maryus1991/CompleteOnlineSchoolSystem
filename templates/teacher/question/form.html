@@ -1,0 +1,492 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .ticket-create-page {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .ticket-create-header {
+        margin-bottom: 22px;
+    }
+
+    .ticket-create-header h2 {
+        margin: 0 0 6px;
+        color: var(--text-primary);
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+    .ticket-create-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .8rem;
+    }
+
+    .ticket-form-card {
+        padding: 22px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+        margin-bottom: 18px;
+    }
+
+    .section-title {
+        margin: 0 0 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary);
+        font-size: .95rem;
+        font-weight: 800;
+    }
+
+    .ticket-form-group {
+        margin-bottom: 20px;
+    }
+
+    .ticket-form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .ticket-form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .ticket-required {
+        color: #f87171;
+    }
+
+    .ticket-form-group input,
+    .ticket-form-group textarea,
+    .ticket-form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 15px;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 13px;
+        outline: none;
+        font-family: inherit;
+        font-size: .82rem;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .ticket-form-group input:focus,
+    .ticket-form-group textarea:focus,
+    .ticket-form-group select:focus {
+        border-color: #4facfe;
+        box-shadow: 0 0 0 3px rgba(79, 172, 254, .08);
+    }
+
+    .ticket-form-group textarea {
+        min-height: 140px;
+        resize: vertical;
+        line-height: 1.9;
+    }
+
+    .ticket-form-group input[type="file"] {
+        padding: 10px;
+    }
+
+    .ticket-form-group input[type="checkbox"] {
+        width: auto;
+        margin-left: 8px;
+    }
+
+    .ticket-help-text {
+        display: block;
+        margin-top: 7px;
+        color: var(--text-secondary);
+        font-size: .68rem;
+    }
+
+    .ticket-errors {
+        margin-top: 7px;
+        color: #f87171;
+        font-size: .7rem;
+        line-height: 1.8;
+    }
+
+    .ticket-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .ticket-form-row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+    }
+
+    .ticket-form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .ticket-back-btn,
+    .ticket-submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: .8rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .ticket-back-btn {
+        color: var(--text-secondary);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+    }
+
+    .ticket-back-btn:hover {
+        color: var(--text-primary);
+        border-color: rgba(79, 172, 254, .35);
+    }
+
+    .ticket-submit-btn {
+        color: #fff;
+        background: var(--accent-gradient);
+        border: none;
+    }
+
+    .ticket-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(79, 172, 254, .2);
+    }
+
+    .ticket-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 13px 15px;
+        border: 1px solid rgba(79, 172, 254, .15);
+        border-radius: 12px;
+        background: rgba(79, 172, 254, .06);
+        color: var(--text-secondary);
+        font-size: .72rem;
+        line-height: 1.9;
+    }
+
+    .ticket-info svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: #4facfe;
+    }
+
+    .option-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto auto;
+        gap: 12px;
+        align-items: end;
+        padding: 14px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--bg-primary);
+    }
+
+    .option-row .ticket-form-group {
+        margin-bottom: 0;
+    }
+
+    .option-check {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-bottom: 12px;
+        color: var(--text-secondary);
+        font-size: .75rem;
+        white-space: nowrap;
+    }
+
+    .option-delete {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-bottom: 12px;
+        color: #f87171;
+        font-size: .75rem;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+        .ticket-form-row,
+        .ticket-form-row-3 {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .option-row {
+            grid-template-columns: 1fr;
+        }
+
+        .ticket-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .ticket-back-btn,
+        .ticket-submit-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block main %}
+
+<div class="ticket-create-page">
+
+    <div class="ticket-create-header">
+        <h2>{{ page_title }}</h2>
+        <p>{{ page_subtitle }}</p>
+    </div>
+
+    <div class="ticket-info">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+        </svg>
+        <div>
+            <strong>کلید پاسخ اجباری است.</strong>
+            گزینه‌ها اختیاری‌اند؛ فقط در صورت نیاز (مثلاً سوال تستی) آن‌ها را پر کنید.
+            در ویرایش می‌توانید گزینه اضافه، ویرایش یا حذف کنید.
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+
+        {% csrf_token %}
+
+
+        <div class="ticket-form-card">
+            <h3 class="section-title">اطلاعات سوال</h3>
+
+            <div class="ticket-form-group">
+                <label class="ticket-form-label" for="{{ form.name.id_for_label }}">
+                    عنوان سوال <span class="ticket-required">*</span>
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="ticket-errors">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="ticket-form-group">
+                <label class="ticket-form-label" for="{{ form.description.id_for_label }}">
+                    متن سوال
+                </label>
+                {{ form.description }}
+                {{ form.media }}
+                {% if form.description.errors %}
+                    <div class="ticket-errors">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="ticket-form-row">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ form.type_of_question.id_for_label }}">
+                        نوع سوال <span class="ticket-required">*</span>
+                    </label>
+                    {{ form.type_of_question }}
+                    {% if form.type_of_question.errors %}
+                        <div class="ticket-errors">{{ form.type_of_question.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ form.score.id_for_label }}">
+                        نمره
+                    </label>
+                    {{ form.score }}
+                    {% if form.score.errors %}
+                        <div class="ticket-errors">{{ form.score.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="ticket-form-row-3">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ form.grade.id_for_label }}">پایه</label>
+                    {{ form.grade }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ form.major.id_for_label }}">رشته</label>
+                    {{ form.major }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ form.lesson.id_for_label }}">درس</label>
+                    {{ form.lesson }}
+                </div>
+            </div>
+
+            <div class="ticket-form-row">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ form.image.id_for_label }}">تصویر سوال</label>
+                    {{ form.image }}
+                    {% if is_update and question.image %}
+                        <span class="ticket-help-text">فایل فعلی: {{ question.image.name }}</span>
+                    {% endif %}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ form.pdf_file.id_for_label }}">فایل PDF سوال</label>
+                    {{ form.pdf_file }}
+                    {% if is_update and question.pdf_file %}
+                        <span class="ticket-help-text">فایل فعلی: {{ question.pdf_file.name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="ticket-form-group">
+                <label class="ticket-form-label" for="{{ form.sort_number.id_for_label }}">ترتیب</label>
+                {{ form.sort_number }}
+            </div>
+        </div>
+
+
+        <div class="ticket-form-card">
+            <h3 class="section-title">کلید پاسخ <span class="ticket-required"></span></h3>
+
+            <div class="ticket-form-group">
+                <label class="ticket-form-label" for="{{ answer_key_form.type_of_answer.id_for_label }}">
+                    نوع پاسخ صحیح <span class="ticket-required">*</span>
+                </label>
+                {{ answer_key_form.type_of_answer }}
+                {% if answer_key_form.type_of_answer.errors %}
+                    <div class="ticket-errors">{{ answer_key_form.type_of_answer.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="ticket-form-group">
+                <label class="ticket-form-label" for="{{ answer_key_form.description.id_for_label }}">
+                    متن پاسخ
+                </label>
+                {{ answer_key_form.description }}
+                {{ answer_key_form.media }}
+                {% if answer_key_form.description.errors %}
+                    <div class="ticket-errors">{{ answer_key_form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="ticket-form-row">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ answer_key_form.image.id_for_label }}">تصویر پاسخ</label>
+                    {{ answer_key_form.image }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label" for="{{ answer_key_form.pdf_file.id_for_label }}">فایل PDF پاسخ</label>
+                    {{ answer_key_form.pdf_file }}
+                </div>
+            </div>
+
+            {% if answer_key_form.non_field_errors %}
+                <div class="ticket-errors">{{ answer_key_form.non_field_errors }}</div>
+            {% endif %}
+        </div>
+
+         <div class="ticket-form-card">
+            <h3 class="section-title">گزینه‌ها (اختیاری)</h3>
+            <p class="ticket-help-text" style="margin-bottom: 14px;">
+                در صورت سوال تستی، گزینه‌ها را وارد کنید. گزینه‌های خالی ذخیره نمی‌شوند.
+                برای حذف یک گزینه در ویرایش، تیک «حذف» را بزنید.
+            </p>
+
+            {{ option_formset.management_form }}
+
+            {% for option_form in option_formset %}
+                <div class="option-row">
+                    {% for hidden in option_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+
+                    <div class="ticket-form-group">
+                        <label class="ticket-form-label">متن گزینه</label>
+                        {{ option_form.name }}
+                        {% if option_form.name.errors %}
+                            <div class="ticket-errors">{{ option_form.name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="ticket-form-group" style="max-width: 90px;">
+                        <label class="ticket-form-label">ترتیب</label>
+                        {{ option_form.sort_number }}
+                    </div>
+
+                    <div class="option-check">
+                        {{ option_form.is_correct }}
+                        <span>صحیح</span>
+                    </div>
+
+                    {% if option_form.instance.pk %}
+                        <div class="option-delete">
+                            {{ option_form.DELETE }}
+                            <span>حذف</span>
+                        </div>
+                    {% else %}
+                        <div></div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% if option_formset.non_form_errors %}
+                <div class="ticket-errors">{{ option_formset.non_form_errors }}</div>
+            {% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="ticket-errors" style="margin-bottom:15px;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="ticket-form-card" style="padding-top: 18px; padding-bottom: 18px;">
+            <div class="ticket-form-actions" style="border-top: none; margin-top: 0; padding-top: 0;">
+                <a href="{% url 'teacher:question-list' %}" class="ticket-back-btn">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8">
+                        <path d="M19 12H5"/>
+                        <path d="M12 19l-7-7 7-7"/>
+                    </svg>
+                    بازگشت
+                </a>
+
+                <button type="submit" class="ticket-submit-btn">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                        <polyline points="17 21 17 13 7 13 7 21"/>
+                        <polyline points="7 3 7 8 15 8"/>
+                    </svg>
+                    {% if is_update %}ذخیره تغییرات{% else %}ثبت سوال{% endif %}
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

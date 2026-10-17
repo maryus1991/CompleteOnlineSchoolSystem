@@ -1,0 +1,454 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .ticket-page {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .ticket-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .ticket-header-title h2 {
+        margin: 0 0 6px;
+        color: var(--text-primary);
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+    .ticket-header-title p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+    }
+
+    .ticket-new-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 18px;
+        border-radius: 12px;
+        color: #fff;
+        text-decoration: none;
+        background: var(--accent-gradient);
+        font-size: 0.82rem;
+        font-weight: 700;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .ticket-new-btn:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(79, 172, 254, .2);
+    }
+
+    .ticket-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ticket-card {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 20px;
+        padding: 18px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+        transition: all .25s ease;
+    }
+
+    .ticket-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(79, 172, 254, .35);
+        box-shadow: 0 10px 35px rgba(0, 0, 0, .12);
+    }
+
+    .ticket-main {
+        min-width: 0;
+    }
+
+    .ticket-top {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .ticket-id {
+        color: var(--text-secondary);
+        font-size: .72rem;
+        direction: ltr;
+    }
+
+    .ticket-title {
+        display: block;
+        margin: 0 0 9px;
+        color: var(--text-primary);
+        font-size: .95rem;
+        font-weight: 800;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ticket-title:hover {
+        color: #4facfe;
+    }
+
+    .ticket-description {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .78rem;
+        line-height: 1.9;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .ticket-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 13px;
+    }
+
+    .ticket-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 8px;
+        font-size: .68rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-waiting-user {
+        color: #60a5fa;
+        background: rgba(96, 165, 250, .10);
+        border: 1px solid rgba(96, 165, 250, .18);
+    }
+
+    .status-fixed {
+        color: #34d399;
+        background: rgba(52, 211, 153, .10);
+        border: 1px solid rgba(52, 211, 153, .18);
+    }
+
+    .priority-mid {
+        color: #60a5fa;
+        background: rgba(96, 165, 250, .10);
+        border: 1px solid rgba(96, 165, 250, .18);
+    }
+
+    .ticket-date {
+        color: var(--text-secondary);
+        font-size: .68rem;
+    }
+
+    .ticket-action {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ticket-view-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all .2s ease;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .ticket-view-btn:hover {
+        color: #fff;
+        background: var(--accent-gradient);
+        border-color: transparent;
+    }
+
+    .ticket-view-btn.delete:hover {
+        background: linear-gradient(135deg, #f87171, #ef4444);
+    }
+
+    .ticket-empty {
+        padding: 55px 20px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+    }
+
+    .ticket-empty-icon {
+        width: 65px;
+        height: 65px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: rgba(79, 172, 254, .10);
+        color: #4facfe;
+    }
+
+    .ticket-empty h3 {
+        margin: 0 0 7px;
+        color: var(--text-primary);
+        font-size: .95rem;
+    }
+
+    .ticket-empty p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .78rem;
+    }
+
+    .ticket-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+        margin-top: 20px;
+    }
+
+    .ticket-page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: .75rem;
+        background: var(--bg-card);
+    }
+
+    .ticket-page-link:hover,
+    .ticket-page-link.active {
+        color: #fff;
+        background: var(--accent-gradient);
+        border-color: transparent;
+    }
+
+    @media (max-width: 600px) {
+        .ticket-header {
+            align-items: flex-start;
+        }
+
+        .ticket-new-btn {
+            padding: 10px 12px;
+        }
+
+        .ticket-new-btn span {
+            display: none;
+        }
+
+        .ticket-card {
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 15px;
+        }
+
+        .ticket-action {
+            justify-content: flex-start;
+        }
+
+        .ticket-view-btn {
+            width: 100%;
+            height: 38px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block main %}
+
+<div class="ticket-page">
+
+    <div class="ticket-header">
+
+        <div class="ticket-header-title">
+            <h2>سوالات من</h2>
+            <p>لیست سوالات فعال شما</p>
+        </div>
+
+        <a href="{% url 'teacher:question-create' %}" class="ticket-new-btn">
+            <svg width="17" height="17"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="M12 5v14"/>
+                <path d="M5 12h14"/>
+            </svg>
+            <span>سوال جدید</span>
+        </a>
+
+    </div>
+
+
+    {% if items %}
+
+        <div class="ticket-list">
+
+            {% for item in items %}
+
+                <div class="ticket-card">
+
+                    <div class="ticket-main">
+
+                        <div class="ticket-top">
+
+                            <span class="ticket-id">
+                                #{{ item.pk }}
+                            </span>
+
+                            <span class="ticket-badge status-waiting-user">
+                                {{ item.get_type_of_question_display }}
+                            </span>
+
+                            <span class="ticket-badge priority-mid">
+                                نمره: {{ item.score }}
+                            </span>
+
+                            {% if item.answer_key %}
+                                <span class="ticket-badge status-fixed">
+                                    دارای کلید پاسخ
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <a href="{% url 'teacher:question-update' pk=item.pk %}" class="ticket-title">
+                            {{ item.name }}
+                        </a>
+
+                        <p class="ticket-description">
+                            {{ item.description|striptags|default:"بدون متن" }}
+                        </p>
+
+                        <div class="ticket-meta">
+
+                            <span class="ticket-date">
+                                {{ item.created_at|date:"Y/m/d - H:i" }}
+                            </span>
+
+                            {% if item.grade %}
+                                <span class="ticket-badge"
+                                      style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
+                                    {{ item.grade.name }}
+                                </span>
+                            {% endif %}
+
+                            {% if item.lesson %}
+                                <span class="ticket-badge"
+                                      style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
+                                    {{ item.lesson.name }}
+                                </span>
+                            {% endif %}
+
+                            {% if item.options.exists %}
+                                <span class="ticket-badge"
+                                      style="background:rgba(79,172,254,.08);color:#4facfe;border:1px solid rgba(79,172,254,.15);">
+                                    {{ item.options.count }} گزینه
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="ticket-action">
+
+                        <a href="{% url 'teacher:question-update' pk=item.pk %}"
+                           class="ticket-view-btn"
+                           title="ویرایش">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.8">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                            </svg>
+                        </a>
+
+                        <a href="{% url 'teacher:question-delete' pk=item.pk %}"
+                           class="ticket-view-btn delete"
+                           title="حذف">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.8">
+                                <path d="M3 6h18"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% if is_paginated %}
+            <div class="ticket-pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="ticket-page-link">قبلی</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="ticket-page-link active">{{ num }}</span>
+                    {% else %}
+                        <a href="?page={{ num }}" class="ticket-page-link">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="ticket-page-link">بعدی</a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    {% else %}
+
+        <div class="ticket-empty">
+            <div class="ticket-empty-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8">
+                    <path d="M9 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"/>
+                    <rect x="9" y="2" width="6" height="6" rx="1"/>
+                    <path d="m9 14 2 2 4-4"/>
+                </svg>
+            </div>
+            <h3>سوالی ثبت نشده است</h3>
+            <p>برای شروع، یک سوال جدید بسازید.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
