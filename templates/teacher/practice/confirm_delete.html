@@ -1,0 +1,71 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .pr-page { width: 100%; padding: 10px; }
+    .pr-header { margin-bottom: 22px; }
+    .pr-header h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.3rem; font-weight: 800; }
+    .pr-header p { margin: 0; color: var(--text-secondary); font-size: .8rem; }
+    .pr-card {
+        padding: 22px; border: 1px solid var(--border-color); border-radius: var(--radius-lg); background: var(--bg-card);
+    }
+    .warn {
+        display: flex; gap: 12px; align-items: flex-start; margin-bottom: 18px; padding: 14px 16px;
+        border: 1px solid rgba(248,113,113,.25); border-radius: 12px; background: rgba(248,113,113,.08);
+        color: var(--text-secondary); font-size: .78rem; line-height: 1.9;
+    }
+    .warn svg { flex-shrink: 0; color: #f87171; margin-top: 2px; }
+    .preview {
+        margin-bottom: 20px; padding: 14px 16px; border: 1px solid var(--border-color);
+        border-radius: 12px; background: var(--bg-primary);
+    }
+    .preview h3 { margin: 0 0 8px; color: var(--text-primary); font-size: .95rem; font-weight: 800; }
+    .preview p { margin: 0; color: var(--text-secondary); font-size: .78rem; }
+    .pr-actions {
+        display: flex; justify-content: space-between; gap: 12px; padding-top: 18px;
+        border-top: 1px solid var(--border-color);
+    }
+    .pr-back, .pr-submit {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        min-height: 44px; padding: 0 18px; border-radius: 12px; font-family: inherit;
+        font-size: .8rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none;
+    }
+    .pr-back { color: var(--text-secondary); background: var(--bg-primary); border: 1px solid var(--border-color); }
+    .pr-submit { color: #fff; background: linear-gradient(135deg,#f87171,#ef4444); }
+    @media (max-width: 600px) {
+        .pr-actions { flex-direction: column-reverse; }
+        .pr-back, .pr-submit { width: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="pr-page">
+    <div class="pr-header">
+        <h2>حذف تمرین</h2>
+        <p>حذف نرم — is_active=False</p>
+    </div>
+    <div class="pr-card">
+        <div class="warn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div>با تأیید، تمرین از لیست فعال خارج می‌شود. پاسخ‌های ثبت‌شده در دیتابیس باقی می‌مانند.</div>
+        </div>
+        <div class="preview">
+            <h3>#{{ practice.pk }} — {{ practice.name }}</h3>
+            <p>
+                {{ practice.section.klass.name }} · جلسه {{ practice.section.name }}
+            </p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="pr-actions">
+                <a href="{% url 'teacher:practice-list' %}" class="pr-back">انصراف</a>
+                <button type="submit" class="pr-submit">تأیید حذف</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

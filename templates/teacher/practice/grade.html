@@ -1,0 +1,119 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .pr-page { width: 100%; padding: 10px; }
+    .pr-header { margin-bottom: 20px; }
+    .pr-header h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.3rem; font-weight: 800; }
+    .pr-header p { margin: 0; color: var(--text-secondary); font-size: .78rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .pr-card {
+        padding: 20px; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+        background: var(--bg-card);
+    }
+    .pr-card h3 {
+        margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary); font-size: .9rem; font-weight: 800;
+    }
+    .answer-box {
+        padding: 14px; border-radius: 12px; background: var(--bg-primary);
+        border: 1px solid var(--border-color); color: var(--text-secondary);
+        font-size: .8rem; line-height: 1.9; white-space: pre-wrap; min-height: 80px;
+    }
+    .meta-line { margin-bottom: 10px; color: var(--text-secondary); font-size: .75rem; }
+    .meta-line strong { color: var(--text-primary); }
+    .pr-label { display: block; margin-bottom: 8px; color: var(--text-primary); font-size: .8rem; font-weight: 700; }
+    .pr-group { margin-bottom: 16px; }
+    .pr-group input, .pr-group textarea, .pr-group select {
+        width: 100%; box-sizing: border-box; padding: 12px 14px; color: var(--text-primary);
+        background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 12px;
+        outline: none; font-family: inherit; font-size: .82rem;
+    }
+    .pr-group textarea { min-height: 110px; resize: vertical; line-height: 1.9; }
+    .pr-errors { margin-top: 6px; color: #f87171; font-size: .7rem; }
+    .file-link {
+        display: inline-flex; margin-top: 8px; color: #4facfe; font-size: .78rem; text-decoration: none;
+    }
+    .pr-actions {
+        display: flex; justify-content: space-between; gap: 12px; margin-top: 8px;
+        padding-top: 16px; border-top: 1px solid var(--border-color);
+    }
+    .pr-back, .pr-submit {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        min-height: 44px; padding: 0 18px; border-radius: 12px; font-family: inherit;
+        font-size: .8rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none;
+    }
+    .pr-back { color: var(--text-secondary); background: var(--bg-primary); border: 1px solid var(--border-color); }
+    .pr-submit { color: #fff; background: var(--accent-gradient); }
+    @media (max-width: 800px) {
+        .grid-2 { grid-template-columns: 1fr; }
+        .pr-actions { flex-direction: column-reverse; }
+        .pr-back, .pr-submit { width: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="pr-page">
+    <div class="pr-header">
+        <h2>تصحیح و ثبت نمره</h2>
+        <p>
+            {{ practice.name }} ·
+            {{ detail.student.user.get_full_name|default:detail.student }}
+        </p>
+    </div>
+
+    <div class="grid-2">
+        <div class="pr-card">
+            <h3>پاسخ دانش‌آموز</h3>
+            <div class="meta-line">وضعیت: <strong>{{ detail.get_status_display }}</strong></div>
+            {% if detail.question %}
+                <div class="meta-line">سوال: <strong>{{ detail.question.name }}</strong></div>
+            {% endif %}
+            {% if detail.submitted_at %}
+                <div class="meta-line">زمان ارسال: <strong>{{ detail.submitted_at|date:"Y/m/d H:i" }}</strong></div>
+            {% endif %}
+
+            {% if detail.selected_option %}
+                <div class="meta-line">گزینه انتخابی: <strong>{{ detail.selected_option.name }}</strong></div>
+            {% endif %}
+
+            <div class="answer-box">{{ detail.answer_text|default:"— پاسخ متنی ثبت نشده —" }}</div>
+
+            {% if detail.answer_image %}
+                <a class="file-link" href="{{ detail.answer_image.url }}" target="_blank">مشاهده تصویر پاسخ</a>
+            {% endif %}
+            {% if detail.answer_pdf %}
+                <a class="file-link" href="{{ detail.answer_pdf.url }}" target="_blank" style="margin-right:12px;">دانلود PDF پاسخ</a>
+            {% endif %}
+        </div>
+
+        <div class="pr-card">
+            <h3>ثبت نمره معلم</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="pr-group">
+                    <label class="pr-label">نمره</label>
+                    {{ form.score }}
+                    {% if form.score.errors %}<div class="pr-errors">{{ form.score.errors }}</div>{% endif %}
+                </div>
+                <div class="pr-group">
+                    <label class="pr-label">وضعیت</label>
+                    {{ form.status }}
+                </div>
+                <div class="pr-group">
+                    <label class="pr-label">بازخورد معلم</label>
+                    {{ form.teacher_feedback }}
+                </div>
+                {% if form.non_field_errors %}
+                    <div class="pr-errors">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div class="pr-actions">
+                    <a href="{% url 'teacher:practice-detail' pk=practice.pk %}" class="pr-back">بازگشت</a>
+                    <button type="submit" class="pr-submit">ذخیره نمره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

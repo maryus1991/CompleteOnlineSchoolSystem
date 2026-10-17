@@ -15,12 +15,12 @@ class StudentPracticeSolveView(StudentMixin, View):
 
     def get_objects(self):
         practice = get_object_or_404(
-            Practice.objects.select_related("section"),
+            Practice.objects.filter(is_active=True).select_related("section"),
             pk=self.kwargs["pk"],
         )
 
         question = get_object_or_404(
-            Question.objects.filter(practice=practice).prefetch_related("options"),
+            Question.objects.filter(practice=practice, is_active=True).prefetch_related("options"),
             pk=self.kwargs["question_pk"],
         )
 
@@ -123,15 +123,14 @@ class StudentPracticeDetailView(StudentMixin, View):
         practice = get_object_or_404(
             Practice.objects.filter(
                 pk=kwargs["pk"],
+                is_active=True
             ).filter(
                 Q(selected_students=student)
                 | Q(selected_students__isnull=True)
             ).prefetch_related(
                 Prefetch(
                     "question",
-                    queryset=Question.objects.filter(
-                        is_for_qbank=False
-                    ),
+
                     to_attr="practice_questions",
                 )
             ).distinct()

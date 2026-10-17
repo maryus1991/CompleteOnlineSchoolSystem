@@ -34,4 +34,14 @@ urlpatterns = [
     path("exams/<int:pk>/students/", views.exam.ExamAddAndRemoveStudentView.as_view(), name="exam-students"),
     path("exams/<int:pk>/questions/", views.exam.ExamAddAndRemoveQuestionsView.as_view(), name="exam-questions"),
 
+    # practices
+    path("practices/", views.practice.PracticeListView.as_view(), name="practice-list"),
+    path("practices/create/", views.practice.PracticeCreateView.as_view(), name="practice-create"),
+    path("practices/create/section/<int:section_id>/", views.practice.PracticeCreateView.as_view(), name="practice-create-section"),
+    path("practices/<int:pk>/", views.practice.PracticeDetailView.as_view(), name="practice-detail"),
+    path("practices/update/<int:pk>/", views.practice.PracticeUpdateView.as_view(), name="practice-update"),
+    path("practices/delete/<int:pk>/", views.practice.PracticeDeleteView.as_view(), name="practice-delete"),
+    path("practices/<int:pk>/questions/", views.practice.PracticeQuestionsView.as_view(), name="practice-questions"),
+    path("practices/grade/<int:pk>/", views.practice.PracticeGradeView.as_view(), name="practice-grade"),
+
 ]

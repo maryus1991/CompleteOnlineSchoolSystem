@@ -1,0 +1,162 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .pr-page { width: 100%; padding: 10px; }
+    .pr-header {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        gap: 15px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .pr-header h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.3rem; font-weight: 800; }
+    .pr-header p { margin: 0; color: var(--text-secondary); font-size: .78rem; line-height: 1.8; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pr-btn, .pr-btn-ghost {
+        display: inline-flex; align-items: center; gap: 7px; padding: 10px 14px;
+        border-radius: 11px; font-size: .78rem; font-weight: 700; text-decoration: none;
+    }
+    .pr-btn { color: #fff; background: var(--accent-gradient); }
+    .pr-btn-ghost {
+        color: var(--text-secondary); background: var(--bg-card);
+        border: 1px solid var(--border-color);
+    }
+    .stat-bar {
+        margin-bottom: 18px; padding: 12px 16px; border-radius: 12px;
+        border: 1px solid rgba(79,172,254,.15); background: rgba(79,172,254,.06);
+        color: var(--text-secondary); font-size: .78rem; line-height: 1.9;
+    }
+    .section-card {
+        margin-bottom: 18px; border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg); background: var(--bg-card); overflow: hidden;
+    }
+    .section-card-h {
+        padding: 13px 18px; border-bottom: 1px solid var(--border-color);
+        font-size: .88rem; font-weight: 800; color: var(--text-primary);
+        background: rgba(79,172,254,.04);
+    }
+    .q-row {
+        display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center;
+        padding: 14px 18px; border-bottom: 1px solid var(--border-color);
+    }
+    .q-row:last-child { border-bottom: none; }
+    .q-title { margin: 0 0 6px; color: var(--text-primary); font-size: .85rem; font-weight: 700; }
+    .q-meta { display: flex; flex-wrap: wrap; gap: 7px; }
+    .badge {
+        display: inline-flex; padding: 4px 8px; border-radius: 8px;
+        font-size: .66rem; font-weight: 700;
+        color: var(--text-secondary); background: rgba(255,255,255,.04);
+        border: 1px solid var(--border-color);
+    }
+    .badge-warn {
+        color: #fbbf24; border-color: rgba(251,191,36,.25); background: rgba(251,191,36,.08);
+    }
+    .btn-action {
+        display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+        min-height: 36px; padding: 0 14px; border-radius: 10px; font-size: .74rem;
+        font-weight: 700; border: none; cursor: pointer; font-family: inherit;
+    }
+    .btn-add { color: #fff; background: var(--accent-gradient); }
+    .btn-remove { color: #fff; background: linear-gradient(135deg,#f87171,#ef4444); }
+    .empty-box {
+        padding: 28px 18px; text-align: center; color: var(--text-secondary); font-size: .78rem;
+    }
+    @media (max-width: 600px) {
+        .q-row { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="pr-page">
+    <div class="pr-header">
+        <div>
+            <h2>سوالات تمرین</h2>
+            <p>
+                {{ practice.name }}
+                {% if practice.section %}
+                    · {{ practice.section.klass.name }} · جلسه {{ practice.section.name }}
+                {% endif %}
+            </p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'teacher:practice-detail' pk=practice.pk %}" class="pr-btn-ghost">جزئیات تمرین</a>
+            <a href="{% url 'teacher:practice-list' %}" class="pr-btn-ghost">لیست تمرین‌ها</a>
+            <a href="{% url 'teacher:question-create' %}" class="pr-btn">سوال جدید</a>
+        </div>
+    </div>
+
+    <div class="stat-bar">
+        فقط سوالات ساخته‌شده توسط شما نمایش داده می‌شود.
+        {% if practice.section and practice.section.klass %}
+            فیلتر نرم بر اساس پایه/رشته/درس کلاس:
+            <strong style="color:var(--text-primary)">{{ practice.section.klass.get_categories|default:"—" }}</strong>
+        {% endif %}
+        <br>
+        تعداد سوالات این تمرین:
+        <strong style="color:var(--text-primary)">{{ assigned_count }}</strong>
+    </div>
+
+    <div class="section-card">
+        <div class="section-card-h">سوالات انتخاب‌شده برای این تمرین</div>
+        {% if assigned_questions %}
+            {% for q in assigned_questions %}
+                <div class="q-row">
+                    <div>
+                        <p class="q-title">#{{ q.pk }} — {{ q.name }}</p>
+                        <div class="q-meta">
+                            <span class="badge">{{ q.get_type_of_question_display }}</span>
+                            <span class="badge">نمره: {{ q.score }}</span>
+                            {% if q.grade %}<span class="badge">{{ q.grade.name }}</span>{% endif %}
+                            {% if q.lesson %}<span class="badge">{{ q.lesson.name }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="question_id" value="{{ q.pk }}">
+                        <button type="submit" class="btn-action btn-remove">حذف از تمرین</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-box">
+                هنوز سوالی به این تمرین اضافه نشده است.
+                از لیست پایین انتخاب کنید.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="section-card">
+        <div class="section-card-h">سوالات قابل افزودن (بانک سوال شما)</div>
+        {% if available_questions %}
+            {% for q in available_questions %}
+                <div class="q-row">
+                    <div>
+                        <p class="q-title">#{{ q.pk }} — {{ q.name }}</p>
+                        <div class="q-meta">
+                            <span class="badge">{{ q.get_type_of_question_display }}</span>
+                            <span class="badge">نمره: {{ q.score }}</span>
+                            {% if q.grade %}<span class="badge">{{ q.grade.name }}</span>{% endif %}
+                            {% if q.major %}<span class="badge">{{ q.major.name }}</span>{% endif %}
+                            {% if q.lesson %}<span class="badge">{{ q.lesson.name }}</span>{% endif %}
+                            {% if q.practice_id %}
+                                <span class="badge badge-warn">در تمرین دیگر</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add">
+                        <input type="hidden" name="question_id" value="{{ q.pk }}">
+                        <button type="submit" class="btn-action btn-add">افزودن به تمرین</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-box">
+                سوال مناسبی در بانک شما نیست.
+                ابتدا از بخش «سوالات من» سوال بسازید.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

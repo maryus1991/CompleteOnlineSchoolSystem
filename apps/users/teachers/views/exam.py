@@ -13,7 +13,7 @@ from apps.users.teachers.forms.exam import ExamForm
 from apps.users.teachers.mixins import TeacherMixin
 
 
-
+# todo: add report for exam
 def _teacher_exams(teacher):
     return Exam.objects.filter(teacher=teacher, is_active=True)
 

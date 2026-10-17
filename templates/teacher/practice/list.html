@@ -1,1306 +1,208 @@
-
-{% extends "dashboard/base.html" %}
-
-
+{% extends "teacher/base.html" %}
 
 {% block header %}
-
-
 <style>
-section {
-    padding: 0;
-}
-
-.practice-page {
-    --practice-bg: var(--bg-primary);
-    --practice-surface: var(--bg-card);
-    --practice-surface-hover: var(--bg-card-hover);
-    --practice-border: var(--border-color);
-    --practice-text: var(--text-primary);
-    --practice-muted: var(--text-muted);
-    --practice-primary: var(--accent-color);
-    --practice-radius: 20px;
-
-    color: var(--practice-text);
-    padding: 28px;
-    min-height: 100%;
-    font-family: inherit;
-    background: transparent;
-}
-
-.practice-page * {
-    box-sizing: border-box;
-}
-
-.practice-page button,
-.practice-page input,
-.practice-page select {
-    font: inherit;
-}
-
-/* Header */
-.practice-header {
-    position: relative;
-    overflow: hidden;
-    padding: 30px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    background:
-        radial-gradient(ellipse at 100% 0%, var(--accent-glow), transparent 43%),
-        linear-gradient(125deg, var(--bg-secondary) 0%, var(--bg-card) 60%, var(--bg-secondary) 100%);
-}
-
-.practice-header::after {
-    content: "";
-    position: absolute;
-    left: -65px;
-    bottom: -115px;
-    width: 230px;
-    height: 230px;
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    box-shadow:
-        0 0 0 28px color-mix(in srgb, var(--accent-color) 4%, transparent),
-        0 0 0 56px color-mix(in srgb, var(--accent-color) 2%, transparent);
-    pointer-events: none;
-}
-
-.practice-header-content {
-    position: relative;
-    z-index: 1;
-}
-
-.practice-breadcrumb {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 28px;
-    color: var(--text-secondary);
-    font-size: 12px;
-}
-
-.practice-breadcrumb a {
-    color: var(--accent-color);
-    text-decoration: none;
-}
-
-.breadcrumb-separator {
-    color: var(--text-muted);
-}
-
-.breadcrumb-current {
-    color: var(--text-primary);
-}
-
-.practice-heading-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-}
-
-.practice-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 12px;
-    color: var(--accent-color);
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.eyebrow-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    box-shadow: 0 0 12px var(--accent-glow-strong);
-}
-
-.practice-heading-row h1 {
-    margin: 0;
-    color: var(--text-primary);
-    font-size: clamp(23px, 3vw, 32px);
-    font-weight: 800;
-    letter-spacing: -.7px;
-}
-
-.practice-subtitle {
-    max-width: 600px;
-    margin: 12px 0 0;
-    color: var(--text-secondary);
-    font-size: 13px;
-    line-height: 2;
-}
-
-.practice-header-icon {
-    display: grid;
-    flex-shrink: 0;
-    width: 94px;
-    height: 94px;
-    place-items: center;
-    color: var(--accent-color);
-    border: 1px solid var(--border-color);
-    border-radius: 26px;
-    background: var(--accent-glow);
-    box-shadow: inset 0 1px color-mix(in srgb, var(--text-primary) 6%, transparent);
-}
-
-.practice-header-icon svg {
-    width: 46px;
-    height: 46px;
-}
-
-/* Stats */
-.practice-stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    position: relative;
-    min-width: 0;
-    padding: 21px;
-    overflow: hidden;
-    border: 1px solid var(--practice-border);
-    border-radius: var(--practice-radius);
-    background: var(--practice-surface);
-    transition: border-color .2s, transform .2s, background .2s;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent-color);
-    background: var(--practice-surface-hover);
-}
-
-.stat-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.stat-label {
-    color: var(--text-secondary);
-    font-size: 12px;
-}
-
-.stat-icon {
-    display: grid;
-    width: 38px;
-    height: 38px;
-    flex-shrink: 0;
-    place-items: center;
-    border: 1px solid var(--practice-border);
-    border-radius: 12px;
-    background: var(--bg-secondary);
-    font-size: 17px;
-}
-
-.stat-total .stat-icon {
-    color: var(--accent-color);
-    background: var(--accent-glow);
-    border-color: color-mix(in srgb, var(--accent-color) 20%, transparent);
-}
-
-.stat-progress .stat-icon {
-    color: #f59e0b;
-    background: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.15);
-}
-
-.stat-submitted .stat-icon {
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.1);
-    border-color: rgba(56, 189, 248, 0.15);
-}
-
-.stat-corrected .stat-icon {
-    color: #34d399;
-    background: rgba(52, 211, 153, 0.1);
-    border-color: rgba(52, 211, 153, 0.15);
-}
-
-.stat-value {
-    margin-top: 17px;
-    color: var(--text-primary);
-    font-size: 30px;
-    font-weight: 800;
-    line-height: 1.3;
-    font-variant-numeric: tabular-nums;
-}
-
-.stat-description {
-    margin-top: 7px;
-    color: var(--text-muted);
-    font-size: 11px;
-}
-
-/* Toolbar */
-.practice-toolbar {
-    margin-bottom: 22px;
-}
-
-.toolbar-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-.toolbar-heading h2 {
-    margin: 0;
-    color: var(--text-primary);
-    font-size: 19px;
-    font-weight: 750;
-}
-
-.toolbar-heading p {
-    margin: 8px 0 0;
-    color: var(--practice-muted);
-    font-size: 12px;
-    line-height: 1.8;
-}
-
-.results-count {
-    flex-shrink: 0;
-    padding: 8px 13px;
-    border: 1px solid var(--practice-border);
-    border-radius: 10px;
-    background: var(--practice-surface);
-    color: var(--text-secondary);
-    font-size: 11px;
-}
-
-.practice-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.practice-search {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 180px;
-    gap: 12px;
-    padding: 0 15px;
-    height: 49px;
-    border: 1px solid var(--practice-border);
-    border-radius: 14px;
-    background: var(--bg-secondary);
-    color: var(--text-muted);
-    transition: border-color .2s, box-shadow .2s;
-}
-
-.practice-search:focus-within {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.practice-search > svg {
-    flex-shrink: 0;
-    font-size: 17px;
-    color: var(--text-muted);
-}
-
-.practice-search input {
-    width: 100%;
-    min-width: 0;
-    height: 100%;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: var(--text-primary);
-    font-size: 12px;
-}
-
-.practice-search input::placeholder {
-    color: var(--text-muted);
-}
-
-.practice-search kbd {
-    flex-shrink: 0;
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.practice-filters {
-    display: flex;
-    gap: 10px;
-}
-
-.practice-filters select {
-    max-width: 175px;
-    height: 49px;
-    padding: 0 13px;
-    outline: 0;
-    border: 1px solid var(--practice-border);
-    border-radius: 14px;
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.practice-filters select:focus {
-    border-color: var(--accent-color);
-}
-
-.practice-filters option {
-    background: var(--bg-card);
-    color: var(--text-primary);
-}
-
-/* Cards Grid */
-.practice-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: stretch;
-    gap: 19px;
-}
-
-.practice-card {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding: 20px;
-    border: 1px solid var(--practice-border);
-    border-radius: var(--practice-radius);
-    background: var(--practice-surface);
-    transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
-    animation: practiceFadeIn .35s ease both;
-}
-
-.practice-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent-color);
-    box-shadow: var(--card-shadow-hover);
-    background: var(--practice-surface-hover);
-}
-
-.practice-card[hidden] {
-    display: none !important;
-}
-
-.practice-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.practice-type-icon {
-    display: grid;
-    width: 47px;
-    height: 47px;
-    flex-shrink: 0;
-    place-items: center;
-    border: 1px solid transparent;
-    border-radius: 15px;
-    font-size: 21px;
-}
-
-.type-test {
-    color: var(--accent-color);
-    background: var(--accent-glow);
-    border-color: color-mix(in srgb, var(--accent-color) 15%, transparent);
-}
-
-.type-text {
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.1);
-    border-color: rgba(56, 189, 248, 0.15);
-}
-
-.type-image {
-    color: #e879f9;
-    background: rgba(232, 121, 249, 0.1);
-    border-color: rgba(232, 121, 249, 0.15);
-}
-
-.type-pdf {
-    color: #fb7185;
-    background: rgba(251, 113, 133, 0.1);
-    border-color: rgba(251, 113, 133, 0.15);
-}
-
-.practice-status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    max-width: 60%;
-    padding: 7px 10px;
-    border: 1px solid transparent;
-    border-radius: 9px;
-    font-size: 10px;
-    white-space: nowrap;
-}
-
-.practice-status::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: currentColor;
-}
-
-.status-not_started {
-    color: var(--accent-color);
-    background: var(--accent-glow);
-    border-color: color-mix(in srgb, var(--accent-color) 15%, transparent);
-}
-
-.status-in_progress {
-    color: #f59e0b;
-    background: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.15);
-}
-
-.status-submitted {
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.1);
-    border-color: rgba(56, 189, 248, 0.15);
-}
-
-.status-correcting {
-    color: #a78bfa;
-    background: rgba(167, 139, 250, 0.1);
-    border-color: rgba(167, 139, 250, 0.15);
-}
-
-.status-corrected {
-    color: #34d399;
-    background: rgba(52, 211, 153, 0.1);
-    border-color: rgba(52, 211, 153, 0.15);
-}
-
-.practice-card-body {
-    flex: 1;
-}
-
-.practice-type-label {
-    margin-bottom: 9px;
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.practice-card-body h3 {
-    margin: 0;
-    color: var(--text-primary);
-    font-size: 15px;
-    font-weight: 750;
-    line-height: 1.9;
-    overflow-wrap: anywhere;
-}
-
-.practice-description {
-    display: -webkit-box;
-    min-height: 44px;
-    margin-top: 9px;
-    overflow: hidden;
-    color: var(--text-secondary);
-    font-size: 11px;
-    line-height: 2;
-    overflow-wrap: anywhere;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-}
-
-.practice-section {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 15px;
-    color: var(--accent-color);
-    font-size: 11px;
-}
-
-.practice-section i,
-.practice-section svg {
-    font-size: 14px;
-}
-
-.practice-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 20px;
-    padding: 15px 0;
-    border-top: 1px solid var(--practice-border);
-    border-bottom: 1px solid var(--practice-border);
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
-
-.meta-icon {
-    display: grid;
-    width: 34px;
-    height: 34px;
-    flex-shrink: 0;
-    place-items: center;
-    border-radius: 10px;
-    background: var(--bg-secondary);
-    color: var(--text-muted);
-}
-
-.meta-item > div {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    gap: 5px;
-}
-
-.meta-label {
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.meta-item strong {
-    color: var(--text-secondary);
-    font-size: 11px;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-}
-
-.score-item .meta-icon {
-    color: #34d399;
-}
-
-.practice-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 17px;
-}
-
-.practice-id {
-    color: var(--text-muted);
-    font-size: 10px;
-    direction: ltr;
-}
-
-.practice-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    min-height: 39px;
-    padding: 0 13px;
-    border: 1px solid color-mix(in srgb, var(--accent-color) 25%, transparent);
-    border-radius: 11px;
-    background: var(--accent-glow);
-    color: var(--accent-color);
-    font-size: 11px;
-    text-decoration: none;
-    transition: background .2s, color .2s, border-color .2s;
-}
-
-.practice-action:hover {
-    border-color: var(--accent-color);
-    background: var(--accent-color);
-    color: #fff;
-}
-
-/* Empty state */
-.practice-empty {
-    grid-column: 1 / -1;
-    padding: 65px 20px;
-    border: 1px dashed var(--border-color);
-    border-radius: 22px;
-    background: color-mix(in srgb, var(--bg-card) 70%, transparent);
-    text-align: center;
-}
-
-.practice-empty[hidden] {
-    display: none !important;
-}
-
-.empty-icon {
-    display: grid;
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 20px;
-    place-items: center;
-    border: 1px solid color-mix(in srgb, var(--accent-color) 20%, transparent);
-    border-radius: 22px;
-    background: var(--accent-glow);
-    color: var(--accent-color);
-    font-size: 27px;
-}
-
-.practice-empty h3 {
-    margin: 0;
-    color: var(--text-primary);
-    font-size: 16px;
-}
-
-.practice-empty p {
-    margin: 12px 0 0;
-    color: var(--text-secondary);
-    font-size: 12px;
-    line-height: 2;
-}
-
-.reset-filters {
-    margin-top: 20px;
-    padding: 10px 16px;
-    border: 1px solid color-mix(in srgb, var(--accent-color) 30%, transparent);
-    border-radius: 10px;
-    background: var(--accent-glow);
-    color: var(--accent-color);
-    cursor: pointer;
-    transition: background .2s, color .2s;
-}
-
-.reset-filters:hover {
-    background: var(--accent-color);
-    color: #fff;
-}
-
-/* Pagination */
-.practice-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 32px;
-}
-
-.page-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    min-height: 42px;
-    padding: 0 15px;
-    border: 1px solid var(--practice-border);
-    border-radius: 12px;
-    background: var(--practice-surface);
-    color: var(--text-secondary);
-    font-size: 12px;
-    text-decoration: none;
-    transition: border-color .2s, color .2s;
-}
-
-.page-link:not(.disabled):hover {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-}
-
-.page-link.disabled {
-    opacity: .4;
-    cursor: not-allowed;
-}
-
-.page-indicator {
-    color: var(--text-muted);
-    font-size: 12px;
-}
-
-@keyframes practiceFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
+    .pr-page { width: 100%; padding: 10px; }
+    .pr-header {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 15px; margin-bottom: 22px; flex-wrap: wrap;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .pr-header h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.35rem; font-weight: 800; }
+    .pr-header p { margin: 0; color: var(--text-secondary); font-size: .8rem; }
+    .pr-btn {
+        display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px;
+        border-radius: 12px; color: #fff; text-decoration: none;
+        background: var(--accent-gradient); font-size: .82rem; font-weight: 700;
+        transition: transform .2s ease, box-shadow .2s ease; border: none; cursor: pointer;
     }
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-    .practice-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .pr-btn:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79,172,254,.2); }
+    .pr-stat {
+        margin-bottom: 18px; padding: 12px 16px; border-radius: 12px;
+        border: 1px solid rgba(79,172,254,.15); background: rgba(79,172,254,.06);
+        color: var(--text-secondary); font-size: .78rem;
     }
-    .practice-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .class-block {
+        margin-bottom: 22px; border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg); background: var(--bg-card); overflow: hidden;
     }
-}
-
-@media (max-width: 768px) {
-    .practice-page {
-        padding: 16px;
+    .class-head {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        padding: 16px 18px; border-bottom: 1px solid var(--border-color);
+        background: linear-gradient(125deg, var(--bg-secondary), var(--bg-card));
     }
-    .practice-header {
-        padding: 23px 19px;
-        border-radius: 19px;
+    .class-head h3 { margin: 0; color: var(--text-primary); font-size: .95rem; font-weight: 800; }
+    .class-head span { color: var(--text-secondary); font-size: .72rem; }
+    .section-block { border-bottom: 1px solid var(--border-color); }
+    .section-block:last-child { border-bottom: none; }
+    .section-head {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        padding: 12px 18px; background: rgba(255,255,255,.02);
     }
-    .practice-heading-row {
-        align-items: flex-start;
+    .section-head h4 { margin: 0; color: var(--text-primary); font-size: .85rem; font-weight: 700; }
+    .section-head a {
+        display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
+        border-radius: 9px; font-size: .72rem; font-weight: 700; text-decoration: none;
+        color: #4facfe; border: 1px solid rgba(79,172,254,.25); background: rgba(79,172,254,.08);
     }
-    .practice-header-icon {
-        width: 58px;
-        height: 58px;
-        border-radius: 17px;
+    .practice-row {
+        display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 14px; align-items: center;
+        padding: 14px 18px; border-top: 1px solid var(--border-color);
+        transition: background .15s ease;
     }
-    .practice-header-icon svg {
-        width: 30px;
-        height: 30px;
+    .practice-row:hover { background: rgba(79,172,254,.04); }
+    .pr-title {
+        display: block; margin: 0 0 6px; color: var(--text-primary); font-size: .88rem;
+        font-weight: 800; text-decoration: none;
     }
-    .practice-subtitle {
-        font-size: 12px;
+    .pr-title:hover { color: #4facfe; }
+    .pr-meta { display: flex; flex-wrap: wrap; gap: 7px; }
+    .badge {
+        display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px;
+        border-radius: 8px; font-size: .68rem; font-weight: 700; white-space: nowrap;
     }
-    .practice-controls {
-        align-items: stretch;
-        flex-direction: column;
+    .badge-muted {
+        color: var(--text-secondary); background: rgba(255,255,255,.04);
+        border: 1px solid var(--border-color);
     }
-    .practice-search {
-        flex: none;
-        width: 100%;
+    .badge-blue {
+        color: #60a5fa; background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.18);
     }
-    .practice-filters {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .badge-green {
+        color: #34d399; background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.18);
     }
-    .practice-filters select {
-        width: 100%;
-        max-width: none;
-        min-width: 0;
+    .badge-amber {
+        color: #fbbf24; background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.18);
     }
-    .practice-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
+    .row-actions { display: flex; gap: 8px; }
+    .icon-btn {
+        display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+        border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-secondary);
+        text-decoration: none; transition: all .2s ease; background: transparent;
     }
-    .practice-card {
-        padding: 18px;
+    .icon-btn:hover { color: #fff; background: var(--accent-gradient); border-color: transparent; }
+    .icon-btn.danger:hover { background: linear-gradient(135deg,#f87171,#ef4444); }
+    .empty-section {
+        padding: 14px 18px; color: var(--text-secondary); font-size: .76rem;
+        border-top: 1px solid var(--border-color);
     }
-    .toolbar-heading h2 {
-        font-size: 17px;
+    .pr-empty {
+        padding: 55px 20px; text-align: center; border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg); background: var(--bg-card);
     }
-}
-
-@media (max-width: 420px) {
-    .practice-page {
-        padding: 12px;
+    .pr-empty-icon {
+        width: 65px; height: 65px; margin: 0 auto 15px; display: flex; align-items: center;
+        justify-content: center; border-radius: 18px; background: rgba(79,172,254,.1); color: #4facfe;
     }
-    .practice-stats {
-        gap: 10px;
+    .pr-empty h3 { margin: 0 0 7px; color: var(--text-primary); font-size: .95rem; }
+    .pr-empty p { margin: 0; color: var(--text-secondary); font-size: .78rem; }
+    @media (max-width: 600px) {
+        .practice-row { grid-template-columns: 1fr; }
+        .row-actions { justify-content: flex-start; }
     }
-    .stat-card {
-        padding: 14px;
-    }
-    .stat-value {
-        font-size: 25px;
-    }
-    .stat-icon {
-        width: 32px;
-        height: 32px;
-    }
-    .practice-header-icon {
-        display: none;
-    }
-    .practice-card-footer {
-        align-items: stretch;
-    }
-    .practice-action {
-        flex: 1;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .practice-page *,
-    .practice-page *::before,
-    .practice-page *::after {
-        animation: none !important;
-        transition: none !important;
-    }
-}
 </style>
 {% endblock %}
 
-
-
-
-
 {% block main %}
-<div class="practice-page" dir="rtl">
+<div class="pr-page">
+    <div class="pr-header">
+        <div>
+            <h2>تمرین‌های من</h2>
+            <p>به تفکیک کلاس و جلسه</p>
+        </div>
+<!--        <a href="{% url 'teacher:practice-create' %}" class="pr-btn">-->
+<!--            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">-->
+<!--                <path d="M12 5v14"/><path d="M5 12h14"/>-->
+<!--            </svg>-->
+<!--            تمرین جدید-->
+<!--        </a>-->
+    </div>
 
-    <!-- Header -->
-    <header class="practice-header">
-        <div class="practice-header-content">
-            <div class="practice-breadcrumb">
-                <span><a class="breadcrumb-current"  href="{% url 'student:main' %}">پنل دانش‌آموز</a></span>
-                <span class="breadcrumb-separator">/</span>
-                <span>یادگیری</span>
-                <span class="breadcrumb-separator">/</span>
-                <span class="breadcrumb-current">تکالیف و تمرین‌ها</span>
-            </div>
+    <div class="pr-stat">
+        مجموع تمرین‌های فعال: <strong style="color:var(--text-primary)">{{ total_practices }}</strong>
+        در <strong style="color:var(--text-primary)">{{ groups|length }}</strong> کلاس
+    </div>
 
-            <div class="practice-heading-row">
-                <div>
-                    <div  >
-                        <span class="eyebrow-dot"></span>
-                        مرکز فعالیت‌های آموزشی
+    {% if groups %}
+        {% for group in groups %}
+            <div class="class-block">
+                <div class="class-head">
+                    <div>
+                        <h3>{{ group.klass.name }}</h3>
+                        <span>{{ group.klass.get_categories }}</span>
                     </div>
-
-                    <h1>تمرین‌های من</h1>
-
-                    <p class="practice-subtitle">
-                        تمرین‌هایت را مدیریت کن، پاسخ‌هایت را ارسال کن
-                        و پیشرفت تحصیلی‌ات را دنبال کن.
-                    </p>
+                    <span class="badge badge-blue">{{ group.practice_total }} تمرین</span>
                 </div>
 
-                <div class="practice-header-icon">
-                    <svg viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="1.5">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
-                        <path d="m9 9 2 2 4-4"/>
-                        <path d="M9 14h7"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </header>
+                {% for item in group.sections %}
+                    <div class="section-block">
+                        <div class="section-head">
+                            <h4>جلسه: {{ item.section.name }}</h4>
+                            <a href="{% url 'teacher:practice-create-section' section_id=item.section.pk %}">
+                                + تمرین برای این جلسه
+                            </a>
+                        </div>
 
-<!-- Statistics -->
-    <section class="practice-stats">
-        <article class="stat-card stat-total">
-            <div class="stat-top">
-                <span class="stat-label">کل تمرین‌ها</span>
-                <span class="stat-icon">
-                    <svg class="bi bi-journal-text" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-                        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                        <path d="M5 13.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-                    </svg>
-                </span>
-            </div>
-            <div class="stat-value">{{ practices|length }}</div>
-            <div class="stat-description">تمرین در این صفحه</div>
-        </article>
-
-        <article class="stat-card stat-progress">
-            <div class="stat-top">
-                <span class="stat-label">در حال انجام</span>
-                <span class="stat-icon">
-                    <svg class="bi bi-hourglass-split" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
-                    </svg>
-                </span>
-            </div>
-            <div class="stat-value" id="inProgressCount">۰</div>
-            <div class="stat-description">تمرین‌های شروع‌شده</div>
-        </article>
-
-        <article class="stat-card stat-submitted">
-            <div class="stat-top">
-                <span class="stat-label">ارسال‌شده</span>
-                <span class="stat-icon">
-                    <svg class="bi bi-send-check" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z"/>
-                        <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/>
-                    </svg>
-                </span>
-            </div>
-            <div class="stat-value" id="submittedCount">۰</div>
-            <div class="stat-description">منتظر بررسی یا تصحیح</div>
-        </article>
-
-        <article class="stat-card stat-corrected">
-            <div class="stat-top">
-                <span class="stat-label">تصحیح‌شده</span>
-                <span class="stat-icon">
-                    <svg class="bi bi-patch-check" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path fill-rule="evenodd" d="M10.354 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
-                        <path d="m10.273 2.513-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911z"/>
-                    </svg>
-                </span>
-            </div>
-            <div class="stat-value" id="correctedCount">۰</div>
-            <div class="stat-description">دارای نتیجه ثبت‌شده</div>
-        </article>
-    </section>
-
-    <!-- Toolbar -->
-    <section class="practice-toolbar">
-        <div class="toolbar-heading">
-            <div>
-                <h2>فهرست تمرین‌ها</h2>
-                <p>تمرین موردنظرت را پیدا کن و وضعیت آن را بررسی کن.</p>
-            </div>
-            <span class="results-count" id="resultsCount">
-                {{ practices|length }} تمرین
-            </span>
-        </div>
-
-        <div class="practice-controls">
-            <div class="practice-search">
-                <svg class="bi bi-search" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                </svg>
-                <input type="search"
-                       id="practiceSearch"
-                       placeholder="جست‌وجو در نام تمرین‌ها..."
-                       aria-label="جست‌وجوی تمرین">
-                <kbd>جست‌وجو</kbd>
-            </div>
-
-            <div class="practice-filters">
-                <select id="statusFilter" aria-label="فیلتر وضعیت">
-                    <option value="all">همه وضعیت‌ها</option>
-                    <option value="not_started">شروع‌نشده</option>
-                    <option value="in_progress">در حال انجام</option>
-                    <option value="submitted">ارسال‌شده</option>
-                    <option value="correcting">در حال تصحیح</option>
-                    <option value="corrected">تصحیح‌شده</option>
-                </select>
-
-                <select id="typeFilter" aria-label="فیلتر نوع تمرین">
-                    <option value="all">همه نوع‌ها</option>
-                    <option value="multiple_choice">تستی</option>
-                    <option value="long_answer">تشریحی</option>
-                    <option value="image_based">تصویری</option>
-                    <option value="pdf_based">فایل PDF</option>
-                </select>
-            </div>
-        </div>
-    </section>
-
-    <!-- Practice Cards -->
-    <section class="practice-grid" id="practiceGrid">
-
-        {% for practice in practices %}
-            {% with detail=practice.current_student_details.0 %}
-
-            <article class="practice-card"
-                     data-name="{{ practice.name|lower }}"
-                     data-status="{% if detail %}{{ detail.status }}{% else %}not_started{% endif %}"
-                     data-type="{{ practice.type_of_practice }}">
-
-                <div class="practice-card-top">
-                    <div class="practice-type-icon
-                        {% if practice.type_of_practice == 'multiple_choice' %}type-test
-                        {% elif practice.type_of_practice == 'long_answer' %}type-text
-                        {% elif practice.type_of_practice == 'image_based' %}type-image
-                        {% else %}type-pdf{% endif %}">
-
-                        {% if practice.type_of_practice == 'multiple_choice' %}
-                            <svg class="bi bi-ui-checks" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                                <path d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zM2.146 2.854a.5.5 0 1 1 .708-.708L3 2.293l.854-.854a.5.5 0 1 1 .708.708l-.854.853.854.854a.5.5 0 1 1-.708.708L3 3.707l-.854.853a.5.5 0 1 1-.708-.708l.854-.853zM2.146 9.854a.5.5 0 1 1 .708-.708L3 9.293l.854-.854a.5.5 0 1 1 .708.708l-.854.853.854.854a.5.5 0 1 1-.708.708L3 10.707l-.854.853a.5.5 0 1 1-.708-.708l.854-.853z"/>
-                                <path d="M7 9.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zM7 6.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zM7 13.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/>
-                            </svg>
-                        {% elif practice.type_of_practice == 'long_answer' %}
-                            <svg class="bi bi-pencil-square" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                            </svg>
-                        {% elif practice.type_of_practice == 'image_based' %}
-                            <svg class="bi bi-image" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
-                            </svg>
+                        {% if item.practices %}
+                            {% for p in item.practices %}
+                                <div class="practice-row">
+                                    <div>
+                                        <a href="{% url 'teacher:practice-detail' pk=p.pk %}" class="pr-title">
+                                            {{ p.name }}
+                                        </a>
+                                        <div class="pr-meta">
+                                            <span class="badge badge-muted">{{ p.get_type_of_practice_display }}</span>
+                                            {% if p.deadline %}
+                                                <span class="badge badge-amber">مهلت: {{ p.deadline|date:"Y/m/d H:i" }}</span>
+                                            {% endif %}
+                                            <span class="badge badge-blue">ارسال: {{ p.submitted_count }}</span>
+                                            <span class="badge badge-green">تصحیح: {{ p.corrected_count }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row-actions">
+                                        <a href="{% url 'teacher:practice-detail' pk=p.pk %}" class="icon-btn" title="جزئیات">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'teacher:practice-questions' pk=p.pk %}" class="icon-btn" title="سوالات">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'teacher:practice-update' pk=p.pk %}" class="icon-btn" title="ویرایش">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'teacher:practice-delete' pk=p.pk %}" class="icon-btn danger" title="حذف">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         {% else %}
-                            <svg class="bi bi-file-earmark-pdf" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
-                                <path d="M4.603 14.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.115-.52 1.676a6.5 6.5 0 0 0 1.232 1.359c.36.297.706.51.982.633.13.059.256.107.375.14a.7.7 0 0 1 .063.72c-.15.32-.514.42-.855.363-.34-.056-.7-.213-1.05-.446a8.5 8.5 0 0 1-1.36-1.243 20 20 0 0 1-1.222 2.5 8 8 0 0 1-1.6.9 2.2 2.2 0 0 1-1.06.24"/>
-                            </svg>
+                            <div class="empty-section">هنوز تمرینی برای این جلسه تعریف نشده است.</div>
                         {% endif %}
                     </div>
-
-                    <span class="practice-status
-                        {% if detail %}
-                            status-{{ detail.status }}
-                        {% else %}
-                            status-not_started
-                        {% endif %}">
-                        {% if detail %}
-                            {{ detail.get_status_display }}
-                        {% else %}
-                            شروع‌نشده
-                        {% endif %}
-                    </span>
-                </div>
-
-                <div class="practice-card-body">
-                    <div class="practice-type-label">
-                        {{ practice.get_type_of_practice_display }}
-                    </div>
-
-                    <h3>{{ practice.name }}</h3>
-
-                    {% if practice.description %}
-                        <div class="practice-description">
-                            {{ practice.description|striptags|truncatechars:125 }}
-                        </div>
-                    {% else %}
-                        <div class="practice-description">
-                            برای مشاهده جزئیات این تمرین وارد صفحه آن شو.
-                        </div>
-                    {% endif %}
-
-                    {% if practice.section %}
-                        <div class="practice-section">
-                            <svg class="bi bi-collection" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                                <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5z"/>
-                            </svg>
-                            <span>{{ practice.section }}</span>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="practice-meta">
-                    <div class="meta-item">
-                        <span class="meta-icon">
-                            <svg class="bi bi-calendar-event" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                                 fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
-                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
-                            </svg>
-                        </span>
-                        <div>
-                            <span class="meta-label">مهلت تحویل</span>
-                            <strong>
-                                {% if practice.deadline %}
-                                    {{ practice.deadline|date:"H:i Y/m/d " }}
-                                {% else %}
-                                    بدون مهلت مشخص
-                                {% endif %}
-                            </strong>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div class="practice-card-footer">
-                    <span class="practice-id">
-                        شناسه #{{ practice.pk }}
-                    </span>
-
-                    <a href="{% url 'student:practice-details' pk=practice.pk %}"
-                       class="practice-action">
-                        {% if detail and detail.status == 'corrected' %}
-                            مشاهده نتیجه
-                        {% elif detail and detail.status == 'submitted' or detail and detail.status == 'correcting' %}
-                            مشاهده پاسخ
-                        {% else %}
-                            مشاهده و انجام تمرین
-                        {% endif %}
-                        <svg class="bi bi-arrow-left" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                             fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-                        </svg>
-                    </a>
-                </div>
-            </article>
-
-            {% endwith %}
-        {% empty %}
-            <div class="practice-empty">
-                <div class="empty-icon">
-                    <svg class="bi bi-journal-x" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path fill-rule="evenodd" d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708"/>
-                        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                        <path d="M5 13.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-                    </svg>
-                </div>
-                <h3>هنوز تمرینی برایت ثبت نشده است</h3>
-                <p>
-                    وقتی معلم تمرینی برایت تعیین کند،
-                    از همین بخش می‌توانی آن را مشاهده کنی.
-                </p>
+                {% empty %}
+                    <div class="empty-section">جلسه‌ای برای این کلاس ثبت نشده است.</div>
+                {% endfor %}
             </div>
         {% endfor %}
-
-        <div class="practice-empty filtered-empty" id="filteredEmpty" hidden>
-            <div class="empty-icon">
-                <svg class="bi bi-search" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                     fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+    {% else %}
+        <div class="pr-empty">
+            <div class="pr-empty-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M9 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"/>
+                    <rect x="9" y="2" width="6" height="6" rx="1"/>
                 </svg>
             </div>
-            <h3>تمرینی پیدا نشد</h3>
-            <p>عبارت جست‌وجو یا فیلترها را تغییر بده.</p>
-            <button type="button" class="reset-filters" id="resetFilters">
-                پاک کردن فیلترها
-            </button>
+            <h3>تمرین یا کلاسی یافت نشد</h3>
+            <p>ابتدا کلاس و جلسه داشته باشید، سپس تمرین تعریف کنید.</p>
         </div>
-    </section>
-
-    <!-- Pagination -->
-    {% if is_paginated %}
-        <nav class="practice-pagination" aria-label="صفحه‌بندی تمرین‌ها">
-
-            {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}"
-                   class="page-link">
-                    <svg class="bi bi-chevron-right" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                    </svg>
-                    قبلی
-                </a>
-            {% else %}
-                <span class="page-link disabled">
-                    <svg class="bi bi-chevron-right" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                    </svg>
-                    قبلی
-                </span>
-            {% endif %}
-
-            <span class="page-indicator">
-                صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}
-            </span>
-
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}"
-                   class="page-link">
-                    بعدی
-                    <svg class="bi bi-chevron-left" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                    </svg>
-                </a>
-            {% else %}
-                <span class="page-link disabled">
-                    بعدی
-                    <svg class="bi bi-chevron-left" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                         fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                    </svg>
-                </span>
-            {% endif %}
-
-        </nav>
     {% endif %}
 </div>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-    const grid = document.getElementById("practiceGrid");
-    if (!grid) return;
-
-    const cards = Array.from(
-        grid.querySelectorAll(".practice-card")
-    );
-
-    const searchInput = document.getElementById("practiceSearch");
-    const statusFilter = document.getElementById("statusFilter");
-    const typeFilter = document.getElementById("typeFilter");
-    const resultsCount = document.getElementById("resultsCount");
-    const filteredEmpty = document.getElementById("filteredEmpty");
-    const resetButton = document.getElementById("resetFilters");
-
-const countElements = {
-    in_progress: document.getElementById("inProgressCount"),
-    submitted: document.getElementById("submittedCount"),
-    corrected: document.getElementById("correctedCount"),
-};
-
-const counts = {
-    in_progress: 0,
-    submitted: 0,
-    corrected: 0,
-};
-
-// شمارش تمرین‌ها
-cards.forEach((card) => {
-    const status = card.dataset.status;
-
-    if (Object.hasOwn(counts, status)) {
-        counts[status]++;
-    }
-});
-
-// نمایش آمار
-Object.entries(countElements).forEach(([status, element]) => {
-    if (element) {
-        element.textContent = counts[status];
-    }
-});
-    function filterPractices() {
-        const query = normalize(searchInput.value);
-        const selectedStatus = statusFilter.value;
-        const selectedType = typeFilter.value;
-
-        let visibleCount = 0;
-
-        cards.forEach((card) => {
-            const matchesName = normalize(card.dataset.name)
-                .includes(query);
-
-            const matchesStatus =
-                selectedStatus === "all" ||
-                card.dataset.status === selectedStatus;
-
-            const matchesType =
-                selectedType === "all" ||
-                card.dataset.type === selectedType;
-
-            const visible =
-                matchesName && matchesStatus && matchesType;
-
-            card.hidden = !visible;
-
-            if (visible) visibleCount++;
-        });
-
-        resultsCount.textContent = `${visibleCount} تمرین`;
-
-        // پیام خالی فقط وقتی نشان داده شود که تمرینی وجود دارد
-        // اما با فیلترهای فعلی نتیجه‌ای پیدا نشده باشد.
-        const hasFilters =
-            query !== "" ||
-            selectedStatus !== "all" ||
-            selectedType !== "all";
-
-        filteredEmpty.hidden =
-            !(cards.length > 0 && visibleCount === 0 && hasFilters);
-    }
-
-    searchInput.addEventListener("input", filterPractices);
-    statusFilter.addEventListener("change", filterPractices);
-    typeFilter.addEventListener("change", filterPractices);
-
-    resetButton.addEventListener("click", function () {
-        searchInput.value = "";
-        statusFilter.value = "all";
-        typeFilter.value = "all";
-        filterPractices();
-    });
-
-    filterPractices();
-});
-
-</script>
-
 {% endblock %}
-
-
-
