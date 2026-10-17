@@ -1,0 +1,142 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .ticket-page { width: 100%; padding: 10px; }
+    .ticket-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 22px; flex-wrap: wrap; }
+    .ticket-header-title h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.35rem; font-weight: 800; }
+    .ticket-header-title p { margin: 0; color: var(--text-secondary); font-size: 0.8rem; }
+    .ticket-new-btn {
+        display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 12px;
+        color: #fff; text-decoration: none; background: var(--accent-gradient); font-size: 0.82rem; font-weight: 700;
+    }
+    .ticket-back-btn {
+        display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 12px;
+        color: var(--text-secondary); text-decoration: none; background: var(--bg-card);
+        border: 1px solid var(--border-color); font-size: 0.82rem; font-weight: 700;
+    }
+    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .stat-bar {
+        margin-bottom: 18px; padding: 12px 16px; border-radius: 12px;
+        border: 1px solid rgba(79, 172, 254, .15); background: rgba(79, 172, 254, .06);
+        color: var(--text-secondary); font-size: .78rem; line-height: 1.9;
+    }
+    .section-card {
+        margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+        background: var(--bg-card); overflow: hidden;
+    }
+    .section-card-header {
+        padding: 14px 18px; border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary); font-size: .9rem; font-weight: 800;
+        background: rgba(79, 172, 254, .04);
+    }
+    .q-row {
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center;
+        padding: 14px 18px; border-bottom: 1px solid var(--border-color);
+    }
+    .q-row:last-child { border-bottom: none; }
+    .q-title { color: var(--text-primary); font-size: .85rem; font-weight: 700; margin: 0 0 6px; }
+    .q-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ticket-badge {
+        display: inline-flex; padding: 5px 9px; border-radius: 8px; font-size: .68rem; font-weight: 700;
+        color: var(--text-secondary); background: rgba(255,255,255,.04); border: 1px solid var(--border-color);
+    }
+    .btn-action {
+        display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+        min-height: 36px; padding: 0 14px; border-radius: 10px; font-size: .75rem; font-weight: 700;
+        border: none; cursor: pointer; font-family: inherit;
+    }
+    .btn-add { color: #fff; background: var(--accent-gradient); }
+    .btn-remove { color: #fff; background: linear-gradient(135deg, #f87171, #ef4444); }
+    .ticket-empty {
+        padding: 28px 18px; text-align: center; color: var(--text-secondary); font-size: .78rem;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="ticket-page">
+    <div class="ticket-header">
+        <div class="ticket-header-title">
+            <h2>سوالات آزمون</h2>
+            <p>{{ exam.name }}</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'teacher:exam-list' %}" class="ticket-back-btn">بازگشت به لیست</a>
+            <a href="{% url 'teacher:exam-students' pk=exam.pk %}" class="ticket-new-btn">مدیریت دانش‌آموزان</a>
+            <a href="{% url 'teacher:question-create' %}" class="ticket-new-btn">سوال جدید</a>
+        </div>
+    </div>
+
+    <div class="stat-bar">
+        فیلتر بر اساس پایه / رشته / درس این آزمون:
+        <strong style="color:var(--text-primary)">{{ exam.get_categories|default:"همه" }}</strong>
+        <br>
+        تعداد سوالات متصل به آزمون: <strong style="color:var(--text-primary)">{{ assigned_count }}</strong>
+        — فقط سوالات ساخته‌شده توسط شما نمایش داده می‌شود.
+    </div>
+
+    <div class="section-card">
+        <div class="section-card-header">سوالات این آزمون</div>
+        {% if assigned_questions %}
+            {% for q in assigned_questions %}
+                <div class="q-row">
+                    <div>
+                        <p class="q-title">#{{ q.pk }} — {{ q.name }}</p>
+                        <div class="q-meta">
+                            <span class="ticket-badge">{{ q.get_type_of_question_display }}</span>
+                            <span class="ticket-badge">نمره: {{ q.score }}</span>
+                            {% if q.grade %}<span class="ticket-badge">{{ q.grade.name }}</span>{% endif %}
+                            {% if q.lesson %}<span class="ticket-badge">{{ q.lesson.name }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="question_id" value="{{ q.pk }}">
+                        <button type="submit" class="btn-action btn-remove">حذف از آزمون</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="ticket-empty">هنوز سوالی به این آزمون اضافه نشده است.</div>
+        {% endif %}
+    </div>
+
+    <div class="section-card">
+        <div class="section-card-header">سوالات قابل افزودن (بانک سوال شما)</div>
+        {% if available_questions %}
+            {% for q in available_questions %}
+                <div class="q-row">
+                    <div>
+                        <p class="q-title">#{{ q.pk }} — {{ q.name }}</p>
+                        <div class="q-meta">
+                            <span class="ticket-badge">{{ q.get_type_of_question_display }}</span>
+                            <span class="ticket-badge">نمره: {{ q.score }}</span>
+                            {% if q.grade %}<span class="ticket-badge">{{ q.grade.name }}</span>{% endif %}
+                            {% if q.major %}<span class="ticket-badge">{{ q.major.name }}</span>{% endif %}
+                            {% if q.lesson %}<span class="ticket-badge">{{ q.lesson.name }}</span>{% endif %}
+                            {% if q.exam_id %}
+                                <span class="ticket-badge" style="color:#fbbf24;border-color:rgba(251,191,36,.25);">
+                                    در آزمون دیگر
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add">
+                        <input type="hidden" name="question_id" value="{{ q.pk }}">
+                        <button type="submit" class="btn-action btn-add">افزودن به آزمون</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="ticket-empty">
+                سوالی مطابق پایه/رشته/درس این آزمون یافت نشد.
+                ابتدا از بخش «سوالات من» سوال بسازید.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

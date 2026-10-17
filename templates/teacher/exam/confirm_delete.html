@@ -1,0 +1,72 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .ticket-create-page { width: 100%; padding: 10px; }
+    .ticket-create-header { margin-bottom: 22px; }
+    .ticket-create-header h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.35rem; font-weight: 800; }
+    .ticket-create-header p { margin: 0; color: var(--text-secondary); font-size: .8rem; }
+    .ticket-form-card {
+        padding: 22px; border: 1px solid var(--border-color); border-radius: var(--radius-lg); background: var(--bg-card);
+    }
+    .delete-warning {
+        display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; padding: 14px 16px;
+        border: 1px solid rgba(248, 113, 113, .25); border-radius: 12px; background: rgba(248, 113, 113, .08);
+        color: var(--text-secondary); font-size: .78rem; line-height: 1.9;
+    }
+    .delete-warning svg { flex-shrink: 0; margin-top: 2px; color: #f87171; }
+    .question-preview {
+        margin-bottom: 22px; padding: 14px 16px; border: 1px solid var(--border-color);
+        border-radius: 12px; background: var(--bg-primary);
+    }
+    .question-preview h3 { margin: 0 0 8px; color: var(--text-primary); font-size: .95rem; font-weight: 800; }
+    .question-preview p { margin: 0; color: var(--text-secondary); font-size: .78rem; line-height: 1.8; }
+    .ticket-form-actions {
+        display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--border-color);
+    }
+    .ticket-back-btn, .ticket-submit-btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        min-height: 44px; padding: 0 18px; border-radius: 12px; font-family: inherit;
+        font-size: .8rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none;
+    }
+    .ticket-back-btn { color: var(--text-secondary); background: var(--bg-primary); border: 1px solid var(--border-color); }
+    .ticket-submit-btn { color: #fff; background: linear-gradient(135deg, #f87171, #ef4444); }
+    @media (max-width: 600px) {
+        .ticket-form-actions { flex-direction: column-reverse; }
+        .ticket-back-btn, .ticket-submit-btn { width: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="ticket-create-page">
+    <div class="ticket-create-header">
+        <h2>حذف آزمون</h2>
+        <p>آزمون از لیست فعال‌ها خارج می‌شود (حذف نرم)</p>
+    </div>
+    <div class="ticket-form-card">
+        <div class="delete-warning">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div>
+                با تأیید، <code>is_active</code> برابر <strong>False</strong> می‌شود و آزمون از لیست معلم حذف می‌گردد.
+            </div>
+        </div>
+        <div class="question-preview">
+            <h3>#{{ exam.pk }} — {{ exam.name }}</h3>
+            <p>{{ exam.summery|default:exam.description|striptags|truncatewords:30 }}</p>
+            <p style="margin-top:8px;">{{ exam.get_categories }} · {{ exam.start_at|date:"Y/m/d H:i" }}</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="ticket-form-actions">
+                <a href="{% url 'teacher:exam-list' %}" class="ticket-back-btn">انصراف</a>
+                <button type="submit" class="ticket-submit-btn">تأیید حذف</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -24,4 +24,14 @@ urlpatterns = [
     path("questions/update/<int:pk>/", views.questions.QuestionUpdateView.as_view(), name="question-update"),
     path("questions/delete/<int:pk>/", views.questions.QuestionDeleteView.as_view(), name="question-delete"),
     path("questions/publish/<int:pk>/", views.questions.AddQuestionToQbankView.as_view(), name="question-publish"),
+
+    # exam
+
+    path("exams/", views.exam.ExamListView.as_view(), name="exam-list"),
+    path("exams/create/", views.exam.ExamCreateView.as_view(), name="exam-create"),
+    path("exams/update/<int:pk>/", views.exam.ExamUpdateView.as_view(), name="exam-update"),
+    path("exams/delete/<int:pk>/", views.exam.ExamDeleteView.as_view(), name="exam-delete"),
+    path("exams/<int:pk>/students/", views.exam.ExamAddAndRemoveStudentView.as_view(), name="exam-students"),
+    path("exams/<int:pk>/questions/", views.exam.ExamAddAndRemoveQuestionsView.as_view(), name="exam-questions"),
+
 ]

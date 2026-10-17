@@ -1,0 +1,574 @@
+
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    section{
+        padding: 0;
+    }
+    .ticket-page {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .ticket-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+
+    .ticket-header-title h2 {
+        margin: 0 0 6px;
+        color: var(--text-primary);
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+    .ticket-header-title p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+    }
+
+    .ticket-new-btn,
+    .ticket-back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 18px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .ticket-new-btn {
+        color: #fff;
+        background: var(--accent-gradient);
+    }
+
+    .ticket-back-btn {
+        color: var(--text-secondary);
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .stat-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(79, 172, 254, .15);
+        background: rgba(79, 172, 254, .06);
+        color: var(--text-secondary);
+        font-size: .78rem;
+    }
+
+    .stat-bar strong {
+        color: var(--text-primary);
+    }
+
+    .class-block {
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+        overflow: hidden;
+    }
+
+    .class-block-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        background: rgba(79, 172, 254, .04);
+    }
+
+    .class-title {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .class-title h3 {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: .9rem;
+        font-weight: 800;
+    }
+
+    .class-title span {
+        color: var(--text-secondary);
+        font-size: .72rem;
+    }
+
+    .class-bulk-form {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .select-all-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--text-secondary);
+        font-size: .76rem;
+        white-space: nowrap;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .student-select-checkbox,
+    .select-all-checkbox {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: #4facfe;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .student-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 18px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .student-row:last-child {
+        border-bottom: none;
+    }
+
+    .student-info {
+        min-width: 0;
+    }
+
+    .student-select-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 100%;
+        cursor: pointer;
+    }
+
+    .student-name {
+        color: var(--text-primary);
+        font-size: .85rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .student-meta {
+        color: var(--text-secondary);
+        font-size: .72rem;
+        margin-top: 5px;
+        padding-right: 26px;
+    }
+
+    .ticket-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 8px;
+        font-size: .68rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-fixed {
+        color: #34d399;
+        background: rgba(52, 211, 153, .10);
+        border: 1px solid rgba(52, 211, 153, .18);
+        margin-right: 8px;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 36px;
+        padding: 0 14px;
+        border-radius: 10px;
+        font-size: .75rem;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .btn-action:hover {
+        opacity: .9;
+        transform: translateY(-1px);
+    }
+
+    .btn-action:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-add {
+        color: #fff;
+        background: var(--accent-gradient);
+    }
+
+    .btn-remove {
+        color: #fff;
+        background: linear-gradient(135deg, #f87171, #ef4444);
+    }
+
+    .student-single-form {
+        display: inline-flex;
+    }
+
+    .class-empty {
+        padding: 16px 18px;
+        color: var(--text-secondary);
+        font-size: .78rem;
+    }
+
+    .ticket-empty {
+        padding: 40px 20px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        font-size: .8rem;
+    }
+
+    @media (max-width: 640px) {
+        .ticket-page {
+            padding: 6px;
+        }
+
+        .ticket-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .header-actions a {
+            flex: 1;
+            padding-inline: 10px;
+        }
+
+        .class-block-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .class-bulk-form {
+            width: 100%;
+        }
+
+        .class-bulk-form .btn-action {
+            flex: 1;
+            padding-inline: 8px;
+        }
+
+        .student-row {
+            padding: 12px;
+            gap: 8px;
+        }
+
+        .student-name {
+            font-size: .8rem;
+        }
+
+        .student-select-label {
+            gap: 7px;
+        }
+
+        .btn-action {
+            padding-inline: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block main %}
+<div class="ticket-page">
+
+    <div class="ticket-header">
+        <div class="ticket-header-title">
+            <h2>دانش‌آموزان آزمون</h2>
+            <p>{{ exam.name }}</p>
+        </div>
+
+        <div class="header-actions">
+            <a href="{% url 'teacher:exam-list' %}" class="ticket-back-btn">
+                بازگشت به لیست
+            </a>
+
+            <a href="{% url 'teacher:exam-questions' pk=exam.pk %}" class="ticket-new-btn">
+                مدیریت سوالات
+            </a>
+        </div>
+    </div>
+
+    <div class="stat-bar">
+        <span>
+            تعداد دانش‌آموزان انتخاب‌شده:
+            <strong>{{ selected_count }}</strong>
+        </span>
+
+        <span>
+            دانش‌آموزان را جداگانه یا به‌صورت گروهی مدیریت کنید.
+        </span>
+    </div>
+
+    {% if classes_data %}
+        {% for block in classes_data %}
+            <section class="class-block">
+
+                <div class="class-block-header">
+                    <div class="class-title">
+                        <h3>کلاس : {{ block.class.name }}  </h3>
+
+                        <span>
+                            {{ block.class.get_categories }}
+                            ·
+                            {{ block.students|length }} نفر
+                        </span>
+                    </div>
+
+                    <form
+                        method="post"
+                        class="class-bulk-form"
+                        id="bulk-form-{{ block.class.pk }}"
+                    >
+                        {% csrf_token %}
+
+                        <label class="select-all-label">
+                            <input
+                                type="checkbox"
+                                class="select-all-checkbox"
+                                data-class-id="{{ block.class.pk }}"
+                            >
+                            انتخاب همه
+                        </label>
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="add_bulk"
+                            class="btn-action btn-add"
+                        >
+                            افزودن انتخاب‌شده‌ها
+                        </button>
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="remove_bulk"
+                            class="btn-action btn-remove"
+                        >
+                            حذف انتخاب‌شده‌ها
+                        </button>
+                    </form>
+                </div>
+
+                {% if block.students %}
+                    {% for row in block.students %}
+                        <div class="student-row">
+
+                            <div class="student-info">
+                                <label class="student-select-label">
+                                    <input
+                                        type="checkbox"
+                                        name="student_ids"
+                                        value="{{ row.student.pk }}"
+                                        form="bulk-form-{{ block.class.pk }}"
+                                        class="student-select-checkbox"
+                                        data-class-id="{{ block.class.pk }}"
+                                    >
+
+                                    <span class="student-name">
+                                        {{ row.student.user.get_full_name|default:row.student }}
+
+                                        {% if row.selected %}
+                                            <span class="ticket-badge status-fixed">
+                                                عضو ازمون میباشد
+                                            </span>
+                                        {% endif %}
+                                    </span>
+                                </label>
+
+                                <div class="student-meta" dir="ltr">
+                                    {{ row.student.user.PhoneNumber|default:"" }}
+                                </div>
+                            </div>
+
+                            <div>
+                                {% if row.selected %}
+                                    <form method="post" class="student-single-form">
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="action"
+                                            value="remove"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="student_id"
+                                            value="{{ row.student.pk }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn-action btn-remove"
+                                        >
+                                            حذف
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="post" class="student-single-form">
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="action"
+                                            value="add"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="student_id"
+                                            value="{{ row.student.pk }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn-action btn-add"
+                                        >
+                                            افزودن
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="class-empty">
+                        دانش‌آموز فعالی در این کلاس وجود ندارد.
+                    </div>
+                {% endif %}
+
+            </section>
+        {% endfor %}
+    {% else %}
+        <div class="ticket-empty">
+            کلاسی برای شما ثبت نشده است.
+        </div>
+    {% endif %}
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".select-all-checkbox").forEach(function (selectAll) {
+        const classId = selectAll.dataset.classId;
+
+        const checkboxes = Array.from(
+            document.querySelectorAll(
+                '.student-select-checkbox[data-class-id="' + classId + '"]'
+            )
+        );
+
+        function updateSelectAllState() {
+            const checkedCount = checkboxes.filter(
+                checkbox => checkbox.checked
+            ).length;
+
+            selectAll.checked =
+                checkboxes.length > 0 &&
+                checkedCount === checkboxes.length;
+
+            selectAll.indeterminate =
+                checkedCount > 0 &&
+                checkedCount < checkboxes.length;
+        }
+
+        selectAll.addEventListener("change", function () {
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = selectAll.checked;
+            });
+
+            selectAll.indeterminate = false;
+        });
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener("change", updateSelectAllState);
+        });
+
+        updateSelectAllState();
+    });
+
+    document.querySelectorAll(".class-bulk-form").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            // چک‌باکس‌ها خارج از فرم هستند؛ با شناسه کلاس پیدایشان می‌کنیم.
+            const classId = form.id.replace("bulk-form-", "");
+
+            const selected = document.querySelectorAll(
+                '.student-select-checkbox[data-class-id="' +
+                classId +
+                '"]:checked'
+            );
+
+            if (selected.length === 0) {
+                event.preventDefault();
+                alert("ابتدا حداقل یک دانش‌آموز را انتخاب کنید.");
+                return;
+            }
+
+            const action = event.submitter?.value;
+
+            if (action === "remove_bulk") {
+                const confirmed = confirm(
+                    "آیا از حذف " + selected.length +
+                    " دانش‌آموز انتخاب‌شده از آزمون مطمئن هستید؟"
+                );
+
+                if (!confirmed) {
+                    event.preventDefault();
+                }
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
