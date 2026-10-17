@@ -1,6 +1,10 @@
 import secrets
 import string
 
+
+from apps.common.models_fields import BaseJalaliDateTimeField
+
+from apps.users.teachers.models import Teacher
 from apps.common.models import BaseModel
 from apps.content.models import Section
 from apps.common.file_storage_script_for_model import UploadPath
@@ -129,3 +133,36 @@ class LiveClass(BaseModel):
             title=self.section.name,
             key=self.server.TEACHER_KEY,
         )
+
+
+
+
+
+class LiveClassRequest(BaseModel):
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "در انتظار بررسی"
+        APPROVED = "approved", "تأیید شده"
+        REJECTED = "rejected", "رد شده"
+        CANCELLED = "cancelled", "لغو شده"
+
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="live_class_requests", verbose_name="معلم", db_index=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="live_requests", verbose_name="جلسه", db_index=True, )
+    title = models.CharField("عنوان درخواست", max_length=255)
+    description = models.TextField("توضیحات", blank=True)
+    preferred_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان پیشنهادی برگزاری", )
+    duration_minutes = models.PositiveIntegerField("مدت پیشنهادی (دقیقه)", default=60, )
+    status = models.CharField("وضعیت", max_length=20, choices=Status.choices, default=Status.PENDING, db_index=True, )
+    admin_note = models.TextField("یادداشت ادمین", blank=True, )
+
+    class Meta:
+        ordering = ["-pk"]
+        verbose_name = "درخواست کلاس آنلاین"
+        verbose_name_plural = "درخواست‌های کلاس آنلاین"
+        indexes = [
+            models.Index(fields=["teacher", "is_active"]),
+            models.Index(fields=["status", "is_active"]),
+        ]
+
+    def __str__(self):
+        return f"{self.title} - {self.teacher} - {self.get_status_display()}"
