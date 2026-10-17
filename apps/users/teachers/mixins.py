@@ -48,7 +48,7 @@ class TeacherMixin(AccessMixin):
             )
             return redirect("user:login")
 
-        if self.permission_field != "ok":
+        if self.permission_field != "ok" and self.permission_field:
             if teacher is None or not getattr(teacher, self.permission_field, False):
                 messages.warning(request, "شما اجازه ورود به این صفحه ندارید")
                 return redirect("teacher:main")

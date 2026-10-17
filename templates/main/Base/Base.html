@@ -135,6 +135,8 @@
     <span class="header-icon-label" id="themeToggleText">تم روشن</span>
 </button>
                     {% if request.user.is_authenticated %}
+
+                    {% if user.type_of_user == "S" or user.is_superuser %}
                     <a href="{% url 'student:main' %}" class="header-icon-btn"  title="حساب کاربری">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -142,8 +144,9 @@
                         </svg>
                         <span class="header-icon-label">حساب کاربری</span>
                     </a>
+                    {% endif %}
 
-
+                    {% if user.type_of_user == "T" or user.is_superuser %}
                     <a href="{% url 'teacher:main' %}" class="header-icon-btn"  title="پنل معلم">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -151,6 +154,7 @@
                         </svg>
                         <span class="header-icon-label">پنل معلم</span>
                     </a>
+                    {% endif %}
 
 
                     {% else %}

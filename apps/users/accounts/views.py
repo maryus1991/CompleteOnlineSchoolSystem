@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-
+from apps.users.students.models import Student
 
 
 
@@ -75,6 +75,10 @@ class UserRegisterView(RedirectView):
             user = User.objects.create_user(
                 PhoneNumber=form.cleaned_data["phone_number"],
                 password=form.cleaned_data["password"],
+                is_verified=True
+            )
+            Student.objects.get_or_create(
+                user=user,
             )
         except IntegrityError:
             messages.error(request, "این شماره تلفن قبلاً ثبت‌نام کرده است")

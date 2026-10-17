@@ -21,7 +21,15 @@ class User(AbstractUser):
         MALE = "M", 'مذکر'
         FEMALE = "F", "مونث"
 
+    class TypeOfUser(models.TextChoices):
+
+        TEACHER = "T", 'معلم'
+        STUDENT = "S", "دانش اموز"
+        ADVISER = "A", "مشاور"
+        MANAGER = "M", "مدیر"
+
     gender = models.CharField(max_length=255, choices=GenderOfUser, default=GenderOfUser.MALE , verbose_name="جنسیت")
+    type_of_user = models.CharField(max_length=255, choices=TypeOfUser, default=TypeOfUser.STUDENT , verbose_name="نوع حساب")
     PhoneNumber = PhoneNumberField(unique=True, verbose_name="شماره", db_index=True)
     sort_number = models.PositiveIntegerField(default=1, verbose_name='ترتیب')
     private_code = models.CharField(max_length=1000, verbose_name='کد مخفی کاربر', null=True, blank=True)
@@ -34,6 +42,7 @@ class User(AbstractUser):
     publish = models.BooleanField(default=False, verbose_name='انتشار')
     telegram_link = models.URLField("لینک تلرام", null=True, blank=True)
     instagram_link = models.URLField("لینک اینستاگرام", null=True, blank=True)
+
 
     USERNAME_FIELD = "PhoneNumber"
     username = None
