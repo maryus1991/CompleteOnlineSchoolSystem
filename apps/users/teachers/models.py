@@ -15,10 +15,12 @@ class Teacher( BaseModel):
     can_add_practice = models.BooleanField("اجازه افزودن تمرین", default=True)
     can_add_qbank = models.BooleanField("اجازه افزودن سوال به بانک سوال", default=False)
     can_add_question = models.BooleanField("اجازه افزودن سوال", default=True)
+
     can_add_class_section = models.BooleanField("اجازه افزودن جلسه برای کلاس", default=True)
     can_add_class_article = models.BooleanField("اجازه افزودن مقاله کلاسی", default=True)
     can_add_class_file = models.BooleanField("اجازه افزودن فایل کلاسی", default=True)
     can_start_live_class = models.BooleanField("اجازه شروع جلسه انلاین", default=True)
+
     can_issuing_report = models.BooleanField("اجازه صدور کارنامه", default=True)
     can_site_article = models.BooleanField("اجازه افزودن مقاله برای سایت", default=False)
     can_change_account = models.BooleanField("اجازه ویرایش اطلاعات", default=True)

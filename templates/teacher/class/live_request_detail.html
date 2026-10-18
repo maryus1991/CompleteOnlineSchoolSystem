@@ -31,8 +31,7 @@
       {% elif live_request.status == "approved" %}<span class="badge b-ok">{{ live_request.get_status_display }}</span>
       {% else %}<span class="badge b-no">{{ live_request.get_status_display }}</span>{% endif %}
     </div>
-    <div class="line">کلاس / جلسه: <strong>{{ live_request.section.klass.name }} — {{ live_request.section.name }}</strong></div>
-    {% if live_request.preferred_at %}
+     {% if live_request.preferred_at %}
     <div class="line">زمان پیشنهادی: <strong>{{ live_request.preferred_at|date:"Y/m/d H:i" }}</strong></div>
     {% endif %}
     <div class="line">مدت: <strong>{{ live_request.duration_minutes }} دقیقه</strong></div>

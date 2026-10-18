@@ -21,6 +21,7 @@ class LiveClassListView(StudentMixin, ListView):
             .filter(
                 status=LiveClass.Status.LIVE,
                 section__klass__student=self.request.student,
+                section__is_publish=True,
                 )
             .select_related("server", "section")
             .order_by("-pk")
@@ -71,12 +72,13 @@ class ListSectionStudentClass(StudentMixin, ListView):
 
     def get_queryset(self):
         self.klass = get_object_or_404(
-            Class.objects.filter(student__user=self.request.user).distinct(),
+            Class.objects.filter(student__user=self.request.user, is_active=True).distinct(),
             pk=self.kwargs["pk"],
         )
         return Section.objects.filter(
             klass=self.klass,
             is_publish=True,
+            is_active=True,
         ).order_by("-sort_number", "pk")
 
     def get_context_data(self, **kwargs):
@@ -95,6 +97,7 @@ class StudentSectionContentView(StudentMixin, DetailView):
             Section.objects
             .filter(
                 is_publish=True,
+                is_active=True,
                 klass__student__user=self.request.user,
                 klass_id=self.kwargs["pk"],
             )
@@ -122,7 +125,7 @@ class StudentSectionContentView(StudentMixin, DetailView):
 
         context["practices"] = (
             section.practices
-            .filter(creator__isnull=False)
+            .filter(creator__isnull=False, is_active=True)
             .distinct()
         )
 

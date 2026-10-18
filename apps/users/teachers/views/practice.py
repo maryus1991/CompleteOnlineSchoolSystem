@@ -351,7 +351,7 @@ class PracticeQuestionsView(TeacherMixin, View):
         qs = Question.objects.filter(
             teacher=teacher,
             is_active=True,
-        ).filter(Q(practice__isnull=True) | Q(practice=practice)).select_related(
+        ).select_related(
             "grade",
             "major",
             "lesson",
@@ -380,7 +380,7 @@ class PracticeQuestionsView(TeacherMixin, View):
                         | Q(lesson__isnull=True)
                 )
 
-            qs = qs.filter(filters)
+            qs = qs.filter(Q(practice__isnull=True) | Q(practice=practice) | filters )
 
         return qs.order_by("-sort_number", "-pk")
 

@@ -29,10 +29,7 @@
   <div class="pr-info">پس از تأیید ادمین، کلاس آنلاین برای جلسه انتخاب‌شده راه‌اندازی می‌شود و می‌توانید از بخش جلسات وارد شوید.</div>
   <form method="post" class="pr-card">
     {% csrf_token %}
-    <div class="pr-group">
-      <label class="pr-label">جلسه <span class="pr-req">*</span></label>
-      {{ form.section }}
-    </div>
+
     <div class="pr-group">
       <label class="pr-label">عنوان درخواست <span class="pr-req">*</span></label>
       {{ form.title }}

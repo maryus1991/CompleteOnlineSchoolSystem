@@ -107,7 +107,7 @@ class LiveClass(BaseModel):
         )
 
     def get_student_meeting_url(self, student):
-        if not self.is_available:
+        if not self.is_available or not self.section.is_publish:
             return None
 
 
@@ -121,7 +121,7 @@ class LiveClass(BaseModel):
 
     @property
     def teacher_meeting_url(self):
-        if not self.is_available:
+        if not self.is_available or not self.section.is_publish:
             return None
 
         teacher = self.section.klass.teacher
@@ -143,7 +143,6 @@ class LiveClassRequest(BaseModel):
         CANCELLED = "cancelled", "لغو شده"
 
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="live_class_requests", verbose_name="معلم", db_index=True)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="live_requests", verbose_name="جلسه", db_index=True, )
     title = models.CharField("عنوان درخواست", max_length=255)
     description = models.TextField("توضیحات", blank=True)
     preferred_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان پیشنهادی برگزاری", )
