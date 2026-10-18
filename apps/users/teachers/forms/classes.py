@@ -1,7 +1,7 @@
 from django import forms
 
 from apps.content.models import Section, ClassArticle, ClassFile
-from apps.live_classes.models import LiveClassRequest , LiveClass
+from apps.live_classes.models import LiveClassRequest , LiveClass, StreamServers
 
 
 class SectionForm(forms.ModelForm):
@@ -76,9 +76,9 @@ class LiveClassRequestForm(forms.ModelForm):
         self.fields["preferred_at"].required = False
 
 
-class LiveClassForm(forms.ModelForm):
-    """ساخت / ویرایش کلاس آنلاین یک جلسه — بدون حذف"""
 
+
+class LiveClassForm(forms.ModelForm):
     class Meta:
         model = LiveClass
         fields = ["server", "status"]
@@ -89,11 +89,8 @@ class LiveClassForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["server"].queryset = StreamServers.objects.filter(is_active=True).order_by("name")
-        # هنگام ساخت، پیش‌فرض برنامه‌ریزی‌شده
-        if not self.instance.pk:
-            self.fields["status"].initial = LiveClass.Status.SCHEDULED
-        # معلم فقط این وضعیت‌ها را در فرم ویرایش می‌بیند
+        self.fields["server"].queryset = StreamServers.objects.filter(is_active=True)
+        # معلم فقط این وضعیت‌ها را موقع ساخت/ویرایش ببیند
         self.fields["status"].choices = [
             (LiveClass.Status.SCHEDULED, "برنامه‌ریزی‌شده"),
             (LiveClass.Status.LIVE, "در حال برگزاری"),
