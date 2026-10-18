@@ -130,8 +130,7 @@
 <div class="pr-page">
     <div class="pr-header">
         <h2>{{ page_title }}</h2>
-        <p>{{ section.name }} — {{ section.klass.name }}</p>
-    </div>
+<p>{{ klass.name }}</p>    </div>
 
     <div class="pr-info">
         سرور استریم و وضعیت اولیه کلاس آنلاین را مشخص کنید.
@@ -157,7 +156,7 @@
         {% endif %}
 
         <div class="pr-actions">
-            <a href="{% url 'teacher:section-detail' pk=section.pk %}" class="pr-back">بازگشت</a>
+<a href="{% url 'teacher:class-sections' pk=klass.pk %}" class="pr-back">بازگشت</a>
             <button type="submit" class="pr-submit">
                 {% if is_update %}ذخیره تغییرات{% else %}ثبت کلاس آنلاین{% endif %}
             </button>

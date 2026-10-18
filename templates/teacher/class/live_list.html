@@ -29,10 +29,12 @@
     {% for item in items %}
     <div class="row">
       <div>
-        <h3 class="title">{{ item.section.klass.name }} — {{ item.section.name }}</h3>
-        <div class="meta">
+<h3 class="title">{{ item.klass.name }}</h3>        <div class="meta">
           <span class="badge {% if item.status == 'live' %}b-live{% else %}b-muted{% endif %}">{{ item.get_status_display }}</span>
           <span class="badge b-muted">{{ item.server.name }}</span>
+        {% if item.report_obj %}
+  <span class="badge">گزارش موجود</span>
+{% endif %}
         </div>
       </div>
       <div>

@@ -1,4 +1,5 @@
 {% extends "teacher/base.html" %}
+
 {% block header %}
 <style>
 .pr-page{width:100%;padding:10px}
@@ -8,8 +9,6 @@
 .header-actions{display:flex;gap:8px;flex-wrap:wrap}
 .pr-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:11px;font-size:.78rem;font-weight:700;color:#fff;background:var(--accent-gradient);text-decoration:none}
 .pr-btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:11px;font-size:.78rem;font-weight:700;color:var(--text-secondary);background:var(--bg-card);border:1px solid var(--border-color);text-decoration:none}
-.join-bar{margin-bottom:18px;padding:14px 16px;border-radius:12px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.join-bar span{color:var(--text-secondary);font-size:.8rem}
 .join-btn{display:inline-flex;padding:10px 18px;border-radius:11px;font-size:.8rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#34d399,#10b981);text-decoration:none}
 .section-card{margin-bottom:18px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card);overflow:hidden}
 .section-card-h{padding:13px 18px;border-bottom:1px solid var(--border-color);font-size:.88rem;font-weight:800;color:var(--text-primary);background:rgba(79,172,254,.04);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -18,14 +17,20 @@
 .item-row:last-child{border-bottom:none}
 .item-title{margin:0 0 4px;color:var(--text-primary);font-size:.85rem;font-weight:700}
 .item-meta{color:var(--text-secondary);font-size:.72rem}
-.actions{display:flex;gap:8px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .icon-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border-color);border-radius:10px;color:var(--text-secondary);text-decoration:none;font-size:.85rem}
 .icon-btn:hover{color:#fff;background:var(--accent-gradient);border-color:transparent}
 .icon-btn.danger:hover{background:linear-gradient(135deg,#f87171,#ef4444)}
 .empty{padding:24px 18px;text-align:center;color:var(--text-secondary);font-size:.78rem}
 .badge{display:inline-flex;padding:4px 8px;border-radius:8px;font-size:.66rem;font-weight:700;color:var(--text-secondary);background:rgba(255,255,255,.04);border:1px solid var(--border-color)}
+.badge-green{background:rgba(52,211,153,.15);color:#34d399;border-color:rgba(52,211,153,.3)}
+.badge-blue{background:rgba(79,172,254,.15);color:#4facfe;border-color:rgba(79,172,254,.3)}
+.badge-amber{background:rgba(251,191,36,.15);color:#fbbf24;border-color:rgba(251,191,36,.3)}
+.report-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.report-links a{font-size:.72rem;color:#4facfe;text-decoration:none}
 </style>
 {% endblock %}
+
 {% block main %}
 <div class="pr-page">
   <div class="pr-header">
@@ -36,81 +41,77 @@
     <div class="header-actions">
       <a href="{% url 'teacher:class-sections' pk=section.klass_id %}" class="pr-btn-ghost">جلسات کلاس</a>
       <a href="{% url 'teacher:section-update' pk=section.pk %}" class="pr-btn-ghost">ویرایش جلسه</a>
-      {% if first_live and can_manage_live %}
-  <a href="{% url 'teacher:live-join' first_live.pk %}" class="btn btn-success">
-    ورود به کلاس آنلاین
-  </a>
-{% endif %}
-      {% for report in live_reports %}
-  <div class="report-card">
-    <p>شروع: {{ report.started_at }}</p>
-    <p>پایان: {{ report.ended_at }}</p>
-    <p>مدت: {{ report.duration_minutes }} دقیقه</p>
-    <p>تعداد حاضرین: {{ report.attendees_count }}</p>
-    <p>{{ report.teacher_note }}</p>
-  </div>
-{% endfor %}
     </div>
   </div>
 
-  {# ── کلاس آنلاین ── #}
+  {# ── کلاس آنلاین (یک مورد) ── #}
   <div class="section-card">
     <div class="section-card-h">
       <span>کلاس آنلاین</span>
-      {% if can_manage_live %}
+      {% if can_manage_live and not has_live %}
         <a href="{% url 'teacher:live-create' section_id=section.pk %}">+ تعریف کلاس آنلاین</a>
       {% endif %}
     </div>
 
-    {% if live_classes %}
-      {% for live in live_classes %}
-        <div class="item-row">
-          <div>
-            <p class="item-title">
-              {{ live.server.name }}
-              <span class="badge {% if live.status == 'live' %}badge-green{% elif live.status == 'completed' %}badge-blue{% elif live.status == 'cancelled' %}badge-amber{% else %}badge{% endif %}">
-                {{ live.get_status_display }}
-              </span>
-            </p>
-            <p class="item-meta">کد جلسه: {{ live.session_code|truncatechars:16 }}</p>
-          </div>
+    {% if live %}
+      <div class="item-row">
+        <div>
+          <p class="item-title">
+            {{ live.server.name }}
+            <span class="badge {% if live.status == 'live' %}badge-green{% elif live.status == 'completed' %}badge-blue{% elif live.status == 'cancelled' %}badge-amber{% else %}badge{% endif %}">
+              {{ live.get_status_display }}
+            </span>
+          </p>
+          <p class="item-meta">کد جلسه: {{ live.session_code|truncatechars:20 }}</p>
 
-          {% if can_manage_live %}
-          <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            {# ورود → خودکار status=live #}
-            <a href="{% url 'teacher:live-join' pk=live.pk %}"
-               class="join-btn"
-               target="_blank"
-               rel="noopener">
-              ورود به جلسه
-            </a>
-
-            <a href="{% url 'teacher:live-update' pk=live.pk %}" class="icon-btn" title="ویرایش">✎</a>
-
-            {# بستن / لغو #}
-            {% if live.status != 'completed' %}
-            <form method="post" action="{% url 'teacher:live-set-status' pk=live.pk %}" style="margin:0">
-              {% csrf_token %}
-              <input type="hidden" name="status" value="completed">
-              <button type="submit" class="pr-btn-ghost" style="min-height:36px;padding:0 12px;font-size:.74rem;cursor:pointer">
-                برگزارشده
-              </button>
-            </form>
-            {% endif %}
-
-            {% if live.status != 'cancelled' %}
-            <form method="post" action="{% url 'teacher:live-set-status' pk=live.pk %}" style="margin:0">
-              {% csrf_token %}
-              <input type="hidden" name="status" value="cancelled">
-              <button type="submit" class="pr-btn-ghost" style="min-height:36px;padding:0 12px;font-size:.74rem;cursor:pointer">
-                لغوشده
-              </button>
-            </form>
-            {% endif %}
-          </div>
+          {# گزارش‌ها (فایل‌های ضبط / چت / حضور) #}
+          {% if live.recording_file or live.chat_report or live.attendance_report %}
+            <div class="report-links">
+              {% if live.recording_file %}
+                <a href="{{ live.recording_file.url }}" target="_blank" rel="noopener">📥 فایل ضبط</a>
+              {% endif %}
+              {% if live.chat_report %}
+                <a href="{{ live.chat_report.url }}" target="_blank" rel="noopener">📄 گزارش چت</a>
+              {% endif %}
+              {% if live.attendance_report %}
+                <a href="{{ live.attendance_report.url }}" target="_blank" rel="noopener">👥 گزارش حضور</a>
+              {% endif %}
+            </div>
           {% endif %}
         </div>
-      {% endfor %}
+
+        {% if can_manage_live %}
+        <div class="actions">
+          <a href="{% url 'teacher:live-join' pk=live.pk %}"
+             class="join-btn"
+             target="_blank"
+             rel="noopener">
+            ورود به جلسه
+          </a>
+          <a href="{% url 'teacher:live-update' pk=live.pk %}" class="icon-btn" title="ویرایش">✎</a>
+
+          {% if live.status != 'completed' %}
+          <form method="post" action="{% url 'teacher:live-set-status' pk=live.pk %}" style="margin:0">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="completed">
+            <button type="submit" class="pr-btn-ghost" style="min-height:36px;padding:0 12px;font-size:.74rem;cursor:pointer">
+              برگزارشده
+            </button>
+          </form>
+          {% endif %}
+
+          {% if live.status != 'cancelled' %}
+          <form method="post" action="{% url 'teacher:live-set-status' pk=live.pk %}" style="margin:0">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="cancelled">
+            <button type="submit" class="pr-btn-ghost" style="min-height:36px;padding:0 12px;font-size:.74rem;cursor:pointer">
+              لغوشده
+            </button>
+          </form>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
     {% else %}
       <div class="empty">
         کلاس آنلاینی برای این جلسه تعریف نشده است.

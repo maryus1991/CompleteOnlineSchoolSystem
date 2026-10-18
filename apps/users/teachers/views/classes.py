@@ -1,3 +1,5 @@
+
+
 from django.contrib import messages
 from django.db.models import Count, Prefetch, Q
 from django.http import HttpResponseRedirect
@@ -38,6 +40,106 @@ def _get_teacher_class(teacher, pk):
     return get_object_or_404(_teacher_classes(teacher), pk=pk)
 
 
+class SectionDeleteView(TeacherMixin, DeleteView):
+    permission_field = "can_add_class_section"
+    model = Section
+    template_name = "teacher/class/confirm_delete.html"
+    context_object_name = "object"
+
+    def get_queryset(self):
+        return _teacher_sections(self.request.teacher)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["object_label"] = f"جلسه «{self.object.name}»"
+        ctx["back_url"] = reverse(
+            "teacher:class-sections", kwargs={"pk": self.object.klass_id}
+        )
+        return ctx
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        klass_id = self.object.klass_id
+        self.object.is_active = False
+        self.object.save(update_fields=["is_active"])
+        messages.success(request, "جلسه حذف شد.")
+        return HttpResponseRedirect(
+            reverse("teacher:class-sections", kwargs={"pk": klass_id})
+        )
+
+    def form_valid(self, form):
+        return self.delete(self.request)
+
+
+# ══════════════════════════════════════════════════════════
+# جزئیات جلسه (مقاله / فایل / تمرین) + دکمه ورود به کلاس آنلاین
+# ══════════════════════════════════════════════════════════
+
+class SectionDetailView(TeacherMixin, DetailView):
+    permission_field = "ok"
+    model = Section
+    template_name = "teacher/class/section_detail.html"
+    context_object_name = "section"
+
+    def get_queryset(self):
+        return (
+            _teacher_sections(self.request.teacher)
+            .select_related(
+                "klass",
+                "klass__grade",
+                "klass__major",
+                "klass__lesson",
+                "klass__teacher__user",
+            )
+            .prefetch_related(
+                Prefetch(
+                    "article",
+                    queryset=ClassArticle.objects.filter(is_active=True).order_by(
+                        "-sort_number", "pk"
+                    ),
+                    to_attr="articles_list",
+                ),
+                Prefetch(
+                    "file",
+                    queryset=ClassFile.objects.filter(is_active=True).order_by(
+                        "-sort_number", "pk"
+                    ),
+                    to_attr="files_list",
+                ),
+                Prefetch(
+                    "practices",
+                    queryset=Practice.objects.filter(is_active=True).order_by(
+                        "-sort_number", "-pk"
+                    ),
+                    to_attr="practices_list",
+                ),
+
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        section = self.object
+        teacher = self.request.teacher
+
+        ctx["articles"] = getattr(section, "articles_list", [])
+        ctx["files"] = getattr(section, "files_list", [])
+        ctx["practices"] = getattr(section, "practices_list", [])
+
+        live = LiveClass.objects.filter(is_active=True, klass=section.klass).select_related("server").first()
+        ctx["live"] = live
+
+        ctx["has_live"] = live is not None
+        ctx["can_manage_live"] = bool(getattr(teacher, "can_start_live_class", False))
+        ctx["has_live_now"] = bool(live and live.status == LiveClass.Status.LIVE)
+
+        return ctx
+
+
+# ══════════════════════════════════════════════════════════
+# کلاس‌ها
+# ══════════════════════════════════════════════════════════
+
 def _get_teacher_section(teacher, pk):
     return get_object_or_404(
         _teacher_sections(teacher).select_related("klass"),
@@ -46,7 +148,7 @@ def _get_teacher_section(teacher, pk):
 
 
 # ══════════════════════════════════════════════════════════
-# کلاس‌ها
+# جلسات (Section)
 # ══════════════════════════════════════════════════════════
 
 class ClassListView(TeacherMixin, ListView):
@@ -71,10 +173,6 @@ class ClassListView(TeacherMixin, ListView):
             .order_by("-sort_number", "-pk")
         )
 
-
-# ══════════════════════════════════════════════════════════
-# جلسات (Section)
-# ══════════════════════════════════════════════════════════
 
 class SectionListView(TeacherMixin, ListView):
     """
@@ -191,134 +289,6 @@ class SectionUpdateView(TeacherMixin, UpdateView):
 
     def get_success_url(self):
         return reverse("teacher:class-sections", kwargs={"pk": self.object.klass_id})
-
-
-class SectionDeleteView(TeacherMixin, DeleteView):
-    permission_field = "can_add_class_section"
-    model = Section
-    template_name = "teacher/class/confirm_delete.html"
-    context_object_name = "object"
-
-    def get_queryset(self):
-        return _teacher_sections(self.request.teacher)
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx["object_label"] = f"جلسه «{self.object.name}»"
-        ctx["back_url"] = reverse(
-            "teacher:class-sections", kwargs={"pk": self.object.klass_id}
-        )
-        return ctx
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        klass_id = self.object.klass_id
-        self.object.is_active = False
-        self.object.save(update_fields=["is_active"])
-        messages.success(request, "جلسه حذف شد.")
-        return HttpResponseRedirect(
-            reverse("teacher:class-sections", kwargs={"pk": klass_id})
-        )
-
-    def form_valid(self, form):
-        return self.delete(self.request)
-
-
-# ══════════════════════════════════════════════════════════
-# جزئیات جلسه (مقاله / فایل / تمرین) + دکمه ورود به کلاس آنلاین
-# ══════════════════════════════════════════════════════════
-
-class SectionDetailView(TeacherMixin, DetailView):
-    permission_field = "ok"
-    model = Section
-    template_name = "teacher/class/section_detail.html"
-    context_object_name = "section"
-
-    def get_queryset(self):
-        return (
-            _teacher_sections(self.request.teacher)
-            .select_related(
-                "klass",
-                "klass__grade",
-                "klass__major",
-                "klass__lesson",
-                "klass__teacher__user",
-            )
-            .prefetch_related(
-                Prefetch(
-                    "article",
-                    queryset=ClassArticle.objects.filter(is_active=True).order_by(
-                        "-sort_number", "pk"
-                    ),
-                    to_attr="articles_list",
-                ),
-                Prefetch(
-                    "file",
-                    queryset=ClassFile.objects.filter(is_active=True).order_by(
-                        "-sort_number", "pk"
-                    ),
-                    to_attr="files_list",
-                ),
-                Prefetch(
-                    "practices",
-                    queryset=Practice.objects.filter(is_active=True).order_by(
-                        "-sort_number", "-pk"
-                    ),
-                    to_attr="practices_list",
-                ),
-            )
-        )
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        section = self.object
-        teacher = self.request.teacher
-        klass = section.klass
-
-        ctx["articles"] = getattr(section, "articles_list", [])
-        ctx["files"] = getattr(section, "files_list", [])
-        ctx["practices"] = getattr(section, "practices_list", [])
-
-        # کلاس‌های آنلاین مربوط به این کلاس (نه جلسه)
-        live_list = list(
-            LiveClass.objects.filter(
-                is_active=True,
-                klass=klass,
-            )
-            .select_related("server")
-            .prefetch_related(
-                Prefetch(
-                    "report",
-                    queryset=LiveClassReport.objects.all(),
-                    to_attr="report_obj",
-                )
-            )
-            .order_by("-pk")
-        )
-
-        ctx["live_classes"] = live_list
-        ctx["has_live"] = bool(live_list)
-        ctx["can_manage_live"] = bool(getattr(teacher, "can_start_live_class", False))
-        ctx["has_live_now"] = any(
-            live.status == LiveClass.Status.LIVE for live in live_list
-        )
-
-        first_live = next(
-            (live for live in live_list if live.status == LiveClass.Status.LIVE),
-            live_list[0] if live_list else None,
-        )
-        ctx["first_live"] = first_live
-
-        # گزارش‌ها
-        reports = []
-        for live in live_list:
-            report = getattr(live, "report_obj", None)
-            if report:
-                reports.append(report)
-        ctx["live_reports"] = reports
-
-        return ctx
-
 
 # ══════════════════════════════════════════════════════════
 # مقاله کلاسی
