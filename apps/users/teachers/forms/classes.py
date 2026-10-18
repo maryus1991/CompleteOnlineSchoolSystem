@@ -1,7 +1,7 @@
 from django import forms
 
 from apps.content.models import Section, ClassArticle, ClassFile
-from apps.live_classes.models import LiveClassRequest  # پس از افزودن مدل
+from apps.live_classes.models import LiveClassRequest , LiveClass
 
 
 class SectionForm(forms.ModelForm):
@@ -74,3 +74,29 @@ class LiveClassRequestForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["description"].required = False
         self.fields["preferred_at"].required = False
+
+
+class LiveClassForm(forms.ModelForm):
+    """ساخت / ویرایش کلاس آنلاین یک جلسه — بدون حذف"""
+
+    class Meta:
+        model = LiveClass
+        fields = ["server", "status"]
+        widgets = {
+            "server": forms.Select(),
+            "status": forms.Select(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["server"].queryset = StreamServers.objects.filter(is_active=True).order_by("name")
+        # هنگام ساخت، پیش‌فرض برنامه‌ریزی‌شده
+        if not self.instance.pk:
+            self.fields["status"].initial = LiveClass.Status.SCHEDULED
+        # معلم فقط این وضعیت‌ها را در فرم ویرایش می‌بیند
+        self.fields["status"].choices = [
+            (LiveClass.Status.SCHEDULED, "برنامه‌ریزی‌شده"),
+            (LiveClass.Status.LIVE, "در حال برگزاری"),
+            (LiveClass.Status.COMPLETED, "برگزارشده"),
+            (LiveClass.Status.CANCELLED, "لغوشده"),
+        ]
