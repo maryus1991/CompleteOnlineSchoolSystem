@@ -44,13 +44,11 @@
     </div>
   </div>
 
-  {# ── کلاس آنلاین (یک مورد) ── #}
+
   <div class="section-card">
     <div class="section-card-h">
       <span>کلاس آنلاین</span>
-      {% if can_manage_live and not has_live %}
-        <a href="{% url 'teacher:live-create' section_id=section.pk %}">+ تعریف کلاس آنلاین</a>
-      {% endif %}
+
     </div>
 
     {% if live %}
@@ -115,15 +113,12 @@
     {% else %}
       <div class="empty">
         کلاس آنلاینی برای این جلسه تعریف نشده است.
-        {% if can_manage_live %}
-          <br>
-          <a href="{% url 'teacher:live-create' section_id=section.pk %}" style="color:#4facfe">تعریف کلاس آنلاین</a>
-        {% endif %}
+
       </div>
     {% endif %}
   </div>
 
-  {# ── مقالات ── #}
+
   <div class="section-card">
     <div class="section-card-h">
       <span>مقالات کلاسی</span>
@@ -147,7 +142,7 @@
     {% endif %}
   </div>
 
-  {# ── فایل‌ها ── #}
+
   <div class="section-card">
     <div class="section-card-h">
       <span>فایل‌های کلاسی</span>
@@ -175,7 +170,7 @@
     {% endif %}
   </div>
 
-  {# ── تمرین‌ها ── #}
+
   <div class="section-card">
     <div class="section-card-h">
       <span>تمرین‌های این جلسه</span>

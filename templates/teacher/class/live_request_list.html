@@ -47,8 +47,7 @@
           {% elif item.status == "approved" %}<span class="badge b-ok">{{ item.get_status_display }}</span>
           {% elif item.status == "rejected" %}<span class="badge b-no">{{ item.get_status_display }}</span>
           {% else %}<span class="badge b-muted">{{ item.get_status_display }}</span>{% endif %}
-          <span class="badge b-muted">{{ item.section.klass.name }} — {{ item.section.name }}</span>
-          {% if item.preferred_at %}<span class="badge b-muted">{{ item.preferred_at|date:"Y/m/d H:i" }}</span>{% endif %}
+           {% if item.preferred_at %}<span class="badge b-muted">{{ item.preferred_at|date:"Y/m/d H:i" }}</span>{% endif %}
           <span class="badge b-muted">{{ item.duration_minutes }} دقیقه</span>
         </div>
       </div>

@@ -653,34 +653,6 @@ class LiveClassListView(TeacherMixin, ListView):
         )
 
 
-class LiveClassCreateView(TeacherMixin, CreateView):
-    """ایجاد کلاس آنلاین برای یک کلاس (نه جلسه)"""
-    permission_field = "can_start_live_class"
-    model = LiveClass
-    form_class = LiveClassForm
-    template_name = "teacher/class/live_form.html"
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx["klass"] = _get_teacher_class(
-            self.request.teacher, self.kwargs["class_id"]
-        )
-        ctx["page_title"] = "تعریف کلاس آنلاین"
-        ctx["is_update"] = False
-        return ctx
-
-    def form_valid(self, form):
-        self.klass = _get_teacher_class(
-            self.request.teacher, self.kwargs["class_id"]
-        )
-        form.instance.klass = self.klass
-        messages.success(self.request, "کلاس آنلاین ثبت شد.")
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("teacher:class-sections", kwargs={"pk": self.klass.pk})
-
-
 class LiveClassUpdateView(TeacherMixin, UpdateView):
     """ویرایش کلاس آنلاین"""
     permission_field = "can_start_live_class"

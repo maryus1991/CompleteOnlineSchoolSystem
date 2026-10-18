@@ -42,20 +42,16 @@
     ورود به کلاس آنلاین
   </a>
 {% endif %}
-      {% if can_manage_live %}
-  <a href="{% url 'teacher:live-create' class_id=klass.pk %}" class="pr-btn">
-    + تعریف کلاس آنلاین
-  </a>
-{% endif %}
-      {% for report in live_reports %}
-  <div class="report-card">
-    <p>شروع: {{ report.started_at }}</p>
-    <p>پایان: {{ report.ended_at }}</p>
-    <p>مدت: {{ report.duration_minutes }} دقیقه</p>
-    <p>تعداد حاضرین: {{ report.attendees_count }}</p>
-    <p>{{ report.teacher_note }}</p>
-  </div>
-{% endfor %}
+
+<!--      {% for report in live_reports %}-->
+<!--  <div class="report-card">-->
+<!--    <p>شروع: {{ report.started_at }}</p>-->
+<!--    <p>پایان: {{ report.ended_at }}</p>-->
+<!--    <p>مدت: {{ report.duration_minutes }} دقیقه</p>-->
+<!--    <p>تعداد حاضرین: {{ report.attendees_count }}</p>-->
+<!--    <p>{{ report.teacher_note }}</p>-->
+<!--  </div>-->
+<!--{% endfor %}-->
     </div>
   </div>
 
@@ -69,9 +65,7 @@
           <span class="badge">{{ s.articles_count }} مقاله</span>
           <span class="badge">{{ s.files_count }} فایل</span>
           <span class="badge badge-blue">{{ s.practices_count }} تمرین</span>
-          {% for live in s.live_list %}
-            <span class="badge {% if live.status == 'live' %}badge-green{% else %}badge-amber{% endif %}">{{ live.get_status_display }}</span>
-          {% endfor %}
+
         </div>
       </div>
       <div class="actions">

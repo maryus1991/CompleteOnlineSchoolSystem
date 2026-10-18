@@ -1,7 +1,7 @@
 from django import forms
 
 from apps.content.models import Section, ClassArticle, ClassFile
-from apps.live_classes.models import LiveClassRequest , LiveClass, StreamServers
+from apps.live_classes.models import LiveClassRequest , LiveClass
 
 
 class SectionForm(forms.ModelForm):
@@ -81,16 +81,15 @@ class LiveClassRequestForm(forms.ModelForm):
 class LiveClassForm(forms.ModelForm):
     class Meta:
         model = LiveClass
-        fields = ["server", "status"]
+        fields = ["status"]
         widgets = {
-            "server": forms.Select(),
+
             "status": forms.Select(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["server"].queryset = StreamServers.objects.filter(is_active=True)
-        # معلم فقط این وضعیت‌ها را موقع ساخت/ویرایش ببیند
+
         self.fields["status"].choices = [
             (LiveClass.Status.SCHEDULED, "برنامه‌ریزی‌شده"),
             (LiveClass.Status.LIVE, "در حال برگزاری"),
