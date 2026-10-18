@@ -55,7 +55,7 @@
     {% if sections %}
         <div class="section-list">
             {% for section in sections %}
-            <a href="{% url 'student:class-content-details' pk=klass.id  section_id=section.id %}">
+            <a href="{% url 'student:class-section-details' pk=klass.pk section_id=section.pk %}">
                 <article class="section-card">
 
                     <div class="section-number">
@@ -81,8 +81,7 @@
                     </div>
 
                     <div class="section-action">
-                        {# آدرس جزئیات جلسه را پس از مشخص شدن URL پروژه قرار بده #}
-                        <span class="available-label">آماده مشاهده</span>
+                                                <span class="available-label">مشاهده جزئیات <span aria-hidden="true">←</span></span>
                     </div>
 
                 </article>

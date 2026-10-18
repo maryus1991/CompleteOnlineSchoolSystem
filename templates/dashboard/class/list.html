@@ -50,9 +50,9 @@
             {% for class_obj in classes %}
                 <article class="class-card">
 
-             <a href="{% url 'student:class-content-list' class_obj.id %}"
-                       class="class-image-link"
-                       aria-label="مشاهده کلاس {{ class_obj.name }}">
+<a href="{% url 'student:class-sections' pk=class_obj.pk %}"
+   class="class-image-link"
+   aria-label="مشاهده کلاس {{ class_obj.name }}">
 
                         {% if class_obj.image %}
                             <img
@@ -92,11 +92,11 @@
                             {% endif %}
                         </div>
 
-                        <h2>
-                            <a href="{{ class_obj.get_absolute_url }}">
-                                {{ class_obj.name }}
-                            </a>
-                        </h2>
+  <h2>
+    <a href="{% url 'student:class-sections' pk=class_obj.pk %}">
+        {{ class_obj.name }}
+    </a>
+</h2>
 
                         {% if class_obj.summery %}
                             <p class="class-summary">
@@ -156,11 +156,11 @@
                             </div>
                         </div>
 
-                        <a href="{% url 'student:class-content-list' class_obj.id %}"
-                           class="class-detail-link">
-                            مشاهده کلاس
-                            <span aria-hidden="true">←</span>
-                        </a>
+<a href="{% url 'student:class-sections' pk=class_obj.pk %}"
+   class="class-detail-link">
+    مشاهده کلاس
+    <span aria-hidden="true">←</span>
+</a>
 
                     </div>
                 </article>

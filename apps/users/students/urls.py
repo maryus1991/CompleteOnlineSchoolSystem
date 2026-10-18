@@ -37,10 +37,10 @@ urlpatterns = [
     path("practice/<int:pk>/solve/questions/<int:question_pk>", views.practice.StudentPracticeSolveView.as_view(), name="practice-solve"),
 
     # class
-    path("class/", views.klass.ListStudentClass.as_view(), name="class-list"),
-    path("class/<int:pk>", views.klass.ListSectionStudentClass.as_view(), name="class-content-list"),
-    path("class/<int:pk>/sections/<int:section_id>", views.klass.StudentSectionContentView.as_view(), name="class-content-details"),
-    path("class/live-list", views.klass.LiveClassListView.as_view(), name="class-live-list"),
-
+    path("classes/", views.klass.ListStudentClass.as_view(), name="class-list", ),
+    path("classes/<int:pk>/sections/", views.klass.ListSectionStudentClass.as_view(), name="class-sections", ),
+    path("classes/<int:pk>/sections/<int:section_id>/", views.klass.StudentSectionContentView.as_view(), name="class-section-details", ),
+    path("live-classes/", views.klass.LiveClassListView.as_view(), name="class-live-list", ),
+    path("live-classes/<int:pk>/", views.klass.LiveClassDetailView.as_view(), name="class-live-detail", ),
 
 ]

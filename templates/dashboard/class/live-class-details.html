@@ -1,0 +1,34 @@
+
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<section class="live-class-details">
+
+    <h1>{{ live_class.klass.name }}</h1>
+
+    <p>
+        <strong>معلم:</strong>
+        {{ live_class.klass.teacher.user.get_full_name|default:"ثبت نشده" }}
+    </p>
+
+    <p>
+        <strong>وضعیت جلسه:</strong>
+        {{ live_class.get_status_display }}
+    </p>
+
+    {% if meeting_url %}
+        <a
+            href="{{ meeting_url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            ورود به کلاس آنلاین
+        </a>
+    {% else %}
+        <p>
+            این جلسه در حال حاضر برای ورود در دسترس نیست.
+        </p>
+    {% endif %}
+
+</section>
+{% endblock %}

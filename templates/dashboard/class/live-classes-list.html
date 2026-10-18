@@ -1,4 +1,5 @@
 
+
 {% extends "dashboard/base.html" %}
 {% load live_class_tags %}
 
@@ -51,7 +52,7 @@
                             </svg>
                         </div>
 
-                        <h2>{{ live_class.section.name }}</h2>
+                        <h2> کلاس {{ live_class.klass.name }} </h2>
                         <p class="live-class-description">
                             کلاس آنلاین شما آماده ورود است.
                         </p>
@@ -63,7 +64,7 @@
                             <strong>فعال</strong>
                         </div>
 
-                        {% with meeting_url=live_class|get_student_meeting_url:student %}
+                        {% with meeting_url=live_class|get_student_meeting_url:user %}
                             {% if live_class.is_available and meeting_url %}
                                 <a href="{{ meeting_url }}"
                                    class="live-join-button"

@@ -8,7 +8,7 @@
 
     <header class="lesson-header">
         <div class="lesson-heading">
-            <a href="{% url 'student:class-content-list' section.klass.pk %}"
+            <a href="{% url 'student:class-sections' section.klass.pk %}"
                class="back-link">
                 → بازگشت به جلسات کلاس
             </a>
@@ -19,10 +19,7 @@
         </div>
         <div>
 
-        <button type="button" class="theme-toggle" id="lessonThemeToggle">
-            <span id="lessonThemeIcon">☀️</span>
-            <span id="lessonThemeText">تم روشن</span>
-        </button>
+
 <a href="{% url 'student:class-live-list' %}" class="theme-toggle"
    aria-label="کلاس‌های آنلاین">
 

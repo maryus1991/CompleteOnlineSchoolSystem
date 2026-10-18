@@ -67,9 +67,6 @@ class LiveClass(BaseModel):
     server = models.ForeignKey(StreamServers, on_delete=models.CASCADE, related_name="live", verbose_name="سرور" )
     status = models.CharField("وضعیت", max_length=20, choices=Status.choices, default=Status.SCHEDULED, db_index=True, )
     session_code = models.CharField("کد اختصاصی کلاس", max_length=72, unique=True, default=generate_session_code, editable=False, )
-    recording_file = models.FileField("فایل ضبط‌شده کلاس", upload_to=UploadPath("live_classes/recordings/"), blank=True, null=True, )
-    chat_report = models.FileField("گزارش چت (PDF)", upload_to=UploadPath("live_classes/chat_reports/"), blank=True, null=True, )
-    attendance_report = models.FileField("گزارش حضور کاربران (PDF)", upload_to=UploadPath("live_classes/attendance_reports/"), blank=True, null=True, )
 
     class Meta:
         ordering = ["pk"]
@@ -132,6 +129,9 @@ class LiveClassReport(BaseModel):
     attendees_count = models.PositiveIntegerField("تعداد حاضرین", default=0)
     teacher_note = models.TextField("یادداشت معلم", blank=True)
     admin_note = models.TextField("یادداشت ادمین", blank=True)
+    recording_file = models.FileField("فایل ضبط‌شده کلاس", upload_to=UploadPath("live_classes/recordings/"), blank=True, null=True, )
+    chat_report = models.FileField("گزارش چت (PDF)", upload_to=UploadPath("live_classes/chat_reports/"), blank=True, null=True, )
+    attendance_report = models.FileField("گزارش حضور کاربران (PDF)", upload_to=UploadPath("live_classes/attendance_reports/"), blank=True, null=True, )
 
     class Meta:
         ordering = ["-pk"]
