@@ -36,9 +36,20 @@
     <div class="header-actions">
       <a href="{% url 'teacher:class-sections' pk=section.klass_id %}" class="pr-btn-ghost">جلسات کلاس</a>
       <a href="{% url 'teacher:section-update' pk=section.pk %}" class="pr-btn-ghost">ویرایش جلسه</a>
-      {% if can_manage_live %}
-        <a href="{% url 'teacher:live-create' section_id=section.pk %}" class="pr-btn">+ کلاس آنلاین</a>
-      {% endif %}
+      {% if first_live and can_manage_live %}
+  <a href="{% url 'teacher:live-join' first_live.pk %}" class="btn btn-success">
+    ورود به کلاس آنلاین
+  </a>
+{% endif %}
+      {% for report in live_reports %}
+  <div class="report-card">
+    <p>شروع: {{ report.started_at }}</p>
+    <p>پایان: {{ report.ended_at }}</p>
+    <p>مدت: {{ report.duration_minutes }} دقیقه</p>
+    <p>تعداد حاضرین: {{ report.attendees_count }}</p>
+    <p>{{ report.teacher_note }}</p>
+  </div>
+{% endfor %}
     </div>
   </div>
 

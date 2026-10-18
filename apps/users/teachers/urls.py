@@ -73,7 +73,7 @@ urlpatterns = [
     # live classes
     path("live-classes/", views.classes.LiveClassListView.as_view(), name="live-class-list"),
     path("live-classes/<int:pk>/join/", views.classes.LiveJoinView.as_view(), name="live-join"),
-    path("sections/<int:section_id>/live/create/", views.classes.LiveClassCreateView.as_view(), name="live-create"),
+    path("classes/<int:class_id>/live/create/", views.classes.LiveClassCreateView.as_view(), name="live-create"),
 
     path("live-classes/update/<int:pk>/", views.classes.LiveClassUpdateView.as_view(), name="live-update"),
     path("live-classes/<int:pk>/set-status/", views.classes.LiveClassSetStatusView.as_view(), name="live-set-status"),
