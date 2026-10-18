@@ -3,6 +3,7 @@ import string
 
 
 from apps.common.models_fields import BaseJalaliDateTimeField
+from apps.content.models import Section
 
 from apps.users.teachers.models import Teacher
 from apps.common.models import BaseModel
@@ -122,7 +123,8 @@ class LiveClass(BaseModel):
 
 class LiveClassReport(BaseModel):
 
-    live_class = models.OneToOneField(LiveClass, on_delete=models.CASCADE, related_name="report", verbose_name="کلاس آنلاین", )
+    live_class = models.ForeignKey(LiveClass, on_delete=models.CASCADE, related_name="report", verbose_name="کلاس آنلاین", )
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="report", verbose_name="جلسه", )
     started_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان شروع واقعی")
     ended_at = BaseJalaliDateTimeField(null=True, blank=True, verbose_name="زمان پایان واقعی")
     duration_minutes = models.PositiveIntegerField("مدت واقعی (دقیقه)", null=True, blank=True)

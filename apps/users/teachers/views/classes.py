@@ -18,6 +18,7 @@ from apps.users.teachers.forms.classes import (
     LiveClassRequestForm,
     SectionForm,
     LiveClassForm,
+    LiveClassReportForm,
 )
 from apps.users.teachers.mixins import TeacherMixin
 
@@ -113,7 +114,6 @@ class SectionDetailView(TeacherMixin, DetailView):
                     ),
                     to_attr="practices_list",
                 ),
-
             )
         )
 
@@ -126,15 +126,32 @@ class SectionDetailView(TeacherMixin, DetailView):
         ctx["files"] = getattr(section, "files_list", [])
         ctx["practices"] = getattr(section, "practices_list", [])
 
-        live = LiveClass.objects.filter(is_active=True, klass=section.klass).select_related("server").first()
-        ctx["live"] = live
+        # کلاس آنلاین مربوط به این کلاس
+        live = (
+            LiveClass.objects.filter(is_active=True, klass=section.klass)
+            .select_related("server")
+            .first()
+        )
 
+        # گزارش مربوط به همین جلسه (section) + همین live
+        live_report = None
+        if live:
+            live_report = (
+                LiveClassReport.objects.filter(
+                    live_class=live,
+                    section=section,
+                )
+                .select_related("live_class", "section")
+                .first()
+            )
+
+        ctx["live"] = live
+        ctx["live_report"] = live_report
         ctx["has_live"] = live is not None
         ctx["can_manage_live"] = bool(getattr(teacher, "can_start_live_class", False))
         ctx["has_live_now"] = bool(live and live.status == LiveClass.Status.LIVE)
 
         return ctx
-
 
 # ══════════════════════════════════════════════════════════
 # کلاس‌ها
@@ -175,9 +192,6 @@ class ClassListView(TeacherMixin, ListView):
 
 
 class SectionListView(TeacherMixin, ListView):
-    """
-    لیست جلسات یک کلاس + دکمه ورود به کلاس آنلاین + نمایش گزارش‌ها
-    """
     permission_field = "ok"
     template_name = "teacher/class/sections.html"
     context_object_name = "sections"
@@ -198,12 +212,8 @@ class SectionListView(TeacherMixin, ListView):
         ctx = super().get_context_data(**kwargs)
         ctx["klass"] = self.klass
 
-        # کلاس‌های آنلاین این کلاس
         live_qs = (
-            LiveClass.objects.filter(
-                is_active=True,
-                klass=self.klass,
-            )
+            LiveClass.objects.filter(is_active=True, klass=self.klass)
             .select_related("server")
             .prefetch_related(
                 Prefetch(
@@ -218,28 +228,21 @@ class SectionListView(TeacherMixin, ListView):
 
         ctx["live_classes"] = live_list
         ctx["has_live"] = bool(live_list)
-        ctx["can_manage_live"] = bool(
-            getattr(self.request.teacher, "can_start_live_class", False)
-        )
-        ctx["has_live_now"] = any(
-            live.status == LiveClass.Status.LIVE for live in live_list
-        )
+        ctx["can_manage_live"] = bool(getattr(self.request.teacher, "can_start_live_class", False))
+        ctx["has_live_now"] = any(live.status == LiveClass.Status.LIVE for live in live_list)
 
-        # اولین کلاس لایو در دسترس برای دکمه ورود سریع
         first_live = next(
             (live for live in live_list if live.status == LiveClass.Status.LIVE),
             live_list[0] if live_list else None,
         )
         ctx["first_live"] = first_live
 
-        # گزارش‌ها
-        reports = []
-        for live in live_list:
-            report = getattr(live, "report_obj", None)
-            if report:
-                reports.append(report)
-        ctx["live_reports"] = reports
-
+        # reports that belong to each live session
+        ctx["live_reports"] = [
+            getattr(live, "report_obj", None)
+            for live in live_list
+            if getattr(live, "report_obj", None)
+        ]
         return ctx
 
 
@@ -597,6 +600,131 @@ class LiveRequestDetailView(TeacherMixin, DetailView):
         )
 
 
+
+class LiveClassReportCreateView(TeacherMixin, CreateView):
+    """آپلود گزارش برای یک کلاس آنلاین (متعلق به یک جلسه مشخص)"""
+    permission_field = "can_start_live_class"
+    model = LiveClassReport
+    form_class = LiveClassReportForm
+    template_name = "teacher/class/live_report_form.html"
+
+    def get_live(self):
+        return get_object_or_404(
+            LiveClass.objects.select_related("klass"),
+            pk=self.kwargs["live_pk"],
+            is_active=True,
+            klass__teacher=self.request.teacher,
+            klass__is_active=True,
+        )
+
+    def get_section(self):
+        return get_object_or_404(
+            Section.objects.filter(
+                is_active=True,
+                klass__teacher=self.request.teacher,
+                klass__is_active=True,
+            ),
+            pk=self.kwargs["section_id"],
+        )
+
+    def get_existing_report(self, live=None, section_id=None):
+        live = live or self.get_live()
+        section_id = section_id or self.kwargs["section_id"]
+        return LiveClassReport.objects.filter(
+            live_class=live,
+            section_id=section_id,
+        ).first()
+
+    def get(self, request, *args, **kwargs):
+        self.live = self.get_live()
+        existing = self.get_existing_report(live=self.live)
+        if existing:
+            return redirect("teacher:live-report-update", pk=existing.pk)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.live = self.get_live()
+        existing = self.get_existing_report(live=self.live)
+        if existing:
+            return redirect("teacher:live-report-update", pk=existing.pk)
+        return super().post(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        live = getattr(self, "live", None) or self.get_live()
+        section = self.get_section()
+        ctx["live"] = live
+        ctx["section"] = section
+        ctx["klass"] = live.klass
+        ctx["page_title"] = "ثبت گزارش کلاس آنلاین"
+        ctx["is_update"] = False
+        return ctx
+
+    def form_valid(self, form):
+        live = self.get_live()
+        section = self.get_section()
+
+        existing = self.get_existing_report(live=live, section_id=section.pk)
+        if existing:
+            return redirect("teacher:live-report-update", pk=existing.pk)
+
+        form.instance.live_class = live
+        form.instance.section = section
+        messages.success(self.request, "گزارش جلسه ثبت شد.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            "teacher:section-detail",
+            kwargs={"pk": self.kwargs["section_id"]},
+        )
+
+class LiveClassReportUpdateView(TeacherMixin, UpdateView):
+    """ویرایش گزارش یک کلاس آنلاین"""
+    permission_field = "can_start_live_class"
+    model = LiveClassReport
+    form_class = LiveClassReportForm
+    template_name = "teacher/class/live_report_form.html"
+    context_object_name = "report"
+
+    def get_queryset(self):
+        return (
+            LiveClassReport.objects.filter(
+                live_class__is_active=True,
+                live_class__klass__teacher=self.request.teacher,
+                live_class__klass__is_active=True,
+                section__is_active=True,
+                section__klass__teacher=self.request.teacher,
+            )
+            .select_related(
+                "live_class",
+                "live_class__klass",
+                "live_class__server",
+                "section",
+                "section__klass",
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["live"] = self.object.live_class
+        ctx["section"] = self.object.section
+        ctx["klass"] = self.object.live_class.klass
+        ctx["page_title"] = "ویرایش گزارش کلاس آنلاین"
+        ctx["is_update"] = True
+        return ctx
+
+    def form_valid(self, form):
+        messages.success(self.request, "گزارش جلسه بروزرسانی شد.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            "teacher:section-detail",
+            kwargs={"pk": self.object.section_id},
+        )
+
+
 # ══════════════════════════════════════════════════════════
 # ورود معلم به کلاس آنلاین
 # ══════════════════════════════════════════════════════════
@@ -629,7 +757,6 @@ class LiveJoinView(TeacherMixin, View):
 
 
 class LiveClassListView(TeacherMixin, ListView):
-    """لیست تمام کلاس‌های آنلاین معلم + گزارش‌ها"""
     permission_field = "can_start_live_class"
     template_name = "teacher/class/live_list.html"
     context_object_name = "items"
