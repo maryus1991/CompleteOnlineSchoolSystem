@@ -26,7 +26,6 @@ urlpatterns = [
     path("questions/publish/<int:pk>/", views.questions.AddQuestionToQbankView.as_view(), name="question-publish"),
 
     # exam
-
     path("exams/", views.exam.ExamListView.as_view(), name="exam-list"),
     path("exams/create/", views.exam.ExamCreateView.as_view(), name="exam-create"),
     path("exams/update/<int:pk>/", views.exam.ExamUpdateView.as_view(), name="exam-update"),
