@@ -32,6 +32,7 @@ urlpatterns = [
     path("exams/delete/<int:pk>/", views.exam.ExamDeleteView.as_view(), name="exam-delete"),
     path("exams/<int:pk>/students/", views.exam.ExamAddAndRemoveStudentView.as_view(), name="exam-students"),
     path("exams/<int:pk>/questions/", views.exam.ExamAddAndRemoveQuestionsView.as_view(), name="exam-questions"),
+    path("exams/<int:pk>/generate-reports/",views.exam.ExamGenerateReportsView.as_view(), name="exam-generate-reports", ),
 
     # practices
     path("practices/", views.practice.PracticeListView.as_view(), name="practice-list"),
@@ -77,4 +78,11 @@ urlpatterns = [
     # reports for each live session
     path("classes/sections/<int:section_id>/live/<int:live_pk>/report/create/", views.classes.LiveClassReportCreateView.as_view(), name="live-report-create", ),
     path("classes/live-reports/update/<int:pk>/", views.classes.LiveClassReportUpdateView.as_view(), name="live-report-update", ),
+
+    # reports
+    path("reports/", views.report.ReportExamListView.as_view(), name="report-exam-list"),
+    path("reports/exam/<int:exam_pk>/", views.report.ReportListView.as_view(), name="report-list" ),
+    path("reports/<int:pk>/update/", views.report.ReportUpdateView.as_view(), name="report-update" ),
+    path("reports/<int:pk>/delete/", views.report.ReportDeleteView.as_view(), name="report-delete" ),
+
 ]

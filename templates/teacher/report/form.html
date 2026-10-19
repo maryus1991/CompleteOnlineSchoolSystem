@@ -1,0 +1,188 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .ticket-create-page { width: 100%; padding: 10px; }
+    .ticket-create-header { margin-bottom: 22px; }
+    .ticket-create-header h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.35rem; font-weight: 800; }
+    .ticket-create-header p { margin: 0; color: var(--text-secondary); font-size: .8rem; }
+    .ticket-form-card {
+        padding: 22px; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+        background: var(--bg-card); margin-bottom: 18px;
+    }
+    .section-title {
+        margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary); font-size: .95rem; font-weight: 800;
+    }
+    .readonly-box {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px;
+    }
+    .readonly-item {
+        padding: 12px 14px; border: 1px solid var(--border-color); border-radius: 12px;
+        background: var(--bg-primary); color: var(--text-secondary); font-size: .78rem;
+    }
+    .readonly-item strong { display: block; color: var(--text-primary); margin-top: 4px; font-size: .85rem; }
+    .ticket-form-group { margin-bottom: 18px; }
+    .ticket-form-label { display: block; margin-bottom: 8px; color: var(--text-primary); font-size: .8rem; font-weight: 700; }
+    .ticket-form-group input, .ticket-form-group select {
+        width: 100%; box-sizing: border-box; padding: 13px 15px; color: var(--text-primary);
+        background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 13px;
+        outline: none; font-family: inherit; font-size: .82rem;
+    }
+    .ticket-form-group input:focus, .ticket-form-group select:focus {
+        border-color: #4facfe; box-shadow: 0 0 0 3px rgba(79, 172, 254, .08);
+    }
+    .ticket-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .ticket-form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .ticket-errors { margin-top: 7px; color: #f87171; font-size: .7rem; }
+    .ticket-form-actions {
+        display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--border-color);
+    }
+    .ticket-back-btn, .ticket-submit-btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        min-height: 44px; padding: 0 18px; border-radius: 12px; font-family: inherit;
+        font-size: .8rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: all .2s ease;
+    }
+    .ticket-back-btn { color: var(--text-secondary); background: var(--bg-primary); border: 1px solid var(--border-color); }
+    .ticket-back-btn:hover { color: var(--text-primary); border-color: rgba(79, 172, 254, .35); }
+    .ticket-submit-btn { color: #fff; background: var(--accent-gradient); border: none; }
+    .ticket-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79, 172, 254, .2); }
+    @media (max-width: 768px) {
+        .readonly-box, .ticket-form-row, .ticket-form-row-3 { grid-template-columns: 1fr; }
+        .ticket-form-actions { flex-direction: column-reverse; }
+        .ticket-back-btn, .ticket-submit-btn { width: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="ticket-create-page">
+    <div class="ticket-create-header">
+        <h2>{{ page_title }}</h2>
+        <p>{{ page_subtitle }}</p>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="ticket-form-card">
+            <h3 class="section-title">اطلاعات ثابت (غیرقابل تغییر)</h3>
+            <div class="readonly-box">
+                <div class="readonly-item">
+                    آزمون
+                    <strong>{{ report.exam.name }}</strong>
+                </div>
+                <div class="readonly-item">
+                    دانش‌آموز
+                    <strong>
+                        {% if report.student.user.get_full_name %}
+                            {{ report.student.user.get_full_name }}
+                        {% else %}
+                            {{ report.student }}
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-form-card">
+            <h3 class="section-title">وضعیت و نمره</h3>
+            <div class="ticket-form-row">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">وضعیت کارنامه</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}<div class="ticket-errors">{{ form.status.errors }}</div>{% endif %}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">رتبه</label>
+                    {{ form.rank }}
+                </div>
+            </div>
+            <div class="ticket-form-row-3">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">نمره کسب‌شده</label>
+                    {{ form.score }}
+                    {% if form.score.errors %}<div class="ticket-errors">{{ form.score.errors }}</div>{% endif %}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">حداکثر نمره</label>
+                    {{ form.max_score }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">تراز</label>
+                    {{ form.teraze }}
+                </div>
+            </div>
+            <div class="ticket-form-row">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">درصد نهایی</label>
+                    {{ form.percentage }}
+                    {% if form.percentage.errors %}<div class="ticket-errors">{{ form.percentage.errors }}</div>{% endif %}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">درصد پاسخ‌گویی</label>
+                    {{ form.answered_percentage }}
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-form-card">
+            <h3 class="section-title">آمار پاسخ‌ها</h3>
+            <div class="ticket-form-row-3">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">کل سوالات</label>
+                    {{ form.total_questions }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">صحیح</label>
+                    {{ form.correct_count }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">غلط</label>
+                    {{ form.wrong_count }}
+                </div>
+            </div>
+            <div class="ticket-form-row-3">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">بی‌پاسخ</label>
+                    {{ form.unanswered_count }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">ردشده</label>
+                    {{ form.skipped_count }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">تصحیح‌نشده</label>
+                    {{ form.uncorrected_count }}
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-form-card">
+            <h3 class="section-title">زمان‌ها</h3>
+            <div class="ticket-form-row">
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">زمان محاسبه</label>
+                    {{ form.calculated_at }}
+                </div>
+                <div class="ticket-form-group">
+                    <label class="ticket-form-label">زمان انتشار</label>
+                    {{ form.published_at }}
+                </div>
+            </div>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="ticket-errors" style="margin-bottom:15px;">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="ticket-form-card">
+            <div class="ticket-form-actions" style="border-top:none;margin-top:0;padding-top:0;">
+                <a href="{% url 'teacher:report-list' exam_pk=report.exam_id %}" class="ticket-back-btn">بازگشت</a>
+                <button type="submit" class="ticket-submit-btn">ذخیره تغییرات</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -13,9 +13,70 @@ from apps.users.teachers.forms.exam import ExamForm
 from apps.users.teachers.mixins import TeacherMixin
 
 
-# todo: add report for exam
+from apps.exams.tasks import calculate_exam_reports
+from apps.questions.models import StudentAnswer
+
+
 def _teacher_exams(teacher):
     return Exam.objects.filter(teacher=teacher, is_active=True)
+
+
+class ExamGenerateReportsView(TeacherMixin, View):
+
+    permission_field = "can_issuing_report"
+
+    def post(self, request, pk):
+        exam = get_object_or_404(
+            _teacher_exams(request.teacher),
+            pk=pk,
+        )
+
+        has_answers = StudentAnswer.objects.filter(exam=exam).exists()
+        if not has_answers:
+            messages.warning(
+                request,
+                "هنوز هیچ پاسخی برای این آزمون ثبت نشده است.",
+            )
+            return redirect("teacher:exam-list")
+
+        # enqueue با Django Tasks Framework
+        # publish=True → وضعیت کارنامه‌ها PUBLISHED می‌شود
+        publish = request.POST.get("publish") == "1"
+
+        result = calculate_exam_reports.enqueue(
+            exam_id=exam.pk,
+            publish=publish,
+        )
+
+        # با ImmediateBackend نتیجه فوری است
+        # با backend واقعی، فقط صف می‌شود
+        if hasattr(result, "status") and str(result.status).endswith("SUCCESSFUL"):
+            data = result.return_value or {}
+            count = data.get("students_processed", 0)
+            if publish:
+                messages.success(
+                    request,
+                    f"کارنامه {count} دانش‌آموز محاسبه و منتشر شد.",
+                )
+            else:
+                messages.success(
+                    request,
+                    f"کارنامه {count} دانش‌آموز محاسبه شد (هنوز منتشر نشده).",
+                )
+        else:
+            messages.success(
+                request,
+                "درخواست صدور کارنامه ثبت شد و در حال پردازش است.",
+            )
+
+        if publish:
+            exam.status = Exam.ExamStatus.RESULTS_PUBLISHED
+            exam.save(update_fields=["status"])
+
+        return redirect("teacher:exam-list")
+
+    def get(self, request, *args, **kwargs): return redirect("teacher:exam-list")
+
 
 class ExamListView(TeacherMixin, ListView):
     """exam list view for teacher"""

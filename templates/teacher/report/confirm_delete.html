@@ -1,0 +1,51 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .ticket-create-page { width: 100%; padding: 10px; max-width: 520px; margin: 0 auto; }
+    .ticket-form-card {
+        padding: 28px 22px; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+        background: var(--bg-card); text-align: center;
+    }
+    .ticket-form-card h2 { margin: 0 0 10px; color: var(--text-primary); font-size: 1.15rem; font-weight: 800; }
+    .ticket-form-card p { margin: 0 0 8px; color: var(--text-secondary); font-size: .85rem; line-height: 1.9; }
+    .ticket-form-actions {
+        display: flex; justify-content: center; gap: 12px; margin-top: 22px; flex-wrap: wrap;
+    }
+    .ticket-back-btn, .ticket-submit-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-height: 44px; padding: 0 20px; border-radius: 12px; font-family: inherit;
+        font-size: .8rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none;
+    }
+    .ticket-back-btn { color: var(--text-secondary); background: var(--bg-primary); border: 1px solid var(--border-color); }
+    .ticket-submit-btn { color: #fff; background: linear-gradient(135deg, #f87171, #ef4444); }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="ticket-create-page">
+    <div class="ticket-form-card">
+        <h2>حذف کارنامه</h2>
+        <p>
+            کارنامه
+            <strong>
+                {% if report.student.user.get_full_name %}
+                    {{ report.student.user.get_full_name }}
+                {% else %}
+                    {{ report.student }}
+                {% endif %}
+            </strong>
+            برای آزمون «{{ report.exam.name }}» حذف شود؟
+        </p>
+        <p style="color:#f87171;font-size:.75rem;">این عمل قابل بازگشت نیست.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="ticket-form-actions">
+                <a href="{% url 'teacher:report-list' exam_pk=report.exam_id %}" class="ticket-back-btn">انصراف</a>
+                <button type="submit" class="ticket-submit-btn">بله، حذف شود</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

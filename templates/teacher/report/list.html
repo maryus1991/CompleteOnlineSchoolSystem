@@ -1,575 +1,186 @@
-
-{% extends "dashboard/base.html" %}
+{% extends "teacher/base.html" %}
 
 {% block header %}
 <style>
-section {
-    padding: 0;
-}
-
-.report-page {
-    --report-bg: var(--bg-primary);
-    --report-surface: var(--bg-card);
-    --report-surface-hover: var(--bg-card-hover);
-    --report-border: var(--border-color);
-    --report-text: var(--text-primary);
-    --report-text-muted: var(--text-muted);
-    --report-primary: var(--accent-color);
-    --report-primary-hover: var(--accent-color-hover);
-    --report-success: #34d399;
-    --report-danger: #fb7185;
-    --report-warning: #fbbf24;
-
-    min-height: 100%;
-    padding: 28px;
-    color: var(--report-text);
-    background: transparent;
-    direction: rtl;
-    font-family: inherit;
-}
-
-/* Header */
-.report-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 28px;
-}
-
-.report-header__title {
-    margin: 0 0 10px;
-    color: var(--report-text);
-    font-size: 1.6rem;
-    font-weight: 800;
-    line-height: 1.7;
-}
-
-.report-header__description {
-    margin: 0;
-    color: var(--report-text-muted);
-    font-size: 0.95rem;
-    line-height: 1.9;
-}
-
-.report-header__count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 46px;
-    min-height: 38px;
-    padding: 6px 14px;
-    border: 1px solid color-mix(in srgb, var(--report-primary) 30%, transparent);
-    border-radius: 10px;
-    background: var(--accent-glow);
-    color: var(--report-primary);
-    font-size: 0.9rem;
-    font-weight: 700;
-}
-
-/* Card */
-.report-card {
-    overflow: hidden;
-    border: 1px solid var(--report-border);
-    border-radius: 16px;
-    background: var(--report-surface);
-    box-shadow: var(--card-shadow, 0 12px 32px rgba(0, 0, 0, 0.08));
-}
-
-.report-card__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--report-border);
-}
-
-.report-card__title {
-    margin: 0;
-    color: var(--report-text);
-    font-size: 1.05rem;
-    font-weight: 700;
-}
-
-.report-card__body {
-    padding: 0;
-}
-
-/* Table */
-.report-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-color: var(--report-border) var(--report-surface);
-    scrollbar-width: thin;
-}
-
-.report-table {
-    width: 100%;
-    min-width: 850px;
-    border-collapse: collapse;
-    text-align: right;
-}
-
-.report-table thead {
-    background: var(--bg-secondary);
-}
-
-.report-table th {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--report-border);
-    color: var(--text-secondary);
-    font-size: 0.82rem;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.report-table td {
-    padding: 18px 20px;
-    border-bottom: 1px solid var(--report-border);
-    color: var(--report-text);
-    font-size: 0.9rem;
-    vertical-align: middle;
-}
-
-.report-table tbody tr {
-    transition: background-color 160ms ease;
-}
-
-.report-table tbody tr:hover {
-    background: var(--report-surface-hover);
-}
-
-.report-table tbody tr:last-child td {
-    border-bottom: 0;
-}
-
-.report-table__number {
-    width: 55px;
-    color: var(--report-text-muted) !important;
-    font-size: 0.82rem !important;
-}
-
-.report-table__exam {
-    min-width: 220px;
-}
-
-.report-table__exam-name {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--report-text);
-    font-weight: 700;
-    line-height: 1.8;
-}
-
-.report-table__exam-lesson {
-    display: block;
-    color: var(--report-text-muted);
-    font-size: 0.8rem;
-}
-
-.report-table__numeric {
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.report-table__muted {
-    color: var(--report-text-muted) !important;
-}
-
-/* Percentage */
-.report-percentage {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 64px;
-    padding: 6px 10px;
-    border: 1px solid rgba(52, 211, 153, 0.25);
-    border-radius: 8px;
-    background: rgba(52, 211, 153, 0.1);
-    color: var(--report-success);
-    font-size: 0.85rem;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-/* Buttons */
-.report-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 38px;
-    padding: 8px 13px;
-    border: 1px solid color-mix(in srgb, var(--report-primary) 30%, transparent);
-    border-radius: 9px;
-    background: var(--accent-glow);
-    color: var(--report-primary);
-    font-family: inherit;
-    font-size: 0.83rem;
-    font-weight: 700;
-    text-decoration: none;
-    white-space: nowrap;
-    transition:
-        background-color 160ms ease,
-        border-color 160ms ease,
-        color 160ms ease;
-}
-
-.report-button:hover {
-    border-color: var(--report-primary);
-    background: var(--report-primary);
-    color: #fff;
-    text-decoration: none;
-}
-
-.report-button:focus-visible,
-.report-pagination__link:focus-visible {
-    outline: 2px solid var(--report-primary);
-    outline-offset: 3px;
-}
-
-/* Empty state */
-.report-empty {
-    padding: 64px 24px;
-    text-align: center;
-}
-
-.report-empty__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 68px;
-    height: 68px;
-    margin: 0 auto 20px;
-    border: 1px solid var(--report-border);
-    border-radius: 20px;
-    background: var(--bg-secondary);
-    color: var(--report-text-muted);
-}
-
-.report-empty__icon svg {
-    width: 30px;
-    height: 30px;
-}
-
-.report-empty__title {
-    margin: 0 0 10px;
-    color: var(--report-text);
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.report-empty__description {
-    max-width: 440px;
-    margin: 0 auto;
-    color: var(--report-text-muted);
-    font-size: 0.9rem;
-    line-height: 2;
-}
-
-/* Pagination */
-.report-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 20px 24px;
-    border-top: 1px solid var(--report-border);
-}
-
-.report-pagination__info {
-    color: var(--report-text-muted);
-    font-size: 0.85rem;
-}
-
-.report-pagination__list {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.report-pagination__item {
-    display: flex;
-}
-
-.report-pagination__link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    min-height: 36px;
-    padding: 6px 10px;
-    border: 1px solid var(--report-border);
-    border-radius: 8px;
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    text-decoration: none;
-    transition:
-        background-color 160ms ease,
-        border-color 160ms ease,
-        color 160ms ease;
-}
-
-.report-pagination__link:hover {
-    border-color: var(--report-primary);
-    background: var(--accent-glow);
-    color: var(--report-primary);
-}
-
-.report-pagination__item--active .report-pagination__link {
-    border-color: var(--report-primary);
-    background: var(--accent-glow);
-    color: var(--report-primary);
-    font-weight: 700;
-}
-
-.report-pagination__item--disabled .report-pagination__link {
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .report-page {
-        padding: 18px 12px;
+    .ticket-page { width: 100%; padding: 10px; }
+    .ticket-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 22px; flex-wrap: wrap; }
+    .ticket-header-title h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.35rem; font-weight: 800; }
+    .ticket-header-title p { margin: 0; color: var(--text-secondary); font-size: 0.8rem; }
+    .ticket-back-btn {
+        display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 12px;
+        color: var(--text-secondary); text-decoration: none; border: 1px solid var(--border-color);
+        background: var(--bg-card); font-size: .78rem; font-weight: 700;
     }
-
-    .report-header {
-        align-items: flex-start;
-        margin-bottom: 20px;
+    .ticket-back-btn:hover { color: var(--text-primary); border-color: rgba(79,172,254,.35); }
+    .stats-row {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px;
     }
-
-    .report-header__title {
-        font-size: 1.3rem;
+    .stat-card {
+        padding: 14px 16px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-card);
     }
-
-    .report-card {
-        border-radius: 12px;
+    .stat-card span { display: block; color: var(--text-secondary); font-size: .7rem; margin-bottom: 6px; }
+    .stat-card strong { color: var(--text-primary); font-size: 1.1rem; font-weight: 800; }
+    .ticket-list { display: flex; flex-direction: column; gap: 12px; }
+    .ticket-card {
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px;
+        padding: 16px 18px; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+        background: var(--bg-card); transition: all .25s ease;
     }
-
-    .report-card__header {
-        padding: 16px;
+    .ticket-card:hover { border-color: rgba(79, 172, 254, .35); box-shadow: 0 8px 25px rgba(0,0,0,.1); }
+    .ticket-main { min-width: 0; }
+    .ticket-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .ticket-id { color: var(--text-secondary); font-size: .72rem; direction: ltr; }
+    .ticket-title { margin: 0 0 8px; color: var(--text-primary); font-size: .92rem; font-weight: 800; }
+    .ticket-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ticket-badge {
+        display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 8px;
+        font-size: .68rem; font-weight: 700;
     }
-
-    .report-pagination {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 16px;
+    .status-pending { color: #fbbf24; background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.18); }
+    .status-calculated { color: #60a5fa; background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.18); }
+    .status-published { color: #34d399; background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.18); }
+    .ticket-action { display: flex; align-items: center; gap: 8px; }
+    .ticket-view-btn {
+        display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+        border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-secondary);
+        text-decoration: none; background: transparent; cursor: pointer; transition: all .2s ease;
     }
-
-    .report-pagination__list {
-        gap: 4px;
+    .ticket-view-btn:hover { color: #fff; background: var(--accent-gradient); border-color: transparent; }
+    .ticket-view-btn.delete:hover { background: linear-gradient(135deg, #f87171, #ef4444); }
+    .ticket-empty {
+        padding: 50px 20px; text-align: center; border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg); background: var(--bg-card);
     }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .report-table tbody tr,
-    .report-button,
-    .report-pagination__link {
-        transition: none;
+    .ticket-empty h3 { margin: 0 0 7px; color: var(--text-primary); font-size: .95rem; }
+    .ticket-empty p { margin: 0; color: var(--text-secondary); font-size: .78rem; }
+    .ticket-pagination { display: flex; justify-content: center; gap: 7px; margin-top: 20px; }
+    .ticket-page-link {
+        min-width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+        padding: 0 10px; border: 1px solid var(--border-color); border-radius: 10px;
+        color: var(--text-secondary); text-decoration: none; font-size: .75rem; background: var(--bg-card);
     }
-}
+    .ticket-page-link.active, .ticket-page-link:hover {
+        color: #fff; background: var(--accent-gradient); border-color: transparent;
+    }
+    @media (max-width: 768px) {
+        .stats-row { grid-template-columns: 1fr 1fr; }
+        .ticket-card { grid-template-columns: 1fr; }
+    }
 </style>
 {% endblock %}
 
 {% block main %}
-
-<div class="report-page">
-
-    <header class="report-header">
-        <div>
-            <h1 class="report-header__title">کارنامه‌های من</h1>
-            <p class="report-header__description">
-                مشاهده نتایج و عملکرد شما در آزمون‌ها
-            </p>
+<div class="ticket-page">
+    <div class="ticket-header">
+        <div class="ticket-header-title">
+            <h2>کارنامه‌های «{{ exam.name }}»</h2>
+            <p>فقط ویرایش و حذف کارنامه؛ آزمون و دانش‌آموز قابل تغییر نیست</p>
         </div>
+        <a href="{% url 'teacher:report-exam-list' %}" class="ticket-back-btn">بازگشت به لیست آزمون‌ها</a>
+    </div>
 
-        <a href="{% url 'student:comprehensive-list' %}" class="report-header__count">
-            کارنامه آزمون‌های جامع
-        </a>
-        <span class="report-header__count">
-            {{ page_obj.paginator.count }} کارنامه
-        </span>
-    </header>
-
-    <section class="report-card">
-        <div class="report-card__header">
-            <h2 class="report-card__title">فهرست کارنامه‌ها</h2>
+    <div class="stats-row">
+        <div class="stat-card">
+            <span>میانگین درصد</span>
+            <strong>{% if exam.average_percentage != None %}{{ exam.average_percentage|floatformat:1 }}٪{% else %}—{% endif %}</strong>
         </div>
+        <div class="stat-card">
+            <span>انحراف معیار درصد</span>
+            <strong>{% if exam.std_percentage != None %}{{ exam.std_percentage|floatformat:2 }}{% else %}—{% endif %}</strong>
+        </div>
+        <div class="stat-card">
+            <span>میانگین نمره</span>
+            <strong>{% if exam.average_score != None %}{{ exam.average_score|floatformat:2 }}{% else %}—{% endif %}</strong>
+        </div>
+        <div class="stat-card">
+            <span>تعداد شرکت‌کننده</span>
+            <strong>{{ exam.participants_count|default:0 }}</strong>
+        </div>
+    </div>
 
-        <div class="report-card__body">
-            {% if items %}
-                <div class="report-table-wrapper">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>عنوان آزمون</th>
-                                <th>نمره</th>
-                                <th>درصد</th>
-                                <th>تراز</th>
-                                <th>رتبه</th>
-                                <th>تاریخ انتشار</th>
-                                <th>کارنامه</th>
-                                <th>تحلیل سوالات</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {% for report in items %}
-                                <tr>
-                                    <td class="report-table__number">
-                                        {{ page_obj.start_index|add:forloop.counter0 }}
-                                    </td>
-
-                                    <td class="report-table__exam">
-                                        <span class="report-table__exam-name">
-                                            {{ report.exam.name }}
-                                        </span>
-
-
-                                    </td>
-
-                                    <td class="report-table__numeric">
-                                        {{ report.score|floatformat:2 }}
-                                        از
-                                        {{ report.max_score|floatformat:2 }}
-                                    </td>
-
-                                    <td>
-                                        <span class="report-percentage">
-                                            {{ report.percentage|floatformat:2 }}٪
-                                        </span>
-                                    </td>
-
-                                    <td class="report-table__numeric">
-                                        {% if report.teraze != None %}
-                                            {{ report.teraze|floatformat:0 }}
-                                        {% else %}
-                                            <span class="report-table__muted">—</span>
-                                        {% endif %}
-                                    </td>
-
-                                    <td class="report-table__numeric">
-                                        {% if report.rank %}
-                                            {{ report.rank }}
-                                        {% else %}
-                                            <span class="report-table__muted">—</span>
-                                        {% endif %}
-                                    </td>
-
-                                    <td class="report-table__numeric">
-                                        {% if report.published_at %}
-                                            {{ report.published_at }}
-                                        {% else %}
-                                            <span class="report-table__muted">—</span>
-                                        {% endif %}
-                                    </td>
-
-                                    <td>
-                                        {% if report.status == status.PUBLISHED %}
-                                            <a href="{% url 'student:report-details' report.id %}" class="report-button" >
-                                                مشاهده کارنامه
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if report.status == status.PUBLISHED %}
-                                            <a href="{% url 'student:report-details-question' report.id %}" class="report-button" >
-                                                تحلیل سوالات
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                {% if is_paginated %}
-                    <nav class="report-pagination" aria-label="صفحه‌بندی کارنامه‌ها">
-                        <p class="report-pagination__info">
-                            نمایش {{ page_obj.start_index }} تا
-                            {{ page_obj.end_index }} از
-                            {{ page_obj.paginator.count }} کارنامه
-                        </p>
-
-                        <ul class="report-pagination__list">
-                            {% if page_obj.has_previous %}
-                                <li class="report-pagination__item">
-                                    <a class="report-pagination__link"
-                                       href="?page={{ page_obj.previous_page_number }}">
-                                        قبلی
-                                    </a>
-                                </li>
+    {% if items %}
+        <div class="ticket-list">
+            {% for report in items %}
+                <div class="ticket-card">
+                    <div class="ticket-main">
+                        <div class="ticket-top">
+                            <span class="ticket-id">#{{ report.pk }}</span>
+                            {% if report.status == "pending" %}
+                                <span class="ticket-badge status-pending">{{ report.get_status_display }}</span>
+                            {% elif report.status == "calculated" %}
+                                <span class="ticket-badge status-calculated">{{ report.get_status_display }}</span>
                             {% else %}
-                                <li class="report-pagination__item report-pagination__item--disabled">
-                                    <span class="report-pagination__link">قبلی</span>
-                                </li>
+                                <span class="ticket-badge status-published">{{ report.get_status_display }}</span>
                             {% endif %}
-
-                            {% for num in page_obj.paginator.page_range %}
-                                {% if num == page_obj.number %}
-                                    <li class="report-pagination__item report-pagination__item--active">
-                                        <span class="report-pagination__link"
-                                              aria-current="page">{{ num }}</span>
-                                    </li>
-                                {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
-                                    <li class="report-pagination__item">
-                                        <a class="report-pagination__link" href="?page={{ num }}">
-                                            {{ num }}
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-
-                            {% if page_obj.has_next %}
-                                <li class="report-pagination__item">
-                                    <a class="report-pagination__link"
-                                       href="?page={{ page_obj.next_page_number }}">
-                                        بعدی
-                                    </a>
-                                </li>
+                            {% if report.rank %}
+                                <span class="ticket-badge" style="background:rgba(79,172,254,.08);color:#4facfe;border:1px solid rgba(79,172,254,.15);">
+                                    رتبه {{ report.rank }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <h3 class="ticket-title">
+                            {% if report.student.user.get_full_name %}
+                                {{ report.student.user.get_full_name }}
                             {% else %}
-                                <li class="report-pagination__item report-pagination__item--disabled">
-                                    <span class="report-pagination__link">بعدی</span>
-                                </li>
+                                {{ report.student }}
                             {% endif %}
-                        </ul>
-                    </nav>
-                {% endif %}
-
-            {% else %}
-                <div class="report-empty">
-                    <div class="report-empty__icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="1.6" stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/>
-                            <path d="M14 3v5h5M8 13h8M8 17h8"/>
-                        </svg>
+                        </h3>
+                        <div class="ticket-meta">
+                            <span class="ticket-badge" style="background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.18);">
+                                {{ report.score|floatformat:2 }} / {{ report.max_score|floatformat:2 }}
+                            </span>
+                            <span class="ticket-badge" style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
+                                {{ report.percentage|floatformat:1 }}٪
+                            </span>
+                            {% if report.teraze != None %}
+                                <span class="ticket-badge" style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
+                                    تراز {{ report.teraze|floatformat:0 }}
+                                </span>
+                            {% endif %}
+                            <span class="ticket-badge" style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
+                                صحیح {{ report.correct_count }} · غلط {{ report.wrong_count }} · بی‌پاسخ {{ report.unanswered_count }}
+                            </span>
+                        </div>
                     </div>
-
-                    <h3 class="report-empty__title">
-                        هنوز کارنامه‌ای ندارید
-                    </h3>
-
-                    <p class="report-empty__description">
-                        پس از انتشار نتایج آزمون‌ها، کارنامه شما در این قسمت نمایش داده می‌شود.
-                    </p>
+                    <div class="ticket-action">
+                        <a href="{% url 'teacher:report-update' pk=report.pk %}" class="ticket-view-btn" title="ویرایش">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'teacher:report-delete' pk=report.pk %}" class="ticket-view-btn delete" title="حذف">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
-            {% endif %}
+            {% endfor %}
         </div>
-    </section>
 
+        {% if is_paginated %}
+            <div class="ticket-pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="ticket-page-link">قبلی</a>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="ticket-page-link active">{{ num }}</span>
+                    {% else %}
+                        <a href="?page={{ num }}" class="ticket-page-link">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="ticket-page-link">بعدی</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="ticket-empty">
+            <h3>کارنامه‌ای صادر نشده</h3>
+            <p>از لیست آزمون‌ها دکمه «صدور کارنامه» را بزنید.</p>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

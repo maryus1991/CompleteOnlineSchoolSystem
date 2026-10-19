@@ -1,0 +1,138 @@
+{% extends "teacher/base.html" %}
+
+{% block header %}
+<style>
+    .ticket-page { width: 100%; padding: 10px; }
+    .ticket-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 22px; }
+    .ticket-header-title h2 { margin: 0 0 6px; color: var(--text-primary); font-size: 1.35rem; font-weight: 800; }
+    .ticket-header-title p { margin: 0; color: var(--text-secondary); font-size: 0.8rem; }
+    .ticket-list { display: flex; flex-direction: column; gap: 12px; }
+    .ticket-card {
+        position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px;
+        padding: 18px; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+        background: var(--bg-card); transition: all .25s ease; text-decoration: none; color: inherit;
+    }
+    .ticket-card:hover { transform: translateY(-2px); border-color: rgba(79, 172, 254, .35); box-shadow: 0 10px 35px rgba(0, 0, 0, .12); }
+    .ticket-main { min-width: 0; }
+    .ticket-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .ticket-id { color: var(--text-secondary); font-size: .72rem; direction: ltr; }
+    .ticket-title {
+        display: block; margin: 0 0 9px; color: var(--text-primary); font-size: .95rem; font-weight: 800;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ticket-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+    .ticket-badge {
+        display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 8px;
+        font-size: .68rem; font-weight: 700; white-space: nowrap;
+    }
+    .status-waiting-admin { color: #fbbf24; background: rgba(251, 191, 36, .10); border: 1px solid rgba(251, 191, 36, .18); }
+    .status-waiting-user { color: #60a5fa; background: rgba(96, 165, 250, .10); border: 1px solid rgba(96, 165, 250, .18); }
+    .status-fixed { color: #34d399; background: rgba(52, 211, 153, .10); border: 1px solid rgba(52, 211, 153, .18); }
+    .status-cancelled { color: #f87171; background: rgba(248, 113, 113, .10); border: 1px solid rgba(248, 113, 113, .18); }
+    .ticket-date { color: var(--text-secondary); font-size: .68rem; }
+    .ticket-action { display: flex; align-items: center; }
+    .ticket-view-btn {
+        display: flex; align-items: center; justify-content: center; width: 42px; height: 42px;
+        border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-secondary);
+        text-decoration: none; transition: all .2s ease;
+    }
+    .ticket-view-btn:hover { color: #fff; background: var(--accent-gradient); border-color: transparent; }
+    .ticket-empty {
+        padding: 55px 20px; text-align: center; border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg); background: var(--bg-card);
+    }
+    .ticket-empty h3 { margin: 0 0 7px; color: var(--text-primary); font-size: .95rem; }
+    .ticket-empty p { margin: 0; color: var(--text-secondary); font-size: .78rem; }
+    .ticket-pagination { display: flex; justify-content: center; align-items: center; gap: 7px; margin-top: 20px; }
+    .ticket-page-link {
+        display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px;
+        padding: 0 10px; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-secondary);
+        text-decoration: none; font-size: .75rem; background: var(--bg-card);
+    }
+    .ticket-page-link:hover, .ticket-page-link.active {
+        color: #fff; background: var(--accent-gradient); border-color: transparent;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="ticket-page">
+    <div class="ticket-header">
+        <div class="ticket-header-title">
+            <h2>کارنامه‌ها</h2>
+            <p>یک آزمون را انتخاب کنید تا کارنامه‌های صادرشده را ببینید</p>
+        </div>
+    </div>
+
+    {% if items %}
+        <div class="ticket-list">
+            {% for item in items %}
+                <a href="{% url 'teacher:report-list' exam_pk=item.pk %}" class="ticket-card">
+                    <div class="ticket-main">
+                        <div class="ticket-top">
+                            <span class="ticket-id">#{{ item.pk }}</span>
+                            {% if item.status == "در انتظار شروع" %}
+                                <span class="ticket-badge status-waiting-admin">{{ item.get_status_display }}</span>
+                            {% elif item.status == "شروع شده" %}
+                                <span class="ticket-badge status-waiting-user">{{ item.get_status_display }}</span>
+                            {% elif item.status == "اعلام نتایج" %}
+                                <span class="ticket-badge status-fixed">{{ item.get_status_display }}</span>
+                            {% else %}
+                                <span class="ticket-badge status-cancelled">{{ item.get_status_display|default:item.status }}</span>
+                            {% endif %}
+                            {% if item.participants_count %}
+                                <span class="ticket-badge" style="background:rgba(79,172,254,.08);color:#4facfe;border:1px solid rgba(79,172,254,.15);">
+                                    {{ item.participants_count }} شرکت‌کننده
+                                </span>
+                            {% endif %}
+                        </div>
+                        <span class="ticket-title">{{ item.name }}</span>
+                        <div class="ticket-meta">
+                            <span class="ticket-date">{{ item.start_at|date:"Y/m/d - H:i" }}</span>
+                            <span class="ticket-badge" style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-color);">
+                                {{ item.get_categories }}
+                            </span>
+                            {% if item.average_percentage != None %}
+                                <span class="ticket-badge status-fixed">میانگین: {{ item.average_percentage|floatformat:1 }}٪</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="ticket-action">
+                        <span class="ticket-view-btn" title="مشاهده کارنامه‌ها">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <div class="ticket-pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="ticket-page-link">قبلی</a>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="ticket-page-link active">{{ num }}</span>
+                    {% else %}
+                        <a href="?page={{ num }}" class="ticket-page-link">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="ticket-page-link">بعدی</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="ticket-empty">
+            <h3>آزمونی وجود ندارد</h3>
+            <p>ابتدا یک آزمون بسازید و کارنامه صادر کنید.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
