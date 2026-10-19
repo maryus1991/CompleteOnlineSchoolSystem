@@ -330,3 +330,10 @@ CKEDITOR_5_CONFIGS = {
 
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "user"
 # CKEDITOR_5_FILE_STORAGE = 'config.storage.CKEditorMediaStorage'
+
+
+TASKS = {
+    "default": {
+        "BACKEND": "django.tasks.backends.immediate.ImmediateBackend",
+    }
+}

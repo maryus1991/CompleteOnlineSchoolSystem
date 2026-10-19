@@ -81,6 +81,14 @@ class Exam(BaseModel):
 
     comprehensive_exam  = models.BooleanField("ازمون جامع", default=False)
 
+    # آمار محاسبه شده (فقط خواندنی - توسط تسک پر می‌شود)
+    average_percentage = models.FloatField( verbose_name="میانگین درصد", null=True, blank=True, help_text="میانگین درصد همه دانش‌آموزان شرکت‌کننده (محاسبه خودکار)" )
+    std_percentage = models.FloatField( verbose_name="انحراف معیار درصد", null=True, blank=True, help_text="انحراف معیار درصدها (محاسبه خودکار)" )
+    average_score = models.FloatField( verbose_name="میانگین نمره", null=True, blank=True, help_text="میانگین نمره خام (محاسبه خودکار)" )
+    std_score = models.FloatField(verbose_name="انحراف معیار نمره", null=True, blank=True, help_text="انحراف معیار نمرات (محاسبه خودکار)" )
+    participants_count = models.PositiveIntegerField(verbose_name="تعداد شرکت‌کننده محاسبه شده", default=0 )
+    stats_calculated_at = BaseJalaliDateTimeField( verbose_name="زمان محاسبه آمار", null=True, blank=True )
+
 
     def get_absolute_url(self):
         return reverse_lazy("exam:details", kwargs={'pk': self.pk})

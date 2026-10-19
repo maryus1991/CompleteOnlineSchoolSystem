@@ -7,7 +7,7 @@ from apps.categories.models import GradeCategories, MajorCategories, LessonCateg
 
 class ExamForm(forms.ModelForm):
     description = CKEditor5Field()
-    # todo:  fix description ckeditor
+
     class Meta:
         model = Exam
         fields = [
@@ -39,6 +39,13 @@ class ExamForm(forms.ModelForm):
             "image",
             "status",
             "sort_number",
+            # فیلدهای آماری (فقط نمایش)
+            "average_percentage",
+            "std_percentage",
+            "average_score",
+            "std_score",
+            "participants_count",
+            "stats_calculated_at",
         ]
         widgets = {
             "name": forms.TextInput(attrs={"placeholder": "عنوان آزمون"}),
@@ -59,10 +66,19 @@ class ExamForm(forms.ModelForm):
             "major": forms.Select(),
             "lesson": forms.Select(),
             "sort_number": forms.NumberInput(attrs={"min": "1"}),
+
+            # فیلدهای آماری - فقط خواندنی
+            "average_percentage": forms.NumberInput(attrs={"readonly": "readonly", "class": "bg-light"}),
+            "std_percentage": forms.NumberInput(attrs={"readonly": "readonly", "class": "bg-light"}),
+            "average_score": forms.NumberInput(attrs={"readonly": "readonly", "class": "bg-light"}),
+            "std_score": forms.NumberInput(attrs={"readonly": "readonly", "class": "bg-light"}),
+            "participants_count": forms.NumberInput(attrs={"readonly": "readonly", "class": "bg-light"}),
+            "stats_calculated_at": forms.TextInput(attrs={"readonly": "readonly", "class": "bg-light"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields["grade"].queryset = GradeCategories.objects.filter(is_active=True)
         self.fields["major"].queryset = MajorCategories.objects.filter(is_active=True)
         self.fields["lesson"].queryset = LessonCategories.objects.filter(is_active=True)
@@ -75,6 +91,23 @@ class ExamForm(forms.ModelForm):
             if f in self.fields:
                 self.fields[f].required = False
 
-
         if self.instance and self.instance.pk:
             self.fields["image"].required = False
+        else:
+            # در حالت ساخت آزمون جدید، فیلدهای آماری را اصلاً نشان نده
+            for field_name in [
+                "average_percentage", "std_percentage",
+                "average_score", "std_score",
+                "participants_count", "stats_calculated_at",
+            ]:
+                self.fields.pop(field_name, None)
+
+        # اطمینان از غیرقابل ویرایش بودن
+        for field_name in [
+            "average_percentage", "std_percentage",
+            "average_score", "std_score",
+            "participants_count", "stats_calculated_at",
+        ]:
+            if field_name in self.fields:
+                self.fields[field_name].disabled = True
+                self.fields[field_name].required = False
