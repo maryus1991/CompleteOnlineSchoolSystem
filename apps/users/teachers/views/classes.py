@@ -769,13 +769,6 @@ class LiveClassListView(TeacherMixin, ListView):
                 klass__is_active=True,
             )
             .select_related("klass", "server")
-            .prefetch_related(
-                Prefetch(
-                    "report",
-                    queryset=LiveClassReport.objects.all(),
-                    to_attr="report_obj",
-                )
-            )
             .order_by("-pk")
         )
 

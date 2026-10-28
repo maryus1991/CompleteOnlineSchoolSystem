@@ -32,12 +32,17 @@
 <h3 class="title">{{ item.klass.name }}</h3>        <div class="meta">
           <span class="badge {% if item.status == 'live' %}b-live{% else %}b-muted{% endif %}">{{ item.get_status_display }}</span>
           <span class="badge b-muted">{{ item.server.name }}</span>
-{% if item.report_obj %}
+
+          {% comment %}
+          {% if item.report_obj %}
   <span class="badge b-live">گزارش این جلسه موجود</span>
   <a href="{% url 'teacher:live-report-update' pk=item.report_obj.pk %}" style="font-size:.72rem;color:#4facfe">ویرایش گزارش</a>
 {% else %}
-  <a href="{% url 'teacher:live-report-create' live_pk=item.pk %}" style="font-size:.72rem;color:#4facfe">+ ثبت گزارش</a>
+  <a href="{% url 'teacher:live-report-create' live_pk=item.pk se %}" style="font-size:.72rem;color:#4facfe">+ ثبت گزارش</a>
 {% endif %}
+          {% endcomment %}
+
+
         </div>
       </div>
       <div>
