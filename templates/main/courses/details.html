@@ -135,7 +135,7 @@
 <!--                todo: fix the dashboard and add exam-->
                 {% if object.is_student %}
                     <button class="btn btn-outline" disabled="" style="opacity:0.6;">✓ قبلاً ثبت‌نام کرده‌اید</button>
-                    <a href="{% url 'student:class-content-list' object.pk %}" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">رفتن به داشبورد</a>
+                    <a href="{% url 'student:class-sections' object.pk %}" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">رفتن به داشبورد</a>
                 {% else %}
 <!--                        todo:‌fix the below link -->
                     <a href="" class="btn btn-primary" style="display:block; text-align:center; margin-top:10px;">شرکت در دوره</a>
