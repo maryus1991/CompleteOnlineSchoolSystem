@@ -24,13 +24,17 @@ from apps.users.students.mixins import StudentMixin
 
 
 def _get_student_adviser_live_sessions_qs(student):
-    if not student or not student.adviser_id:
+
+    if not student or not student.adviser:
+
+
         return AdviserLiveSession.objects.none()
+
 
     return (
         AdviserLiveSession.objects.filter(
             is_active=True,
-            adviser_id=student.adviser_id,
+            adviser_id=student.adviser.id,
             adviser__is_active=True,
             server__is_active=True,
         )

@@ -59,8 +59,9 @@
             {% csrf_token %}
             <div class="form-grid">
                 {% for field in form %}
-                <div class="form-group">
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                <div class="form-group">
                     {{ field }}
                     {% if field.errors %}<div style="color:#f87171;font-size:.76rem;">{{ field.errors }}</div>{% endif %}
                 </div>
