@@ -34,6 +34,20 @@ urlpatterns = [
     path("site-requests/", views.sessions.SiteCounselingRequestListView.as_view(), name="site-requests"),
     path("site-requests/<int:pk>/update/", views.sessions.SiteCounselingRequestUpdateView.as_view(), name="site-request-update"),
 
+    # online live counseling sessions & requests
+    path("live-requests/", views.live_sessions.AdviserLiveRequestListView.as_view(), name="live-request-list"),
+    path("live-requests/create/", views.live_sessions.AdviserLiveRequestCreateView.as_view(), name="live-request-create"),
+    path("live-requests/<int:pk>/", views.live_sessions.AdviserLiveRequestDetailView.as_view(), name="live-request-detail"),
+    path("live-requests/<int:pk>/update/", views.live_sessions.AdviserLiveRequestUpdateView.as_view(), name="live-request-update"),
+    path("live-requests/<int:pk>/delete/", views.live_sessions.AdviserLiveRequestDeleteView.as_view(), name="live-request-delete"),
+
+    path("live-sessions/", views.live_sessions.AdviserLiveSessionListView.as_view(), name="live-session-list"),
+    path("live-sessions/<int:pk>/join/", views.live_sessions.AdviserLiveJoinView.as_view(), name="live-join"),
+    path("live-sessions/<int:pk>/update/", views.live_sessions.AdviserLiveSessionUpdateView.as_view(), name="live-update"),
+    path("live-sessions/<int:pk>/set-status/", views.live_sessions.AdviserLiveSessionSetStatusView.as_view(), name="live-set-status"),
+    path("live-sessions/<int:live_pk>/report/create/", views.live_sessions.AdviserLiveReportCreateView.as_view(), name="live-report-create"),
+    path("live-reports/<int:pk>/update/", views.live_sessions.AdviserLiveReportUpdateView.as_view(), name="live-report-update"),
+
     # tickets
     path("tickets/", views.ticket.TicketListView.as_view(), name="ticket-list"),
     path("tickets/create/", views.ticket.TicketCreateView.as_view(), name="ticket-create"),
