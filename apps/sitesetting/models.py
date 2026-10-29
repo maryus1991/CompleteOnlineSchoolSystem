@@ -246,19 +246,43 @@ class Contact(BaseModel):
 
 
 class Counseling(BaseModel):
+    class Status(models.TextChoices):
+        NEW = "new", "جدید"
+        IN_PROGRESS = "in_progress", "در حال پیگیری"
+        DONE = "done", "انجام شده"
+        REJECTED = "rejected", "رد شده"
+
     full_name = models.CharField("نام", max_length=250)
     read = models.BooleanField("خوانده شده", default=False)
     phone_number = PhoneNumberField("شماره تماس ",)
     message = models.TextField("پیام")
-
+    assigned_adviser = models.ForeignKey(
+        "advisers.Adviser",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="site_counseling_requests",
+        verbose_name="مشاور مسئول",
+    )
+    adviser_follow_up_note = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="یادداشت پیگیری مشاور",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.NEW,
+        verbose_name="وضعیت",
+    )
 
     def __str__(self):
-        return str(self.full_name) + " " + str(self.phone_number) + " " +str(self.read)
+        return str(self.full_name) + " " + str(self.phone_number) + " " + str(self.read)
 
     class Meta:
-        ordering = ["-read", 'pk']
-        verbose_name = 'درخواست مشاوره'
-        verbose_name_plural = 'درخواست های مشاوره'
+        ordering = ["-read", "pk"]
+        verbose_name = "درخواست مشاوره"
+        verbose_name_plural = "درخواست های مشاوره"
 
 
 class FAQ(BaseModel):
