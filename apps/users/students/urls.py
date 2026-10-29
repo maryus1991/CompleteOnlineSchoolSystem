@@ -1,5 +1,4 @@
 from django.urls import path
-
 from apps.users.students import views
 
 app_name = 'student'
@@ -23,9 +22,9 @@ urlpatterns = [
     path('<int:pk>/finished/', views.exams.ExamFinished.as_view(), name='exam-finished'),
 
     # reports
-    path("reports/", views.reports.ExamReportListView.as_view(), name="report-list" ),
-    path("reports/<int:pk>", views.reports.ExamReportDetailsView.as_view(), name="report-details" ),
-    path("reports/<int:pk>/questions", views.reports.ExamReportQuestionView.as_view(), name="report-details-question" ),
+    path("reports/", views.reports.ExamReportListView.as_view(), name="report-list"),
+    path("reports/<int:pk>", views.reports.ExamReportDetailsView.as_view(), name="report-details"),
+    path("reports/<int:pk>/questions", views.reports.ExamReportQuestionView.as_view(), name="report-details-question"),
 
     # comprehensive exam reports
     path("comprehensive/", views.reports.ComprehensiveExamListView.as_view(), name="comprehensive-list"),
@@ -37,10 +36,18 @@ urlpatterns = [
     path("practice/<int:pk>/solve/questions/<int:question_pk>", views.practice.StudentPracticeSolveView.as_view(), name="practice-solve"),
 
     # class
-    path("classes/", views.klass.ListStudentClass.as_view(), name="class-list", ),
-    path("classes/<int:pk>/sections/", views.klass.ListSectionStudentClass.as_view(), name="class-sections", ),
-    path("classes/<int:pk>/sections/<int:section_id>/", views.klass.StudentSectionContentView.as_view(), name="class-section-details", ),
-    path("live-classes/", views.klass.LiveClassListView.as_view(), name="class-live-list", ),
-    path("live-classes/<int:pk>/", views.klass.LiveClassDetailView.as_view(), name="class-live-detail", ),
+    path("classes/", views.klass.ListStudentClass.as_view(), name="class-list"),
+    path("classes/<int:pk>/sections/", views.klass.ListSectionStudentClass.as_view(), name="class-sections"),
+    path("classes/<int:pk>/sections/<int:section_id>/", views.klass.StudentSectionContentView.as_view(), name="class-section-details"),
+    path("live-classes/", views.klass.LiveClassListView.as_view(), name="class-live-list"),
+    path("live-classes/<int:pk>/", views.klass.LiveClassDetailView.as_view(), name="class-live-detail"),
 
+    # counseling & study planning (bidirectional adviser integration)
+    path("counseling/", views.counseling.StudentCounselingHubView.as_view(), name="counseling-hub"),
+    path("counseling/plans/", views.counseling.StudentStudyPlanListView.as_view(), name="counseling-plan-list"),
+    path("counseling/plans/<int:pk>/", views.counseling.StudentStudyPlanDetailView.as_view(), name="counseling-plan-detail"),
+    path("counseling/plan-items/<int:item_pk>/toggle/", views.counseling.StudentTogglePlanItemView.as_view(), name="counseling-plan-item-toggle"),
+    path("counseling/daily-logs/", views.counseling.StudentDailyLogListCreateView.as_view(), name="counseling-daily-logs"),
+    path("counseling/prescriptions/<int:report_pk>/", views.counseling.StudentExamPrescriptionDetailView.as_view(), name="counseling-prescription-detail"),
+    path("counseling/sessions/", views.counseling.StudentSessionListRequestView.as_view(), name="counseling-sessions"),
 ]

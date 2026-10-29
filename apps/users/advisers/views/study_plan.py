@@ -3,7 +3,7 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.utils.timezone import now
+from apps.common.utils import datetime2jalali
 from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from apps.progress.models import StudyPlan, StudyPlanItem, DailyStudyLog
@@ -291,7 +291,7 @@ class DailyLogReviewActionView(AdviserMixin, View):
         form = DailyLogReviewForm(request.POST, instance=log_obj)
         if form.is_valid():
             updated = form.save(commit=False)
-            updated.reviewed_at = now()
+            updated.reviewed_at = datetime2jalali()
             updated.save(update_fields=["review_status", "adviser_feedback", "reviewed_at"])
             messages.success(request, "بازخورد مشاور روی گزارش کار ثبت شد.")
         else:

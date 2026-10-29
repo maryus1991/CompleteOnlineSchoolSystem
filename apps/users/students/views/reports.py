@@ -358,18 +358,38 @@ class ExamReportDetailsView(StudentMixin, View):
     template_name = "dashboard/report/detail.html"
     context_object_name = "report"
 
-
     def get(self, request, *args, **kwargs):
         obj = get_object_or_404(
             ExamReport.objects
-            .select_related("exam", "exam__lesson", "exam__grade", "exam__major")
+            .select_related(
+                "exam",
+                "exam__lesson",
+                "exam__grade",
+                "exam__major",
+                "adviser_prescription",
+                "adviser_prescription__adviser",
+                "adviser_prescription__adviser__user",
+            )
             .filter(is_active=True, student=request.student),
             pk=kwargs.get("pk"),
         )
         if obj.status != ExamReport.ReportStatus.PUBLISHED:
             messages.info(request, "کارنامه شما هنوز انتشار نیافته است")
             return redirect("student:report-list")
-        return render(request, self.template_name, {"report": obj})
+
+        prescription = getattr(obj, "adviser_prescription", None)
+        if prescription and not prescription.is_seen_by_student:
+            prescription.is_seen_by_student = True
+            prescription.save(update_fields=["is_seen_by_student"])
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "report": obj,
+                "prescription": prescription,
+            },
+        )
 
 
 class ExamReportListView(StudentMixin, ListView):
@@ -385,7 +405,7 @@ class ExamReportListView(StudentMixin, ListView):
                 student=self.request.student,
                 is_active=True
             )
-            .select_related("exam")
+            .select_related("exam", "adviser_prescription")
             .order_by("-sort_number", "-published_at", "-pk")
         )
 
