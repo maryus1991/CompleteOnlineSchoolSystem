@@ -24,7 +24,7 @@ class CounselingSessionForm(forms.ModelForm):
             "session_type": forms.Select(),
             "scheduled_at": forms.TextInput(attrs={"placeholder": "مثال: 1404-08-05 17:30"}),
             "duration_minutes": forms.NumberInput(attrs={"min": 5}),
-            "meeting_link": forms.URLInput(attrs={"placeholder": "https://..."}),
+            "meeting_link": forms.URLInput( ),
             "status": forms.Select(),
             "private_adviser_note": forms.Textarea(
                 attrs={

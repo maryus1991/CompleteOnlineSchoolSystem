@@ -44,10 +44,10 @@ urlpatterns = [
 
     # counseling & study planning (bidirectional adviser integration)
     path("counseling/", views.counseling.StudentCounselingHubView.as_view(), name="counseling-hub"),
-    path("counseling/plans/", views.counseling.StudentStudyPlanListView.as_view(), name="counseling-plan-list"),
+    path("weekly-plans/", views.counseling.StudentStudyPlanListView.as_view(), name="counseling-plan-list"),
     path("counseling/plans/<int:pk>/", views.counseling.StudentStudyPlanDetailView.as_view(), name="counseling-plan-detail"),
     path("counseling/plan-items/<int:item_pk>/toggle/", views.counseling.StudentTogglePlanItemView.as_view(), name="counseling-plan-item-toggle"),
-    path("counseling/daily-logs/", views.counseling.StudentDailyLogListCreateView.as_view(), name="counseling-daily-logs"),
+    path("daily-logs/", views.counseling.StudentDailyLogListCreateView.as_view(), name="counseling-daily-logs"),
     path("counseling/prescriptions/<int:report_pk>/", views.counseling.StudentExamPrescriptionDetailView.as_view(), name="counseling-prescription-detail"),
     path("counseling/sessions/", views.counseling.StudentSessionListRequestView.as_view(), name="counseling-sessions"),
 ]

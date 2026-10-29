@@ -165,6 +165,7 @@ class StudyPlanItemsManageView(AdviserMixin, View):
     """manage the study plan items by formset"""
     permission_field = "can_manage_study_plans"
     template_name = "adviser/plans/items_manage.html"
+    message_info = "جهت وارد کردن باکس جدید، لطفاً باکس‌های موجود را پر نمایید و ذخیره را بزنید؛ در این صورت باکس جدید ظاهر می‌شود که در صورت نیاز آن را پر نمایید."
 
     def get_plan(self):
         return get_object_or_404(
@@ -194,6 +195,7 @@ class StudyPlanItemsManageView(AdviserMixin, View):
             queryset=StudyPlanItem.objects.filter(study_plan=plan, is_active=True).select_related("lesson"),
             prefix="items",
         )
+
         return render(
             request,
             self.template_name,
@@ -291,10 +293,15 @@ class DailyLogReviewActionView(AdviserMixin, View):
         form = DailyLogReviewForm(request.POST, instance=log_obj)
         if form.is_valid():
             updated = form.save(commit=False)
+
+            feedback = (form.cleaned_data.get("adviser_feedback") or "").strip()
+            if feedback and form.cleaned_data["review_status"] == DailyStudyLog.ReviewStatus.PENDING:
+                updated.review_status = DailyStudyLog.ReviewStatus.APPROVED
+
             updated.reviewed_at = datetime2jalali()
             updated.save(update_fields=["review_status", "adviser_feedback", "reviewed_at"])
             messages.success(request, "بازخورد مشاور روی گزارش کار ثبت شد.")
         else:
             messages.error(request, "خطا در ثبت بازخورد گزارش کار.")
-        next_url = request.POST.get("next") or reverse("adviser:daily-log-list")
+        next_url = request.POST.get("next") or request.META.get("HTTP_REFERER") or reverse("adviser:daily-log-list")
         return redirect(next_url)

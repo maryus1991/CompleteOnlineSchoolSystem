@@ -25,12 +25,14 @@
         <h2 style="margin:0;">{% if object %}ویرایش جلسه و ثبت صورت‌جلسه{% else %}ثبت جلسه مشاوره جدید{% endif %}</h2>
         <a href="{% url 'adviser:session-list' %}" style="color:var(--text-secondary);text-decoration:none;font-size:.85rem;">بازگشت به لیست ←</a>
     </div>
-    <form method="post">
+    <form method="post" class="edit-profile-form" id="editProfileForm">
         {% csrf_token %}
         {% for field in form %}
-        <div class="form-group">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+        <div class="form-group-glass">
             {{ field }}
+
             {% if field.errors %}<div style="color:#f87171;font-size:.78rem;margin-top:4px;">{{ field.errors }}</div>{% endif %}
         </div>
         {% endfor %}

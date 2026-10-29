@@ -15,3 +15,6 @@ class AdviserExamPrescriptionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["voice_or_file_attachment"].required = False
+        self.fields["strengths_analysis"].required = False
+        self.fields["weaknesses_analysis"].required = False
+        self.fields["action_plan_for_next_exam"].required = False

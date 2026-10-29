@@ -227,6 +227,7 @@ class StudentDailyLogListCreateView(StudentMixin, View):
             return redirect("student:counseling-daily-logs")
 
         messages.error(request, "لطفاً اطلاعات واردشده در فرم گزارش کار را بررسی کنید.")
+        messages.error(request, form.errors.as_ul())
         return render(
             request,
             self.template_name,

@@ -1,68 +1,462 @@
 {% extends "adviser/base.html" %}
 {% block header %}
 <style>
-    .qa-page { display: flex; flex-direction: column; gap: 18px; }
+    .qa-page {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
     .qa-header {
-        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
-        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 20px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
     }
+
+    .qa-header h2 {
+        margin: 0 0 6px;
+        font-weight: 800;
+    }
+
+    .qa-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .85rem;
+    }
+
+    .qa-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        padding: 10px 16px;
+        border-radius: 10px;
+        background: var(--accent-gradient);
+        color: #fff;
+        text-decoration: none;
+        font-size: .82rem;
+        font-weight: 700;
+    }
+
+    .btn-outline {
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: .82rem;
+        font-weight: 600;
+    }
+
     .qa-card {
-        padding: 18px 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
-        display: flex; flex-direction: column; gap: 10px;
+        padding: 18px 20px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
     }
-    .badge { padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+
+    .qa-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .qa-card-title {
+        font-size: .95rem;
+        font-weight: 800;
+        line-height: 1.5;
+    }
+
+    .qa-card-title span {
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: .82rem;
+    }
+
+    .badge {
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: .78rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
     .badge-correct { background: rgba(16,185,129,.15); color: #34d399; }
-    .badge-wrong { background: rgba(239,68,68,.15); color: #f87171; }
+    .badge-wrong   { background: rgba(239,68,68,.15);  color: #f87171; }
     .badge-pending { background: rgba(245,158,11,.15); color: #fbbf24; }
+
+    .section-box {
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid var(--border-color);
+        font-size: .88rem;
+        line-height: 1.75;
+    }
+
+    .section-title {
+        display: block;
+        margin-bottom: 10px;
+        font-size: .8rem;
+        font-weight: 800;
+        color: var(--text-secondary);
+        letter-spacing: .2px;
+    }
+
+    .section-title.student { color: #4facfe; }
+    .section-title.key     { color: #a78bfa; }
+
+    .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .option-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid var(--border-color);
+        font-size: .86rem;
+    }
+
+    .option-item.correct {
+        background: rgba(16,185,129,.08);
+        border-color: rgba(16,185,129,.3);
+    }
+
+    .option-item.selected {
+        border-color: rgba(79,172,254,.45);
+        background: rgba(79,172,254,.08);
+    }
+
+    .option-num {
+        min-width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        font-size: .78rem;
+        font-weight: 800;
+        color: var(--text-secondary);
+    }
+
+    .option-item.correct .option-num {
+        background: rgba(16,185,129,.15);
+        border-color: rgba(16,185,129,.35);
+        color: #34d399;
+    }
+
+    .option-tag {
+        margin-right: auto;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: .72rem;
+        font-weight: 700;
+        background: rgba(16,185,129,.15);
+        color: #34d399;
+    }
+
+    .files-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .file-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid var(--border-color);
+        color: #4facfe;
+        text-decoration: none;
+        font-size: .82rem;
+        font-weight: 700;
+        transition: opacity .2s;
+    }
+
+    .file-chip:hover { opacity: .85; }
+
+    .answer-detail {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: .84rem;
+    }
+
+    .answer-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid var(--border-color);
+    }
+
+    .answer-row-block {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .answer-label {
+        min-width: 120px;
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: .78rem;
+    }
+
+    .answer-value {
+        color: var(--text-primary);
+        font-weight: 500;
+        flex: 1;
+        line-height: 1.6;
+    }
+
+    .answer-text { line-height: 1.75; }
+
+    .file-link {
+        color: #4facfe;
+        text-decoration: none;
+        font-weight: 700;
+        border-bottom: 1px dashed rgba(79,172,254,.4);
+    }
+
+    .file-link:hover { opacity: .85; }
+
+    .feedback-row {
+        background: rgba(16,185,129,.08);
+        border-color: rgba(16,185,129,.25);
+    }
+
+    .feedback-row .answer-label { color: #34d399; }
+
+    .score-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        padding: 3px 12px;
+        border-radius: 999px;
+        background: rgba(79,172,254,.15);
+        color: #4facfe;
+        font-weight: 800;
+        font-size: .9rem;
+    }
+
+    .key-box {
+        border-color: rgba(167,139,250,.3);
+        background: rgba(167,139,250,.06);
+    }
+
+    .empty-state {
+        text-align: center;
+        color: var(--text-secondary);
+        padding: 28px 16px;
+    }
 </style>
 {% endblock %}
 
 {% block main %}
 <div class="qa-page">
+
     <div class="qa-header">
         <div>
-            <h2 style="margin:0 0 6px;">تحلیل سوال‌به‌سوال کارنامه: {{ report.exam.name }}</h2>
-            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
-                دانش‌آموز: <strong>{{ report.student.user.get_full_name }}</strong> | درصد کل: <strong>{{ report.percentage|floatformat:2 }}%</strong>
+            <h2>تحلیل سوال‌به‌سوال کارنامه: {{ report.exam.name }}</h2>
+            <p>
+                دانش‌آموز: <strong>{{ report.student.user.get_full_name }}</strong>
+                |
+                درصد کل: <strong>{{ report.percentage|floatformat:2 }}%</strong>
             </p>
         </div>
-        <div style="display:flex;gap:10px;">
-            <a href="{% url 'adviser:prescription-create' report.pk %}" style="padding:10px 16px;border-radius:10px;background:var(--accent-gradient);color:#fff;text-decoration:none;font-size:.82rem;font-weight:700;">ثبت / ویرایش نسخه مشاور</a>
-            <a href="{% url 'adviser:report-list' %}" style="padding:10px 16px;border-radius:10px;border:1px solid var(--border-color);color:var(--text-secondary);text-decoration:none;font-size:.82rem;">بازگشت ←</a>
+        <div class="qa-actions">
+            <a href="{% url 'adviser:prescription-create' report.pk %}" class="btn-primary">
+                ثبت / ویرایش نسخه مشاور
+            </a>
+            <a href="{% url 'adviser:report-list' %}" class="btn-outline">بازگشت ←</a>
         </div>
     </div>
 
     {% for item in answers %}
     <div class="qa-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-            <strong>سوال شماره {{ forloop.counter }} {% if item.question %}({{ item.question.get_question_type_display }}){% endif %}</strong>
+
+        {# ——— هدر سوال ——— #}
+        <div class="qa-card-top">
+            <div class="qa-card-title">
+                سوال {{ forloop.counter }}
+                <span>#{{ item.question.pk }}</span>
+                {% if item.question %}
+                    <span>({{ item.question.get_type_of_question_display }})</span>
+                {% endif %}
+            </div>
             <div>
                 {% if item.corrected == 'درست' %}
                     <span class="badge badge-correct">پاسخ صحیح ({{ item.score|default:0 }} نمره)</span>
                 {% elif item.corrected == 'غلط' %}
                     <span class="badge badge-wrong">پاسخ غلط ({{ item.score|default:0 }} نمره)</span>
                 {% else %}
-                    <span class="badge badge-pending">{{ item.corrected }}</span>
+                    <span class="badge badge-pending">{{ item.corrected|default:"در انتظار بررسی" }}</span>
                 {% endif %}
             </div>
         </div>
+
+        {# ——— صورت سوال ——— #}
         {% if item.question and item.question.description %}
-            <div style="font-size:.88rem;padding:10px;border-radius:10px;background:rgba(255,255,255,.03);">
-                {{ item.question.description|safe }}
-            </div>
+        <div class="section-box">
+            <span class="section-title">صورت سوال</span>
+            {{ item.question.description|safe }}
+        </div>
         {% endif %}
-        <div style="font-size:.84rem;color:var(--text-secondary);">
-            {% if item.selected_choice %}
-                گزینه انتخابی دانش‌آموز: <strong>{{ item.selected_choice }}</strong>
-            {% elif item.descriptive_answer_text %}
-                پاسخ تشریحی: {{ item.descriptive_answer_text|safe }}
-            {% else %}
-                بدون پاسخ ثبت‌شده
+
+        {# ——— فایل‌های سوال ——— #}
+        {% if item.question.image or item.question.pdf_file %}
+        <div class="files-row">
+            {% if item.question.image %}
+            <a href="{{ item.question.image.url }}" target="_blank" rel="noopener" class="file-chip" download>
+                📷 دانلود عکس سوال
+            </a>
+            {% endif %}
+            {% if item.question.pdf_file %}
+            <a href="{{ item.question.pdf_file.url }}" target="_blank" rel="noopener" class="file-chip" download>
+                📄 دانلود فایل سوال
+            </a>
             {% endif %}
         </div>
+        {% endif %}
+
+        {# ——— گزینه‌ها ——— #}
+        {% if item.question.options.exists %}
+        <div class="options-list">
+            <span class="section-title">گزینه‌ها</span>
+            {% for option in item.question.options.all %}
+            <div class="option-item {% if option.is_correct %}correct{% endif %}{% if item.selected_option.id == option.id %} selected{% endif %}">
+                <span class="option-num">{{ forloop.counter }}</span>
+                <span>{{ option.name }}</span>
+                {% if option.is_correct %}
+                    <span class="option-tag">✓ گزینه درست</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# ——— پاسخ دانش‌آموز ——— #}
+        <div>
+            <span class="section-title student">پاسخ دانش‌آموز</span>
+            <div class="answer-detail">
+                <div class="answer-row">
+                    <span class="answer-label">نوع پاسخ</span>
+                    <span class="answer-value">{{ item.get_type_of_answer_display }}</span>
+                </div>
+
+                {% if item.image %}
+                <div class="answer-row">
+                    <span class="answer-label">تصویر</span>
+                    <span class="answer-value">
+                        <a href="{{ item.image.url }}" target="_blank" rel="noopener" class="file-link">مشاهده تصویر</a>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if item.pdf_file %}
+                <div class="answer-row">
+                    <span class="answer-label">فایل PDF</span>
+                    <span class="answer-value">
+                        <a href="{{ item.pdf_file.url }}" target="_blank" rel="noopener" class="file-link">دانلود PDF</a>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if item.selected_option %}
+                <div class="answer-row">
+                    <span class="answer-label">گزینه انتخاب‌شده</span>
+                    <span class="answer-value">{{ item.selected_option.name }}</span>
+                </div>
+                {% endif %}
+
+                {% if item.description %}
+                <div class="answer-row answer-row-block">
+                    <span class="answer-label">توضیحات دانش‌آموز</span>
+                    <div class="answer-value answer-text">{{ item.description|safe }}</div>
+                </div>
+                {% endif %}
+
+                {% if item.sanatorium_message %}
+                <div class="answer-row answer-row-block feedback-row">
+                    <span class="answer-label">پیام مشاور / مصحح</span>
+                    <div class="answer-value answer-text">{{ item.sanatorium_message|safe }}</div>
+                </div>
+                {% endif %}
+
+                {% if item.score is not None %}
+                <div class="answer-row">
+                    <span class="answer-label">نمره</span>
+                    <span class="answer-value score-badge">{{ item.score }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ——— پاسخ کلیدی ——— #}
+        {% if item.question.answer_key %}
+        <div class="section-box key-box">
+            <span class="section-title key">پاسخ کلیدی</span>
+            <div class="answer-detail">
+                {% if item.question.answer_key.image %}
+                <div class="answer-row">
+                    <span class="answer-label">تصویر</span>
+                    <span class="answer-value">
+                        <a href="{{ item.question.answer_key.image.url }}" target="_blank" rel="noopener" class="file-link">مشاهده تصویر</a>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if item.question.answer_key.pdf_file %}
+                <div class="answer-row">
+                    <span class="answer-label">فایل PDF</span>
+                    <span class="answer-value">
+                        <a href="{{ item.question.answer_key.pdf_file.url }}" target="_blank" rel="noopener" class="file-link">دانلود PDF</a>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if item.question.answer_key.description %}
+                <div class="answer-row answer-row-block">
+                    <span class="answer-label">توضیحات</span>
+                    <div class="answer-value answer-text">{{ item.question.answer_key.description|safe }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
     </div>
     {% empty %}
-    <div class="qa-card" style="text-align:center;color:var(--text-secondary);">پاسخی برای این آزمون ثبت نشده است.</div>
+    <div class="qa-card empty-state">پاسخی برای این آزمون ثبت نشده است.</div>
     {% endfor %}
+
 </div>
 {% endblock %}

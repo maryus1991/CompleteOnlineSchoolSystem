@@ -83,7 +83,7 @@ StudyPlanItemFormSet = inlineformset_factory(
     StudyPlan,
     StudyPlanItem,
     form=StudyPlanItemForm,
-    extra=2,
+    extra=3,
     can_delete=True,
     min_num=0,
     validate_min=False,

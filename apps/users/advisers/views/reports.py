@@ -74,12 +74,14 @@ class AdviserExamQuestionAnalysisView(AdviserMixin, View):
             .select_related(
                 "question",
                 "question__answer_key",
+
                 "selected_option",
                 "corrected_by",
             )
             .prefetch_related("question__options")
             .order_by("question_id", "pk")
         )
+
         stats = answers.aggregate(
             total_score=Sum("score"),
             uncorrected_count=Count(
@@ -94,7 +96,7 @@ class AdviserExamQuestionAnalysisView(AdviserMixin, View):
                 "report": report,
                 "exam": report.exam,
                 "student": report.student,
-                "items": answers,
+                "answers": answers,
                 "total_score": stats["total_score"] or 0,
                 "uncorrected_count": stats["uncorrected_count"] or 0,
             },

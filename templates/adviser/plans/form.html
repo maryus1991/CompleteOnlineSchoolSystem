@@ -24,9 +24,11 @@
     </div>
     <form method="post">
         {% csrf_token %}
+
         {% for field in form %}
-        <div class="form-group">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+        <div class="form-group-glass">
             {{ field }}
             {% if field.errors %}<div style="color:#f87171;font-size:.8rem;margin-top:4px;">{{ field.errors }}</div>{% endif %}
         </div>

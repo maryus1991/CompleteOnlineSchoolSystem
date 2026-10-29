@@ -10,6 +10,8 @@ from apps.progress.models import (
 
 
 class StudentDailyStudyLogForm(forms.ModelForm):
+
+
     class Meta:
         model = DailyStudyLog
         fields = [
