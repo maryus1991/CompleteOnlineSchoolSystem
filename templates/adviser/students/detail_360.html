@@ -1,0 +1,323 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .dossier-page { padding: 20px; }
+    .dossier-hero {
+        background: var(--bg-card); border: 1px solid var(--border-color);
+        border-radius: 18px; padding: 22px; margin-bottom: 20px;
+        display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;
+    }
+    .dossier-tabs {
+        display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color); padding-bottom: 12px;
+    }
+    .dossier-tab-btn {
+        padding: 9px 16px; border-radius: 10px; border: 1px solid var(--border-color);
+        background: var(--bg-card); color: var(--text-secondary); font-family: inherit;
+        font-size: .82rem; font-weight: 700; cursor: pointer;
+    }
+    .dossier-tab-btn.active { background: var(--accent-gradient); color: #fff; border-color: transparent; }
+    .dossier-pane { display: none; }
+    .dossier-pane.active { display: block; }
+    .dossier-card {
+        background: var(--bg-card); border: 1px solid var(--border-color);
+        border-radius: 16px; padding: 20px; margin-bottom: 16px;
+    }
+    .dossier-card h3 { font-size: 1rem; font-weight: 800; color: var(--text-primary); margin-bottom: 14px; }
+    .dossier-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .dossier-table th, .dossier-table td {
+        padding: 11px 12px; border-bottom: 1px solid var(--border-color); text-align: right; color: var(--text-primary);
+    }
+    .dossier-table th { color: var(--text-secondary); font-weight: 700; }
+    .dossier-input, .dossier-card input, .dossier-card textarea {
+        width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-color);
+        background: var(--bg-primary); color: var(--text-primary); font-family: inherit; font-size: .85rem;
+        margin-bottom: 12px;
+    }
+    .btn-primary-sm {
+        display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+        border-radius: 10px; background: var(--accent-gradient); color: #fff;
+        font-size: .8rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer;
+    }
+    .trend-bars { display: flex; align-items: flex-end; gap: 12px; height: 150px; padding: 16px 8px; border-bottom: 1px solid var(--border-color); }
+    .trend-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .trend-bar-fill { width: 100%; max-width: 42px; background: var(--accent-gradient); border-radius: 8px 8px 0 0; min-height: 6px; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="dossier-page">
+    <div class="dossier-hero">
+        <div>
+            <a href="{% url 'adviser:student-list' %}" style="color:var(--text-secondary);text-decoration:none;font-size:.8rem;">→ بازگشت به لیست دانش‌آموزان</a>
+            <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-primary);margin:8px 0 6px;">
+                پرونده ۳۶۰ درجه: {{ student }}
+            </h2>
+            <p style="color:var(--text-secondary);font-size:.84rem;margin:0;">
+                شماره دانش‌آموز: <span dir="ltr">{{ student.user.PhoneNumber }}</span> |
+                شماره والدین: <span dir="ltr">{{ student.parent_phone_number|default:"ثبت نشده" }}</span> |
+                پایه: {{ student.grade.name|default:"—" }} |
+                رشته: {{ student.major.name|default:"—" }} |
+                مدرسه: {{ student.school.name|default:"—" }}
+            </p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="{% url 'adviser:plan-create' %}?student={{ student.pk }}" class="btn-primary-sm">+ تعریف برنامه مطالعاتی</a>
+            <a href="{% url 'adviser:session-create' %}?student={{ student.pk }}" class="btn-primary-sm">+ تنظیم جلسه مشاوره</a>
+        </div>
+    </div>
+
+    <div class="dossier-tabs" role="tablist">
+        <button type="button" class="dossier-tab-btn active" data-tab="tab-profile">شناخت و هدف تحصیلی</button>
+        <button type="button" class="dossier-tab-btn" data-tab="tab-reports">کارنامه‌ها و روند تراز ({{ exam_reports|length }})</button>
+        <button type="button" class="dossier-tab-btn" data-tab="tab-plans">برنامه‌های مطالعاتی ({{ study_plans|length }})</button>
+        <button type="button" class="dossier-tab-btn" data-tab="tab-logs">گزارش‌کار روزانه ({{ daily_logs|length }})</button>
+        <button type="button" class="dossier-tab-btn" data-tab="tab-practices">وضعیت تمرین‌های کلاسی ({{ practice_details|length }})</button>
+        <button type="button" class="dossier-tab-btn" data-tab="tab-sessions">جلسات مشاوره ({{ sessions|length }})</button>
+    </div>
+
+    <!-- تب ۱: شناخت و هدف تحصیلی -->
+    <div id="tab-profile" class="dossier-pane active">
+        <div class="dossier-card">
+            <h3>پرونده شناخت و هدف‌گذاری تحصیلی دانش‌آموز</h3>
+            <form method="post">
+                {% csrf_token %}
+                <label style="display:block;margin-bottom:6px;font-weight:700;color:var(--text-secondary);font-size:.82rem;">
+                    هدف تحصیلی / رشته و رتبه هدف:
+                </label>
+                {{ profile_form.target_major_rank }}
+
+                <label style="display:block;margin-bottom:6px;font-weight:700;color:var(--text-secondary);font-size:.82rem;">
+                    پرونده و شناخت کلی مشاور از دانش‌آموز:
+                </label>
+                {{ profile_form.counseling_notes_summary }}
+
+                <button type="submit" class="btn-primary-sm">ذخیره پرونده شناخت</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- تب ۲: کارنامه‌ها و روند تراز -->
+    <div id="tab-reports" class="dossier-pane">
+        {% if exam_reports %}
+        <div class="dossier-card">
+            <h3>نمودار روند درصد و تراز آزمون‌های دانش‌آموز</h3>
+            <div class="trend-bars">
+                {% for rep in exam_reports|slice:":8" reversed %}
+                    <div class="trend-bar-col">
+                        <span style="font-size:.72rem;font-weight:700;color:var(--text-primary);">{{ rep.percentage|floatformat:0 }}٪</span>
+                        <div class="trend-bar-fill" style="height: {{ rep.percentage|default:5 }}%;"></div>
+                        <span style="font-size:.7rem;color:var(--text-secondary);text-align:center;">{{ rep.exam.name|truncatechars:14 }}</span>
+                        <span style="font-size:.68rem;color:#c084fc;">تراز: {{ rep.teraze|default:"—" }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="dossier-card">
+            <h3>کارنامه‌های آزمون‌های تکی و جامع</h3>
+            {% if exam_reports %}
+            <table class="dossier-table">
+                <thead>
+                    <tr>
+                        <th>آزمون</th>
+                        <th>نمره</th>
+                        <th>درصد</th>
+                        <th>تراز</th>
+                        <th>رتبه</th>
+                        <th>نسخه مشاور</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rep in exam_reports %}
+                    <tr>
+                        <td>{{ rep.exam.name }}</td>
+                        <td>{{ rep.score }} / {{ rep.max_score }}</td>
+                        <td>{{ rep.percentage|floatformat:1 }}٪</td>
+                        <td>{{ rep.teraze|default:"—" }}</td>
+                        <td>{{ rep.rank|default:"—" }}</td>
+                        <td>
+                            {% if rep.adviser_prescription %}
+                                <span style="color:#22c55e;font-weight:700;">ثبت شده</span>
+                            {% else %}
+                                <span style="color:#f59e0b;">ثبت نشده</span>
+                            {% endif %}
+                        </td>
+                        <td style="display:flex;gap:6px;">
+                            <a href="{% url 'adviser:report-questions' report_pk=rep.pk %}" class="btn-primary-sm" style="background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);">ریز سوالات</a>
+                            <a href="{% url 'adviser:prescription-create' report_pk=rep.pk %}" class="btn-primary-sm">ثبت / ویرایش نسخه</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p style="color:var(--text-secondary);">هنوز کارنامه منتشرشده‌ای برای این دانش‌آموز ثبت نشده است.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- تب ۳: برنامه‌های مطالعاتی -->
+    <div id="tab-plans" class="dossier-pane">
+        <div class="dossier-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <h3 style="margin:0;">برنامه‌های مطالعاتی دانش‌آموز</h3>
+                <a href="{% url 'adviser:plan-create' %}?student={{ student.pk }}" class="btn-primary-sm">+ برنامه جدید</a>
+            </div>
+            {% if study_plans %}
+            <table class="dossier-table">
+                <thead>
+                    <tr>
+                        <th>عنوان برنامه</th>
+                        <th>بازه زمانی</th>
+                        <th>وضعیت</th>
+                        <th>درصد تحقق</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plan in study_plans %}
+                    <tr>
+                        <td>{{ plan.title }}</td>
+                        <td>{{ plan.start_date|date:"Y/m/d" }} تا {{ plan.end_date|date:"Y/m/d" }}</td>
+                        <td>{{ plan.get_status_display }}</td>
+                        <td>{{ plan.completion_percentage }}٪</td>
+                        <td style="display:flex;gap:6px;">
+                            <a href="{% url 'adviser:plan-items' pk=plan.pk %}" class="btn-primary-sm">چیدمان باکس‌های هفتگی</a>
+                            <a href="{% url 'adviser:plan-update' pk=plan.pk %}" class="btn-primary-sm" style="background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);">ویرایش</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p style="color:var(--text-secondary);">هنوز برنامه مطالعاتی برای این دانش‌آموز تعریف نشده است.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- تب ۴: گزارش‌کار روزانه -->
+    <div id="tab-logs" class="dossier-pane">
+        <div class="dossier-card">
+            <h3>آخرین گزارش‌کارهای روزانه دانش‌آموز</h3>
+            {% if daily_logs %}
+            <table class="dossier-table">
+                <thead>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th>درس</th>
+                        <th>مدت مطالعه</th>
+                        <th>تست (کل/صحیح/غلط)</th>
+                        <th>تمرکز</th>
+                        <th>وضعیت بررسی</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in daily_logs %}
+                    <tr>
+                        <td>{{ log.log_date|date:"Y/m/d" }}</td>
+                        <td>{{ log.lesson.name|default:"—" }}</td>
+                        <td>{{ log.actual_duration_minutes }} دقیقه</td>
+                        <td>{{ log.tests_total }} / {{ log.tests_correct }} / {{ log.tests_wrong }}</td>
+                        <td>{{ log.get_focus_quality_display }}</td>
+                        <td>{{ log.get_review_status_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p style="color:var(--text-secondary);">هنوز گزارش کاری ثبت نشده است.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- تب ۵: تمرین‌های کلاسی -->
+    <div id="tab-practices" class="dossier-pane">
+        <div class="dossier-card">
+            <h3>وضعیت انجام تکالیف و تمرین‌های کلاسی</h3>
+            {% if practice_details %}
+            <table class="dossier-table">
+                <thead>
+                    <tr>
+                        <th>تمرین</th>
+                        <th>سوال</th>
+                        <th>وضعیت</th>
+                        <th>نمره معلم</th>
+                        <th>بازخورد معلم</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pd in practice_details %}
+                    <tr>
+                        <td>{{ pd.practice.name }}</td>
+                        <td>{{ pd.question.name|default:"—" }}</td>
+                        <td>{{ pd.get_status_display }}</td>
+                        <td>{{ pd.score|default:"—" }}</td>
+                        <td>{{ pd.teacher_feedback|default:"—" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p style="color:var(--text-secondary);">تمرینی برای این دانش‌آموز ثبت نشده است.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- تب ۶: جلسات مشاوره -->
+    <div id="tab-sessions" class="dossier-pane">
+        <div class="dossier-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <h3 style="margin:0;">تاریخچه جلسات مشاوره</h3>
+                <a href="{% url 'adviser:session-create' %}?student={{ student.pk }}" class="btn-primary-sm">+ تنظیم جلسه</a>
+            </div>
+            {% if sessions %}
+            <table class="dossier-table">
+                <thead>
+                    <tr>
+                        <th>موضوع</th>
+                        <th>نوع جلسه</th>
+                        <th>زمان برگزاری</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in sessions %}
+                    <tr>
+                        <td>{{ s.title }}</td>
+                        <td>{{ s.get_session_type_display }}</td>
+                        <td>{{ s.scheduled_at|date:"Y/m/d - H:i" }}</td>
+                        <td>{{ s.get_status_display }}</td>
+                        <td>
+                            <a href="{% url 'adviser:session-update' pk=s.pk %}" class="btn-primary-sm">ویرایش / صورت‌جلسه</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p style="color:var(--text-secondary);">جلسه مشاوره‌ای ثبت نشده است.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".dossier-tab-btn");
+    const panes = document.querySelectorAll(".dossier-pane");
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            buttons.forEach(b => b.classList.remove("active"));
+            panes.forEach(p => p.classList.remove("active"));
+            btn.classList.add("active");
+            const target = document.getElementById(btn.getAttribute("data-tab"));
+            if (target) target.classList.add("active");
+        });
+    });
+});
+</script>
+{% endblock %}

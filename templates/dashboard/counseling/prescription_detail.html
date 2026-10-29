@@ -1,0 +1,64 @@
+{% extends "dashboard/base.html" %}
+{% block header %}
+<style>
+    .presc-page { display: flex; flex-direction: column; gap: 18px; padding: 10px; }
+    .presc-card { padding: 22px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); }
+    .presc-box { padding: 16px; border-radius: 12px; margin-bottom: 14px; }
+    .c-btn {
+        padding: 10px 20px; border-radius: 10px; background: var(--accent-gradient);
+        color: #fff; border: none; font-weight: 700; cursor: pointer;
+    }
+    textarea {
+        width: 100%; padding: 10px 14px; border-radius: 10px;
+        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="presc-page">
+    <div class="presc-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <div>
+                <h2 style="margin:0 0 6px;">نسخه تخصصی مشاور برای کارنامه: {{ report.exam.name }}</h2>
+                <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
+                    مشاور تحلیل‌گر: <strong>{{ prescription.adviser.user.get_full_name|default:"مشاور تحصیلی" }}</strong> | درصد آزمون: <strong>{{ report.percentage|floatformat:2 }}%</strong>
+                </p>
+            </div>
+            <a href="{% url 'student:report-details' report.pk %}" style="color:var(--text-secondary);text-decoration:none;font-size:.85rem;">بازگشت به کارنامه ←</a>
+        </div>
+
+        <div class="presc-box" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);">
+            <h3 style="margin:0 0 8px;color:#34d399;font-size:.95rem;">۱. نقاط قوت و دروس با تراز مطلوب</h3>
+            <div>{{ prescription.strengths_analysis|safe }}</div>
+        </div>
+
+        <div class="presc-box" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);">
+            <h3 style="margin:0 0 8px;color:#f87171;font-size:.95rem;">۲. علت‌یابی افت و تله‌های آموزشی</h3>
+            <div>{{ prescription.weaknesses_analysis|safe }}</div>
+        </div>
+
+        <div class="presc-box" style="background:rgba(79,172,254,.08);border:1px solid rgba(79,172,254,.25);">
+            <h3 style="margin:0 0 8px;color:#4facfe;font-size:.95rem;">۳. نسخه عملیاتی برای آزمون بعدی</h3>
+            <div>{{ prescription.action_plan_for_next_exam|safe }}</div>
+        </div>
+
+        {% if prescription.voice_or_file_attachment %}
+        <div style="margin-top:12px;">
+            <a href="{{ prescription.voice_or_file_attachment.url }}" download style="color:#4facfe;font-weight:700;">دانلود فایل ضمیمه / ویس تحلیل مشاور</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="presc-card">
+        <h3 style="margin:0 0 12px;">ثبت پاسخ، خودارزیابی و تعهد شما برای آزمون بعدی</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin-bottom:12px;">
+                {{ form.student_reflection }}
+            </div>
+            <button type="submit" class="c-btn">ثبت تعهد و ارسال برای مشاور</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -220,37 +220,53 @@
     <div class="menu-arrow">←</div>
 </a>
 
-<!-- برنامه هفتگی و تقویم -->
-<!--<button type="button" class="sidebar-menu-item" data-section="calendar">-->
-<!--    <div class="menu-icon">-->
-<!--        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"-->
-<!--             stroke="currentColor" stroke-width="1.8">-->
-<!--            <rect x="3" y="5" width="18" height="16" rx="2"/>-->
-<!--            <path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h6"/>-->
-<!--        </svg>-->
-<!--    </div>-->
-<!--    <div class="menu-info">-->
-<!--        <h4>برنامه هفتگی و تقویم</h4>-->
-<!--        <p>زمان‌بندی آزمون‌ها و کلاس‌ها</p>-->
-<!--    </div>-->
-<!--    <div class="menu-arrow">←</div>-->
-<!--</button>-->
+<!-- برنامه هفتگی و مطالعه -->
+<a href="{% url 'student:counseling-plan-list' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h6"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>برنامه مطالعاتی هفتگی</h4>
+        <p>جدول مطالعه و تیک انجام مباحث</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
+
+<!-- ثبت ساعت مطالعه روزانه -->
+<a href="{% url 'student:counseling-daily-logs' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 3"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>گزارش مطالعه روزانه</h4>
+        <p>ثبت ساعت مطالعه و تست روزانه</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
 
 <!-- مشاوره تحصیلی -->
-<!--<button type="button" class="sidebar-menu-item" data-section="counseling">-->
-<!--    <div class="menu-icon">-->
-<!--        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"-->
-<!--             stroke="currentColor" stroke-width="1.8">-->
-<!--            <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>-->
-<!--            <path d="M8 11h8M12 7v8"/>-->
-<!--        </svg>-->
-<!--    </div>-->
-<!--    <div class="menu-info">-->
-<!--        <h4>مشاوره تحصیلی</h4>-->
-<!--        <p>جلسات و برنامه مطالعاتی</p>-->
-<!--    </div>-->
-<!--    <div class="menu-arrow">←</div>-->
-<!--</button>-->
+<a href="{% url 'student:counseling-hub' %}" class="sidebar-menu-item">
+    <div class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8">
+            <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>
+            <path d="M8 11h8M12 7v8"/>
+        </svg>
+    </div>
+    <div class="menu-info">
+        <h4>میزکار مشاوره تحصیلی</h4>
+        <p>نسخه‌های آزمون و جلسات مشاوره</p>
+    </div>
+    <div class="menu-arrow">←</div>
+</a>
 
 <!-- درخواست‌های پشتیبانی -->
 <a href="{% url 'student:ticket-list' %}" class="sidebar-menu-item">

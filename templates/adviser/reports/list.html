@@ -1,0 +1,105 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .reports-page { display: flex; flex-direction: column; gap: 18px; }
+    .reports-toolbar {
+        display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+        gap: 14px; padding: 18px 20px; border-radius: 16px;
+        background: var(--bg-card); border: 1px solid var(--border-color);
+    }
+    .reports-filter-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .reports-filter-form select {
+        padding: 9px 14px; border-radius: 10px; border: 1px solid var(--border-color);
+        background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    }
+    .btn-primary {
+        padding: 9px 16px; border-radius: 10px; background: var(--accent-gradient);
+        color: #fff; text-decoration: none; font-size: .82rem; font-weight: 700; border: none; cursor: pointer;
+    }
+    .btn-outline {
+        padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border-color);
+        color: var(--text-primary); text-decoration: none; font-size: .8rem; font-weight: 700;
+    }
+    .reports-card {
+        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); overflow-x: auto;
+    }
+    .reports-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .reports-table th, .reports-table td { padding: 12px 10px; text-align: right; border-bottom: 1px solid var(--border-color); }
+    .reports-table th { color: var(--text-secondary); font-weight: 700; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="reports-page">
+    <div class="reports-toolbar">
+        <div>
+            <h2 style="margin:0 0 4px;">کارنامه‌های آزمون و نسخه‌های تجویزی مشاور</h2>
+            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">مشاهده کارنامه‌های دانش‌آموزان تحت پوشش، تحلیل ریز سوالات و صدور نسخه مشاوره‌ای</p>
+        </div>
+        <form method="get" class="reports-filter-form">
+            <select name="student">
+                <option value="">همه دانش‌آموزان</option>
+                {% for st in students %}
+                    <option value="{{ st.pk }}" {% if selected_student == st.pk|stringformat:"s" %}selected{% endif %}>{{ st.user.get_full_name }}</option>
+                {% endfor %}
+            </select>
+            <select name="has_prescription">
+                <option value="">همه کارنامه‌ها</option>
+                <option value="yes" {% if selected_has_prescription == "yes" %}selected{% endif %}>دارای نسخه مشاور</option>
+                <option value="no" {% if selected_has_prescription == "no" %}selected{% endif %}>فاقد نسخه مشاور</option>
+            </select>
+            <button type="submit" class="btn-primary">فیلتر</button>
+        </form>
+    </div>
+
+    <div class="reports-card">
+        <table class="reports-table">
+            <thead>
+                <tr>
+                    <th>دانش‌آموز</th>
+                    <th>آزمون</th>
+                    <th>درصد کل</th>
+                    <th>صحیح / غلط / نزده</th>
+                    <th>رتبه</th>
+                    <th>وضعیت نسخه مشاور</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rep in items %}
+                <tr>
+                    <td>
+                        <a href="{% url 'adviser:student-detail' rep.student.pk %}" style="color:var(--text-primary);font-weight:700;text-decoration:none;">
+                            {{ rep.student.user.get_full_name }}
+                        </a>
+                    </td>
+                    <td>{{ rep.exam.name }}</td>
+                    <td><strong>{{ rep.percentage|floatformat:1 }}%</strong></td>
+                    <td>
+                        <span style="color:#34d399;">{{ rep.correct_count }}</span> /
+                        <span style="color:#f87171;">{{ rep.wrong_count }}</span> /
+                        <span style="color:#fbbf24;">{{ rep.unanswered_count }}</span>
+                    </td>
+                    <td>{{ rep.rank|default:"-" }}</td>
+                    <td>
+                        {% if rep.adviser_prescription %}
+                            <span style="color:#34d399;font-weight:700;">صادر شده</span>
+                        {% else %}
+                            <span style="color:#fbbf24;">ثبت نشده</span>
+                        {% endif %}
+                    </td>
+                    <td style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <a href="{% url 'adviser:report-questions' rep.pk %}" class="btn-outline">تحلیل سوالات</a>
+                        <a href="{% url 'adviser:prescription-create' rep.pk %}" class="btn-primary">
+                            {% if rep.adviser_prescription %}ویرایش نسخه{% else %}صدور نسخه{% endif %}
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align:center;color:var(--text-secondary);">کارنامه‌ای یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

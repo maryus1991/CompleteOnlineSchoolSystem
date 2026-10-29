@@ -1,0 +1,40 @@
+{% extends "dashboard/base.html" %}
+{% block header %}
+<style>
+    .plan-list-page { display: flex; flex-direction: column; gap: 16px; padding: 10px; }
+    .plan-card {
+        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .c-btn {
+        padding: 9px 16px; border-radius: 10px; background: var(--accent-gradient);
+        color: #fff; text-decoration: none; font-size: .82rem; font-weight: 700;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="plan-list-page">
+    <div class="plan-card">
+        <div>
+            <h2 style="margin:0 0 4px;">برنامه‌های مطالعاتی هفتگی من</h2>
+            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">لیست برنامه‌های صادرشده توسط مشاور تحصیلی و درصد پیشرفت هر برنامه</p>
+        </div>
+        <a href="{% url 'student:counseling-hub' %}" style="color:var(--text-secondary);text-decoration:none;font-size:.84rem;">بازگشت به میز کار مشاوره ←</a>
+    </div>
+
+    {% for plan in items %}
+    <div class="plan-card">
+        <div>
+            <h3 style="margin:0 0 6px;">{{ plan.title }}</h3>
+            <span style="font-size:.82rem;color:var(--text-secondary);">
+                از {{ plan.start_date }} تا {{ plan.end_date }} | وضعیت: <strong>{{ plan.get_status_display }}</strong> | پیشرفت: <strong>{{ plan.completion_percentage }}%</strong>
+            </span>
+        </div>
+        <a href="{% url 'student:counseling-plan-detail' plan.pk %}" class="c-btn">مشاهده جزئیات و چک‌لیست ←</a>
+    </div>
+    {% empty %}
+    <div class="plan-card" style="justify-content:center;color:var(--text-secondary);">هنوز برنامه مطالعاتی برای شما ثبت نشده است.</div>
+    {% endfor %}
+</div>
+{% endblock %}

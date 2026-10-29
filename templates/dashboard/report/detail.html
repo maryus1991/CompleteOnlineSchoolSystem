@@ -766,6 +766,25 @@ section {
         </div>
     </section>
 
+    {% if prescription %}
+    <section class="analysis-panel" style="margin-bottom: 20px; border: 1px solid rgba(59, 130, 246, 0.35);">
+        <div class="analysis-panel__header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+                <h2>نسخه مشاوره‌ای این کارنامه (توسط {{ prescription.adviser.user.get_full_name }})</h2>
+                <p>تحلیل تخصصی نقاط قوت، نقاط ضعف و برنامه عملیاتی تا آزمون بعدی</p>
+            </div>
+            <a href="{% url 'student:counseling-prescription-detail' report.pk %}" class="status-badge status-active" style="text-decoration:none; padding:8px 16px;">
+                مشاهده کامل نسخه و ثبت تعهد دانش‌آموز ←
+            </a>
+        </div>
+        <div style="margin-top:12px; display:grid; gap:12px;">
+            <div><strong>نقاط قوت:</strong> {{ prescription.strengths_analysis|safe }}</div>
+            <div><strong>نقاط ضعف و علل افت:</strong> {{ prescription.weaknesses_analysis|safe }}</div>
+            <div><strong>نسخه عملیاتی تا آزمون بعدی:</strong> {{ prescription.action_plan_for_next_exam|safe }}</div>
+        </div>
+    </section>
+    {% endif %}
+
     <section class="analysis-panel analysis-note">
         <div class="analysis-note__icon" aria-hidden="true">i</div>
         <div>

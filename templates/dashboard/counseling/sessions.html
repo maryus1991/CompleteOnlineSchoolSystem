@@ -1,0 +1,64 @@
+{% extends "dashboard/base.html" %}
+{% block header %}
+<style>
+    .csess-page { display: flex; flex-direction: column; gap: 18px; padding: 10px; }
+    .csess-card { padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: .82rem; font-weight: 700; }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 9px 12px; border-radius: 10px;
+        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    }
+    .c-btn {
+        padding: 10px 20px; border-radius: 10px; background: var(--accent-gradient);
+        color: #fff; border: none; font-weight: 700; cursor: pointer; text-decoration: none; font-size: .82rem;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="csess-page">
+    <div class="csess-card">
+        <h2 style="margin:0 0 12px;">درخواست جلسه مشاوره جدید</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<div style="color:#f87171;font-size:.76rem;">{{ field.errors }}</div>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="c-btn">ثبت درخواست جلسه</button>
+        </form>
+    </div>
+
+    <div class="csess-card">
+        <h3 style="margin:0 0 14px;">جلسات مشاوره و صورت‌جلسات من</h3>
+        {% for s in items %}
+        <div style="padding:14px;border-radius:12px;border:1px solid var(--border-color);margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                <div>
+                    <strong style="font-size:.95rem;">{{ s.title }} ({{ s.get_session_type_display }})</strong>
+                    <span style="display:block;font-size:.8rem;color:var(--text-secondary);">زمان: {{ s.scheduled_at }} | مدت: {{ s.duration_minutes }} دقیقه | وضعیت: {{ s.get_status_display }}</span>
+                </div>
+                {% if s.meeting_link %}
+                    <a href="{{ s.meeting_link }}" target="_blank" rel="noopener" class="c-btn">ورود به جلسه آنلاین</a>
+                {% endif %}
+            </div>
+            {% if s.session_summary %}
+            <div style="margin-top:10px;padding:12px;border-radius:10px;background:rgba(79,172,254,.08);border:1px solid rgba(79,172,254,.25);font-size:.86rem;">
+                <strong style="color:#4facfe;display:block;margin-bottom:4px;">صورت‌جلسه و مصوبات مشاور:</strong>
+                {{ s.session_summary|safe }}
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p style="color:var(--text-secondary);font-size:.85rem;">هنوز جلسه‌ای ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

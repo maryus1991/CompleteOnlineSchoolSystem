@@ -1,0 +1,92 @@
+{% extends "dashboard/base.html" %}
+{% block header %}
+<style>
+    .c-hub { display: flex; flex-direction: column; gap: 18px; padding: 10px; }
+    .c-card {
+        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+    }
+    .c-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .c-btn {
+        display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px;
+        border-radius: 10px; background: var(--accent-gradient); color: #fff;
+        text-decoration: none; font-size: .82rem; font-weight: 700; border: none; cursor: pointer;
+    }
+    .c-btn-outline {
+        display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px;
+        border-radius: 10px; border: 1px solid var(--border-color); color: var(--text-primary);
+        text-decoration: none; font-size: .8rem; font-weight: 700;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="c-hub">
+    <div class="c-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+        <div>
+            <h2 style="margin:0 0 6px;">میز کار مشاوره و برنامه‌ریزی تحصیلی</h2>
+            {% if adviser %}
+                <p style="margin:0;color:var(--text-secondary);font-size:.88rem;">
+                    مشاور اختصاصی شما: <strong style="color:#4facfe;">{{ adviser.user.get_full_name }}</strong>
+                    {% if adviser.specialization %} ({{ adviser.specialization }}){% endif %}
+                </p>
+            {% else %}
+                <p style="margin:0;color:#fbbf24;font-size:.88rem;">هنوز مشاور اختصاصی برای شما تخصیص داده نشده است.</p>
+            {% endif %}
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="{% url 'student:counseling-plan-list' %}" class="c-btn-outline">برنامه‌های مطالعاتی</a>
+            <a href="{% url 'student:counseling-daily-logs' %}" class="c-btn">+ ثبت گزارش کار امروز</a>
+            <a href="{% url 'student:counseling-sessions' %}" class="c-btn-outline">جلسات مشاوره</a>
+        </div>
+    </div>
+
+    {% if active_plan %}
+    <div class="c-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+            <div>
+                <h3 style="margin:0 0 4px;">برنامه مطالعاتی فعال: {{ active_plan.title }}</h3>
+                <span style="font-size:.82rem;color:var(--text-secondary);">بازه: {{ active_plan.start_date }} تا {{ active_plan.end_date }} | پیشرفت: <strong>{{ active_plan_progress }}%</strong></span>
+            </div>
+            <a href="{% url 'student:counseling-plan-detail' active_plan.pk %}" class="c-btn">مشاهده و تیک زدن باکس‌ها ←</a>
+        </div>
+        <div style="height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;">
+            <div style="height:100%;width:{{ active_plan_progress }}%;background:var(--accent-gradient);"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="c-grid">
+        <div class="c-card">
+            <h3 style="margin:0 0 12px;">آخرین نسخه‌های مشاور روی کارنامه‌ها</h3>
+            {% for p in prescriptions %}
+                <div style="padding:10px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <strong style="font-size:.88rem;">{{ p.exam_report.exam.name }}</strong>
+                        <span style="display:block;font-size:.76rem;color:var(--text-secondary);">درصد: {{ p.exam_report.percentage|floatformat:1 }}%</span>
+                    </div>
+                    <a href="{% url 'student:counseling-prescription-detail' p.exam_report.pk %}" class="c-btn-outline">مشاهده نسخه</a>
+                </div>
+            {% empty %}
+                <p style="color:var(--text-secondary);font-size:.85rem;">هنوز نسخه‌ای روی کارنامه‌های شما ثبت نشده است.</p>
+            {% endfor %}
+        </div>
+
+        <div class="c-card">
+            <h3 style="margin:0 0 12px;">جلسات مشاوره پیش‌رو و اخیر</h3>
+            {% for s in upcoming_sessions %}
+                <div style="padding:10px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <strong style="font-size:.88rem;">{{ s.title }}</strong>
+                        <span style="display:block;font-size:.76rem;color:var(--text-secondary);">{{ s.scheduled_at }} ({{ s.get_status_display }})</span>
+                    </div>
+                    {% if s.meeting_link %}
+                        <a href="{{ s.meeting_link }}" target="_blank" rel="noopener" class="c-btn">ورود به جلسه</a>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p style="color:var(--text-secondary);font-size:.85rem;">جلسه‌ای ثبت نشده است.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

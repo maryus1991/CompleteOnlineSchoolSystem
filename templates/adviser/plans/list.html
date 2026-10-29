@@ -1,0 +1,68 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .plans-page { display: flex; flex-direction: column; gap: 18px; }
+    .plans-toolbar {
+        display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+        gap: 14px; padding: 18px 20px; border-radius: 16px;
+        background: var(--bg-card); border: 1px solid var(--border-color);
+    }
+    .btn-primary {
+        padding: 10px 18px; border-radius: 12px; background: var(--accent-gradient);
+        color: #fff; text-decoration: none; font-size: .84rem; font-weight: 700; border: none; cursor: pointer;
+    }
+    .plans-card {
+        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); overflow-x: auto;
+    }
+    .plans-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .plans-table th, .plans-table td { padding: 12px 10px; text-align: right; border-bottom: 1px solid var(--border-color); }
+    .plans-table th { color: var(--text-secondary); }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="plans-page">
+    <div class="plans-toolbar">
+        <div>
+            <h2 style="margin:0 0 4px;">برنامه‌های مطالعاتی دانش‌آموزان</h2>
+            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">طراحی و مدیریت برنامه‌های هفتگی و رصد درصد اجرای هر برنامه</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="{% url 'adviser:plan-create' %}" class="btn-primary">+ ایجاد برنامه مطالعاتی جدید</a>
+        </div>
+    </div>
+
+    <div class="plans-card">
+        <table class="plans-table">
+            <thead>
+                <tr>
+                    <th>عنوان برنامه</th>
+                    <th>دانش‌آموز</th>
+                    <th>بازه زمانی</th>
+                    <th>وضعیت</th>
+                    <th>درصد پیشرفت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plan in items %}
+                <tr>
+                    <td><strong>{{ plan.title }}</strong></td>
+                    <td>{{ plan.student.user.get_full_name }}</td>
+                    <td>{{ plan.start_date }} تا {{ plan.end_date }}</td>
+                    <td>{{ plan.get_status_display }}</td>
+                    <td><strong>{{ plan.completion_percentage }}%</strong></td>
+                    <td style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <a href="{% url 'adviser:plan-items' plan.pk %}" style="color:#4facfe;text-decoration:none;font-weight:700;">باکس‌های هفتگی</a>
+                        <a href="{% url 'adviser:plan-update' plan.pk %}" style="color:var(--text-primary);text-decoration:none;">ویرایش</a>
+                        <a href="{% url 'adviser:plan-delete' plan.pk %}" style="color:#f87171;text-decoration:none;">حذف</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" style="text-align:center;color:var(--text-secondary);">برنامه‌ای ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

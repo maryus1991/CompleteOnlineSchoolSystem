@@ -1,0 +1,76 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .items-page { display: flex; flex-direction: column; gap: 18px; }
+    .items-card { padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); overflow-x: auto; }
+    .items-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .items-table th, .items-table td { padding: 8px; border-bottom: 1px solid var(--border-color); text-align: right; }
+    .items-table input, .items-table select {
+        width: 100%; padding: 7px 10px; border-radius: 8px;
+        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    }
+    .btn-primary {
+        padding: 11px 22px; border-radius: 12px; background: var(--accent-gradient);
+        color: #fff; border: none; font-weight: 700; cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="items-page">
+    <div class="items-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+            <h2 style="margin:0 0 6px;">باکس‌های مطالعاتی هفتگی: {{ plan.title }}</h2>
+            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
+                دانش‌آموز: <strong>{{ plan.student.user.get_full_name }}</strong> | پیشرفت فعلی: <strong>{{ plan.completion_percentage }}%</strong>
+            </p>
+        </div>
+        <a href="{% url 'adviser:plan-list' %}" style="color:var(--text-secondary);text-decoration:none;font-size:.85rem;">بازگشت به لیست برنامه‌ها ←</a>
+    </div>
+
+    <div class="items-card">
+        <form method="post">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>روز هفته</th>
+                        <th>درس</th>
+                        <th>مبحث / سرفصل</th>
+                        <th>نوع مطالعه</th>
+                        <th>زمان هدف (دقیقه)</th>
+                        <th>تست هدف</th>
+                        <th>اولویت</th>
+                        <th>نکته مشاور</th>
+                        <th>ترتیب</th>
+                        <th>حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item_form in formset %}
+                    <tr>
+                        {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
+                        <td>{{ item_form.day_of_week }}</td>
+                        <td>{{ item_form.lesson }}</td>
+                        <td>{{ item_form.topic }}</td>
+                        <td>{{ item_form.study_type }}</td>
+                        <td style="width:95px;">{{ item_form.target_duration_minutes }}</td>
+                        <td style="width:90px;">{{ item_form.target_test_count }}</td>
+                        <td>{{ item_form.priority }}</td>
+                        <td>{{ item_form.adviser_tip }}</td>
+                        <td style="width:75px;">{{ item_form.sort_number }}</td>
+                        <td style="text-align:center;">
+                            {% if formset.can_delete and item_form.instance.pk %}{{ item_form.DELETE }}{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div style="margin-top:16px;">
+                <button type="submit" class="btn-primary">ذخیره باکس‌های مطالعاتی هفته</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

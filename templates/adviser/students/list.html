@@ -1,0 +1,119 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .ticket-page { padding: 20px; }
+    .ticket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 14px; }
+    .ticket-header-title h2 { font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .ticket-header-title p { color: var(--text-secondary); font-size: .82rem; }
+    .filter-bar {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px;
+        background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px;
+        padding: 16px; margin-bottom: 20px;
+    }
+    .filter-bar input, .filter-bar select {
+        width: 100%; min-height: 42px; padding: 0 12px; border-radius: 10px;
+        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);
+        font-family: inherit; font-size: .82rem;
+    }
+    .filter-btn {
+        min-height: 42px; border: none; border-radius: 10px; background: var(--accent-gradient);
+        color: #fff; font-family: inherit; font-weight: 700; cursor: pointer;
+    }
+    .student-list { display: flex; flex-direction: column; gap: 12px; }
+    .student-card {
+        display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;
+        padding: 18px 20px; background: var(--bg-card); border: 1px solid var(--border-color);
+        border-radius: 16px;
+    }
+    .student-title { font-size: 1rem; font-weight: 800; color: var(--text-primary); text-decoration: none; }
+    .student-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .meta-tag {
+        display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px;
+        font-size: .74rem; font-weight: 700; background: rgba(79,172,254,.1); color: #4facfe;
+    }
+    .student-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .action-btn {
+        display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
+        border-radius: 10px; font-size: .78rem; font-weight: 700; text-decoration: none;
+        border: 1px solid var(--border-color); color: var(--text-primary); background: var(--bg-primary);
+    }
+    .action-btn.primary { background: var(--accent-gradient); color: #fff; border: none; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="ticket-page">
+    <div class="ticket-header">
+        <div class="ticket-header-title">
+            <h2>دانش‌آموزان تحت پوشش من</h2>
+            <p>مشاهده وضعیت تحصیلی، آخرین آزمون، پیشرفت برنامه هفتگی و پرونده ۳۶۰ درجه</p>
+        </div>
+    </div>
+
+    <form method="get" class="filter-bar">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="جستجو بر اساس نام، شماره همراه یا هدف...">
+        <select name="grade">
+            <option value="">همه پایه‌ها</option>
+            {% for g in grades %}
+                <option value="{{ g.id }}" {% if selected_grade == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="major">
+            <option value="">همه رشته‌ها</option>
+            {% for m in majors %}
+                <option value="{{ m.id }}" {% if selected_major == m.id|stringformat:"s" %}selected{% endif %}>{{ m.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="school">
+            <option value="">همه مدارس</option>
+            {% for s in schools %}
+                <option value="{{ s.id }}" {% if selected_school == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="filter-btn">اعمال فیلتر</button>
+    </form>
+
+    {% if items %}
+        <div class="student-list">
+            {% for item in items %}
+                <div class="student-card">
+                    <div>
+                        <a href="{% url 'adviser:student-detail' pk=item.pk %}" class="student-title">
+                            {{ item }}
+                        </a>
+                        <div class="student-meta">
+                            <span class="meta-tag" dir="ltr">{{ item.user.PhoneNumber }}</span>
+                            {% if item.grade %}<span class="meta-tag">پایه: {{ item.grade.name }}</span>{% endif %}
+                            {% if item.major %}<span class="meta-tag">رشته: {{ item.major.name }}</span>{% endif %}
+                            {% if item.school %}<span class="meta-tag">مدرسه: {{ item.school.name }}</span>{% endif %}
+                            {% if item.target_major_rank %}
+                                <span class="meta-tag" style="background:rgba(34,197,94,.12);color:#22c55e;">
+                                    هدف: {{ item.target_major_rank }}
+                                </span>
+                            {% endif %}
+                            {% if item.latest_report %}
+                                <span class="meta-tag" style="background:rgba(168,85,247,.12);color:#c084fc;">
+                                    آخرین آزمون ({{ item.latest_report.exam.name }}): {{ item.latest_report.percentage|floatformat:1 }}٪ | تراز: {{ item.latest_report.teraze|default:"—" }}
+                                </span>
+                            {% endif %}
+                            <span class="meta-tag">
+                                پیشرفت برنامه جاری: {{ item.current_plan_progress }}٪
+                            </span>
+                        </div>
+                    </div>
+                    <div class="student-actions">
+                        <a href="{% url 'adviser:plan-create' %}?student={{ item.pk }}" class="action-btn">+ برنامه جدید</a>
+                        <a href="{% url 'adviser:session-create' %}?student={{ item.pk }}" class="action-btn">+ جلسه مشاوره</a>
+                        <a href="{% url 'adviser:student-detail' pk=item.pk %}" class="action-btn primary">پرونده ۳۶۰ درجه</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align:center;padding:48px 20px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;">
+            <h3 style="color:var(--text-primary);">دانش‌آموزی یافت نشد</h3>
+            <p style="color:var(--text-secondary);font-size:.85rem;">هنوز دانش‌آموزی با این مشخصات تحت پوشش شما ثبت نشده است.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

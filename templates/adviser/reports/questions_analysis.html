@@ -1,0 +1,68 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .qa-page { display: flex; flex-direction: column; gap: 18px; }
+    .qa-header {
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+    }
+    .qa-card {
+        padding: 18px 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+        display: flex; flex-direction: column; gap: 10px;
+    }
+    .badge { padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+    .badge-correct { background: rgba(16,185,129,.15); color: #34d399; }
+    .badge-wrong { background: rgba(239,68,68,.15); color: #f87171; }
+    .badge-pending { background: rgba(245,158,11,.15); color: #fbbf24; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="qa-page">
+    <div class="qa-header">
+        <div>
+            <h2 style="margin:0 0 6px;">تحلیل سوال‌به‌سوال کارنامه: {{ report.exam.name }}</h2>
+            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
+                دانش‌آموز: <strong>{{ report.student.user.get_full_name }}</strong> | درصد کل: <strong>{{ report.percentage|floatformat:2 }}%</strong>
+            </p>
+        </div>
+        <div style="display:flex;gap:10px;">
+            <a href="{% url 'adviser:prescription-create' report.pk %}" style="padding:10px 16px;border-radius:10px;background:var(--accent-gradient);color:#fff;text-decoration:none;font-size:.82rem;font-weight:700;">ثبت / ویرایش نسخه مشاور</a>
+            <a href="{% url 'adviser:report-list' %}" style="padding:10px 16px;border-radius:10px;border:1px solid var(--border-color);color:var(--text-secondary);text-decoration:none;font-size:.82rem;">بازگشت ←</a>
+        </div>
+    </div>
+
+    {% for item in answers %}
+    <div class="qa-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <strong>سوال شماره {{ forloop.counter }} {% if item.question %}({{ item.question.get_question_type_display }}){% endif %}</strong>
+            <div>
+                {% if item.corrected == 'درست' %}
+                    <span class="badge badge-correct">پاسخ صحیح ({{ item.score|default:0 }} نمره)</span>
+                {% elif item.corrected == 'غلط' %}
+                    <span class="badge badge-wrong">پاسخ غلط ({{ item.score|default:0 }} نمره)</span>
+                {% else %}
+                    <span class="badge badge-pending">{{ item.corrected }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% if item.question and item.question.description %}
+            <div style="font-size:.88rem;padding:10px;border-radius:10px;background:rgba(255,255,255,.03);">
+                {{ item.question.description|safe }}
+            </div>
+        {% endif %}
+        <div style="font-size:.84rem;color:var(--text-secondary);">
+            {% if item.selected_choice %}
+                گزینه انتخابی دانش‌آموز: <strong>{{ item.selected_choice }}</strong>
+            {% elif item.descriptive_answer_text %}
+                پاسخ تشریحی: {{ item.descriptive_answer_text|safe }}
+            {% else %}
+                بدون پاسخ ثبت‌شده
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="qa-card" style="text-align:center;color:var(--text-secondary);">پاسخی برای این آزمون ثبت نشده است.</div>
+    {% endfor %}
+</div>
+{% endblock %}

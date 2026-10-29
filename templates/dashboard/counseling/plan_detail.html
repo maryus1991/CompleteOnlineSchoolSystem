@@ -1,0 +1,71 @@
+{% extends "dashboard/base.html" %}
+{% block header %}
+<style>
+    .plan-detail-page { display: flex; flex-direction: column; gap: 18px; padding: 10px; }
+    .p-card {
+        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+    }
+    .item-row {
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+        padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,.02);
+        border: 1px solid var(--border-color); margin-bottom: 10px;
+    }
+    .toggle-btn {
+        padding: 8px 14px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; font-size: .8rem;
+    }
+    .toggle-done { background: rgba(16,185,129,.2); color: #34d399; }
+    .toggle-todo { background: var(--accent-gradient); color: #fff; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="plan-detail-page">
+    <div class="p-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h2 style="margin:0 0 6px;">{{ plan.title }}</h2>
+                <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
+                    بازه: {{ plan.start_date }} تا {{ plan.end_date }} | پیشرفت کل: <strong>{{ completion_percentage }}%</strong>
+                </p>
+            </div>
+            <a href="{% url 'student:counseling-plan-list' %}" style="color:var(--text-secondary);text-decoration:none;font-size:.84rem;">بازگشت به لیست برنامه‌ها ←</a>
+        </div>
+        {% if plan.adviser_description %}
+        <div style="margin-top:14px;padding:14px;border-radius:12px;background:rgba(79,172,254,.08);border:1px solid rgba(79,172,254,.25);">
+            <strong style="display:block;margin-bottom:6px;color:#4facfe;">توصیه و استراتژی مشاور برای این هفته:</strong>
+            <div style="font-size:.88rem;">{{ plan.adviser_description|safe }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% for day_val, group in days_grouped.items %}
+        {% if group.items %}
+        <div class="p-card">
+            <h3 style="margin:0 0 14px;color:#4facfe;">{{ group.label }}</h3>
+            {% for item in group.items %}
+            <div class="item-row">
+                <div>
+                    <strong style="font-size:.92rem;{% if item.is_completed_by_student %}text-decoration:line-through;color:var(--text-secondary);{% endif %}">
+                        {% if item.lesson %}{{ item.lesson.name }} — {% endif %}{{ item.topic }}
+                    </strong>
+                    <div style="font-size:.8rem;color:var(--text-secondary);margin-top:4px;">
+                        نوع: {{ item.get_study_type_display }} | زمان هدف: {{ item.target_duration_minutes }} دقیقه | تست هدف: {{ item.target_test_count }} | اولویت: {{ item.get_priority_display }}
+                    </div>
+                    {% if item.adviser_tip %}
+                        <div style="font-size:.78rem;color:#fbbf24;margin-top:4px;">نکته مشاور: {{ item.adviser_tip }}</div>
+                    {% endif %}
+                </div>
+                <form method="post" action="{% url 'student:counseling-plan-item-toggle' item.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="toggle-btn {% if item.is_completed_by_student %}toggle-done{% else %}toggle-todo{% endif %}">
+                        {% if item.is_completed_by_student %}✓ انجام شد (لغو){% else %}ثبت انجام باکس{% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

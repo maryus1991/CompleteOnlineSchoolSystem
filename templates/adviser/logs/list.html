@@ -1,0 +1,108 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .logs-page { display: flex; flex-direction: column; gap: 18px; }
+    .logs-toolbar {
+        display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+        gap: 14px; padding: 18px 20px; border-radius: 16px;
+        background: var(--bg-card); border: 1px solid var(--border-color);
+    }
+    .logs-filter-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .logs-filter-form select {
+        padding: 9px 14px; border-radius: 10px; border: 1px solid var(--border-color);
+        background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    }
+    .btn-primary {
+        padding: 9px 16px; border-radius: 10px; background: var(--accent-gradient);
+        color: #fff; text-decoration: none; font-size: .84rem; font-weight: 700; border: none; cursor: pointer;
+    }
+    .log-card {
+        padding: 18px 20px; border-radius: 16px;
+        background: var(--bg-card); border: 1px solid var(--border-color);
+        display: flex; flex-direction: column; gap: 12px;
+    }
+    .log-card-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .log-metrics { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem; color: var(--text-secondary); }
+    .log-metrics strong { color: var(--text-primary); }
+    .review-form {
+        display: grid; grid-template-columns: 180px 1fr auto; gap: 10px; align-items: center;
+        padding-top: 12px; border-top: 1px solid var(--border-color);
+    }
+    .review-form input, .review-form select {
+        width: 100%; padding: 9px 12px; border-radius: 10px;
+        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);
+    }
+    @media (max-width: 768px) { .review-form { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="logs-page">
+    <div class="logs-toolbar">
+        <div>
+            <h2 style="margin:0 0 4px;">گزارش‌های مطالعه روزانه دانش‌آموزان</h2>
+            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">بررسی، تایید و ثبت بازخورد مشاوره‌ای بر گزارش‌های روزانه</p>
+        </div>
+        <form method="get" class="logs-filter-form">
+            <select name="student">
+                <option value="">همه دانش‌آموزان</option>
+                {% for st in students %}
+                    <option value="{{ st.pk }}" {% if selected_student == st.pk|stringformat:"s" %}selected{% endif %}>{{ st.user.get_full_name }}</option>
+                {% endfor %}
+            </select>
+            <select name="status">
+                <option value="">همه وضعیت‌ها</option>
+                {% for code, label in statuses %}
+                    <option value="{{ code }}" {% if selected_status == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary">اعمال فیلتر</button>
+        </form>
+    </div>
+
+    {% for log in items %}
+    <div class="log-card">
+        <div class="log-card-header">
+            <div>
+                <a href="{% url 'adviser:student-detail' log.student.pk %}" style="color:var(--text-primary);font-weight:800;text-decoration:none;font-size:1rem;">
+                    {{ log.student.user.get_full_name }}
+                </a>
+                <span style="color:var(--text-secondary);font-size:.82rem;margin-right:8px;">تاریخ: {{ log.log_date }}</span>
+                {% if log.lesson %}
+                    <span style="color:#4facfe;font-size:.82rem;margin-right:8px;">درس: {{ log.lesson.name }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <span style="padding:4px 10px;border-radius:999px;background:rgba(79,172,254,.15);color:#4facfe;font-size:.78rem;font-weight:700;">
+                    {{ log.get_review_status_display }}
+                </span>
+            </div>
+        </div>
+        <div class="log-metrics">
+            <span>مدت مطالعه واقعی: <strong>{{ log.actual_duration_minutes }} دقیقه</strong></span>
+            <span>کل تست: <strong>{{ log.tests_total }}</strong></span>
+            <span>تست صحیح: <strong style="color:#34d399;">{{ log.tests_correct }}</strong></span>
+            <span>تست غلط: <strong style="color:#f87171;">{{ log.tests_wrong }}</strong></span>
+            <span>کیفیت تمرکز: <strong>{{ log.get_focus_quality_display }}</strong></span>
+        </div>
+        {% if log.student_note %}
+            <div style="font-size:.86rem;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);">
+                <strong>یادداشت دانش‌آموز:</strong> {{ log.student_note }}
+            </div>
+        {% endif %}
+        <form method="post" action="{% url 'adviser:daily-log-review' log.pk %}" class="review-form">
+            {% csrf_token %}
+            <select name="review_status">
+                {% for code, label in statuses %}
+                    <option value="{{ code }}" {% if log.review_status == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="adviser_feedback" value="{{ log.adviser_feedback|default:'' }}" placeholder="بازخورد و توصیه مشاور برای این گزارش روزانه...">
+            <button type="submit" class="btn-primary">ثبت بازخورد</button>
+        </form>
+    </div>
+    {% empty %}
+    <div class="log-card" style="text-align:center;color:var(--text-secondary);">گزارش مطالعه‌ای یافت نشد.</div>
+    {% endfor %}
+</div>
+{% endblock %}

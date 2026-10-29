@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<script>
+    (function () {
+        const t = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+    })();
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد مشاور تحصیلی | {{ site.name }}</title>
+    <meta name="description" content="پنل تخصصی مشاوره تحصیلی، برنامه‌ریزی هفتگی، تحلیل کارنامه و جلسات مشاوره">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
+    <link rel="preload" href="/static/main/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Bold.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Medium.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="/static/main/fonts/stylesheet.css">
+    <link rel="stylesheet" href="/static/main/css/main.css">
+    <link rel="stylesheet" href="/static/main/css/theme.css">
+    <link rel="stylesheet" href="/static/main/css/components.css">
+    <link rel="stylesheet" href="/static/main/css/responsive.css">
+    <link rel="stylesheet" href="/static/main/css/dashboard.css">
+    {% block header %}{% endblock %}
+</head>
+<body>
+<button
+    type="button"
+    class="dashboard-mobile-toggle"
+    id="dashboardMenuToggle"
+    aria-label="باز کردن منوی داشبورد"
+    aria-controls="dashboardSidebar"
+    aria-expanded="false"
+>
+    <svg class="menu-icon-open" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+    <svg class="menu-icon-close" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m18 6-12 12M6 6l12 12"/>
+    </svg>
+    <span>منو</span>
+</button>
+
+<div class="dashboard-sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<button class="back-to-top" id="backToTop">↑</button>
+
+<main class="dashboard-premium">
+    <div class="container">
+        <div class="dashboard-wrapper">
+            <div class="dashboard-main-content">
+                <div id="dynamicContent">
+                    {% block main %}{% endblock %}
+                </div>
+            </div>
+
+            <aside class="dashboard-sidebar-right" id="dashboardSidebar" aria-label="منوی داشبورد مشاور">
+                <div class="sidebar-card profile-card">
+                    <div class="profile-avatar-large">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="آواتار">
+                        {% endif %}
+                        <div class="online-dot"></div>
+                    </div>
+                    <h3>{{ user.get_full_name|default:user.PhoneNumber }}</h3>
+                    <h4 dir="ltr">{{ user.PhoneNumber }}</h4>
+                    {% if request.adviser.specialization %}
+                        <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 4px;">
+                            {{ request.adviser.specialization }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <button type="button" class="sidebar-menu-item theme-toggle-btn" id="themeToggle" aria-label="تغییر تم">
+                    <div class="menu-icon">
+                        <svg class="theme-icon-moon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                        <svg class="theme-icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                            <circle cx="12" cy="12" r="5"/>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4 id="themeToggleText">تم روشن</h4>
+                        <p>تغییر بین حالت تاریک و روشن</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </button>
+
+                <!-- پیشخوان مشاور -->
+                <a href="{% url 'adviser:main' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>پیشخوان مشاور</h4>
+                        <p>خلاصه وضعیت و هشدارهای تحصیلی</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <!-- دانش‌آموزان من -->
+                <a href="{% url 'adviser:student-list' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>دانش‌آموزان من</h4>
+                        <p>پرونده ۳۶۰ درجه دانش‌آموزان</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <!-- برنامه‌های مطالعاتی -->
+                <a href="{% url 'adviser:plan-list' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="3" y="5" width="18" height="16" rx="2"/>
+                            <path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h6"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>برنامه‌های مطالعاتی</h4>
+                        <p>طراحی و مدیریت باکس‌های هفتگی</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <!-- بررسی گزارش‌کار روزانه -->
+                <a href="{% url 'adviser:daily-log-list' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M9 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"/>
+                            <rect x="9" y="2" width="6" height="6" rx="1"/>
+                            <path d="m7 13 2 2 4-4M15 14h3"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>بررسی گزارش‌کار روزانه</h4>
+                        <p>ساعات مطالعه، تست‌ها و بازخورد</p>
+                    </div>
+                    {% if pending_logs_count %}
+                        <span style="background:#ef4444;color:#fff;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;">
+                            {{ pending_logs_count }}
+                        </span>
+                    {% else %}
+                        <div class="menu-arrow">←</div>
+                    {% endif %}
+                </a>
+
+                <!-- کارنامه‌ها و تحلیل آزمون -->
+                <a href="{% url 'adviser:report-list' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M3 3v18h18"/>
+                            <path d="m7 14 4-4 4 3 5-7"/>
+                            <path d="M16 6h4v4"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>کارنامه‌ها و تحلیل آزمون</h4>
+                        <p>بررسی تراز، درصدها و صدور نسخه</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <!-- جلسات مشاوره -->
+                <a href="{% url 'adviser:session-list' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>
+                            <path d="M8 11h8M12 7v8"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>جلسات مشاوره</h4>
+                        <p>نوبت‌دهی، لینک جلسه و صورت‌جلسه</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                {% if request.adviser.can_answer_counseling_requests %}
+                <!-- درخواست‌های مشاوره سایت -->
+                <a href="{% url 'adviser:site-requests' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>درخواست‌های مشاوره سایت</h4>
+                        <p>پیگیری متقاضیان مشاوره رایگان</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+                {% endif %}
+
+                <!-- تیکت‌های پشتیبانی -->
+                <a href="{% url 'adviser:ticket-list' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>
+                            <path d="M8 10h8M8 14h5"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>تیکت‌های پشتیبانی</h4>
+                        <p>گفتگو با دانش‌آموزان و ادمین</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <!-- تنظیمات حساب -->
+                <a href="{% url 'adviser:account' %}" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>تنظیمات حساب</h4>
+                        <p>ویرایش پروفایل و اطلاعات مشاور</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <!-- صفحه اصلی سایت -->
+                <a href="/" class="sidebar-menu-item">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="m3 10 9-7 9 7"/>
+                            <path d="M5 9v12h14V9M9 21v-7h6v7"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4>صفحه اصلی سایت</h4>
+                        <p>بازگشت به وب‌سایت</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <!-- خروج از حساب -->
+                <a href="{% url 'user:logout' %}" class="sidebar-menu-item logout">
+                    <div class="menu-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <path d="m16 17 5-5-5-5M21 12H9"/>
+                        </svg>
+                    </div>
+                    <div class="menu-info">
+                        <h4 style="color:#ef4444;">خروج از حساب</h4>
+                        <p>خروج امن از پنل مشاور</p>
+                    </div>
+                    <div class="menu-arrow" style="color:#ef4444;">←</div>
+                </a>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<script src="/static/main/js/components.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('dashboardSidebar');
+    const toggleButton = document.getElementById('dashboardMenuToggle');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if (sidebar && toggleButton && overlay) {
+        function openSidebar() {
+            sidebar.classList.add('is-open');
+            overlay.classList.add('is-visible');
+            toggleButton.classList.add('is-active');
+            toggleButton.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('sidebar-open');
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('is-open');
+            overlay.classList.remove('is-visible');
+            toggleButton.classList.remove('is-active');
+            toggleButton.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('sidebar-open');
+        }
+        toggleButton.addEventListener('click', () => {
+            if (sidebar.classList.contains('is-open')) closeSidebar();
+            else openSidebar();
+        });
+        overlay.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
+    }
+
+    const currentUrl = new URL(window.location.href);
+    const currentPath = currentUrl.pathname.replace(/\/+$/, '') || '/';
+    document.querySelectorAll('.dashboard-sidebar-right a[href]').forEach(link => {
+        const linkUrl = new URL(link.href, window.location.origin);
+        const linkPath = linkUrl.pathname.replace(/\/+$/, '') || '/';
+        const isActive =
+            linkUrl.origin === currentUrl.origin &&
+            (currentPath === linkPath || (linkPath !== '/adviser' && linkPath !== '/' && currentPath.startsWith(linkPath + '/')));
+        link.classList.toggle('active', isActive);
+    });
+
+    (function () {
+        const html = document.documentElement;
+        const toggleBtn = document.getElementById("themeToggle");
+        const textEl = document.getElementById("themeToggleText");
+        const moonIcon = document.querySelector(".theme-icon-moon");
+        const sunIcon = document.querySelector(".theme-icon-sun");
+        const STORAGE_KEY = "theme";
+
+        function applyTheme(theme) {
+            html.setAttribute("data-theme", theme);
+            try { localStorage.setItem(STORAGE_KEY, theme); } catch (e) {}
+            if (theme === "dark") {
+                if (textEl) textEl.textContent = "تم روشن";
+                if (moonIcon) moonIcon.style.display = "block";
+                if (sunIcon) sunIcon.style.display = "none";
+            } else {
+                if (textEl) textEl.textContent = "تم تاریک";
+                if (moonIcon) moonIcon.style.display = "none";
+                if (sunIcon) sunIcon.style.display = "block";
+            }
+        }
+        let saved = "dark";
+        try { saved = localStorage.getItem(STORAGE_KEY) || html.getAttribute("data-theme") || "dark"; } catch (e) {}
+        applyTheme(saved === "light" ? "light" : "dark");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", () => {
+                const current = html.getAttribute("data-theme") || "dark";
+                applyTheme(current === "dark" ? "light" : "dark");
+            });
+        }
+    })();
+});
+</script>
+{% if messages %}
+    <style>
+        #toast-container {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 10000; display: flex; flex-direction: column; align-items: center;
+            gap: 10px; pointer-events: none;
+        }
+        .toast-item {
+            position: relative; overflow: hidden; color: #fff; padding: 14px 28px;
+            border-radius: 50px; font-weight: 600; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            max-width: 90vw; text-align: center; pointer-events: auto;
+            animation: toastIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .toast-item.hide { animation: toastOut 0.4s ease forwards; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
+    </style>
+    <div id="toast-container"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('toast-container');
+            const colors = {
+                success: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                error:   'linear-gradient(135deg, #ef4444, #b91c1c)',
+                danger:  'linear-gradient(135deg, #ef4444, #b91c1c)',
+                warning: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                info:    'linear-gradient(135deg, #3b82f6, #2563eb)',
+            };
+            function showToast(msg, tag) {
+                const toast = document.createElement('div');
+                toast.className = 'toast-item';
+                toast.innerHTML = '<span>' + msg + '</span>';
+                toast.style.backgroundImage = colors[tag] || colors.info;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.add('hide');
+                    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+                }, 6000);
+            }
+            {% for message in messages %}
+                showToast("{{ message|escapejs }}", "{{ message.tags|default:'info' }}");
+            {% endfor %}
+        });
+    </script>
+{% endif %}
+{% block footer %}{% endblock %}
+</body>
+</html>

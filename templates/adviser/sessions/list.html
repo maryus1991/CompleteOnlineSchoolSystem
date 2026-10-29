@@ -1,0 +1,77 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .sessions-page { display: flex; flex-direction: column; gap: 18px; }
+    .sessions-toolbar {
+        display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+        gap: 14px; padding: 18px 20px; border-radius: 16px;
+        background: var(--bg-card); border: 1px solid var(--border-color);
+    }
+    .btn-primary {
+        padding: 10px 18px; border-radius: 12px; background: var(--accent-gradient);
+        color: #fff; text-decoration: none; font-size: .84rem; font-weight: 700; border: none; cursor: pointer;
+    }
+    .sessions-card {
+        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); overflow-x: auto;
+    }
+    .sessions-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .sessions-table th, .sessions-table td { padding: 12px 10px; text-align: right; border-bottom: 1px solid var(--border-color); }
+    .sessions-table th { color: var(--text-secondary); }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="sessions-page">
+    <div class="sessions-toolbar">
+        <div>
+            <h2 style="margin:0 0 4px;">جلسات مشاوره و درخواست‌های دانش‌آموزان</h2>
+            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">مدیریت زمان‌بندی جلسات حضوری، آنلاین و تلفنی و تایید درخواست‌های دانش‌آموزان</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <form method="get" style="display:flex;gap:8px;flex-wrap:wrap;">
+                <select name="status" style="padding:9px 12px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);">
+                    <option value="">همه وضعیت‌ها</option>
+                    {% for code, label in statuses %}
+                        <option value="{{ code }}" {% if selected_status == code %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn-primary">فیلتر</button>
+            </form>
+            <a href="{% url 'adviser:session-create' %}" class="btn-primary">+ ثبت جلسه جدید</a>
+        </div>
+    </div>
+
+    <div class="sessions-card">
+        <table class="sessions-table">
+            <thead>
+                <tr>
+                    <th>دانش‌آموز</th>
+                    <th>عنوان جلسه</th>
+                    <th>نوع</th>
+                    <th>زمان برگزاری</th>
+                    <th>مدت</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in items %}
+                <tr>
+                    <td>{{ s.student.user.get_full_name }}</td>
+                    <td><strong>{{ s.title }}</strong></td>
+                    <td>{{ s.get_session_type_display }}</td>
+                    <td>{{ s.scheduled_at }}</td>
+                    <td>{{ s.duration_minutes }} دقیقه</td>
+                    <td>{{ s.get_status_display }}</td>
+                    <td>
+                        <a href="{% url 'adviser:session-update' s.pk %}" style="color:#4facfe;text-decoration:none;font-weight:700;">ویرایش / ثبت صورت‌جلسه</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align:center;color:var(--text-secondary);">جلسه‌ای یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
