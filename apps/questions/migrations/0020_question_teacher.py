@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('questions', '0019_alter_question_practice'),
-        ('teachers', '0004_remove_teacher_major_teacher_can_add_class_article_and_more'),
+        ('teachers', '0009_teacher_can_add_question'),
     ]
 
     operations = [

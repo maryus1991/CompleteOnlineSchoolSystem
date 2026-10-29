@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('advisers', '0004_alter_adviser_options_and_more'),
+        ('advisers', '0005_adviser_counseling_permissions'),
         ('sitesetting', '0026_site_logo'),
     ]
 

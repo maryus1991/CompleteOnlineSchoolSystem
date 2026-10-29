@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('advisers', '0004_alter_adviser_options_and_more'),
+        ('advisers', '0005_adviser_counseling_permissions'),
         ('categories', '0006_alter_blogcategories_created_at_and_more'),
-        ('exams', '0010_exam_average_percentage_exam_average_score_and_more'),
+        ('exams', '0011_exam_average_percentage_exam_average_score_and_more'),
         ('managers', '0004_alter_manager_city_alter_manager_province'),
         ('schools', '0007_alter_school_city_alter_school_province'),
-        ('students', '0004_student_adviser_student_counseling_notes_summary_and_more'),
-        ('teachers', '0004_remove_teacher_major_teacher_can_add_class_article_and_more'),
+        ('students', '0005_student_adviser_and_counseling_fields'),
+        ('teachers', '0009_teacher_can_add_question'),
     ]
 
     operations = [
