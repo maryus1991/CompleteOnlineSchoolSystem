@@ -1,14 +1,66 @@
 {% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .delete-confirm-card {
+        padding: 28px 24px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        max-width: 560px;
+        margin: 20px auto;
+        text-align: center;
+    }
+    .delete-confirm-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .btn-danger-confirm {
+        padding: 11px 22px;
+        border-radius: 10px;
+        background: #ef4444;
+        color: #fff;
+        border: none;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+    }
+    .btn-cancel-confirm {
+        padding: 11px 22px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 700;
+    }
+    @media (max-width: 520px) {
+        .delete-confirm-card {
+            padding: 20px 16px;
+            margin: 10px auto;
+        }
+        .delete-confirm-actions {
+            flex-direction: column;
+        }
+        .btn-danger-confirm,
+        .btn-cancel-confirm {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block main %}
-<div style="padding:24px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border-color);max-width:560px;margin:20px auto;text-align:center;">
+<div class="delete-confirm-card">
     <h2 style="margin:0 0 10px;">حذف برنامه مطالعاتی</h2>
-    <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:20px;">
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:22px;line-height:1.7;">
         آیا از غیرفعال‌سازی و حذف برنامه <strong>«{{ plan.title }}»</strong> متعلق به <strong>{{ plan.student.user.get_full_name }}</strong> اطمینان دارید؟
     </p>
-    <form method="post" style="display:flex;justify-content:center;gap:12px;">
+    <form method="post" class="delete-confirm-actions">
         {% csrf_token %}
-        <button type="submit" style="padding:10px 20px;border-radius:10px;background:#ef4444;color:#fff;border:none;font-weight:700;cursor:pointer;">بله، حذف شود</button>
-        <a href="{% url 'adviser:plan-list' %}" style="padding:10px 20px;border-radius:10px;border:1px solid var(--border-color);color:var(--text-primary);text-decoration:none;">انصراف</a>
+        <button type="submit" class="btn-danger-confirm">بله، حذف شود</button>
+        <a href="{% url 'adviser:plan-list' %}" class="btn-cancel-confirm">انصراف</a>
     </form>
 </div>
 {% endblock %}

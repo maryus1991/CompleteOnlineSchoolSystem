@@ -11,8 +11,15 @@
         border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
     }
     .c-btn {
+        display: inline-flex; align-items: center; justify-content: center;
         padding: 10px 20px; border-radius: 10px; background: var(--accent-gradient);
         color: #fff; border: none; font-weight: 700; cursor: pointer; text-decoration: none; font-size: .82rem;
+    }
+    @media (max-width: 640px) {
+        .csess-page { padding: 4px; gap: 14px; }
+        .csess-card { padding: 15px; border-radius: 14px; }
+        .form-grid { grid-template-columns: 1fr; }
+        .c-btn { width: 100%; }
     }
 </style>
 {% endblock %}

@@ -3,38 +3,79 @@
 {{ form.media }}
 <style>
     .session-form-card {
-        padding: 24px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+        padding: 24px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
     }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; margin-bottom: 6px; font-size: .84rem; font-weight: 700; }
-    .form-group input, .form-group select, .form-group textarea {
-        width: 100%; padding: 10px 14px; border-radius: 10px;
-        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    .session-form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .session-form-header h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 800;
+    }
+    .session-field-label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: .85rem;
+        font-weight: 700;
+        color: var(--text-primary);
     }
     .btn-primary {
-        padding: 11px 22px; border-radius: 12px; background: var(--accent-gradient);
-        color: #fff; border: none; font-weight: 700; cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        border-radius: 12px;
+        background: var(--accent-gradient);
+        color: #fff;
+        border: none;
+        font-weight: 700;
+        font-size: .88rem;
+        cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+        .session-form-card {
+            padding: 16px;
+            border-radius: 14px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .session-form-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .btn-primary {
+            width: 100%;
+        }
     }
 </style>
 {% endblock %}
 
 {% block main %}
 <div class="session-form-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h2 style="margin:0;">{% if object %}ویرایش جلسه و ثبت صورت‌جلسه{% else %}ثبت جلسه مشاوره جدید{% endif %}</h2>
+    <div class="session-form-header">
+        <h2>{% if object %}ویرایش جلسه و ثبت صورت‌جلسه{% else %}ثبت جلسه مشاوره جدید{% endif %}</h2>
         <a href="{% url 'adviser:session-list' %}" style="color:var(--text-secondary);text-decoration:none;font-size:.85rem;">بازگشت به لیست ←</a>
     </div>
-    <form method="post" class="edit-profile-form" id="editProfileForm">
+
+    <form method="post" class="edit-profile-form" id="editProfileForm" style="margin-top:0;">
         {% csrf_token %}
         {% for field in form %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
-        <div class="form-group-glass">
-            {{ field }}
-
-            {% if field.errors %}<div style="color:#f87171;font-size:.78rem;margin-top:4px;">{{ field.errors }}</div>{% endif %}
-        </div>
+            <label class="session-field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <div class="form-group-glass">
+                {{ field }}
+                {% if field.errors %}<div style="color:#f87171;font-size:.78rem;margin-top:4px;">{{ field.errors }}</div>{% endif %}
+            </div>
         {% endfor %}
         <button type="submit" class="btn-primary">ذخیره اطلاعات جلسه</button>
     </form>

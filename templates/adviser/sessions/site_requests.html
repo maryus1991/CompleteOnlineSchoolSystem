@@ -1,37 +1,128 @@
 {% extends "adviser/base.html" %}
 {% block header %}
 <style>
-    .site-req-page { display: flex; flex-direction: column; gap: 18px; }
+    .site-req-page {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
     .site-req-card {
-        padding: 18px 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
-        display: flex; flex-direction: column; gap: 12px;
+        padding: 18px 20px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .site-req-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .site-req-toolbar h2 {
+        margin: 0 0 4px;
+        font-size: 1.2rem;
+        font-weight: 800;
+    }
+    .site-req-filter {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .site-req-filter select {
+        min-height: 40px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: .83rem;
+    }
+    .site-req-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .site-req-badges {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
     }
     .req-form {
-        display: grid; grid-template-columns: 180px 1fr auto; gap: 10px; align-items: center;
-        padding-top: 12px; border-top: 1px solid var(--border-color);
+        display: grid;
+        grid-template-columns: 180px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid var(--border-color);
     }
-    .req-form select, .req-form input {
-        width: 100%; padding: 9px 12px; border-radius: 10px;
-        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);
+    .req-form select,
+    .req-form input {
+        width: 100%;
+        min-height: 40px;
+        padding: 9px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: .84rem;
     }
     .btn-primary {
-        padding: 9px 16px; border-radius: 10px; background: var(--accent-gradient);
-        color: #fff; border: none; font-weight: 700; cursor: pointer;
+        min-height: 40px;
+        padding: 9px 16px;
+        border-radius: 10px;
+        background: var(--accent-gradient);
+        color: #fff;
+        border: none;
+        font-weight: 700;
+        font-size: .84rem;
+        cursor: pointer;
+        white-space: nowrap;
     }
-    @media (max-width: 768px) { .req-form { grid-template-columns: 1fr; } }
+
+    @media (max-width: 768px) {
+        .site-req-card {
+            padding: 15px;
+            border-radius: 14px;
+        }
+        .site-req-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .site-req-filter {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            width: 100%;
+        }
+        .req-form {
+            grid-template-columns: 1fr;
+        }
+        .req-form .btn-primary {
+            width: 100%;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block main %}
 <div class="site-req-page">
     <div class="site-req-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div class="site-req-toolbar">
             <div>
-                <h2 style="margin:0 0 4px;">درخواست‌های مشاوره صفحه اصلی سایت</h2>
+                <h2>درخواست‌های مشاوره صفحه اصلی سایت</h2>
                 <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">پیگیری فرم‌های مشاوره ثبت‌شده توسط مراجعین در سایت</p>
             </div>
-            <form method="get" style="display:flex;gap:8px;">
-                <select name="status" style="padding:8px 12px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);">
+            <form method="get" class="site-req-filter">
+                <select name="status">
                     <option value="">همه وضعیت‌ها</option>
                     {% for code, label in statuses %}
                         <option value="{{ code }}" {% if selected_status == code %}selected{% endif %}>{{ label }}</option>
@@ -44,16 +135,16 @@
 
     {% for req in items %}
     <div class="site-req-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-            <div>
+        <div class="site-req-meta">
+            <div class="site-req-badges">
                 <strong style="font-size:1rem;">{{ req.name }}</strong>
-                <span dir="ltr" style="margin-right:10px;color:#4facfe;font-weight:700;">{{ req.PhoneNumber }}</span>
-                <span style="margin-right:10px;color:var(--text-secondary);font-size:.82rem;">مقطع: {{ req.get_level_display }}</span>
+                <span dir="ltr" style="color:#4facfe;font-weight:700;">{{ req.PhoneNumber }}</span>
+                <span style="color:var(--text-secondary);font-size:.82rem;">مقطع: {{ req.get_level_display }}</span>
             </div>
             <span style="font-size:.8rem;color:var(--text-secondary);">وضعیت فعلی: <strong>{{ req.get_status_display }}</strong></span>
         </div>
         {% if req.description %}
-            <div style="font-size:.86rem;color:var(--text-secondary);">{{ req.description }}</div>
+            <div style="font-size:.86rem;color:var(--text-secondary);line-height:1.7;">{{ req.description }}</div>
         {% endif %}
         <form method="post" action="{% url 'adviser:site-request-update' req.pk %}" class="req-form">
             {% csrf_token %}

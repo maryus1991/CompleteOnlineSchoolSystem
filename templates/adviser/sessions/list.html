@@ -1,22 +1,248 @@
 {% extends "adviser/base.html" %}
 {% block header %}
 <style>
-    .sessions-page { display: flex; flex-direction: column; gap: 18px; }
+    .sessions-page {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
     .sessions-toolbar {
-        display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-        gap: 14px; padding: 18px 20px; border-radius: 16px;
-        background: var(--bg-card); border: 1px solid var(--border-color);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 20px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+    }
+    .sessions-toolbar h2 {
+        margin: 0 0 4px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+    }
+    .sessions-toolbar p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: .85rem;
+        line-height: 1.6;
+    }
+    .sessions-toolbar-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .sessions-filter-form {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .sessions-filter-form select {
+        min-height: 40px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: .83rem;
     }
     .btn-primary {
-        padding: 10px 18px; border-radius: 12px; background: var(--accent-gradient);
-        color: #fff; text-decoration: none; font-size: .84rem; font-weight: 700; border: none; cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 9px 18px;
+        border-radius: 12px;
+        background: var(--accent-gradient);
+        color: #fff;
+        text-decoration: none;
+        font-size: .84rem;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: inherit;
     }
     .sessions-card {
-        padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); overflow-x: auto;
+        padding: 20px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
     }
-    .sessions-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-    .sessions-table th, .sessions-table td { padding: 12px 10px; text-align: right; border-bottom: 1px solid var(--border-color); }
-    .sessions-table th { color: var(--text-secondary); }
+    .table-responsive-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .adviser-responsive-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .85rem;
+        min-width: 720px;
+    }
+    .adviser-responsive-table th,
+    .adviser-responsive-table td {
+        padding: 12px 10px;
+        text-align: right;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+    .adviser-responsive-table th {
+        color: var(--text-secondary);
+        font-weight: 700;
+        font-size: .78rem;
+        white-space: nowrap;
+    }
+    .adviser-responsive-table td {
+        color: var(--text-primary);
+    }
+    .adviser-responsive-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .adviser-responsive-table tbody tr:hover {
+        background: var(--bg-primary);
+    }
+    .session-edit-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 12px;
+        border-radius: 9px;
+        background: rgba(79,172,254,.12);
+        border: 1px solid rgba(79,172,254,.3);
+        color: #4facfe;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: .78rem;
+        white-space: nowrap;
+    }
+    .session-edit-link:hover {
+        background: rgba(79,172,254,.2);
+    }
+    .session-status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: .72rem;
+        font-weight: 700;
+        background: rgba(79,172,254,.12);
+        color: #4facfe;
+        border: 1px solid rgba(79,172,254,.25);
+    }
+    .session-status-badge.status-requested {
+        background: rgba(245,158,11,.12);
+        color: #f59e0b;
+        border-color: rgba(245,158,11,.25);
+    }
+    .session-status-badge.status-confirmed,
+    .session-status-badge.status-scheduled {
+        background: rgba(79,172,254,.12);
+        color: #4facfe;
+        border-color: rgba(79,172,254,.25);
+    }
+    .session-status-badge.status-completed {
+        background: rgba(34,197,94,.12);
+        color: #22c55e;
+        border-color: rgba(34,197,94,.25);
+    }
+    .session-status-badge.status-cancelled {
+        background: rgba(239,68,68,.12);
+        color: #ef4444;
+        border-color: rgba(239,68,68,.25);
+    }
+
+    @media (max-width: 820px) {
+        .sessions-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 16px;
+        }
+        .sessions-toolbar-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .sessions-card {
+            padding: 16px;
+            border-radius: 14px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .table-responsive-wrap {
+            overflow-x: visible;
+        }
+        .adviser-responsive-table {
+            min-width: 0;
+        }
+        .adviser-responsive-table thead {
+            display: none;
+        }
+        .adviser-responsive-table,
+        .adviser-responsive-table tbody,
+        .adviser-responsive-table tr,
+        .adviser-responsive-table td {
+            display: block;
+            width: 100%;
+        }
+        .adviser-responsive-table tr {
+            margin-bottom: 14px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: var(--bg-primary);
+        }
+        .adviser-responsive-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+            text-align: left;
+        }
+        .adviser-responsive-table td:last-child {
+            border-bottom: none;
+            padding-top: 12px;
+            justify-content: flex-start;
+        }
+        .adviser-responsive-table td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-size: .78rem;
+            flex-shrink: 0;
+        }
+        .adviser-responsive-table td.table-actions-cell::before {
+            display: none;
+        }
+        .adviser-responsive-table .empty-row td {
+            display: block;
+            text-align: center;
+            border: none;
+            padding: 24px 12px;
+        }
+        .adviser-responsive-table .empty-row td::before {
+            display: none;
+        }
+        .sessions-toolbar-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .sessions-filter-form {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            width: 100%;
+        }
+        .sessions-toolbar-actions > .btn-primary {
+            width: 100%;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -24,12 +250,12 @@
 <div class="sessions-page">
     <div class="sessions-toolbar">
         <div>
-            <h2 style="margin:0 0 4px;">جلسات مشاوره و درخواست‌های دانش‌آموزان</h2>
-            <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">مدیریت زمان‌بندی جلسات حضوری، آنلاین و تلفنی و تایید درخواست‌های دانش‌آموزان</p>
+            <h2>جلسات مشاوره و درخواست‌های دانش‌آموزان</h2>
+            <p>مدیریت زمان‌بندی جلسات حضوری، آنلاین و تلفنی و تایید درخواست‌های دانش‌آموزان</p>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-            <form method="get" style="display:flex;gap:8px;flex-wrap:wrap;">
-                <select name="status" style="padding:9px 12px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);">
+        <div class="sessions-toolbar-actions">
+            <form method="get" class="sessions-filter-form">
+                <select name="status">
                     <option value="">همه وضعیت‌ها</option>
                     {% for code, label in statuses %}
                         <option value="{{ code }}" {% if selected_status == code %}selected{% endif %}>{{ label }}</option>
@@ -42,36 +268,44 @@
     </div>
 
     <div class="sessions-card">
-        <table class="sessions-table">
-            <thead>
-                <tr>
-                    <th>دانش‌آموز</th>
-                    <th>عنوان جلسه</th>
-                    <th>نوع</th>
-                    <th>زمان برگزاری</th>
-                    <th>مدت</th>
-                    <th>وضعیت</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in items %}
-                <tr>
-                    <td>{{ s.student.user.get_full_name }}</td>
-                    <td><strong>{{ s.title }}</strong></td>
-                    <td>{{ s.get_session_type_display }}</td>
-                    <td>{{ s.scheduled_at }}</td>
-                    <td>{{ s.duration_minutes }} دقیقه</td>
-                    <td>{{ s.get_status_display }}</td>
-                    <td>
-                        <a href="{% url 'adviser:session-update' s.pk %}" style="color:#4facfe;text-decoration:none;font-weight:700;">ویرایش / ثبت صورت‌جلسه</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="7" style="text-align:center;color:var(--text-secondary);">جلسه‌ای یافت نشد.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive-wrap">
+            <table class="adviser-responsive-table">
+                <thead>
+                    <tr>
+                        <th>دانش‌آموز</th>
+                        <th>عنوان جلسه</th>
+                        <th>نوع</th>
+                        <th>زمان برگزاری</th>
+                        <th>مدت</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in items %}
+                    <tr>
+                        <td data-label="دانش‌آموز">{{ s.student.user.get_full_name|default:s.student }}</td>
+                        <td data-label="عنوان جلسه"><strong>{{ s.title }}</strong></td>
+                        <td data-label="نوع">{{ s.get_session_type_display }}</td>
+                        <td data-label="زمان برگزاری">{{ s.scheduled_at|date:"Y/m/d - H:i" }}</td>
+                        <td data-label="مدت">{{ s.duration_minutes }} دقیقه</td>
+                        <td data-label="وضعیت">
+                            <span class="session-status-badge status-{{ s.status }}">
+                                {{ s.get_status_display }}
+                            </span>
+                        </td>
+                        <td data-label="عملیات" class="table-actions-cell">
+                            <a href="{% url 'adviser:session-update' s.pk %}" class="session-edit-link">ویرایش / ثبت صورت‌جلسه</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="empty-row">
+                        <td colspan="7" style="text-align:center;color:var(--text-secondary);">جلسه‌ای یافت نشد.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

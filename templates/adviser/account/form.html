@@ -1,92 +1,159 @@
 {% extends "adviser/base.html" %}
+{% block header %}
+<style>
+    .adviser-account-wrap {
+        margin: -20px;
+    }
+    .adviser-account-body {
+        padding: 20px 25px 25px;
+    }
+    .adviser-profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+    .adviser-profile-grid .form-group-glass {
+        margin-bottom: 0;
+    }
+    .adviser-profile-grid .form-group-glass.full-span {
+        grid-column: 1 / -1;
+    }
+
+    @media (max-width: 768px) {
+        .adviser-account-wrap {
+            margin: -14px;
+        }
+        .adviser-account-body {
+            padding: 14px;
+        }
+        .adviser-profile-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .adviser-account-wrap {
+            margin: -10px;
+        }
+        .adviser-account-body {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block main %}
-<div class="welcome-premium">
-    <div class="welcome-content">
-        <div class="welcome-badge">
-            <span class="badge-dot"></span>
-            <span>ویرایش حساب مشاور</span>
+<div class="adviser-account-wrap">
+    <div class="welcome-premium">
+        <div class="welcome-content">
+            <div class="welcome-badge">
+                <span class="badge-dot"></span>
+                <span>ویرایش حساب مشاور</span>
+            </div>
+            <h1 class="welcome-title">
+                ویرایش <span class="gradient-text">پروفایل مشاور</span>
+            </h1>
+            <p class="welcome-desc">اطلاعات شخصی، تخصص مشاوره‌ای و ظرفیت پذیرش دانش‌آموز را مدیریت کنید</p>
         </div>
-        <h1 class="welcome-title">
-            ویرایش <span class="gradient-text">پروفایل مشاور</span>
-        </h1>
-        <p class="welcome-desc">اطلاعات شخصی، تخصص مشاوره‌ای و ظرفیت پذیرش دانش‌آموز را مدیریت کنید</p>
     </div>
-</div>
-<div style="padding:25px">
-    <form id="editProfileForm" method="post" enctype="multipart/form-data" class="edit-profile-form">
-        {% csrf_token %}
-        <div class="form-group-glass">
-            {{ form.first_name }}
-            <label for="{{ form.first_name.id_for_label }}">نام</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.last_name }}
-            <label for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.specialization }}
-            <label for="{{ form.specialization.id_for_label }}">تخصص مشاوره‌ای</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.max_students_capacity }}
-            <label for="{{ form.max_students_capacity.id_for_label }}">حداکثر ظرفیت دانش‌آموز</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.email }}
-            <label for="{{ form.email.id_for_label }}">ایمیل</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.province }}
-            <label for="{{ form.province.id_for_label }}">استان</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.city }}
-            <label for="{{ form.city.id_for_label }}">شهر</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.school }}
-            <label for="{{ form.school.id_for_label }}">مدرسه</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.gender }}
-            <label for="{{ form.gender.id_for_label }}">جنسیت</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.PhoneNumber }}
-            <label for="{{ form.PhoneNumber.id_for_label }}">شماره همراه</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.profile_image }}
-            <label for="{{ form.profile_image.id_for_label }}">عکس پروفایل</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.biography }}
-            <label for="{{ form.biography.id_for_label }}">بیوگرافی</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.telegram_link }}
-            <label for="{{ form.telegram_link.id_for_label }}">لینک تلگرام</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.instagram_link }}
-            <label for="{{ form.instagram_link.id_for_label }}">لینک اینستاگرام</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.last_password }}
-            <label for="{{ form.last_password.id_for_label }}">رمز عبور فعلی (در صورت تغییر رمز)</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.password }}
-            <label for="{{ form.password.id_for_label }}">رمز عبور جدید</label>
-        </div>
-        <div class="form-group-glass">
-            {{ form.conform_password }}
-            <label for="{{ form.conform_password.id_for_label }}">تکرار رمز عبور جدید</label>
-        </div>
-        <div class="form-buttons">
-            <button type="submit" class="btn-save">ذخیره تغییرات</button>
-            <a class="btn-cancel" href="{% url 'adviser:account' %}">انصراف</a>
-        </div>
-    </form>
+
+    <div class="adviser-account-body">
+        <form id="editProfileForm" method="post" enctype="multipart/form-data" class="edit-profile-form" style="margin-top:0;">
+            {% csrf_token %}
+
+            <div class="adviser-profile-grid">
+                <div class="form-group-glass">
+                    {{ form.first_name }}
+                    <label for="{{ form.first_name.id_for_label }}">نام</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.last_name }}
+                    <label for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.specialization }}
+                    <label for="{{ form.specialization.id_for_label }}">تخصص مشاوره‌ای</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.max_students_capacity }}
+                    <label for="{{ form.max_students_capacity.id_for_label }}">حداکثر ظرفیت دانش‌آموز</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.email }}
+                    <label for="{{ form.email.id_for_label }}">ایمیل</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.PhoneNumber }}
+                    <label for="{{ form.PhoneNumber.id_for_label }}">شماره همراه</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.province }}
+                    <label for="{{ form.province.id_for_label }}">استان</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.city }}
+                    <label for="{{ form.city.id_for_label }}">شهر</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.school }}
+                    <label for="{{ form.school.id_for_label }}">مدرسه</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.gender }}
+                    <label for="{{ form.gender.id_for_label }}">جنسیت</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.telegram_link }}
+                    <label for="{{ form.telegram_link.id_for_label }}">لینک تلگرام</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.instagram_link }}
+                    <label for="{{ form.instagram_link.id_for_label }}">لینک اینستاگرام</label>
+                </div>
+
+                <div class="form-group-glass full-span">
+                    {{ form.profile_image }}
+                    <label for="{{ form.profile_image.id_for_label }}">عکس پروفایل</label>
+                </div>
+
+                <div class="form-group-glass full-span">
+                    {{ form.biography }}
+                    <label for="{{ form.biography.id_for_label }}">بیوگرافی</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.last_password }}
+                    <label for="{{ form.last_password.id_for_label }}">رمز عبور فعلی (در صورت تغییر رمز)</label>
+                </div>
+
+                <div class="form-group-glass">
+                    {{ form.password }}
+                    <label for="{{ form.password.id_for_label }}">رمز عبور جدید</label>
+                </div>
+
+                <div class="form-group-glass full-span">
+                    {{ form.conform_password }}
+                    <label for="{{ form.conform_password.id_for_label }}">تکرار رمز عبور جدید</label>
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn-save">ذخیره تغییرات</button>
+                <a class="btn-cancel" href="{% url 'adviser:account' %}" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">انصراف</a>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

@@ -1,35 +1,132 @@
 {% extends "adviser/base.html" %}
 {% block header %}
 <style>
-    .adviser-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
+    .adviser-overview-body {
+        padding: 20px 25px 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .adviser-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
     .adviser-panel-box {
-        background: var(--bg-card); border: 1px solid var(--border-color);
-        border-radius: 18px; padding: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        padding: 20px;
+        min-width: 0;
     }
     .adviser-panel-head {
-        display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-color);
     }
-    .adviser-panel-head h3 { font-size: 1rem; font-weight: 800; color: var(--text-primary); margin: 0; }
+    .adviser-panel-head h3 {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0;
+        line-height: 1.5;
+    }
     .adviser-list-item {
-        display: flex; align-items: center; justify-content: space-between; gap: 12px;
-        padding: 12px 14px; border: 1px solid var(--border-color); border-radius: 12px;
-        margin-bottom: 10px; background: var(--bg-primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 14px;
+        border-radius: 12px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        margin-bottom: 10px;
+    }
+    .adviser-list-item:last-child {
+        margin-bottom: 0;
+    }
+    .adviser-item-content {
+        min-width: 0;
+        flex: 1;
+    }
+    .adviser-item-meta {
+        margin-top: 6px;
+        font-size: .78rem;
+        color: var(--text-secondary);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
     }
     .adviser-badge {
-        display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px;
-        font-size: .72rem; font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: .72rem;
+        font-weight: 700;
     }
     .badge-danger { background: rgba(239,68,68,.12); color: #ef4444; border: 1px solid rgba(239,68,68,.25); }
     .badge-warning { background: rgba(245,158,11,.12); color: #f59e0b; border: 1px solid rgba(245,158,11,.25); }
     .badge-info { background: rgba(79,172,254,.12); color: #4facfe; border: 1px solid rgba(79,172,254,.25); }
     .badge-success { background: rgba(34,197,94,.12); color: #22c55e; border: 1px solid rgba(34,197,94,.25); }
     .adviser-btn-sm {
-        display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
-        border-radius: 10px; font-size: .76rem; font-weight: 700; text-decoration: none;
-        color: #fff; background: var(--accent-gradient);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: .76rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: #fff;
+        background: var(--accent-gradient);
+        white-space: nowrap;
+        flex-shrink: 0;
     }
-    @media (max-width: 900px) { .adviser-grid-2 { grid-template-columns: 1fr; } }
+
+    @media (max-width: 960px) {
+        .adviser-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .adviser-overview-body {
+            padding: 14px;
+            gap: 14px;
+        }
+        .adviser-panel-box {
+            padding: 16px;
+            border-radius: 14px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .adviser-panel-head {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .adviser-panel-head .adviser-btn-sm {
+            width: 100%;
+            min-height: 40px;
+        }
+        .adviser-list-item {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 12px;
+        }
+        .adviser-list-item .adviser-btn-sm {
+            width: 100%;
+            min-height: 38px;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -104,83 +201,90 @@
         </div>
     </div>
 
-    <div class="adviser-grid-2">
-        <!-- هشدارهای پیگیری فوری -->
-        <div class="adviser-panel-box">
-            <div class="adviser-panel-head">
-                <h3>دانش‌آموزان نیازمند پیگیری فوری ({{ risk_alerts_count }})</h3>
-                <a href="{% url 'adviser:student-list' %}" class="adviser-btn-sm">همه دانش‌آموزان</a>
-            </div>
-            {% if risk_alerts %}
-                {% for alert in risk_alerts %}
-                    <div class="adviser-list-item">
-                        <div>
-                            <strong style="color:var(--text-primary);display:block;margin-bottom:4px;">
-                                {{ alert.student }}
-                            </strong>
-                            {% for reason in alert.reasons %}
-                                <span class="adviser-badge badge-danger" style="margin-left:4px;margin-top:2px;">{{ reason }}</span>
-                            {% endfor %}
-                        </div>
-                        <a href="{% url 'adviser:student-detail' pk=alert.student.pk %}" class="adviser-btn-sm">پرونده ۳۶۰°</a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p style="color:var(--text-secondary);font-size:.85rem;">همه دانش‌آموزان در وضعیت مطلوب هستند.</p>
-            {% endif %}
-        </div>
-
-        <!-- گزارش‌کارهای منتظر تایید -->
-        <div class="adviser-panel-box">
-            <div class="adviser-panel-head">
-                <h3>گزارش‌کارهای روزانه در انتظار بررسی</h3>
-                <a href="{% url 'adviser:daily-log-list' %}" class="adviser-btn-sm">مدیریت گزارش‌ها</a>
-            </div>
-            {% if pending_logs %}
-                {% for log in pending_logs %}
-                    <div class="adviser-list-item">
-                        <div>
-                            <strong style="color:var(--text-primary);display:block;">
-                                {{ log.student }} — {{ log.lesson.name|default:"عمومی" }}
-                            </strong>
-                            <span style="color:var(--text-secondary);font-size:.78rem;">
-                                {{ log.actual_duration_minutes }} دقیقه مطالعه | {{ log.tests_total }} تست ({{ log.tests_correct }} صحیح)
-                            </span>
-                        </div>
-                        <a href="{% url 'adviser:daily-log-list' %}?student={{ log.student_id }}" class="adviser-btn-sm">بررسی</a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p style="color:var(--text-secondary);font-size:.85rem;">گزارش‌کار بررسی‌نشده‌ای وجود ندارد.</p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- جلسات پیش‌رو -->
-    <div class="adviser-panel-box" style="margin-top:20px;">
-        <div class="adviser-panel-head">
-            <h3>جلسات مشاوره پیش‌رو و درخواستی دانش‌آموزان</h3>
-            <a href="{% url 'adviser:session-create' %}" class="adviser-btn-sm">+ تنظیم جلسه جدید</a>
-        </div>
-        {% if upcoming_sessions %}
-            {% for s in upcoming_sessions %}
-                <div class="adviser-list-item">
-                    <div>
-                        <strong style="color:var(--text-primary);">{{ s.title }} — {{ s.student }}</strong>
-                        <div style="margin-top:4px;font-size:.78rem;color:var(--text-secondary);">
-                            <span>زمان: {{ s.scheduled_at|date:"Y/m/d - H:i" }}</span> |
-                            <span>نوع: {{ s.get_session_type_display }}</span> |
-                            <span class="adviser-badge {% if s.status == 'requested' %}badge-warning{% else %}badge-info{% endif %}">
-                                {{ s.get_status_display }}
-                            </span>
-                        </div>
-                    </div>
-                    <a href="{% url 'adviser:session-update' pk=s.pk %}" class="adviser-btn-sm">مدیریت جلسه</a>
+    <div class="adviser-overview-body">
+        <div class="adviser-grid-2">
+            <!-- هشدارهای پیگیری فوری -->
+            <div class="adviser-panel-box">
+                <div class="adviser-panel-head">
+                    <h3>دانش‌آموزان نیازمند پیگیری فوری ({{ risk_alerts_count }})</h3>
+                    <a href="{% url 'adviser:student-list' %}" class="adviser-btn-sm">همه دانش‌آموزان</a>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p style="color:var(--text-secondary);font-size:.85rem;">جلسه مشاوره فعالی ثبت نشده است.</p>
-        {% endif %}
+                {% if risk_alerts %}
+                    {% for alert in risk_alerts %}
+                        <div class="adviser-list-item">
+                            <div class="adviser-item-content">
+                                <strong style="color:var(--text-primary);display:block;margin-bottom:4px;">
+                                    {{ alert.student }}
+                                </strong>
+                                <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                                    {% for reason in alert.reasons %}
+                                        <span class="adviser-badge badge-danger">{{ reason }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <a href="{% url 'adviser:student-detail' pk=alert.student.pk %}" class="adviser-btn-sm">پرونده ۳۶۰°</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color:var(--text-secondary);font-size:.85rem;margin:0;">همه دانش‌آموزان در وضعیت مطلوب هستند.</p>
+                {% endif %}
+            </div>
+
+            <!-- گزارش‌کارهای منتظر تایید -->
+            <div class="adviser-panel-box">
+                <div class="adviser-panel-head">
+                    <h3>گزارش‌کارهای روزانه در انتظار بررسی</h3>
+                    <a href="{% url 'adviser:daily-log-list' %}" class="adviser-btn-sm">مدیریت گزارش‌ها</a>
+                </div>
+                {% if pending_logs %}
+                    {% for log in pending_logs %}
+                        <div class="adviser-list-item">
+                            <div class="adviser-item-content">
+                                <strong style="color:var(--text-primary);display:block;">
+                                    {{ log.student }} — {{ log.lesson.name|default:"عمومی" }}
+                                </strong>
+                                <div class="adviser-item-meta">
+                                    <span>{{ log.actual_duration_minutes }} دقیقه مطالعه</span>
+                                    <span>•</span>
+                                    <span>{{ log.tests_total }} تست ({{ log.tests_correct }} صحیح)</span>
+                                </div>
+                            </div>
+                            <a href="{% url 'adviser:daily-log-list' %}?student={{ log.student_id }}" class="adviser-btn-sm">بررسی</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color:var(--text-secondary);font-size:.85rem;margin:0;">گزارش‌کار بررسی‌نشده‌ای وجود ندارد.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- جلسات پیش‌رو -->
+        <div class="adviser-panel-box">
+            <div class="adviser-panel-head">
+                <h3>جلسات مشاوره پیش‌رو و درخواستی دانش‌آموزان</h3>
+                <a href="{% url 'adviser:session-create' %}" class="adviser-btn-sm">+ تنظیم جلسه جدید</a>
+            </div>
+            {% if upcoming_sessions %}
+                {% for s in upcoming_sessions %}
+                    <div class="adviser-list-item">
+                        <div class="adviser-item-content">
+                            <strong style="color:var(--text-primary);display:block;">{{ s.title }} — {{ s.student }}</strong>
+                            <div class="adviser-item-meta">
+                                <span>زمان: {{ s.scheduled_at|date:"Y/m/d - H:i" }}</span>
+                                <span>•</span>
+                                <span>نوع: {{ s.get_session_type_display }}</span>
+                                <span class="adviser-badge {% if s.status == 'requested' %}badge-warning{% else %}badge-info{% endif %}">
+                                    {{ s.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        <a href="{% url 'adviser:session-update' pk=s.pk %}" class="adviser-btn-sm">مدیریت جلسه</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="color:var(--text-secondary);font-size:.85rem;margin:0;">جلسه مشاوره فعالی ثبت نشده است.</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

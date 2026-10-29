@@ -5,23 +5,43 @@
     .c-card {
         padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
     }
+    .c-hub-header {
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
+    }
+    .c-hub-actions {
+        display: flex; gap: 10px; flex-wrap: wrap;
+    }
     .c-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
     .c-btn {
-        display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 16px;
         border-radius: 10px; background: var(--accent-gradient); color: #fff;
         text-decoration: none; font-size: .82rem; font-weight: 700; border: none; cursor: pointer;
     }
     .c-btn-outline {
-        display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 14px;
         border-radius: 10px; border: 1px solid var(--border-color); color: var(--text-primary);
         text-decoration: none; font-size: .8rem; font-weight: 700;
+    }
+    .c-list-row {
+        padding: 10px 0; border-bottom: 1px solid var(--border-color);
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .c-list-row:last-child { border-bottom: none; }
+    @media (max-width: 640px) {
+        .c-hub { padding: 4px; gap: 14px; }
+        .c-card { padding: 15px; border-radius: 14px; }
+        .c-hub-header { flex-direction: column; align-items: stretch; }
+        .c-hub-actions { display: grid; grid-template-columns: 1fr; width: 100%; }
+        .c-hub-actions .c-btn, .c-hub-actions .c-btn-outline { width: 100%; }
+        .c-list-row { flex-direction: column; align-items: stretch; }
+        .c-list-row .c-btn, .c-list-row .c-btn-outline { width: 100%; }
     }
 </style>
 {% endblock %}
 
 {% block main %}
 <div class="c-hub">
-    <div class="c-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+    <div class="c-card c-hub-header">
         <div>
             <h2 style="margin:0 0 6px;">میز کار مشاوره و برنامه‌ریزی تحصیلی</h2>
             {% if adviser %}
@@ -33,7 +53,7 @@
                 <p style="margin:0;color:#fbbf24;font-size:.88rem;">هنوز مشاور اختصاصی برای شما تخصیص داده نشده است.</p>
             {% endif %}
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="c-hub-actions">
             <a href="{% url 'student:counseling-plan-list' %}" class="c-btn-outline">برنامه‌های مطالعاتی</a>
             <a href="{% url 'student:counseling-daily-logs' %}" class="c-btn">+ ثبت گزارش کار امروز</a>
             <a href="{% url 'student:counseling-sessions' %}" class="c-btn-outline">جلسات مشاوره</a>
@@ -59,7 +79,7 @@
         <div class="c-card">
             <h3 style="margin:0 0 12px;">آخرین نسخه‌های مشاور روی کارنامه‌ها</h3>
             {% for p in prescriptions %}
-                <div style="padding:10px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                <div class="c-list-row">
                     <div>
                         <strong style="font-size:.88rem;">{{ p.exam_report.exam.name }}</strong>
                         <span style="display:block;font-size:.76rem;color:var(--text-secondary);">درصد: {{ p.exam_report.percentage|floatformat:1 }}%</span>
@@ -74,7 +94,7 @@
         <div class="c-card">
             <h3 style="margin:0 0 12px;">جلسات مشاوره پیش‌رو و اخیر</h3>
             {% for s in upcoming_sessions %}
-                <div style="padding:10px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                <div class="c-list-row">
                     <div>
                         <strong style="font-size:.88rem;">{{ s.title }}</strong>
                         <span style="display:block;font-size:.76rem;color:var(--text-secondary);">{{ s.scheduled_at }} ({{ s.get_status_display }})</span>

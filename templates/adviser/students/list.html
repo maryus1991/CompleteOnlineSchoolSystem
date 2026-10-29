@@ -1,50 +1,180 @@
 {% extends "adviser/base.html" %}
 {% block header %}
 <style>
-    .ticket-page { padding: 20px; }
-    .ticket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 14px; }
-    .ticket-header-title h2 { font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
-    .ticket-header-title p { color: var(--text-secondary); font-size: .82rem; }
-    .filter-bar {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px;
-        background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px;
-        padding: 16px; margin-bottom: 20px;
+    .students-page {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
     }
-    .filter-bar input, .filter-bar select {
-        width: 100%; min-height: 42px; padding: 0 12px; border-radius: 10px;
-        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);
-        font-family: inherit; font-size: .82rem;
+    .students-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+    .students-header-title h2 {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0 0 4px;
+    }
+    .students-header-title p {
+        color: var(--text-secondary);
+        font-size: .82rem;
+        margin: 0;
+        line-height: 1.6;
+    }
+    .filter-bar {
+        display: grid;
+        grid-template-columns: 2fr repeat(3, minmax(140px, 1fr)) auto;
+        gap: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 16px;
+    }
+    .filter-bar input,
+    .filter-bar select {
+        width: 100%;
+        min-height: 42px;
+        padding: 0 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: .82rem;
     }
     .filter-btn {
-        min-height: 42px; border: none; border-radius: 10px; background: var(--accent-gradient);
-        color: #fff; font-family: inherit; font-weight: 700; cursor: pointer;
+        min-height: 42px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 10px;
+        background: var(--accent-gradient);
+        color: #fff;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: .84rem;
+        cursor: pointer;
+        white-space: nowrap;
     }
-    .student-list { display: flex; flex-direction: column; gap: 12px; }
+    .student-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
     .student-card {
-        display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;
-        padding: 18px 20px; background: var(--bg-card); border: 1px solid var(--border-color);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
         border-radius: 16px;
     }
-    .student-title { font-size: 1rem; font-weight: 800; color: var(--text-primary); text-decoration: none; }
-    .student-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .student-info {
+        min-width: 0;
+    }
+    .student-title {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        text-decoration: none;
+        display: inline-block;
+    }
+    .student-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
     .meta-tag {
-        display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px;
-        font-size: .74rem; font-weight: 700; background: rgba(79,172,254,.1); color: #4facfe;
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: .74rem;
+        font-weight: 700;
+        background: rgba(79,172,254,.1);
+        color: #4facfe;
+        max-width: 100%;
+        word-break: break-word;
     }
-    .student-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .student-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
     .action-btn {
-        display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
-        border-radius: 10px; font-size: .78rem; font-weight: 700; text-decoration: none;
-        border: 1px solid var(--border-color); color: var(--text-primary); background: var(--bg-primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 14px;
+        border-radius: 10px;
+        font-size: .78rem;
+        font-weight: 700;
+        text-decoration: none;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        background: var(--bg-primary);
+        white-space: nowrap;
     }
-    .action-btn.primary { background: var(--accent-gradient); color: #fff; border: none; }
+    .action-btn.primary {
+        background: var(--accent-gradient);
+        color: #fff;
+        border: none;
+    }
+
+    @media (max-width: 960px) {
+        .filter-bar {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .filter-bar input[name="q"] {
+            grid-column: 1 / -1;
+        }
+        .filter-btn {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 820px) {
+        .student-card {
+            grid-template-columns: 1fr;
+            padding: 16px;
+        }
+        .student-actions {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+    }
+
+    @media (max-width: 560px) {
+        .filter-bar {
+            grid-template-columns: 1fr;
+            padding: 14px;
+        }
+        .student-actions {
+            grid-template-columns: 1fr 1fr;
+        }
+        .student-actions .action-btn.primary {
+            grid-column: 1 / -1;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block main %}
-<div class="ticket-page">
-    <div class="ticket-header">
-        <div class="ticket-header-title">
+<div class="students-page">
+    <div class="students-header">
+        <div class="students-header-title">
             <h2>دانش‌آموزان تحت پوشش من</h2>
             <p>مشاهده وضعیت تحصیلی، آخرین آزمون، پیشرفت برنامه هفتگی و پرونده ۳۶۰ درجه</p>
         </div>
@@ -77,7 +207,7 @@
         <div class="student-list">
             {% for item in items %}
                 <div class="student-card">
-                    <div>
+                    <div class="student-info">
                         <a href="{% url 'adviser:student-detail' pk=item.pk %}" class="student-title">
                             {{ item }}
                         </a>
@@ -111,8 +241,8 @@
         </div>
     {% else %}
         <div style="text-align:center;padding:48px 20px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;">
-            <h3 style="color:var(--text-primary);">دانش‌آموزی یافت نشد</h3>
-            <p style="color:var(--text-secondary);font-size:.85rem;">هنوز دانش‌آموزی با این مشخصات تحت پوشش شما ثبت نشده است.</p>
+            <h3 style="color:var(--text-primary);margin:0 0 8px;">دانش‌آموزی یافت نشد</h3>
+            <p style="color:var(--text-secondary);font-size:.85rem;margin:0;">هنوز دانش‌آموزی با این مشخصات تحت پوشش شما ثبت نشده است.</p>
         </div>
     {% endif %}
 </div>

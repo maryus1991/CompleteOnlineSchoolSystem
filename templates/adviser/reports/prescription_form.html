@@ -2,27 +2,123 @@
 {% block header %}
 {{ form.media }}
 <style>
-    .prescription-page { display: flex; flex-direction: column; gap: 18px; }
-    .summary-card, .form-card {
-        padding: 22px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color);
+    .prescription-page {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    .summary-card,
+    .form-card {
+        padding: 22px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        min-width: 0;
+    }
+    .summary-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .summary-header h2 {
+        margin: 0 0 6px;
+        font-size: 1.2rem;
+        font-weight: 800;
+    }
+    .summary-header-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .summary-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: .82rem;
+        font-weight: 600;
+        background: var(--bg-primary);
+        white-space: nowrap;
     }
     .summary-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 14px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
     }
     .summary-stat {
-        padding: 14px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid var(--border-color);
+        padding: 14px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid var(--border-color);
     }
-    .summary-stat span { display: block; font-size: .78rem; color: var(--text-secondary); margin-bottom: 4px; }
-    .summary-stat strong { font-size: 1.15rem; color: var(--text-primary); }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: .85rem; }
-    .form-group select, .form-group textarea, .form-group input {
-        width: 100%; padding: 10px 14px; border-radius: 10px;
-        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    .summary-stat span {
+        display: block;
+        font-size: .78rem;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+    }
+    .summary-stat strong {
+        font-size: 1.12rem;
+        color: var(--text-primary);
+    }
+    .prescription-field-label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 700;
+        font-size: .85rem;
+        color: var(--text-primary);
     }
     .btn-primary {
-        padding: 11px 22px; border-radius: 12px; background: var(--accent-gradient);
-        color: #fff; border: none; font-weight: 700; cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        border-radius: 12px;
+        background: var(--accent-gradient);
+        color: #fff;
+        border: none;
+        font-weight: 700;
+        font-size: .88rem;
+        cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+        .summary-card,
+        .form-card {
+            padding: 16px;
+            border-radius: 14px;
+        }
+        .summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .summary-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .summary-header-actions {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .summary-header-actions {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
@@ -30,18 +126,19 @@
 {% block main %}
 <div class="prescription-page">
     <div class="summary-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div class="summary-header">
             <div>
-                <h2 style="margin:0 0 6px;">نسخه مشاوره‌ای کارنامه: {{ report.exam.name }}</h2>
+                <h2>نسخه مشاوره‌ای کارنامه: {{ report.exam.name }}</h2>
                 <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
                     دانش‌آموز: <strong>{{ report.student.user.get_full_name }}</strong>
                 </p>
             </div>
-            <div style="display:flex;gap:10px;">
-                <a href="{% url 'adviser:report-questions' report.pk %}" style="padding:9px 14px;border-radius:10px;border:1px solid var(--border-color);color:var(--text-primary);text-decoration:none;font-size:.82rem;">مشاهده پاسخ‌برگ سوالات</a>
-                <a href="{% url 'adviser:report-list' %}" style="padding:9px 14px;border-radius:10px;border:1px solid var(--border-color);color:var(--text-secondary);text-decoration:none;font-size:.82rem;">بازگشت ←</a>
+            <div class="summary-header-actions">
+                <a href="{% url 'adviser:report-questions' report.pk %}" class="summary-action-btn">مشاهده پاسخ‌برگ سوالات</a>
+                <a href="{% url 'adviser:report-list' %}" class="summary-action-btn" style="color:var(--text-secondary);">بازگشت ←</a>
             </div>
         </div>
+
         <div class="summary-grid">
             <div class="summary-stat"><span>درصد کل</span><strong>{{ report.percentage|floatformat:2 }}%</strong></div>
             <div class="summary-stat"><span>رتبه در آزمون</span><strong>{{ report.rank|default:"-" }}</strong></div>
@@ -49,24 +146,24 @@
             <div class="summary-stat"><span>پاسخ غلط</span><strong style="color:#f87171;">{{ report.wrong_count }}</strong></div>
             <div class="summary-stat"><span>نزده</span><strong style="color:#fbbf24;">{{ report.unanswered_count }}</strong></div>
         </div>
+
         {% if prescription and prescription.student_reflection %}
         <div style="margin-top:16px;padding:14px;border-radius:12px;background:rgba(79,172,254,.1);border:1px solid rgba(79,172,254,.3);">
             <strong style="display:block;margin-bottom:6px;color:#4facfe;">خودارزیابی ثبت‌شده توسط دانش‌آموز پس از آزمون:</strong>
-            <p style="margin:0;font-size:.88rem;">{{ prescription.student_reflection }}</p>
+            <p style="margin:0;font-size:.88rem;line-height:1.7;">{{ prescription.student_reflection }}</p>
         </div>
         {% endif %}
     </div>
 
     <div class="form-card">
-        <form method="post"  enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in form %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
-            <div class="form-group-glass">
-                {{ field }}
-                {% if field.errors %}<div style="color:#f87171;font-size:.8rem;margin-top:4px;">{{ field.errors }}</div>{% endif %}
-            </div>
+                <label class="prescription-field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="form-group-glass">
+                    {{ field }}
+                    {% if field.errors %}<div style="color:#f87171;font-size:.8rem;margin-top:4px;">{{ field.errors }}</div>{% endif %}
+                </div>
             {% endfor %}
             <button type="submit" class="btn-primary">ذخیره و ارسال نسخه به کارنامه دانش‌آموز</button>
         </form>

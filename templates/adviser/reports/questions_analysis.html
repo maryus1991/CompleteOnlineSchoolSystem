@@ -22,12 +22,14 @@
     .qa-header h2 {
         margin: 0 0 6px;
         font-weight: 800;
+        font-size: 1.2rem;
     }
 
     .qa-header p {
         margin: 0;
         color: var(--text-secondary);
         font-size: .85rem;
+        line-height: 1.6;
     }
 
     .qa-actions {
@@ -37,6 +39,9 @@
     }
 
     .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 10px 16px;
         border-radius: 10px;
         background: var(--accent-gradient);
@@ -44,9 +49,13 @@
         text-decoration: none;
         font-size: .82rem;
         font-weight: 700;
+        white-space: nowrap;
     }
 
     .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 10px 16px;
         border-radius: 10px;
         border: 1px solid var(--border-color);
@@ -54,6 +63,7 @@
         text-decoration: none;
         font-size: .82rem;
         font-weight: 600;
+        white-space: nowrap;
     }
 
     .qa-card {
@@ -64,6 +74,7 @@
         display: flex;
         flex-direction: column;
         gap: 14px;
+        min-width: 0;
     }
 
     .qa-card-top {
@@ -87,6 +98,7 @@
     }
 
     .badge {
+        display: inline-block;
         padding: 5px 12px;
         border-radius: 999px;
         font-size: .78rem;
@@ -105,6 +117,7 @@
         border: 1px solid var(--border-color);
         font-size: .88rem;
         line-height: 1.75;
+        overflow-x: auto;
     }
 
     .section-title {
@@ -128,6 +141,7 @@
     .option-item {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 10px;
         padding: 10px 12px;
         border-radius: 10px;
@@ -158,6 +172,7 @@
         font-size: .78rem;
         font-weight: 800;
         color: var(--text-secondary);
+        flex-shrink: 0;
     }
 
     .option-item.correct .option-num {
@@ -178,77 +193,83 @@
 
     .files-row {
         display: flex;
+        gap: 10px;
         flex-wrap: wrap;
-        gap: 8px;
     }
 
     .file-chip {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 8px 12px;
+        padding: 8px 13px;
         border-radius: 10px;
-        background: rgba(255,255,255,.03);
-        border: 1px solid var(--border-color);
+        background: rgba(79,172,254,.1);
+        border: 1px solid rgba(79,172,254,.25);
         color: #4facfe;
         text-decoration: none;
-        font-size: .82rem;
+        font-size: .8rem;
         font-weight: 700;
-        transition: opacity .2s;
+        transition: .15s ease;
     }
 
-    .file-chip:hover { opacity: .85; }
+    .file-chip:hover {
+        background: rgba(79,172,254,.18);
+    }
 
     .answer-detail {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        font-size: .84rem;
     }
 
     .answer-row {
-        display: flex;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 150px minmax(0, 1fr);
+        align-items: center;
         gap: 10px;
-        flex-wrap: wrap;
-        padding: 8px 12px;
+        padding: 9px 12px;
         border-radius: 10px;
-        background: rgba(255,255,255,.03);
+        background: var(--bg-primary);
         border: 1px solid var(--border-color);
+        font-size: .84rem;
     }
 
     .answer-row-block {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: 6px;
     }
 
     .answer-label {
-        min-width: 120px;
         color: var(--text-secondary);
-        font-weight: 600;
-        font-size: .78rem;
+        font-weight: 700;
+        font-size: .8rem;
     }
 
     .answer-value {
         color: var(--text-primary);
-        font-weight: 500;
-        flex: 1;
-        line-height: 1.6;
+        font-weight: 600;
+        word-break: break-word;
     }
 
-    .answer-text { line-height: 1.75; }
+    .answer-text {
+        font-weight: 400;
+        line-height: 1.75;
+        padding-top: 4px;
+        border-top: 1px dashed var(--border-color);
+    }
 
     .file-link {
         color: #4facfe;
         text-decoration: none;
         font-weight: 700;
-        border-bottom: 1px dashed rgba(79,172,254,.4);
     }
 
-    .file-link:hover { opacity: .85; }
+    .file-link:hover {
+        text-decoration: underline;
+    }
 
     .feedback-row {
-        background: rgba(16,185,129,.08);
+        background: rgba(16,185,129,.06);
         border-color: rgba(16,185,129,.25);
     }
 
@@ -276,6 +297,38 @@
         text-align: center;
         color: var(--text-secondary);
         padding: 28px 16px;
+    }
+
+    @media (max-width: 768px) {
+        .qa-header,
+        .qa-card {
+            padding: 15px;
+            border-radius: 14px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .qa-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .qa-actions {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+        .qa-actions .btn-primary,
+        .qa-actions .btn-outline {
+            width: 100%;
+        }
+        .answer-row {
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+        .files-row .file-chip {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 {% endblock %}
@@ -312,6 +365,7 @@
                     <span>({{ item.question.get_type_of_question_display }})</span>
                 {% endif %}
             </div>
+
             <div>
                 {% if item.corrected == 'درست' %}
                     <span class="badge badge-correct">پاسخ صحیح ({{ item.score|default:0 }} نمره)</span>

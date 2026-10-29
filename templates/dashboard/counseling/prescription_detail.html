@@ -3,7 +3,7 @@
 <style>
     .presc-page { display: flex; flex-direction: column; gap: 18px; padding: 10px; }
     .presc-card { padding: 22px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); }
-    .presc-box { padding: 16px; border-radius: 12px; margin-bottom: 14px; }
+    .presc-box { padding: 16px; border-radius: 12px; margin-bottom: 14px; overflow-x: auto; }
     .c-btn {
         padding: 10px 20px; border-radius: 10px; background: var(--accent-gradient);
         color: #fff; border: none; font-weight: 700; cursor: pointer;
@@ -11,6 +11,12 @@
     textarea {
         width: 100%; padding: 10px 14px; border-radius: 10px;
         border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    }
+    @media (max-width: 640px) {
+        .presc-page { padding: 4px; gap: 14px; }
+        .presc-card { padding: 15px; border-radius: 14px; }
+        .presc-box { padding: 13px; }
+        .c-btn { width: 100%; }
     }
 </style>
 {% endblock %}

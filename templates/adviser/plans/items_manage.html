@@ -1,26 +1,162 @@
 {% extends "adviser/base.html" %}
 {% block header %}
 <style>
-    .items-page { display: flex; flex-direction: column; gap: 18px; }
-    .items-card { padding: 20px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); overflow-x: auto; }
-    .items-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
-    .items-table th, .items-table td { padding: 8px; border-bottom: 1px solid var(--border-color); text-align: right; }
-    .items-table input, .items-table select {
-        width: 100%; padding: 7px 10px; border-radius: 8px;
-        border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-family: inherit;
+    .items-page {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    .items-card {
+        padding: 20px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        min-width: 0;
+    }
+    .items-header-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .items-header-card h2 {
+        margin: 0 0 6px;
+        font-size: 1.18rem;
+        font-weight: 800;
+    }
+    .items-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .82rem;
+    }
+    .items-table th,
+    .items-table td {
+        padding: 8px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right;
+        vertical-align: middle;
+    }
+    .items-table th {
+        color: var(--text-secondary);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .items-table input:not([type="checkbox"]),
+    .items-table select {
+        width: 100%;
+        min-width: 90px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: .82rem;
+    }
+    .items-table input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #ef4444;
+        cursor: pointer;
     }
     .btn-primary {
-        padding: 11px 22px; border-radius: 12px; background: var(--accent-gradient);
-        color: #fff; border: none; font-weight: 700; cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 22px;
+        border-radius: 12px;
+        background: var(--accent-gradient);
+        color: #fff;
+        border: none;
+        font-weight: 700;
+        font-size: .88rem;
+        cursor: pointer;
+    }
+
+    /* تبدیل جدول ۱۰ ستونه باکس‌های هفتگی به کارت‌های منظم در تبلت و موبایل */
+    @media (max-width: 1024px) {
+        .items-table,
+        .items-table thead,
+        .items-table tbody {
+            display: block;
+            width: 100%;
+        }
+        .items-table thead tr {
+            position: absolute;
+            top: -9999px;
+            right: -9999px;
+        }
+        .items-table tbody tr {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .items-table tbody tr:last-child {
+            margin-bottom: 0;
+        }
+        .items-table td {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 0;
+            border-bottom: none;
+            width: 100% !important;
+        }
+        .items-table td::before {
+            content: attr(data-label);
+            font-size: .76rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        .items-table td.cell-full {
+            grid-column: 1 / -1;
+        }
+        .items-table td.cell-delete {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border-color);
+            grid-column: 1 / -1;
+        }
+        .items-table td.cell-delete::before {
+            margin-bottom: 0;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .items-card {
+            padding: 14px;
+            border-radius: 14px;
+        }
+        .items-table tbody tr {
+            grid-template-columns: 1fr;
+            padding: 14px;
+        }
+        .btn-primary {
+            width: 100%;
+        }
     }
 </style>
 {% endblock %}
 
 {% block main %}
 <div class="items-page">
-    <div class="items-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <div class="items-card items-header-card">
         <div>
-            <h2 style="margin:0 0 6px;">باکس‌های مطالعاتی هفتگی: {{ plan.title }}</h2>
+            <h2>باکس‌های مطالعاتی هفتگی: {{ plan.title }}</h2>
             <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
                 دانش‌آموز: <strong>{{ plan.student.user.get_full_name }}</strong> | پیشرفت فعلی: <strong>{{ plan.completion_percentage }}%</strong>
             </p>
@@ -32,41 +168,43 @@
         <form method="post">
             {% csrf_token %}
             {{ formset.management_form }}
-            <table class="items-table">
-                <thead>
-                    <tr>
-                        <th>روز هفته</th>
-                        <th>درس</th>
-                        <th>مبحث / سرفصل</th>
-                        <th>نوع مطالعه</th>
-                        <th>زمان هدف (دقیقه)</th>
-                        <th>تست هدف</th>
-                        <th>اولویت</th>
-                        <th>نکته مشاور</th>
-                        <th>ترتیب</th>
-                        <th>حذف</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item_form in formset %}
-                    <tr>
-                        {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
-                        <td>{{ item_form.day_of_week }}</td>
-                        <td>{{ item_form.lesson }}</td>
-                        <td>{{ item_form.topic }}</td>
-                        <td>{{ item_form.study_type }}</td>
-                        <td style="width:95px;">{{ item_form.target_duration_minutes }}</td>
-                        <td style="width:90px;">{{ item_form.target_test_count }}</td>
-                        <td>{{ item_form.priority }}</td>
-                        <td>{{ item_form.adviser_tip }}</td>
-                        <td style="width:75px;">{{ item_form.sort_number }}</td>
-                        <td style="text-align:center;">
-                            {% if formset.can_delete and item_form.instance.pk %}{{ item_form.DELETE }}{% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="items-table-wrap">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>روز هفته</th>
+                            <th>درس</th>
+                            <th>مبحث / سرفصل</th>
+                            <th>نوع مطالعه</th>
+                            <th>زمان هدف (دقیقه)</th>
+                            <th>تست هدف</th>
+                            <th>اولویت</th>
+                            <th>نکته مشاور</th>
+                            <th>ترتیب</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item_form in formset %}
+                        <tr>
+                            {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
+                            <td data-label="روز هفته">{{ item_form.day_of_week }}</td>
+                            <td data-label="درس">{{ item_form.lesson }}</td>
+                            <td data-label="مبحث / سرفصل" class="cell-full">{{ item_form.topic }}</td>
+                            <td data-label="نوع مطالعه">{{ item_form.study_type }}</td>
+                            <td data-label="زمان هدف (دقیقه)" style="width:95px;">{{ item_form.target_duration_minutes }}</td>
+                            <td data-label="تست هدف" style="width:90px;">{{ item_form.target_test_count }}</td>
+                            <td data-label="اولویت">{{ item_form.priority }}</td>
+                            <td data-label="نکته مشاور" class="cell-full">{{ item_form.adviser_tip }}</td>
+                            <td data-label="ترتیب نمایش" style="width:75px;">{{ item_form.sort_number }}</td>
+                            <td data-label="حذف این باکس" class="cell-delete" style="text-align:center;">
+                                {% if formset.can_delete and item_form.instance.pk %}{{ item_form.DELETE }}{% else %}<span style="color:var(--text-secondary);font-size:.75rem;">—</span>{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <div style="margin-top:16px;">
                 <button type="submit" class="btn-primary">ذخیره باکس‌های مطالعاتی هفته</button>
             </div>
