@@ -1,7 +1,6 @@
 from django.contrib import admin
 from apps.users.advisers.models import Adviser
 
-
 if admin.site.is_registered(Adviser):
     admin.site.unregister(Adviser)
 
@@ -19,6 +18,7 @@ class AdviserAdmin(admin.ModelAdmin):
         "can_manage_study_plans",
         "can_view_student_reports",
         "can_manage_sessions",
+        "can_start_live_session",
         "can_answer_counseling_requests",
         "is_active",
     )
@@ -29,6 +29,7 @@ class AdviserAdmin(admin.ModelAdmin):
         "can_manage_study_plans",
         "can_view_student_reports",
         "can_manage_sessions",
+        "can_start_live_session",
         "can_answer_counseling_requests",
         "can_send_adviser_notes",
     )
