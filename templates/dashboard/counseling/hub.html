@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load live_class_tags %}
 {% block header %}
 <style>
     .c-hub { display: flex; flex-direction: column; gap: 18px; padding: 10px; }
@@ -57,6 +58,7 @@
             <a href="{% url 'student:counseling-plan-list' %}" class="c-btn-outline">برنامه‌های مطالعاتی</a>
             <a href="{% url 'student:counseling-daily-logs' %}" class="c-btn">+ ثبت گزارش کار امروز</a>
             <a href="{% url 'student:counseling-sessions' %}" class="c-btn-outline">جلسات مشاوره</a>
+            <a href="{% url 'student:counseling-live-list' %}" class="c-btn">جلسات آنلاین مشاوره</a>
         </div>
     </div>
 
@@ -92,7 +94,25 @@
         </div>
 
         <div class="c-card">
-            <h3 style="margin:0 0 12px;">جلسات مشاوره پیش‌رو و اخیر</h3>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;">
+                <h3 style="margin:0;">جلسات مشاوره و اتاق‌های آنلاین</h3>
+                <a href="{% url 'student:counseling-live-list' %}" style="font-size:.78rem;color:#4facfe;text-decoration:none;font-weight:700;">همه جلسات آنلاین ←</a>
+            </div>
+            {% for ls in live_sessions %}
+                <div class="c-list-row">
+                    <div>
+                        <strong style="font-size:.88rem;">🔴 {{ ls.title }}</strong>
+                        <span style="display:block;font-size:.76rem;color:var(--text-secondary);">وضعیت: {{ ls.get_status_display }}</span>
+                    </div>
+                    {% with meeting_url=ls|get_student_meeting_url:user %}
+                        {% if ls.is_available and meeting_url %}
+                            <a href="{{ meeting_url }}" target="_blank" rel="noopener" class="c-btn">ورود به جلسه آنلاین</a>
+                        {% else %}
+                            <a href="{% url 'student:counseling-live-detail' ls.pk %}" class="c-btn-outline">جزئیات جلسه</a>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            {% endfor %}
             {% for s in upcoming_sessions %}
                 <div class="c-list-row">
                     <div>

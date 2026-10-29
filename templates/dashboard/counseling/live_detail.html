@@ -1,0 +1,61 @@
+{% extends "dashboard/base.html" %}
+
+{% block header %}
+<style>
+.clive-detail{display:flex;flex-direction:column;gap:18px;padding:10px}
+.clive-card{padding:22px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border-color)}
+.clive-btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 22px;border-radius:11px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;text-decoration:none;font-weight:700;font-size:.86rem}
+.clive-btn-outline{display:inline-flex;align-items:center;justify-content:center;padding:9px 15px;border-radius:10px;border:1px solid var(--border-color);color:var(--text-primary);text-decoration:none;font-size:.8rem;font-weight:600}
+.report-box{margin-top:12px;padding:16px;border-radius:12px;background:var(--bg-primary);border:1px solid var(--border-color)}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="clive-detail" dir="rtl">
+  <div class="clive-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+    <div>
+      <h2 style="margin:0 0 6px;">{{ live_session.title }}</h2>
+      <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">
+        مشاور: <strong>{{ live_session.adviser.user.get_full_name }}</strong> |
+        وضعیت: <strong>{{ live_session.get_status_display }}</strong>
+        {% if live_session.scheduled_at %} | زمان: {{ live_session.scheduled_at|date:"Y/m/d - H:i" }}{% endif %}
+      </p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      {% if meeting_url %}
+        <a href="{{ meeting_url }}" target="_blank" rel="noopener noreferrer" class="clive-btn">
+          ورود به اتاق آنلاین مشاوره ←
+        </a>
+      {% endif %}
+      <a href="{% url 'student:counseling-live-list' %}" class="clive-btn-outline">بازگشت به لیست جلسات آنلاین</a>
+    </div>
+  </div>
+
+  <div class="clive-card">
+    <h3 style="margin:0 0 12px;">گزارش‌ها و فایل‌های ضبط‌شده جلسه</h3>
+    {% for r in reports %}
+      <div class="report-box">
+        {% if r.adviser_note %}
+          <p style="margin:0 0 12px;line-height:1.9;font-size:.88rem;">
+            <strong style="color:#4facfe;">جمع‌بندی و یادداشت مشاور:</strong><br>
+            {{ r.adviser_note|linebreaksbr }}
+          </p>
+        {% endif %}
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          {% if r.recording_file %}
+            <a href="{{ r.recording_file.url }}" target="_blank" rel="noopener" class="clive-btn-outline">📥 دانلود فایل ضبط‌شده جلسه</a>
+          {% endif %}
+          {% if r.chat_report %}
+            <a href="{{ r.chat_report.url }}" target="_blank" rel="noopener" class="clive-btn-outline">📄 گزارش چت (PDF)</a>
+          {% endif %}
+          {% if r.attendance_report %}
+            <a href="{{ r.attendance_report.url }}" target="_blank" rel="noopener" class="clive-btn-outline">👥 گزارش حضور (PDF)</a>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <p style="margin:0;color:var(--text-secondary);font-size:.85rem;">هنوز فایل ضبط یا گزارش پایانی برای این جلسه بارگذاری نشده است.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

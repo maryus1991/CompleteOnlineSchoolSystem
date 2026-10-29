@@ -263,6 +263,8 @@
                 </select>
                 <button type="submit" class="btn-primary">فیلتر</button>
             </form>
+            <a href="{% url 'adviser:live-session-list' %}" class="session-edit-link">جلسات آنلاین</a>
+            <a href="{% url 'adviser:live-request-list' %}" class="session-edit-link">درخواست جلسه آنلاین</a>
             <a href="{% url 'adviser:session-create' %}" class="btn-primary">+ ثبت جلسه جدید</a>
         </div>
     </div>

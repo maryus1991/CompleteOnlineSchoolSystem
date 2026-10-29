@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load live_class_tags %}
 {% block header %}
 <style>
     .csess-page { display: flex; flex-direction: column; gap: 18px; padding: 10px; }
@@ -26,6 +27,32 @@
 
 {% block main %}
 <div class="csess-page">
+    <div class="csess-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+            <div>
+                <h3 style="margin:0 0 4px;">اتاق‌های جلسه آنلاین با مشاور</h3>
+                <span style="font-size:.8rem;color:var(--text-secondary);">ورود مستقیم به جلسات آنلاین مشاوره در حال برگزاری و مشاهده فایل‌های ضبط‌شده</span>
+            </div>
+            <a href="{% url 'student:counseling-live-list' %}" class="c-btn">مشاهده همه جلسات آنلاین ←</a>
+        </div>
+        {% for ls in live_sessions %}
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--border-color);margin-bottom:10px;">
+            <div>
+                <strong style="font-size:.9rem;">{{ ls.title }}</strong>
+                <span style="display:block;font-size:.78rem;color:var(--text-secondary);">وضعیت: {{ ls.get_status_display }}{% if ls.scheduled_at %} | زمان: {{ ls.scheduled_at|date:"Y/m/d - H:i" }}{% endif %}</span>
+            </div>
+            {% with meeting_url=ls|get_student_meeting_url:user %}
+                {% if ls.is_available and meeting_url %}
+                    <a href="{{ meeting_url }}" target="_blank" rel="noopener" class="c-btn">ورود به جلسه آنلاین</a>
+                {% else %}
+                    <a href="{% url 'student:counseling-live-detail' ls.pk %}" style="font-size:.8rem;color:#4facfe;text-decoration:none;font-weight:700;">مشاهده جزئیات و گزارش</a>
+                {% endif %}
+            {% endwith %}
+        </div>
+        {% empty %}
+        <p style="margin:0;color:var(--text-secondary);font-size:.84rem;">در حال حاضر اتاق جلسه آنلاینی فعال نیست.</p>
+        {% endfor %}
+    </div>
     <div class="csess-card">
         <h2 style="margin:0 0 12px;">درخواست جلسه مشاوره جدید</h2>
         <form method="post">

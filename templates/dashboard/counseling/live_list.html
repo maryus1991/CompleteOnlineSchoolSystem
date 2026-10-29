@@ -1,0 +1,94 @@
+{% extends "dashboard/base.html" %}
+{% load live_class_tags %}
+
+{% block header %}
+<style>
+.clive-page{display:flex;flex-direction:column;gap:18px;padding:10px}
+.clive-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;padding:20px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border-color)}
+.clive-header h2{margin:0 0 6px;font-size:1.25rem}
+.clive-header p{margin:0;color:var(--text-secondary);font-size:.85rem}
+.clive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.clive-card{display:flex;flex-direction:column;justify-content:space-between;padding:20px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border-color);gap:14px}
+.clive-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.clive-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:.75rem;font-weight:700}
+.clive-badge.live{background:rgba(34,197,94,.14);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.clive-badge.scheduled{background:rgba(79,172,254,.14);color:#4facfe;border:1px solid rgba(79,172,254,.3)}
+.clive-badge.completed{background:rgba(148,163,184,.14);color:var(--text-secondary);border:1px solid var(--border-color)}
+.clive-title{margin:0 0 6px;font-size:1.05rem;font-weight:800}
+.clive-meta{margin:0;color:var(--text-secondary);font-size:.82rem;line-height:1.8}
+.clive-actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--border-color)}
+.clive-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;text-decoration:none;font-weight:700;font-size:.82rem}
+.clive-btn-outline{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:10px;border:1px solid var(--border-color);color:var(--text-primary);text-decoration:none;font-size:.8rem;font-weight:600}
+.clive-empty{padding:44px 20px;text-align:center;border-radius:16px;background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-secondary)}
+@media (max-width: 640px){
+  .clive-page{padding:4px}
+  .clive-grid{grid-template-columns:1fr}
+  .clive-actions a{width:100%}
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="clive-page" dir="rtl">
+  <div class="clive-header">
+    <div>
+      <h2>جلسات آنلاین مشاوره</h2>
+      <p>
+        {% if adviser %}
+          اتاق‌های گفتگوی آنلاین با مشاور اختصاصی شما ({{ adviser.user.get_full_name }})
+        {% else %}
+          اتاق‌های گفتگوی آنلاین مشاوره تحصیلی
+        {% endif %}
+      </p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a href="{% url 'student:counseling-hub' %}" class="clive-btn-outline">میز کار مشاوره</a>
+      <a href="{% url 'student:counseling-sessions' %}" class="clive-btn-outline">درخواست نوبت جلسه</a>
+    </div>
+  </div>
+
+  {% if live_sessions %}
+    <div class="clive-grid">
+      {% for item in live_sessions %}
+        <article class="clive-card">
+          <div>
+            <div class="clive-top" style="margin-bottom:12px;">
+              <span class="clive-badge {{ item.status }}">{{ item.get_status_display }}</span>
+              {% if item.scheduled_at %}
+                <span style="font-size:.76rem;color:var(--text-secondary);">{{ item.scheduled_at|date:"Y/m/d - H:i" }}</span>
+              {% endif %}
+            </div>
+            <h3 class="clive-title">{{ item.title }}</h3>
+            <p class="clive-meta">
+              مشاور: <strong>{{ item.adviser.user.get_full_name }}</strong><br>
+              {% if item.counseling_session %}
+                مرتبط با نوبت: {{ item.counseling_session.title }}
+              {% else %}
+                جلسه آنلاین مشاوره تحصیلی
+              {% endif %}
+            </p>
+          </div>
+
+          <div class="clive-actions">
+            {% with meeting_url=item|get_student_meeting_url:user %}
+              {% if item.is_available and meeting_url %}
+                <a href="{{ meeting_url }}" target="_blank" rel="noopener noreferrer" class="clive-btn">
+                  ورود مستقیم به جلسه آنلاین ←
+                </a>
+              {% endif %}
+            {% endwith %}
+            <a href="{% url 'student:counseling-live-detail' item.pk %}" class="clive-btn-outline">
+              جزئیات و فایل‌های جلسه
+            </a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="clive-empty">
+      <h3 style="margin:0 0 8px;color:var(--text-primary);">در حال حاضر جلسه آنلاین مشاوره‌ای ثبت نشده است</h3>
+      <p style="margin:0;">به‌محض ایجاد و شروع جلسه آنلاین توسط مشاور شما، لینک ورود مستقیم در این صفحه فعال می‌شود.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

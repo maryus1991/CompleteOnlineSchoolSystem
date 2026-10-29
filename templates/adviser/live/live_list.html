@@ -1,0 +1,97 @@
+{% extends "adviser/base.html" %}
+{% block header %}
+<style>
+.pr-page{width:100%;padding:10px}
+.pr-header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px;flex-wrap:wrap}
+.pr-header h2{margin:0 0 6px;color:var(--text-primary);font-size:1.3rem;font-weight:800}
+.pr-header p{margin:0;color:var(--text-secondary);font-size:.82rem}
+.pr-actions-top{display:flex;gap:10px;flex-wrap:wrap}
+.pr-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;color:#fff;text-decoration:none;background:var(--accent-gradient);font-size:.82rem;font-weight:700}
+.pr-btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;color:var(--text-secondary);text-decoration:none;background:var(--bg-card);border:1px solid var(--border-color);font-size:.82rem;font-weight:700}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:18px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card);margin-bottom:14px}
+.title{margin:0 0 8px;color:var(--text-primary);font-size:.96rem;font-weight:800}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:8px;font-size:.72rem;font-weight:700}
+.b-live{color:#34d399;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.24)}
+.b-completed{color:#60a5fa;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.24)}
+.b-cancelled{color:#f87171;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.24)}
+.b-muted{color:var(--text-secondary);background:rgba(255,255,255,.04);border:1px solid var(--border-color)}
+.row-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.join-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:10px;font-size:.78rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#34d399,#10b981);text-decoration:none;white-space:nowrap}
+.edit-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border-radius:10px;font-size:.76rem;font-weight:700;color:var(--text-primary);background:var(--bg-primary);border:1px solid var(--border-color);text-decoration:none;white-space:nowrap}
+.report-link{font-size:.75rem;color:#4facfe;text-decoration:none;font-weight:700}
+.empty{padding:50px 20px;text-align:center;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-card);color:var(--text-secondary)}
+@media (max-width: 720px){
+  .pr-header{flex-direction:column;align-items:stretch}
+  .pr-actions-top{display:grid;grid-template-columns:1fr}
+  .row{grid-template-columns:1fr;gap:12px}
+  .row-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="pr-page">
+  <div class="pr-header">
+    <div>
+      <h2>جلسات آنلاین مشاوره</h2>
+      <p>مدیریت اتاق‌های آنلاین مشاوره، ورود مستقیم مشاور و ثبت گزارش برگزاری</p>
+    </div>
+    <div class="pr-actions-top">
+      <a href="{% url 'adviser:session-list' %}" class="pr-btn-ghost">جلسات مشاوره</a>
+      <a href="{% url 'adviser:live-request-list' %}" class="pr-btn">درخواست جلسه آنلاین</a>
+    </div>
+  </div>
+
+  {% if items %}
+    {% for item in items %}
+    <div class="row">
+      <div>
+        <h3 class="title">{{ item.title }}</h3>
+        <div class="meta">
+          <span class="badge {% if item.status == 'live' %}b-live{% elif item.status == 'completed' %}b-completed{% elif item.status == 'cancelled' %}b-cancelled{% else %}b-muted{% endif %}">
+            {{ item.get_status_display }}
+          </span>
+          <span class="badge b-muted">سرور: {{ item.server.name }}</span>
+          {% if item.scheduled_at %}
+            <span class="badge b-muted">زمان: {{ item.scheduled_at|date:"Y/m/d - H:i" }}</span>
+          {% endif %}
+          {% if item.counseling_session %}
+            <span class="badge b-muted">جلسه مرتبط: {{ item.counseling_session.title }}</span>
+          {% endif %}
+          {% with st_list=item.students.all %}
+            {% if st_list %}
+              <span class="badge b-muted">
+                دانش‌آموزان:
+                {% for st in st_list %}
+                  {{ st.user.get_full_name|default:st }}{% if not forloop.last %}، {% endif %}
+                {% endfor %}
+              </span>
+            {% else %}
+              <span class="badge b-muted">عمومی (همه دانش‌آموزان تحت پوشش)</span>
+            {% endif %}
+          {% endwith %}
+          {% if item.report_obj %}
+            <span class="badge b-live">گزارش ثبت‌شده</span>
+            <a href="{% url 'adviser:live-report-update' pk=item.report_obj.pk %}" class="report-link">ویرایش گزارش</a>
+          {% else %}
+            <a href="{% url 'adviser:live-report-create' live_pk=item.pk %}" class="report-link">+ ثبت گزارش جلسه</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row-actions">
+        <a href="{% url 'adviser:live-update' pk=item.pk %}" class="edit-btn">ویرایش وضعیت / اعضا</a>
+        <a href="{% url 'adviser:live-join' pk=item.pk %}" class="join-btn" target="_blank" rel="noopener">ورود مشاور به جلسه</a>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <h3 style="margin:0 0 8px;color:var(--text-primary);">هنوز اتاق جلسه آنلاینی برای شما فعال نشده است</h3>
+      <p style="margin:0 0 16px;font-size:.84rem;">می‌توانید از طریق بخش درخواست‌ها، درخواست تشکیل جلسه آنلاین جدید برای بررسی ادمین ثبت کنید.</p>
+      <a href="{% url 'adviser:live-request-create' %}" class="pr-btn">+ ثبت درخواست جلسه آنلاین</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
