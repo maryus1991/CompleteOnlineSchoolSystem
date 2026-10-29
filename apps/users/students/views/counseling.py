@@ -1,9 +1,12 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from apps.common.utils import datetime2jalali
 from django.views import View
-from django.views.generic import ListView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
+
+from apps.live_classes.models import AdviserLiveSession
 from apps.progress.models import (
     StudyPlan,
     StudyPlanItem,
@@ -18,6 +21,35 @@ from apps.users.students.forms.counseling import (
     StudentPrescriptionReflectionForm,
 )
 from apps.users.students.mixins import StudentMixin
+
+
+def _get_student_adviser_live_sessions_qs(student):
+    if not student or not student.adviser_id:
+        return AdviserLiveSession.objects.none()
+
+    return (
+        AdviserLiveSession.objects.filter(
+            is_active=True,
+            adviser_id=student.adviser_id,
+            adviser__is_active=True,
+            server__is_active=True,
+        )
+        .filter(
+            Q(students=student)
+            | Q(counseling_session__student=student)
+            | Q(students__isnull=True, counseling_session__isnull=True)
+        )
+        .select_related(
+            "adviser",
+            "adviser__user",
+            "adviser__school",
+            "counseling_session",
+            "server",
+        )
+        .prefetch_related("report")
+        .distinct()
+        .order_by("-pk")
+    )
 
 
 class StudentCounselingHubView(StudentMixin, TemplateView):
@@ -39,6 +71,7 @@ class StudentCounselingHubView(StudentMixin, TemplateView):
             .order_by("-start_date", "-pk")
             .first()
         )
+
         all_plans = (
             StudyPlan.objects.filter(student=student, is_active=True)
             .select_related("adviser", "adviser__user")
@@ -54,6 +87,13 @@ class StudentCounselingHubView(StudentMixin, TemplateView):
             .select_related("adviser", "adviser__user")
             .order_by("-scheduled_at", "-pk")[:6]
         )
+
+        live_sessions = list(_get_student_adviser_live_sessions_qs(student)[:6])
+        for item in live_sessions:
+            item.report_obj = next(
+                (r for r in item.report.all() if r.is_active),
+                None,
+            )
 
         prescriptions = (
             AdviserExamPrescription.objects.filter(
@@ -86,6 +126,7 @@ class StudentCounselingHubView(StudentMixin, TemplateView):
                 "active_plan_progress": active_plan.completion_percentage() if active_plan else 0,
                 "all_plans": all_plans,
                 "upcoming_sessions": upcoming_sessions,
+                "live_sessions": live_sessions,
                 "prescriptions": prescriptions,
                 "recent_logs": recent_logs,
             }
@@ -314,6 +355,15 @@ class StudentSessionListRequestView(StudentMixin, View):
             .order_by("-scheduled_at", "-pk")
         )
 
+    def _get_live_sessions(self, student):
+        qs = list(_get_student_adviser_live_sessions_qs(student)[:10])
+        for item in qs:
+            item.report_obj = next(
+                (r for r in item.report.all() if r.is_active),
+                None,
+            )
+        return qs
+
     def get(self, request, *args, **kwargs):
         form = StudentSessionRequestForm()
         return render(
@@ -322,6 +372,7 @@ class StudentSessionListRequestView(StudentMixin, View):
             {
                 "form": form,
                 "items": self._get_sessions(request.student),
+                "live_sessions": self._get_live_sessions(request.student),
                 "adviser": request.student.adviser,
             },
         )
@@ -355,6 +406,60 @@ class StudentSessionListRequestView(StudentMixin, View):
             {
                 "form": form,
                 "items": self._get_sessions(student),
+                "live_sessions": self._get_live_sessions(student),
                 "adviser": student.adviser,
             },
         )
+
+
+class StudentAdviserLiveSessionListView(StudentMixin, ListView):
+    """
+    فهرست جلسات آنلاین مشاوره دانش‌آموز با مشاور اختصاصی خود.
+    دانش‌آموز فقط جلساتی را می‌بیند که مشاور خودش برگزارکننده آن است و دانش‌آموز مجاز به حضور در آن است.
+    """
+    model = AdviserLiveSession
+    template_name = "dashboard/counseling/live_list.html"
+    context_object_name = "live_sessions"
+    paginate_by = 24
+
+    def get_queryset(self):
+        qs = _get_student_adviser_live_sessions_qs(self.request.student)
+        for item in qs:
+            item.report_obj = next(
+                (r for r in item.report.all() if r.is_active),
+                None,
+            )
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["student"] = self.request.student
+        context["adviser"] = self.request.student.adviser
+        return context
+
+
+class StudentAdviserLiveSessionDetailView(StudentMixin, DetailView):
+    """
+    جزئیات یک جلسه آنلاین مشاوره برای دانش‌آموز.
+    لینک ورود تنها زمانی ساخته می‌شود که جلسه در وضعیت LIVE (در حال برگزاری) باشد.
+    """
+    model = AdviserLiveSession
+    template_name = "dashboard/counseling/live_detail.html"
+    context_object_name = "live_session"
+    pk_url_kwarg = "pk"
+
+    def get_queryset(self):
+        return _get_student_adviser_live_sessions_qs(self.request.student)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        live_session = self.object
+        context["student"] = self.request.student
+        context["adviser"] = self.request.student.adviser
+        context["meeting_url"] = (
+            live_session.get_student_meeting_url(self.request.user)
+            if live_session.is_available
+            else None
+        )
+        context["reports"] = live_session.report.filter(is_active=True).order_by("-pk")
+        return context

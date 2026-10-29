@@ -50,4 +50,6 @@ urlpatterns = [
     path("daily-logs/", views.counseling.StudentDailyLogListCreateView.as_view(), name="counseling-daily-logs"),
     path("counseling/prescriptions/<int:report_pk>/", views.counseling.StudentExamPrescriptionDetailView.as_view(), name="counseling-prescription-detail"),
     path("counseling/sessions/", views.counseling.StudentSessionListRequestView.as_view(), name="counseling-sessions"),
+    path("counseling/live-sessions/", views.counseling.StudentAdviserLiveSessionListView.as_view(), name="counseling-live-list"),
+    path("counseling/live-sessions/<int:pk>/", views.counseling.StudentAdviserLiveSessionDetailView.as_view(), name="counseling-live-detail"),
 ]
