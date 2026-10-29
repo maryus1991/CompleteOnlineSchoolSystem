@@ -29,7 +29,14 @@ from apps.classes.models import Class
 from apps.communication.models import ClassMessage
 from apps.content.models import ClassArticle, ClassFile, Section
 from apps.exams.models import Exam, ExamStudentDetails
-from apps.live_classes.models import LiveClass, LiveClassReport, StreamServers
+from apps.live_classes.models import (
+    AdviserLiveSession,
+    AdviserLiveSessionReport,
+    AdviserLiveSessionRequest,
+    LiveClass,
+    LiveClassReport,
+    StreamServers,
+)
 from apps.practice.models import Practice, PracticeStudentDetails
 from apps.progress.models import (
     AdviserExamPrescription,
@@ -1055,6 +1062,52 @@ class Command(BaseCommand):
                         attendance_report=self.pdf_file(li + 2, f"live-attendance-{li + 1}.pdf"),
                     )
                     self.backdate(report, J(1405, 7, 22 + li, 18, 45))
+
+            # اتاق‌های جلسه آنلاین مشاوره (برای مشاوران و دانش‌آموزان تحت پوشش)
+            for ai, adv in enumerate(advisers):
+                adv_students = list(Student.objects.filter(adviser=adv, is_active=True)[:3])
+                adv_session = CounselingSession.objects.filter(adviser=adv, is_active=True).first()
+                live_adv = AdviserLiveSession.objects.create(
+                    adviser=adv,
+                    counseling_session=adv_session,
+                    title=f"جلسه آنلاین مشاوره و بررسی برنامه ({adv.user.get_full_name()})",
+                    server=server,
+                    status=AdviserLiveSession.Status.LIVE if ai == 0 else AdviserLiveSession.Status.COMPLETED,
+                    scheduled_at=J(1405, 7, 25 + ai, 16, 0),
+                )
+                if adv_students:
+                    live_adv.students.set(adv_students)
+                self.backdate(live_adv, J(1405, 7, 25 + ai, 16, 0))
+
+                if live_adv.status == AdviserLiveSession.Status.COMPLETED:
+                    adv_rep = AdviserLiveSessionReport.objects.create(
+                        live_session=live_adv,
+                        counseling_session=adv_session,
+                        started_at=J(1405, 7, 25 + ai, 16, 0),
+                        ended_at=J(1405, 7, 25 + ai, 16, 45),
+                        duration_minutes=45,
+                        attendees_count=len(adv_students) + 1,
+                        adviser_note="برنامه مطالعاتی هفتگی و بودجه‌بندی آزمون بعدی با دانش‌آموزان هماهنگ شد.",
+                        admin_note="جلسه مشاوره بدون مشکل فنی برگزار گردید.",
+                        recording_file=self.pdf_file(ai, f"adviser-live-rec-{ai + 1}.pdf"),
+                        chat_report=self.pdf_file(ai + 1, f"adviser-live-chat-{ai + 1}.pdf"),
+                        attendance_report=self.pdf_file(ai + 2, f"adviser-live-att-{ai + 1}.pdf"),
+                    )
+                    self.backdate(adv_rep, J(1405, 7, 25 + ai, 17, 0))
+
+                req_adv = AdviserLiveSessionRequest.objects.create(
+                    adviser=adv,
+                    counseling_session=adv_session,
+                    title=f"درخواست جلسه آنلاین تحلیل آزمون ({adv.user.get_full_name()})",
+                    description="درخواست اختصاص اتاق آنلاین جهت جلسه تحلیل کارنامه و هدف‌گذاری آزمون بعدی.",
+                    preferred_at=J(1405, 8, 2 + ai, 17, 30),
+                    duration_minutes=45,
+                    status=AdviserLiveSessionRequest.Status.APPROVED if ai == 0 else AdviserLiveSessionRequest.Status.PENDING,
+                    admin_note="اتاق آنلاین روی سرور اصلی فعال شد." if ai == 0 else "",
+                )
+                if adv_students:
+                    req_adv.students.set(adv_students)
+                self.backdate(req_adv, J(1405, 7, 24 + ai, 12, 0))
 
         # ------------------------------------------------------------ articles
         article_specs = [
