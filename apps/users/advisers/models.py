@@ -9,44 +9,16 @@ class Adviser(BaseModel):
     province = models.CharField(null=True, blank=True, max_length=255, verbose_name='استان')
     city = models.CharField(null=True, blank=True, max_length=255, verbose_name='شهر')
 
-    school = models.ForeignKey(
-        School,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="advisers",
-        verbose_name="مدرسه",
-    )
-    specialization = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name="تخصص مشاوره‌ای",
-    )
-    max_students_capacity = models.PositiveIntegerField(
-        default=50,
-        verbose_name="حداکثر ظرفیت دانش‌آموز",
-    )
+    school = models.ForeignKey(School, null=True, blank=True, on_delete=models.SET_NULL, related_name="advisers", verbose_name="مدرسه", )
+    specialization = models.CharField(max_length=255, null=True, blank=True, verbose_name="تخصص مشاوره‌ای" )
+    max_students_capacity = models.PositiveIntegerField( default=50, verbose_name="حداکثر ظرفیت دانش‌آموز" )
 
-    # سطح دسترسی‌ها (الگوی دقیق مدل Teacher)
-    can_manage_study_plans = models.BooleanField(
-        "اجازه تعریف و ویرایش برنامه مطالعاتی", default=True
-    )
-    can_view_student_reports = models.BooleanField(
-        "اجازه مشاهده و تحلیل کارنامه دانش‌آموزان", default=True
-    )
-    can_manage_sessions = models.BooleanField(
-        "اجازه مدیریت جلسات مشاوره", default=True
-    )
-    can_answer_counseling_requests = models.BooleanField(
-        "اجازه پاسخ به درخواست‌های مشاوره سایت", default=False
-    )
-    can_send_adviser_notes = models.BooleanField(
-        "اجازه ثبت نسخه و بازخورد مشاوره‌ای", default=True
-    )
-    can_change_account = models.BooleanField(
-        "اجازه ویرایش اطلاعات حساب", default=True
-    )
+    can_manage_study_plans = models.BooleanField("اجازه تعریف و ویرایش برنامه مطالعاتی", default=True )
+    can_view_student_reports = models.BooleanField("اجازه مشاهده و تحلیل کارنامه دانش‌آموزان", default=True )
+    can_manage_sessions = models.BooleanField("اجازه مدیریت جلسات مشاوره", default=True )
+    can_answer_counseling_requests = models.BooleanField("اجازه پاسخ به درخواست‌های مشاوره سایت", default=False )
+    can_send_adviser_notes = models.BooleanField("اجازه ثبت نسخه و بازخورد مشاوره‌ای", default=True )
+    can_change_account = models.BooleanField("اجازه ویرایش اطلاعات حساب", default=True )
 
     def active_students_count(self) -> int:
         return self.students.filter(is_active=True).count()
