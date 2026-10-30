@@ -1,9 +1,8 @@
 name: aroedu-stage
-
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: aroedu_stage_postgres
+    container_name: postgres
     restart: unless-stopped
     env_file:
       - ./envs/.env.stage
@@ -25,7 +24,7 @@ services:
 
   redis:
     image: redis:7.4-alpine
-    container_name: aroedu_stage_redis
+    container_name: redis
     restart: unless-stopped
     env_file:
       - ./envs/.env.stage
@@ -40,7 +39,7 @@ services:
     networks:
       - aroedu_stage_net
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a "$${REDIS_PASSWORD}" ping | grep PONG"]
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,8 +48,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: aroedu/school-system:stage
-    container_name: aroedu_stage_web
+    container_name: app
     restart: unless-stopped
     env_file:
       - ./envs/.env.stage
@@ -70,6 +68,7 @@ services:
     volumes:
       - static_stage_volume:/app/staticfiles
       - media_stage_volume:/app/media
+      - ./:/app/
     expose:
       - "8000"
     networks:
@@ -83,7 +82,7 @@ services:
 
   nginx:
     image: nginx:1.27-alpine
-    container_name: aroedu_stage_nginx
+    container_name: nginx
     restart: unless-stopped
     depends_on:
       web:
@@ -100,7 +99,7 @@ services:
     networks:
       - aroedu_stage_net
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null --header='Host: stage.aroedu.ir' http://127.0.0.1/healthz/ || exit 1"]
+      test: ["CMD-SHELL", "wget -q -O /dev/null --header='Host: aroedu.ir' http://127.0.0.1/healthz/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3

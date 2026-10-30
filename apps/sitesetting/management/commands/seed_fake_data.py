@@ -1,22 +1,29 @@
 """
 Seed the database with a rich, realistic (Persian) demo dataset.
 
-The command uses sample images/PDFs from the user's ~/Downloads folder and
-the normal Django storage layer, so every referenced file is copied into
-MEDIA_ROOT automatically.
+Sample images and PDFs are taken from the project's own media folder (see
+IMAGE_GROUPS / PDF_GROUPS) and copied through the normal Django storage
+layer, so every referenced file lands in MEDIA_ROOT automatically.
 
 Usage:
     python manage.py seed_fake_data
 """
 
 from datetime import timedelta, timezone
+from io import BytesIO
 from pathlib import Path
 import random
 
 import jdatetime
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+
+try:
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:  # pragma: no cover
+    Image = ImageDraw = ImageFont = None
 
 from apps.categories.models import (
     BlogCategories,
@@ -70,35 +77,44 @@ from apps.users.teachers.models import Teacher
 
 SEED_MARK = "SEED2026"
 
-DOWNLOADS = Path.home() / "Downloads"
+# فایل‌های منبع از پوشه media خود پروژه خوانده می‌شوند تا اجرای دستور به
+# فایل‌های بیرون از مخزن وابسته نباشد. هر گروه یک الگوی glob نسبت به MEDIA_DIR
+# است و فایل‌ها مرتب می‌شوند تا خروجی تکرارپذیر بماند.
+MEDIA_DIR = Path(settings.MEDIA_ROOT)
 
-IMAGES = [
-    "photo28843181518.jpg",
-    "photo29267083255.jpg",
-    "photo29267091019.jpg",
-    "photo29267108909.jpg",
-    "photo29573531043.jpg",
-    "photo_30690392984_x.jpg",
-    "ChatGPT Image Sep 19, 2026, 02_42_36 PM.png",
-    "ahwaz_midnight_blue_20260909_195730.png",
-    "dezful_midnight_blue_20260909_195810.png",
-    "khomein_midnight_blue_20260909_200014.png",
-]
+IMAGE_GROUPS = {
+    "teacher": "users-profile/**/teacher-*.webp",
+    "adviser": "users-profile/**/adviser-*.webp",
+    "student": "users-profile/**/student-*.webp",
+    "class": "classes/**/class-*.webp",
+    "exam": "classes/**/exam-*.webp",
+    "article": "articles-images/**/article-*.webp",
+    "testimonial": "test-monomials/**/testimonial-*.webp",
+    "practice_answer": "practice_answers/**/practice-*-answer-*.jpg",
+    "logo": "لوگو/**/site-logo.webp",
+    "about": "about-image/**/*.webp",
+}
 
-PDFS = [
-    "کارنامه_دانش_آموز-1.pdf",
-    "کارنامه_دانش_آموز-2.pdf",
-    "کارنامه_دانش_آموز-3.pdf",
-    "کارنامه_دانش_آموز-4.pdf",
-    "کارنامه_دانش_آموز-5.pdf",
-    "تکلیف 2.pdf",
-    "چاپ فرم _ سامانه ارزیابی تکمیلی.pdf",
-    "مقایسه_آزمون_های_جامع.pdf",
-]
+PDF_GROUPS = {
+    "class_file": "class-file-*.pdf",
+    "article": "article-files/**/article-*.pdf",
+    "practice": "questions/**/practice-[0-9].pdf",
+    "practice_key": "questions/key/**/practice-answer-key-*.pdf",
+    "practice_answer": "practice_answers/**/practice-*-answer-*.pdf",
+    "daily_log": "progress/daily_logs/**/daily-log-*.pdf",
+    "prescription": "progress/prescriptions/**/prescription-*.pdf",
+    "ticket": "tickets/**/ticket-*.pdf",
+    "live_recording": "live_classes/recordings/**/live-recording-*.pdf",
+    "live_chat": "live_classes/chat_reports/**/live-chat-*.pdf",
+    "live_attendance": "live_classes/attendance_reports/**/live-attendance-*.pdf",
+}
 
 
 def J(year, month, day, hour=9, minute=0):
-    return jdatetime.datetime(year, month, day, hour, minute, tzinfo=timezone.utc)
+    """Jalali → Gregorian datetime (aware) for Django DateTimeField / DateField."""
+    return jdatetime.datetime(
+        year, month, day, hour, minute, tzinfo=timezone.utc
+    ).togregorian()
 
 
 def CK(html):
@@ -109,22 +125,116 @@ class Command(BaseCommand):
     help = "افزودن داده‌های نمونه‌ی واقع‌گرایانه به دیتابیس و کپی فایل‌ها در media"
 
     # ------------------------------------------------------------------ utils
-    def image_file(self, index, name):
-        src = DOWNLOADS / IMAGES[index % len(IMAGES)]
-        if not src.exists():
-            raise CommandError(f"فایل تصویر پیدا نشد: {src}")
-        return ContentFile(src.read_bytes(), name=name)
+    def media_file(self, groups, group, index, name, kind="image"):
+        """Load a real media file if present; otherwise build a tiny placeholder.
 
-    def pdf_file(self, index, name):
-        src = DOWNLOADS / PDFS[index % len(PDFS)]
-        if not src.exists():
-            raise CommandError(f"فایل PDF پیدا نشد: {src}")
-        return ContentFile(src.read_bytes(), name=name)
+        Original seed expected files under MEDIA_ROOT matching IMAGE_GROUPS /
+        PDF_GROUPS globs. On fresh installs those folders are often empty, so
+        we fall back to generated placeholders instead of aborting.
+        """
+        pattern = groups[group]
+        sources = sorted(MEDIA_DIR.glob(pattern))
+        if sources:
+            return ContentFile(sources[index % len(sources)].read_bytes(), name=name)
+        self.stdout.write(
+            self.style.WARNING(
+                f"منبع media پیدا نشد ({pattern})؛ placeholder ساخته می‌شود: {name}"
+            )
+        )
+        if kind == "pdf" or str(name).lower().endswith(".pdf"):
+            return ContentFile(self._placeholder_pdf(name), name=name)
+        return ContentFile(self._placeholder_image(name), name=name)
+
+    def image_file(self, group, index, name):
+        return self.media_file(IMAGE_GROUPS, group, index, name, kind="image")
+
+    def pdf_file(self, group, index, name):
+        return self.media_file(PDF_GROUPS, group, index, name, kind="pdf")
+
+    def _placeholder_image(self, name, size=(640, 480)):
+        """Minimal WebP/JPEG/PNG bytes so FileField saves without real assets."""
+        label = Path(name).stem[:40]
+        ext = Path(name).suffix.lower() or ".webp"
+        if Image is None:
+            # 1x1 PNG fallback if Pillow is missing
+            png = (
+                b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01"
+                b"\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00"
+                b"\x00\x0cIDATx\x9cc\xf8\x0f\x00\x00\x01\x01\x00\x05\x18"
+                b"\xd8N\x00\x00\x00\x00IEND\xaeB`\x82"
+            )
+            return png
+        colors = [
+            (41, 98, 255),
+            (0, 150, 136),
+            (233, 30, 99),
+            (255, 152, 0),
+            (103, 58, 183),
+            (63, 81, 181),
+        ]
+        color = colors[hash(name) % len(colors)]
+        img = Image.new("RGB", size, color)
+        draw = ImageDraw.Draw(img)
+        draw.rectangle([20, 20, size[0] - 20, size[1] - 20], outline=(255, 255, 255), width=3)
+        try:
+            font = ImageFont.load_default()
+        except Exception:
+            font = None
+        text = f"SEED\n{label}"
+        # center-ish text
+        draw.multiline_text((size[0] // 2 - 40, size[1] // 2 - 20), text, fill=(255, 255, 255), font=font, align="center")
+        buf = BytesIO()
+        if ext == ".webp":
+            img.save(buf, format="WEBP", quality=85)
+        elif ext in {".jpg", ".jpeg"}:
+            img.save(buf, format="JPEG", quality=85)
+        else:
+            img.save(buf, format="PNG")
+        return buf.getvalue()
+
+    def _placeholder_pdf(self, name):
+        """Minimal valid single-page PDF (no external deps)."""
+        title = Path(name).stem[:60].replace("(", " ").replace(")", " ")
+        # Simple PDF with one page and the filename as text
+        content = f"BT /F1 18 Tf 50 750 Td ({title}) Tj ET"
+        objects = []
+        objects.append("1 0 obj<< /Type /Catalog /Pages 2 0 R >>endobj\n")
+        objects.append("2 0 obj<< /Type /Pages /Kids [3 0 R] /Count 1 >>endobj\n")
+        objects.append(
+            "3 0 obj<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+            "/Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>endobj\n"
+        )
+        objects.append(
+            f"4 0 obj<< /Length {len(content)} >>stream\n{content}\nendstream\nendobj\n"
+        )
+        objects.append(
+            "5 0 obj<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>endobj\n"
+        )
+        body = "".join(objects)
+        # Build xref
+        header = "%PDF-1.4\n"
+        offsets = [0]
+        pos = len(header)
+        for obj in objects:
+            offsets.append(pos)
+            pos += len(obj)
+        xref_pos = pos
+        xref = f"xref\n0 {len(offsets)}\n"
+        xref += "0000000000 65535 f \n"
+        for off in offsets[1:]:
+            xref += f"{off:010d} 00000 n \n"
+        trailer = (
+            f"trailer<< /Size {len(offsets)} /Root 1 0 R >>\n"
+            f"startxref\n{xref_pos}\n%%EOF\n"
+        )
+        return (header + body + xref + trailer).encode("latin-1")
 
     def backdate(self, obj, when):
-        """created_at is auto_now_add, so it can only be adjusted afterwards."""
+        """created_at / date_joined is auto_now_add; adjust after create.
+        `when` must already be a Gregorian datetime (from J()).
+        """
         if isinstance(obj, User):
-            User.objects.filter(pk=obj.pk).update(date_joined=when.togregorian())
+            User.objects.filter(pk=obj.pk).update(date_joined=when)
         else:
             type(obj).objects.filter(pk=obj.pk).update(created_at=when)
 
@@ -161,10 +271,14 @@ class Command(BaseCommand):
         rnd = self.rnd
 
         # ------------------------------------------------------- categories
-        grade = {g.name: g for g in GradeCategories.objects.all()}
-        major = {m.name: m for m in MajorCategories.objects.all()}
+        grade = {}
+        for name in ["دهم", "یازدهم", "دوازدهم"]:
+            grade[name], _ = GradeCategories.objects.get_or_create(name=name)
+        major = {}
+        for name in ["تجربی", "ریاضی فیزیک", "انسانی"]:
+            major[name], _ = MajorCategories.objects.get_or_create(name=name)
         lesson = {l.name: l for l in LessonCategories.objects.all()}
-        for name in ["هندسه", "حسابان", "ادبیات فارسی", "زبان انگلیسی", "عربی", "دین و زندگی"]:
+        for name in ["هندسه", "حسابان", "ادبیات فارسی", "زبان انگلیسی", "عربی", "دین و زندگی", "فیزیک", "شیمی", "ریاضی"]:
             lesson[name], _ = LessonCategories.objects.get_or_create(name=name)
         for name in ["ریاضی", "تجربی", "حسابان", "شیمی", "مشاوره تحصیلی", "انگیزشی"]:
             blog_cat = BlogCategories.objects.filter(name=name).first()
@@ -178,7 +292,7 @@ class Command(BaseCommand):
             ("09161130003", "سعید", "بهادری", "اهواز", "دبیرستان دکتر حسابی"),
             ("09161130004", "عبدالله", "کریمی", "اندیمشک", "دبیرستان علامه طباطبایی"),
         ]
-        schools = [School.objects.first()]
+        schools = list(School.objects.all()[:1])  # reuse existing school if any
         for i, (phone, first, last, city, school_name) in enumerate(manager_specs, start=1):
             user = self.user(phone, first, last, User.TypeOfUser.MANAGER, User.GenderOfUser.MALE,
                              biography=f"مدیر {school_name}")
@@ -193,6 +307,11 @@ class Command(BaseCommand):
             )
             self.backdate(school, J(1405, 5, 12 + i, 9, 30))
             schools.append(school)
+        if not schools:
+            raise CommandError("هیچ مدرسه‌ای برای seed وجود ندارد.")
+        # school_idx در مشخصات تا ۳ می‌رود؛ اگر فقط ۳ مدرسه ساخته شده، ایندکس‌ها را ایمن می‌کنیم
+        def school_at(idx):
+            return schools[idx % len(schools)]
 
         # ---------------------------------------------------------- teachers
         teacher_specs = [
@@ -207,7 +326,7 @@ class Command(BaseCommand):
         for i, (phone, first, last, gender, specialty, school_idx) in enumerate(teacher_specs):
             user = self.user(
                 phone, first, last, User.TypeOfUser.TEACHER, gender,
-                profile_image=self.image_file(i, f"teacher-{i + 1}.jpg"),
+                profile_image=self.image_file("teacher", i, f"teacher-{i + 1}.webp"),
                 biography=f"دبیر {specialty} با بیش از {rnd.randint(8, 20)} سال سابقه تدریس",
                 publish=True,
             )
@@ -215,8 +334,8 @@ class Command(BaseCommand):
             teacher = Teacher.objects.create(
                 user=user,
                 province="خوزستان",
-                city=schools[school_idx].city,
-                school=schools[school_idx],
+                city=school_at(school_idx).city,
+                school=school_at(school_idx),
                 can_add_question=True,
                 can_add_qbank=i < 3,
                 can_site_article=i == 0,
@@ -234,7 +353,7 @@ class Command(BaseCommand):
         for i, (phone, first, last, gender, city, school_idx, spec) in enumerate(adviser_specs):
             user = self.user(
                 phone, first, last, User.TypeOfUser.ADVISER, gender,
-                profile_image=self.image_file(i + 6, f"adviser-{i + 1}.jpg"),
+                profile_image=self.image_file("adviser", i, f"adviser-{i + 1}.webp"),
                 biography=f"{spec} — {rnd.randint(6, 15)} سال تجربه",
                 publish=True,
             )
@@ -243,7 +362,7 @@ class Command(BaseCommand):
                 user=user,
                 province="خوزستان",
                 city=city,
-                school=schools[school_idx],
+                school=school_at(school_idx),
                 specialization=spec,
                 max_students_capacity=60,
                 can_view_student_reports=True,
@@ -277,7 +396,7 @@ class Command(BaseCommand):
         for i, (first, last, gender, grade_name, major_name, city, school_idx, adviser_idx, target) in enumerate(student_specs):
             user = self.user(
                 f"091712340{i + 1:02d}", first, last, User.TypeOfUser.STUDENT, gender,
-                profile_image=self.image_file(i, f"student-{i + 1}.jpg"),
+                profile_image=self.image_file("student", i, f"student-{i + 1}.webp"),
                 biography=f"دانش‌آموز پایه {grade_name} رشته {major_name}",
             )
             self.backdate(user, J(1405, 6, 1 + (i % 20), 8, 30))
@@ -288,7 +407,7 @@ class Command(BaseCommand):
                 province="خوزستان",
                 city=city,
                 parent_phone_number=f"091633344{i + 1:02d}",
-                school=schools[school_idx],
+                school=school_at(school_idx),
                 adviser=advisers[adviser_idx],
                 target_major_rank=target,
                 counseling_notes_summary=(
@@ -320,7 +439,7 @@ class Command(BaseCommand):
         classes = []
         for i, (name, teacher, grade_name, major_name, lesson_name, school_idx, price, summary) in enumerate(class_specs):
             klass = Class.objects.create(
-                school=schools[school_idx],
+                school=school_at(school_idx),
                 teacher=teacher,
                 grade=grade[grade_name],
                 major=major[major_name],
@@ -329,7 +448,7 @@ class Command(BaseCommand):
                 summery=summary,
                 is_public=True,
                 is_free=i == 6,
-                image=self.image_file(i, f"class-{i + 1}.png"),
+                image=self.image_file("class", i, f"class-{i + 1}.webp"),
                 price=price,
                 first_tag="پشتیبانی ۲۴/۷",
                 second_tag="ضبط جلسات",
@@ -419,7 +538,7 @@ class Command(BaseCommand):
                 section=sections[i * 3 + 2],
                 name=f"جزوه و تمرین {title}",
                 content=CK("فایل PDF جزوه و تمرین‌های مربوط به این جلسه"),
-                file=self.pdf_file(i, f"class-file-{i + 1}.pdf"),
+                file=self.pdf_file("class_file", i, f"class-file-{i + 1}.pdf"),
             )
             self.backdate(class_file, J(1405, 6, 11 + i, 18, 30))
 
@@ -457,7 +576,7 @@ class Command(BaseCommand):
                 "grade": "دوازدهم",
                 "major": "ریاضی فیزیک",
                 "teacher": teachers[0],
-                "school": schools[0],
+                "school": school_at(0),
                 "status": Exam.ExamStatus.RESULTS_PUBLISHED,
                 "comprehensive": True,
                 "start": base_date,
@@ -471,7 +590,7 @@ class Command(BaseCommand):
                 "grade": "دوازدهم",
                 "major": "تجربی",
                 "teacher": teachers[1],
-                "school": schools[1],
+                "school": school_at(1),
                 "status": Exam.ExamStatus.RESULTS_PUBLISHED,
                 "comprehensive": False,
                 "start": J(1405, 7, 26, 17, 0),
@@ -485,7 +604,7 @@ class Command(BaseCommand):
                 "grade": "یازدهم",
                 "major": "تجربی",
                 "teacher": teachers[2],
-                "school": schools[2],
+                "school": school_at(2),
                 "status": Exam.ExamStatus.WAITING_CORRECTION,
                 "comprehensive": False,
                 "start": J(1405, 8, 2, 16, 0),
@@ -499,7 +618,7 @@ class Command(BaseCommand):
                 "grade": "دهم",
                 "major": "تجربی",
                 "teacher": teachers[3],
-                "school": schools[0],
+                "school": school_at(0),
                 "status": Exam.ExamStatus.WAITING_CORRECTION,
                 "comprehensive": False,
                 "start": J(1405, 8, 5, 15, 0),
@@ -591,7 +710,7 @@ class Command(BaseCommand):
                 ),
                 is_public=True,
                 is_free=ei == 3,
-                image=self.image_file(spec["image_idx"], f"exam-{ei + 1}.png"),
+                image=self.image_file("exam", spec["image_idx"], f"exam-{ei + 1}.webp"),
                 summery=f"آزمون {spec['section']} - {spec['grade']} {spec['major']}",
                 comprehensive_exam=spec["comprehensive"],
             )
@@ -770,7 +889,7 @@ class Command(BaseCommand):
                 score=10,
                 type_of_question=Question.TypeOfQuestions.PDF_BASED,
                 practice=practice,
-                pdf_file=self.pdf_file(pi, f"practice-{pi + 1}.pdf"),
+                pdf_file=self.pdf_file("practice", pi, f"practice-{pi + 1}.pdf"),
                 grade=section.klass.grade,
                 major=section.klass.major,
                 lesson=section.klass.lesson,
@@ -778,7 +897,7 @@ class Command(BaseCommand):
             QuestionAnswerKey.objects.create(
                 question=q2,
                 type_of_answer=QuestionAnswerKey.TypeOfAnswer.PDF_BASED,
-                pdf_file=self.pdf_file(pi + 1, f"practice-answer-key-{pi + 1}.pdf"),
+                pdf_file=self.pdf_file("practice_key", pi, f"practice-answer-key-{pi + 1}.pdf"),
             )
 
             for si, student in enumerate(chosen_students):
@@ -799,7 +918,10 @@ class Command(BaseCommand):
                         "مراحل حل را با استفاده از قواعد مشتق انجام دادم و نتیجه نهایی "
                         f"{rnd.randint(2, 12)} به دست آمد."
                     ),
-                    answer_image=self.image_file(pi + si, f"practice-{pi + 1}-answer-{si + 1}.jpg") if si % 3 == 0 else None,
+                    answer_image=(
+                        self.image_file("practice_answer", pi + si, f"practice-{pi + 1}-answer-{si + 1}.jpg")
+                        if si % 3 == 0 else None
+                    ),
                     score=float(rnd.choice([6, 7, 8, 9])) if status == PracticeStudentDetails.Status.CORRECTED else None,
                     teacher_feedback="پاسخ شما بررسی شد؛ به نوشتن واحدها و مراحل دقت کنید."
                     if status == PracticeStudentDetails.Status.CORRECTED else "",
@@ -814,7 +936,10 @@ class Command(BaseCommand):
                     student_finished_at=J(1405, 7, 15 + pi, 21, 0),
                     submitted_at=J(1405, 7, 15 + pi, 21, 0),
                     corrected_at=J(1405, 7, 16 + pi, 11, 0) if status == PracticeStudentDetails.Status.CORRECTED else None,
-                    answer_pdf=self.pdf_file(pi + si, f"practice-{pi + 1}-answer-{si + 1}.pdf") if si % 2 == 0 else None,
+                    answer_pdf=(
+                        self.pdf_file("practice_answer", pi + si, f"practice-{pi + 1}-answer-{si + 1}.pdf")
+                        if si % 2 == 0 else None
+                    ),
                     score=float(rnd.choice([7, 8, 9, 10])) if status == PracticeStudentDetails.Status.CORRECTED else None,
                     teacher_feedback="فایل پاسخ دریافت و تصحیح شد."
                     if status == PracticeStudentDetails.Status.CORRECTED else "",
@@ -907,7 +1032,7 @@ class Command(BaseCommand):
             dlog = DailyStudyLog.objects.create(
                 student=students[student_idx],
                 study_plan_item=plan_item,
-                lesson=plan_item.lesson if plan_item else lesson["ریاضی"],
+                lesson=plan_item.lesson if plan_item else next(iter(lesson.values())),
                 log_date=log_date,
                 actual_duration_minutes=duration,
                 tests_total=total,
@@ -915,7 +1040,9 @@ class Command(BaseCommand):
                 tests_wrong=max(0, total - correct),
                 focus_quality=focus,
                 student_note=note,
-                attachment=self.pdf_file(li, f"daily-log-{li + 1}.pdf") if li % 3 == 0 else None,
+                attachment=(
+                    self.pdf_file("daily_log", li, f"daily-log-{li + 1}.pdf") if li % 3 == 0 else None
+                ),
                 review_status=DailyStudyLog.ReviewStatus.APPROVED if li % 3 != 2 else DailyStudyLog.ReviewStatus.PENDING,
                 adviser_feedback=feedback if li % 3 != 2 else "",
                 reviewed_at=log_date + timedelta(hours=2) if li % 3 != 2 else None,
@@ -941,7 +1068,7 @@ class Command(BaseCommand):
                 strengths_analysis=CK(strengths),
                 weaknesses_analysis=CK(weaknesses),
                 action_plan_for_next_exam=CK(action),
-                voice_or_file_attachment=self.pdf_file(ri, f"prescription-{ri + 1}.pdf"),
+                voice_or_file_attachment=self.pdf_file("prescription", ri, f"prescription-{ri + 1}.pdf"),
                 is_seen_by_student=ri % 2 == 0,
                 student_reflection=(
                     "برنامه را مطالعه کردم و از هفته آینده اجرا می‌کنم."
@@ -1005,7 +1132,7 @@ class Command(BaseCommand):
                 name=name,
                 user=students[student_idx].user,
                 description=description,
-                file=self.pdf_file(ti, f"ticket-{ti + 1}.pdf") if ti % 2 == 0 else None,
+                file=self.pdf_file("ticket", ti, f"ticket-{ti + 1}.pdf") if ti % 2 == 0 else None,
                 priority=priority,
                 status=status,
             )
@@ -1057,16 +1184,16 @@ class Command(BaseCommand):
                         attendees_count=rnd.randint(12, 32),
                         teacher_note="جلسه با حضور فعال دانش‌آموزان برگزار شد و تمرین‌های فصل مرور گردید.",
                         admin_note="کیفیت صدا و تصویر مناسب بود.",
-                        recording_file=self.pdf_file(li, f"live-recording-{li + 1}.pdf"),
-                        chat_report=self.pdf_file(li + 1, f"live-chat-{li + 1}.pdf"),
-                        attendance_report=self.pdf_file(li + 2, f"live-attendance-{li + 1}.pdf"),
+                        recording_file=self.pdf_file("live_recording", li, f"live-recording-{li + 1}.pdf"),
+                        chat_report=self.pdf_file("live_chat", li, f"live-chat-{li + 1}.pdf"),
+                        attendance_report=self.pdf_file("live_attendance", li, f"live-attendance-{li + 1}.pdf"),
                     )
                     self.backdate(report, J(1405, 7, 22 + li, 18, 45))
 
             # اتاق‌های جلسه آنلاین مشاوره (برای مشاوران و دانش‌آموزان تحت پوشش)
             for ai, adv in enumerate(advisers):
-                adv_students = list(Student.objects.filter(adviser=adv, is_active=True)[:3])
-                adv_session = CounselingSession.objects.filter(adviser=adv, is_active=True).first()
+                adv_students = list(Student.objects.filter(adviser=adv, user__is_active=True)[:3])
+                adv_session = CounselingSession.objects.filter(adviser=adv).first()
                 live_adv = AdviserLiveSession.objects.create(
                     adviser=adv,
                     counseling_session=adv_session,
@@ -1089,9 +1216,9 @@ class Command(BaseCommand):
                         attendees_count=len(adv_students) + 1,
                         adviser_note="برنامه مطالعاتی هفتگی و بودجه‌بندی آزمون بعدی با دانش‌آموزان هماهنگ شد.",
                         admin_note="جلسه مشاوره بدون مشکل فنی برگزار گردید.",
-                        recording_file=self.pdf_file(ai, f"adviser-live-rec-{ai + 1}.pdf"),
-                        chat_report=self.pdf_file(ai + 1, f"adviser-live-chat-{ai + 1}.pdf"),
-                        attendance_report=self.pdf_file(ai + 2, f"adviser-live-att-{ai + 1}.pdf"),
+                        recording_file=self.pdf_file("live_recording", ai, f"adviser-live-rec-{ai + 1}.pdf"),
+                        chat_report=self.pdf_file("live_chat", ai, f"adviser-live-chat-{ai + 1}.pdf"),
+                        attendance_report=self.pdf_file("live_attendance", ai, f"adviser-live-att-{ai + 1}.pdf"),
                     )
                     self.backdate(adv_rep, J(1405, 7, 25 + ai, 17, 0))
 
@@ -1140,8 +1267,8 @@ class Command(BaseCommand):
                     "پیشنهاد می‌شود مطالب را با دفتر یادداشت خود مقایسه کرده و به‌صورت عملی اجرا کنید.</p>"
                     "<h3>جمع‌بندی</h3><p>با تمرین مستمر و بازخورد گرفتن از مشاور، می‌توانید روند رو به رشدی را تجربه کنید.</p>"
                 ),
-                image=self.image_file(ai + 3, f"article-{ai + 1}.png"),
-                file=self.pdf_file(ai, f"article-{ai + 1}.pdf"),
+                image=self.image_file("article", ai, f"article-{ai + 1}.webp"),
+                file=self.pdf_file("article", ai, f"article-{ai + 1}.pdf"),
                 name_for_file=f"فایل تکمیلی {title}",
                 publish=True,
             )
@@ -1164,7 +1291,7 @@ class Command(BaseCommand):
                 name=name,
                 behave=behave,
                 text=text,
-                image=self.image_file(i, f"testimonial-{i + 1}.jpg"),
+                image=self.image_file("testimonial", i, f"testimonial-{i + 1}.webp"),
             )
             self.backdate(t, J(1405, 6, 25 + i, 14, 0))
 
@@ -1222,9 +1349,9 @@ class Command(BaseCommand):
         site = Site.objects.first()
         if site:
             if not site.logo:
-                site.logo.save("site-logo.png", self.image_file(7, "site-logo.png"), save=True)
+                site.logo.save("site-logo.webp", self.image_file("logo", 0, "site-logo.webp"), save=True)
             if not site.about_img:
-                site.about_img.save("about-us.png", self.image_file(8, "about-us.png"), save=True)
+                site.about_img.save("about-us.webp", self.image_file("about", 0, "about-us.webp"), save=True)
             site.short_description = "بنیاد آموزشی فراسو؛ همراه دانش‌آموزان در مسیر موفقیت تحصیلی"
             site.save(update_fields=["short_description"])
 

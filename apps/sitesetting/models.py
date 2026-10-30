@@ -9,31 +9,31 @@ from django_resized import ResizedImageField
 
 
 class Site(BaseModel):
-    name = models.CharField("نام سایت", max_length=100, default='بنیاد اموزشی فراسو')
+    name = models.CharField("نام سایت", max_length=100, default='بنیاد اموزشی آرو')
     logo = ResizedImageField("لوگو", upload_to=UploadPath("لوگو"), null=True, blank=True)
 
     description = CKEditor5Field("توضیحات", default="")
     short_description = models.CharField("توضیحات کوتاه", default="بنیادی که برای تضمین اینده شما به وجود امده است", max_length=255)
 
     list_articles_above_tag = models.CharField("تگ لیست مقالات", max_length=100, default=" مقالات آموزشی ")
-    list_articles_title = models.CharField("عنوان لیست مقالات", max_length=100, default=" مقالات امورشی فراسو")
+    list_articles_title = models.CharField("عنوان لیست مقالات", max_length=100, default=" مقالات امورشی آرو")
     list_articles_description = models.CharField("توضیحات لیست مقالات", max_length=500, default="اگاهی و دانایی بیشتر با مطالعه بیشتر")
     list_articles_active = models.BooleanField("فعال صفحه لیست مقالات", default=True)
 
     list_course_above_tag = models.CharField("تگ لیست دوره ها", max_length=100, default=" دوره‌های تخصصی ")
-    list_course_title = models.CharField("عنوان لیست دوره ها", max_length=100, default=" دورهای امورشی فراسو")
+    list_course_title = models.CharField("عنوان لیست دوره ها", max_length=100, default=" دورهای امورشی آرو")
     list_course_description = models.CharField("توضیحات لیست دوره ها", max_length=500, default="دوره‌هایی که آینده شما را می‌سازند")
     list_course_active = models.BooleanField("فعال صفحه لیست دوره ها", default=True)
     count_of_courses_in_course_detail_page = models.IntegerField("تعداد نمایشی دوره ها در صفحه جزییات ", default=6)
 
     list_users_above_tag = models.CharField("تگ لیست کاربران", max_length=100, default="اعضایی گرامی")
-    list_users_title = models.CharField("عنوان لیست کاربران", max_length=100, default=" اعضای سایت امورشی فراسو")
+    list_users_title = models.CharField("عنوان لیست کاربران", max_length=100, default=" اعضای سایت امورشی آرو")
     users_title_url_name = models.CharField("عنوان لیست کاربران", max_length=100, default="برترین ها")
     list_users_description = models.CharField("توضیحات لیست کاربران", max_length=500, default="افرادی که اینده را میسازند")
     list_users_active = models.BooleanField("فعال صفحه لیست کاربران", default=True)
 
     list_exam_above_tag = models.CharField("تگ لیست ازمون ها", max_length=100, default="سنجش و یادگیری")
-    list_exam_title = models.CharField("عنوان لیست ازمون ها", max_length=100, default=" ازمون های امورشی فراسو")
+    list_exam_title = models.CharField("عنوان لیست ازمون ها", max_length=100, default=" ازمون های امورشی آرو")
     list_exam_description = models.CharField("توضیحات لیست ازمون ها", max_length=500, default="داشن خود را به چالش بکشید")
     list_exam_active = models.BooleanField("فعال صفحه لیست ازمون ها", default=True)
 
@@ -58,7 +58,7 @@ class Site(BaseModel):
 
     qbank_above_tag = models.CharField("تگ بانک سوال", max_length=100, default="سوال نیاز داری")
     qbank_title = models.CharField("عنوان بانک سوال", max_length=100, default="بانک سوال")
-    qbank_description = models.CharField("توضیحات بانک سوال", max_length=500, default="بانک سوال رایگان فراسو")
+    qbank_description = models.CharField("توضیحات بانک سوال", max_length=500, default="بانک سوال رایگان آرو")
     qbank_active = models.BooleanField("فعال صفحه بانک سوال", default=True)
 
     about_above_tag = models.CharField("تگ درباره ما", max_length=100, default="با ما اشنا شوید")
@@ -95,7 +95,7 @@ class Site(BaseModel):
     footer_important_3_name = models.CharField("نام لینک مهم شماره ۳ فوتر", default="تماس با ما", max_length=50)
     footer_important_4_name = models.CharField("نام لینک مهم شماره ۴ فوتر", default="درخواست مشاوره رایگان", max_length=50)
 
-    copyright = models.CharField("کپی رایت", default="© ۲۰۲۶ آکادمی فراسو برای اینده ای بهتر", max_length=150)
+    copyright = models.CharField("کپی رایت", default="© ۲۰۲۶ آکادمی آرو برای اینده ای بهتر", max_length=150)
     developer_message = models.CharField("پیام طراح", default="نوشته شده با ❤️ توسط maryus", max_length=50)
     link_url = models.CharField("لینک طراح", default="https://github.com/maryus1991/CompleteOnlineSchoolSystem", max_length=255)
 

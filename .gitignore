@@ -10,6 +10,7 @@ envs/.evns
 *.so
 .idea
 .vscode
+envs/.env.stage
 # Distribution / packaging
 .Python
 build/

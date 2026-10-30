@@ -9,7 +9,7 @@ __pycache__
 *.so
 db.sqlite3
 db.sqlite3-journal
-media/
+
 staticfiles/
 envs/.env*
 !envs/.envs.example

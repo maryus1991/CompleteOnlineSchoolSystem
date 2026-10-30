@@ -1,27 +1,29 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.conf.urls.static import static
 from django.http import JsonResponse
 from django.db import connections
 from django.core.cache import caches
-from debug_toolbar.toolbar import debug_toolbar_urls
-from django.conf.urls import static
 
 
 def healthz_view(request):
     db_ok = True
     cache_ok = True
+
     try:
         with connections["default"].cursor() as cursor:
             cursor.execute("SELECT 1")
             cursor.fetchone()
     except Exception:
         db_ok = False
+
     try:
         caches["default"].set("healthcheck_ping", "ok", timeout=10)
         cache_ok = caches["default"].get("healthcheck_ping") == "ok"
     except Exception:
         cache_ok = False
+
     status_code = 200 if db_ok else 503
     return JsonResponse(
         {
@@ -50,6 +52,6 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += debug_toolbar_urls() + static.static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )
+    from debug_toolbar.toolbar import debug_toolbar_urls
+    urlpatterns = debug_toolbar_urls() + urlpatterns
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

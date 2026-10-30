@@ -61,12 +61,12 @@ if env_bool("DJANGO_SECURE_SSL", False):
     SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "31536000"))
     SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool("DJANGO_HSTS_INCLUDE_SUBDOMAINS", True)
     SECURE_HSTS_PRELOAD = env_bool("DJANGO_HSTS_PRELOAD", True)
+else:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 
-SESSION_ENGINE = os.environ.get(
-    "DJANGO_SESSION_ENGINE",
-    "django.contrib.sessions.backends.cache" if REDIS_URL else "django.contrib.sessions.backends.signed_cookies",
-)
+
 SESSION_CACHE_ALIAS = "default"
 
 # Application definition
@@ -81,7 +81,10 @@ DJANGO_APPS = [
 ]
 REDIS_URL = os.environ.get("REDIS_URL", "").strip()
 ENABLE_ORM_CACHE = env_bool("DJANGO_ENABLE_ORM_CACHE", bool(REDIS_URL))
-
+SESSION_ENGINE = os.environ.get(
+    "DJANGO_SESSION_ENGINE",
+    "django.contrib.sessions.backends.cache" if REDIS_URL else "django.contrib.sessions.backends.signed_cookies",
+)
 THIRD_PARTY_APPS = [
     "phonenumber_field",
     "django_ckeditor_5",
