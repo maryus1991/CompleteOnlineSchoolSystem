@@ -29,15 +29,169 @@
         body, button, input, textarea, .btn, .post-title, .post-content, .sidebar-widget, .nav-link, .logo span {
             font-family: 'Peyda', 'Segoe UI', system-ui, -apple-system, sans-serif !important;
         }
+
+        /* ── Header user dropdown ── */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-menu-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px 8px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: inherit;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+        .user-menu-trigger:hover,
+        .user-menu.open .user-menu-trigger {
+            border-color: rgba(0, 242, 254, 0.45);
+            background: rgba(0, 242, 254, 0.07);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.08);
+        }
+        .user-menu-trigger .user-menu-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #061018;
+            flex-shrink: 0;
+        }
+        .user-menu-trigger .user-menu-avatar svg {
+            width: 16px;
+            height: 16px;
+        }
+        .user-menu-trigger .user-menu-label {
+            white-space: nowrap;
+        }
+        .user-menu-trigger .user-menu-caret {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+        .user-menu.open .user-menu-caret {
+            transform: rotate(180deg);
+        }
+
+        .user-menu-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            min-width: 220px;
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(12, 18, 28, 0.96);
+            backdrop-filter: blur(16px);
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(0, 242, 254, 0.06);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px) scale(0.98);
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease,
+                visibility 0.2s ease;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        [data-theme="light"] .user-menu-dropdown {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+        [data-theme="light"] .user-menu-trigger {
+            border-color: rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.03);
+        }
+        .user-menu.open .user-menu-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .user-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 11px 12px;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: inherit;
+            text-decoration: none;
+            font-family: inherit;
+            font-size: 0.92rem;
+            cursor: pointer;
+            text-align: right;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .user-menu-item:hover {
+            background: rgba(0, 242, 254, 0.1);
+            color: #00f2fe;
+        }
+        [data-theme="light"] .user-menu-item:hover {
+            background: rgba(0, 120, 200, 0.08);
+            color: #0a7ab8;
+        }
+        .user-menu-item svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+        .user-menu-divider {
+            height: 1px;
+            margin: 6px 4px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        [data-theme="light"] .user-menu-divider {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .user-menu-item .item-meta {
+            margin-right: auto;
+            font-size: 0.75rem;
+            opacity: 0.55;
+        }
+
+        @media (max-width: 576px) {
+            .user-menu-trigger .user-menu-label {
+                display: none;
+            }
+            .user-menu-trigger {
+                padding: 8px 10px;
+            }
+            .user-menu-dropdown {
+                left: 0;
+                right: auto;
+                min-width: 200px;
+            }
+        }
     </style>
 </head>
 <body>
-
-
-
     <!-- SCROLL PROGRESS BAR -->
     <div class="scroll-progress" id="scrollProgress"></div>
-
     <!-- PRELOADER -->
     <div class="preloader" id="preloader">
         <div class="preloader-content">
@@ -57,14 +211,11 @@
             <div class="preloader-percent">۰٪</div>
         </div>
     </div>
-
     <!-- CUSTOM CURSOR -->
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
-
     <!-- BACK TO TOP -->
     <button class="back-to-top" id="backToTop"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
-
     <!-- HEADER -->
     <header class="header" id="header">
         <div class="container">
@@ -90,8 +241,6 @@
                         {% if site.list_articles_active %}
                         <li><a href="{% url 'article:article-list' %}" class="nav-link">مقالات</a></li>
                         {% endif %}
-
-
                         {% if site.faq_active %}
                         <li><a href="{% url 'site:faq' %}" class="nav-link">سوالات متداول</a></li>
                         {% endif %}
@@ -107,83 +256,109 @@
                         {% if site.list_users_active %}
                         <li><a href="{% url 'user:list' %}" class="nav-link">{{site.users_title_url_name}}</a></li>
                         {% endif %}
-
-
                     </ul>
                 </nav>
                 <div class="header-actions">
-<button type="button"
-        class="header-icon-btn theme-toggle-btn"
-        id="themeToggle"
-        aria-label="تغییر تم">
-    <!-- ماه = الان دارک است، با کلیک می‌رود روشن -->
-    <svg class="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" stroke-width="2"
-         stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
-    <!-- خورشید = الان روشن است، با کلیک می‌رود دارک -->
-    <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" stroke-width="2"
-         stroke-linecap="round" stroke-linejoin="round"
-         style="display:none">
-        <circle cx="12" cy="12" r="5"/>
-        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-    </svg>
-    <span class="header-icon-label" id="themeToggleText">تم روشن</span>
-</button>
-                    {% if request.user.is_authenticated %}
+                    {# ── یک دکمه + دراپ‌داون برای تم و پنل‌ها ── #}
+                    <div class="user-menu" id="userMenu">
+                        <button type="button"
+                                class="user-menu-trigger"
+                                id="userMenuTrigger"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                aria-controls="userMenuDropdown">
+                            <span class="user-menu-avatar" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </span>
+                            <span class="user-menu-label">
+                                {% if request.user.is_authenticated %}
+                                    حساب من
+                                {% else %}
+                                    ورود | ثبت نام
+                                {% endif %}
+                            </span>
+                            <svg class="user-menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
 
-                    {% if user.type_of_user == "S" or user.is_superuser %}
-                    <a href="{% url 'student:main' %}" class="header-icon-btn"  title="حساب کاربری">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <span class="header-icon-label">حساب کاربری</span>
-                    </a>
-                    {% endif %}
+                        <div class="user-menu-dropdown" id="userMenuDropdown" role="menu">
+                            {# تم #}
+                            <button type="button"
+                                    class="user-menu-item"
+                                    id="themeToggle"
+                                    role="menuitem"
+                                    aria-label="تغییر تم">
+                                <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                </svg>
+                                <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round"
+                                     style="display:none">
+                                    <circle cx="12" cy="12" r="5"/>
+                                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                                </svg>
+                                <span id="themeToggleText">تم روشن</span>
+                            </button>
 
-                    {% if user.type_of_user == "T" or user.is_superuser %}
-                    <a href="{% url 'teacher:main' %}" class="header-icon-btn"  title="پنل معلم">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <span class="header-icon-label">پنل معلم</span>
-                    </a>
-                    {% endif %}
+                            <div class="user-menu-divider"></div>
 
-                    {% if user.type_of_user == "A" or user.is_superuser %}
-                    <a href="{% url 'adviser:main' %}" class="header-icon-btn"  title="پنل مشاور">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <span class="header-icon-label">پنل مشاور</span>
-                    </a>
-                    {% endif %}
+                            {% if request.user.is_authenticated %}
+                                {% if user.type_of_user == "S" or user.is_superuser %}
+                                <a href="{% url 'student:main' %}" class="user-menu-item" role="menuitem">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                    <span>حساب کاربری</span>
+                                </a>
+                                {% endif %}
+                                {% if user.type_of_user == "T" or user.is_superuser %}
+                                <a href="{% url 'teacher:main' %}" class="user-menu-item" role="menuitem">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                    </svg>
+                                    <span>پنل معلم</span>
+                                </a>
+                                {% endif %}
+                                {% if user.type_of_user == "A" or user.is_superuser %}
+                                <a href="{% url 'adviser:main' %}" class="user-menu-item" role="menuitem">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                    <span>پنل مشاور</span>
+                                </a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'user:auth' %}" class="user-menu-item" role="menuitem" id="accountBtn">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                                        <polyline points="10 17 15 12 10 7"/>
+                                        <line x1="15" y1="12" x2="3" y2="12"/>
+                                    </svg>
+                                    <span>ورود | ثبت نام</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
 
-
-                    {% else %}
-                    <a href="{% url 'user:auth' %}" class="header-icon-btn" id="accountBtn" title="ورود و ثبت نام">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <span class="header-icon-label">ورود | ثبت نام</span>
-                    </a>
-
-
-                    {% endif %}
-                                        <button class="mobile-toggle" id="mobileToggle">
+                    <button class="mobile-toggle" id="mobileToggle" type="button" aria-label="منوی موبایل">
                         <span></span><span></span><span></span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
-
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
         <button class="mobile-close" id="mobileClose"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
@@ -218,13 +393,9 @@
                         {% endif %}
         </ul>
     </div>
-
     <main>
-
         {% block main %}
         {% endblock %}
-
-
     {% if page_obj.has_other_pages %}
         <style>
                     .pagination {
@@ -235,13 +406,11 @@
             gap: 10px;
             margin: 50px 0 20px;
         }
-
         .pagination-pages {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
         .pagination-page,
         .pagination-btn {
             width: 42px;
@@ -249,15 +418,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-
             border: 1px solid rgba(255, 255, 255, 0.09);
             border-radius: 12px;
-
             background: rgba(255, 255, 255, 0.025);
             color: rgba(255, 255, 255, 0.65);
-
             text-decoration: none;
-
             transition:
                 color 0.25s ease,
                 background 0.25s ease,
@@ -265,7 +430,6 @@
                 transform 0.25s ease,
                 box-shadow 0.25s ease;
         }
-
         .pagination-page:hover,
         .pagination-btn:hover {
             color: #fff;
@@ -274,76 +438,61 @@
             box-shadow: 0 0 18px rgba(0, 242, 254, 0.08);
             transform: translateY(-2px);
         }
-
         .pagination-page.active {
             color: #061018;
             font-weight: 700;
-
             border-color: transparent;
-
             background: linear-gradient(
                 135deg,
                 #00f2fe,
                 #4facfe
             );
-
             box-shadow:
                 0 0 18px rgba(0, 242, 254, 0.25),
                 0 0 35px rgba(79, 172, 254, 0.12);
         }
-
         .pagination-dots {
             width: 30px;
             text-align: center;
             color: rgba(255, 255, 255, 0.35);
             user-select: none;
         }
-
         .pagination-btn {
             color: rgba(255, 255, 255, 0.55);
         }
-
         .pagination-btn.disabled {
             opacity: 0.3;
             pointer-events: none;
         }
-
         .pagination-btn svg {
             transition: transform 0.25s ease;
         }
-
         .pagination-prev:hover svg {
             transform: translateX(2px);
         }
-
         .pagination-next:hover svg {
             transform: translateX(-2px);
         }
-
         @media (max-width: 576px) {
             .pagination {
                 gap: 6px;
                 margin-top: 35px;
             }
-
             .pagination-pages {
                 gap: 5px;
             }
-
             .pagination-page,
             .pagination-btn {
                 width: 38px;
                 height: 38px;
                 border-radius: 10px;
             }
-
             .pagination-page:nth-child(4) {
                 display: none;
             }
         }
                 </style>
         <nav class="pagination" aria-label="صفحه‌بندی">
-
             {% if page_obj.has_previous %}
                 <a href="?page={{ page_obj.previous_page_number }}"
                    class="pagination-btn pagination-prev"
@@ -352,7 +501,6 @@
                          fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
-
                 </a>
             {% else %}
                 <span class="pagination-btn disabled">
@@ -362,32 +510,22 @@
                     </svg>
                 </span>
             {% endif %}
-
-
             <div class="pagination-pages">
-
                 {% for num in page_obj.paginator.page_range %}
-
                     {% if num == page_obj.number %}
                         <span class="pagination-page active">
                             {{ num }}
                         </span>
-
                     {% elif num == 1 or num == page_obj.paginator.num_pages or num >= page_obj.number|add:"-1" and num <= page_obj.number|add:"1" %}
                         <a href="?page={{ num }}"
                            class="pagination-page">
                             {{ num }}
                         </a>
-
                     {% elif num == page_obj.number|add:"-2" or num == page_obj.number|add:"2" %}
                         <span class="pagination-dots">...</span>
                     {% endif %}
-
                 {% endfor %}
-
             </div>
-
-
             {% if page_obj.has_next %}
                 <a href="?page={{ page_obj.next_page_number }}"
                    class="pagination-btn pagination-next"
@@ -396,7 +534,6 @@
                          fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
-
                 </a>
             {% else %}
                 <span class="pagination-btn disabled">
@@ -406,11 +543,9 @@
                     </svg>
                 </span>
             {% endif %}
-
         </nav>
         {% endif %}
     </main>
-
     <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-top"><div class="container"><div class="footer-grid">
@@ -419,8 +554,6 @@
                     {{site.logo_svg|safe}}
                     <span>{{site.name}}</span>
                 </span>
-
-
                 <p data-i18n="footer.desc">{{site.short_description}}</p>
             </div>
             <div class="footer-col"><h2 data-i18n="footer.quick">دسترسی سریع</h2>
@@ -473,13 +606,9 @@
     </footer>
     {% block footer %}
     {% endblock %}
-
-
     <script src="/static/main/js/navigation.js"></script>
     <script src="/static/main/js/components.js"></script>
-
     <script src="/static/main/js/main.js"></script>
-
     <script>
 (function () {
     const html = document.documentElement;
@@ -488,30 +617,52 @@
     const moon = document.querySelector('.theme-icon-moon');
     const sun = document.querySelector('.theme-icon-sun');
     const KEY = 'theme';
-
     function applyTheme(theme) {
         html.setAttribute('data-theme', theme);
         try { localStorage.setItem(KEY, theme); } catch (e) {}
-
         const isDark = theme === 'dark';
         if (moon) moon.style.display = isDark ? 'block' : 'none';
         if (sun) sun.style.display = isDark ? 'none' : 'block';
         if (textEl) textEl.textContent = isDark ? 'تم روشن' : 'تم تاریک';
         if (btn) btn.setAttribute('aria-label', isDark ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
     }
-
     let saved = 'dark';
     try {
         saved = localStorage.getItem(KEY) || html.getAttribute('data-theme') || 'dark';
     } catch (e) {}
     applyTheme(saved === 'light' ? 'light' : 'dark');
-
     if (btn) {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
             const current = html.getAttribute('data-theme') || 'dark';
             applyTheme(current === 'dark' ? 'light' : 'dark');
         });
     }
+})();
+
+/* User menu dropdown */
+(function () {
+    const menu = document.getElementById('userMenu');
+    const trigger = document.getElementById('userMenuTrigger');
+    if (!menu || !trigger) return;
+
+    function setOpen(open) {
+        menu.classList.toggle('open', open);
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setOpen(!menu.classList.contains('open'));
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!menu.contains(e.target)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+    });
 })();
 </script>
 {% if messages %}
@@ -523,12 +674,11 @@
             transform: translateX(-50%);
             z-index: 10000;
             display: flex;
-            flex-direction: column;   /* قدیمی بالا، جدید پایین */
+            flex-direction: column;
             align-items: center;
             gap: 10px;
             pointer-events: none;
         }
-
         .toast-item {
             position: relative;
             overflow: hidden;
@@ -545,8 +695,6 @@
                 toastIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
                 gradientMove 4s ease infinite;
         }
-
-        /* موج رنگی که روی پس‌زمینه حرکت می‌کنه */
         .toast-item::before {
             content: '';
             position: absolute;
@@ -557,42 +705,33 @@
             animation: waveMove 3s ease-in-out infinite;
             pointer-events: none;
         }
-
         .toast-item > * { position: relative; z-index: 1; }
-
         .toast-item.hide {
             animation: toastOut 0.4s ease forwards;
         }
-
         @keyframes toastIn {
             from { opacity: 0; transform: translateY(30px) scale(0.95); }
             to   { opacity: 1; transform: translateY(0)    scale(1); }
         }
-
         @keyframes toastOut {
             from { opacity: 1; transform: translateY(0); }
             to   { opacity: 0; transform: translateY(20px); }
         }
-
         @keyframes gradientMove {
             0%   { background-position: 0% 50%; }
             50%  { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
         @keyframes waveMove {
             0%   { transform: translateY(20%) translateX(-10%); }
             50%  { transform: translateY(-20%) translateX(10%); }
             100% { transform: translateY(20%) translateX(-10%); }
         }
     </style>
-
     <div id="toast-container"></div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('toast-container');
-
             const colors = {
                 success: 'linear-gradient(135deg, #22c55e, #16a34a, #4ade80, #16a34a)',
                 error:   'linear-gradient(135deg, #ef4444, #b91c1c, #f87171, #b91c1c)',
@@ -601,25 +740,19 @@
                 info:    'linear-gradient(135deg, #3b82f6, #2563eb, #60a5fa, #2563eb)',
                 debug:   'linear-gradient(135deg, #6b7280, #4b5563, #9ca3af, #4b5563)'
             };
-
-            const DURATION = {{site.MESSAGE_DURATION}}; // مدت نمایش (ms)
-
+            const DURATION = {{site.MESSAGE_DURATION}};
             function showToast(msg, tag) {
                 const bg = colors[tag] || colors.info;
-
                 const toast = document.createElement('div');
                 toast.className = 'toast-item';
                 toast.innerHTML = '<span>' + msg + '</span>';
                 toast.style.backgroundImage = bg;
-
                 container.appendChild(toast);
-
                 setTimeout(() => {
                     toast.classList.add('hide');
                     toast.addEventListener('animationend', () => toast.remove(), { once: true });
                 }, DURATION);
             }
-
             {% for message in messages %}
                 showToast(
                     "{{ message|escapejs }}",

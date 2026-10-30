@@ -22,8 +22,12 @@ class ArticleListView(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
+        if tag:= self.request.GET.get("tag"):
+            print(tag)
+            return Article.objects.filter(tags__name__icontains=tag).select_related("category").distinct()
+
         if q:=self.request.GET.get("q"):
-            print(q)
+
             return Article.objects.filter(is_active=True, publish=True).filter(
                 Q(name__icontains=q) |
                 Q(summery__icontains=q) |
@@ -31,8 +35,8 @@ class ArticleListView(ListView):
                 Q(name_for_file__icontains=q) |
                 Q(category__name__icontains=q)
             ).select_related("category").distinct()
-        else:
-            return Article.objects.filter(is_active=True, publish=True).select_related("category")
+
+        return Article.objects.filter(is_active=True, publish=True).select_related("category")
 
     def get_context_data( self, *args, **kwargs ) :
         data = super().get_context_data(*args, **kwargs)
