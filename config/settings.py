@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 from django.conf.global_settings import STATICFILES_DIRS
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,13 +23,41 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+
+def env_bool(name: str, default: bool = False) -> bool:
+    return os.environ.get(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def env_list(name: str, default: str = "") -> list[str]:
+    return [item.strip() for item in os.environ.get(name, default).split(",") if item.strip()]
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%2na27rob(n157r#mf3@d#354%3x@cg5sla9)9^hool(6e88h^'
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-%2na27rob(n157r#mf3@d#354%3x@cg5sla9)9^hool(6e88h^",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool("DJANGO_DEBUG", True)
 
-ALLOWED_HOSTS = []
+if not DEBUG and SECRET_KEY.startswith("django-insecure-"):
+    raise ImproperlyConfigured(
+        "DJANGO_SECRET_KEY must be set to a unique, secret value when DJANGO_DEBUG is false."
+    )
+
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+
+# Requests arrive through the nginx reverse proxy (see docker-compose.yml).
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = env_bool("DJANGO_USE_X_FORWARDED_HOST", False)
+
+# Enable once the stack is served over HTTPS.
+if env_bool("DJANGO_SECURE_SSL", False):
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
 
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
@@ -153,12 +183,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get("POSTGRES_DB"):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ["POSTGRES_DB"],
+            'USER': os.environ.get("POSTGRES_USER", "postgres"),
+            'PASSWORD': os.environ.get("POSTGRES_PASSWORD", ""),
+            'HOST': os.environ.get("POSTGRES_HOST", "db"),
+            'PORT': os.environ.get("POSTGRES_PORT", "5432"),
+            'CONN_MAX_AGE': int(os.environ.get("POSTGRES_CONN_MAX_AGE", "60")),
+            'CONN_HEALTH_CHECKS': True,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -196,13 +240,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT =  BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
+MEDIA_ROOT = os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / 'media')
 # django debug
 INTERNAL_IPS = [
 
@@ -336,4 +379,26 @@ TASKS = {
     "default": {
         "BACKEND": "django.tasks.backends.immediate.ImmediateBackend",
     }
+}
+
+# Container-friendly logging: everything to stdout/stderr.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console": {
+            "format": "{levelname} {asctime} {name} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": os.environ.get("DJANGO_LOG_LEVEL", "INFO"),
+    },
 }
