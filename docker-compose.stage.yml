@@ -1,0 +1,118 @@
+name: aroedu-stage
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: aroedu_stage_postgres
+    restart: unless-stopped
+    env_file:
+      - ./envs/.env.stage
+    command: >
+      postgres
+      -c shared_buffers=128MB
+      -c effective_cache_size=384MB
+      -c max_connections=100
+    volumes:
+      - postgres_stage_data:/var/lib/postgresql/data
+    networks:
+      - aroedu_stage_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-aroedu_stage_user} -d $${POSTGRES_DB:-aroedu_stage}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: aroedu_stage_redis
+    restart: unless-stopped
+    env_file:
+      - ./envs/.env.stage
+    command: >
+      sh -c 'redis-server
+      --appendonly yes
+      --requirepass "$${REDIS_PASSWORD}"
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru'
+    volumes:
+      - redis_stage_data:/data
+    networks:
+      - aroedu_stage_net
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a "$${REDIS_PASSWORD}" ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aroedu/school-system:stage
+    container_name: aroedu_stage_web
+    restart: unless-stopped
+    env_file:
+      - ./envs/.env.stage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "gunicorn config.wsgi:application
+      --bind 0.0.0.0:8000
+      --workers $${GUNICORN_WORKERS:-2}
+      --threads $${GUNICORN_THREADS:-2}
+      --timeout $${GUNICORN_TIMEOUT:-120}
+      --access-logfile -
+      --error-logfile -"
+    volumes:
+      - static_stage_volume:/app/staticfiles
+      - media_stage_volume:/app/media
+    expose:
+      - "8000"
+    networks:
+      - aroedu_stage_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8000/healthz/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: aroedu_stage_nginx
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    ports:
+      - "${STAGE_HTTP_PORT:-8080}:80"
+      - "${STAGE_HTTPS_PORT:-8443}:443"
+    volumes:
+      - ./nginx/stage.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_stage_volume:/app/staticfiles:ro
+      - media_stage_volume:/app/media:ro
+      - certbot_stage_etc:/etc/letsencrypt:ro
+      - certbot_stage_var:/var/www/certbot:ro
+    networks:
+      - aroedu_stage_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null --header='Host: stage.aroedu.ir' http://127.0.0.1/healthz/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  aroedu_stage_net:
+    driver: bridge
+
+volumes:
+  postgres_stage_data:
+  redis_stage_data:
+  static_stage_volume:
+  media_stage_volume:
+  certbot_stage_etc:
+  certbot_stage_var:

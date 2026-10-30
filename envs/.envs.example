@@ -1,0 +1,52 @@
+# ============================================================================
+# PRODUCTION ENVIRONMENT CONFIGURATION — aroedu.ir
+# Copy this file to envs/.env.prod before running docker-compose.prod.yml:
+#   cp envs/.env.prod.example envs/.env.prod
+# ============================================================================
+
+# --- Django Core & Security ---
+DJANGO_ENV=production
+DJANGO_DEBUG=false
+DJANGO_SECRET_KEY=CHANGE_ME_PROD_64_CHAR_RANDOM_SECRET_KEY_FOR_AROEDU_IR_2026
+DJANGO_ALLOWED_HOSTS=aroedu.ir,www.aroedu.ir
+DJANGO_CSRF_TRUSTED_ORIGINS=https://aroedu.ir,https://www.aroedu.ir
+DJANGO_USE_X_FORWARDED_HOST=true
+DJANGO_SECURE_SSL=true
+DJANGO_SECURE_SSL_REDIRECT=true
+DJANGO_HSTS_SECONDS=31536000
+DJANGO_HSTS_INCLUDE_SUBDOMAINS=true
+DJANGO_HSTS_PRELOAD=true
+DJANGO_LOG_LEVEL=INFO
+
+# --- PostgreSQL 16 Database ---
+POSTGRES_DB=aroedu_prod
+POSTGRES_USER=aroedu_prod_user
+POSTGRES_PASSWORD=CHANGE_ME_STRONG_PROD_POSTGRES_PASSWORD
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_CONN_MAX_AGE=120
+
+# --- Redis 7.4 & Automatic ORM Query Caching (django-cachalot) ---
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=CHANGE_ME_STRONG_PROD_REDIS_PASSWORD
+REDIS_URL=redis://:CHANGE_ME_STRONG_PROD_REDIS_PASSWORD@redis:6379/1
+REDIS_ORM_CACHE_URL=redis://:CHANGE_ME_STRONG_PROD_REDIS_PASSWORD@redis:6379/2
+REDIS_KEY_PREFIX=aroedu_prod
+REDIS_CACHE_TIMEOUT=600
+REDIS_MAX_CONNECTIONS=150
+DJANGO_SESSION_ENGINE=django.contrib.sessions.backends.cache
+
+# --- ORM Caching (django-cachalot) ---
+DJANGO_ENABLE_ORM_CACHE=true
+CACHALOT_TIMEOUT=900
+CACHALOT_UNCACHABLE_TABLES=django_migrations,django_session
+
+# --- Gunicorn & Container Runtime ---
+RUN_MIGRATIONS=true
+RUN_COLLECTSTATIC=true
+GUNICORN_WORKERS=4
+GUNICORN_THREADS=2
+GUNICORN_TIMEOUT=120
+DJANGO_STATIC_ROOT=/app/staticfiles
+DJANGO_MEDIA_ROOT=/app/media

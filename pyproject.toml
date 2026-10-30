@@ -9,12 +9,17 @@ authors = [
 requires-python = ">=3.11"
 dependencies = [
     "django>=5.2.17",
+    "django-cachalot>=2.6.3",
     "django-ckeditor-5==0.0.6",
     "django-debug-toolbar>=8.0.0",
     "django-jalali>=7.4.0",
     "django-phonenumber-field[phonenumbers]>=8.5.0",
+    "django-redis>=5.4.0",
     "django-resized>=1.0.3",
+    "gunicorn>=23.0.0",
     "pillow>=12.3.0",
+    "psycopg[binary]>=3.2.0",
+    "redis>=5.2.0",
 ]
 
 [project.scripts]

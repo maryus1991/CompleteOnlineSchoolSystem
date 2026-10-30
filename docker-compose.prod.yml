@@ -1,0 +1,131 @@
+name: aroedu-prod
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: aroedu_prod_postgres
+    restart: unless-stopped
+    env_file:
+      - ./envs/.env.prod
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=768MB
+      -c work_mem=8MB
+      -c max_connections=200
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    networks:
+      - aroedu_prod_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-aroedu_prod_user} -d $${POSTGRES_DB:-aroedu_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: aroedu_prod_redis
+    restart: unless-stopped
+    env_file:
+      - ./envs/.env.prod
+    command: >
+      sh -c 'redis-server
+      --appendonly yes
+      --requirepass "$${REDIS_PASSWORD}"
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru'
+    volumes:
+      - redis_prod_data:/data
+    networks:
+      - aroedu_prod_net
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a "$${REDIS_PASSWORD}" ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aroedu/school-system:prod
+    container_name: aroedu_prod_web
+    restart: unless-stopped
+    env_file:
+      - ./envs/.env.prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "gunicorn config.wsgi:application
+      --bind 0.0.0.0:8000
+      --workers $${GUNICORN_WORKERS:-4}
+      --threads $${GUNICORN_THREADS:-2}
+      --timeout $${GUNICORN_TIMEOUT:-120}
+      --access-logfile -
+      --error-logfile -"
+    volumes:
+      - static_prod_volume:/app/staticfiles
+      - media_prod_volume:/app/media
+    expose:
+      - "8000"
+    networks:
+      - aroedu_prod_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8000/healthz/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: aroedu_prod_nginx
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_prod_volume:/app/staticfiles:ro
+      - media_prod_volume:/app/media:ro
+      - certbot_etc:/etc/letsencrypt:ro
+      - certbot_var:/var/www/certbot:ro
+    networks:
+      - aroedu_prod_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null --header='Host: aroedu.ir' http://127.0.0.1/healthz/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: aroedu_prod_certbot
+    profiles: ["ssl"]
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_var:/var/www/certbot
+    command: >
+      certonly --webroot --webroot-path=/var/www/certbot
+      --email admin@aroedu.ir --agree-tos --no-eff-email
+      -d aroedu.ir -d www.aroedu.ir
+
+networks:
+  aroedu_prod_net:
+    driver: bridge
+
+volumes:
+  postgres_prod_data:
+  redis_prod_data:
+  static_prod_volume:
+  media_prod_volume:
+  certbot_etc:
+  certbot_var:

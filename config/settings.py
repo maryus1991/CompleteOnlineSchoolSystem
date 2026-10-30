@@ -57,10 +57,17 @@ USE_X_FORWARDED_HOST = env_bool("DJANGO_USE_X_FORWARDED_HOST", False)
 if env_bool("DJANGO_SECURE_SSL", False):
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", True)
+    SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool("DJANGO_HSTS_INCLUDE_SUBDOMAINS", True)
+    SECURE_HSTS_PRELOAD = env_bool("DJANGO_HSTS_PRELOAD", True)
 
 
-SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_ENGINE = os.environ.get(
+    "DJANGO_SESSION_ENGINE",
+    "django.contrib.sessions.backends.cache" if REDIS_URL else "django.contrib.sessions.backends.signed_cookies",
+)
+SESSION_CACHE_ALIAS = "default"
 
 # Application definition
 
@@ -72,13 +79,16 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+REDIS_URL = os.environ.get("REDIS_URL", "").strip()
+ENABLE_ORM_CACHE = env_bool("DJANGO_ENABLE_ORM_CACHE", bool(REDIS_URL))
+
 THIRD_PARTY_APPS = [
     "phonenumber_field",
     "django_ckeditor_5",
     "django_jalali",
-
-
 ]
+if ENABLE_ORM_CACHE:
+    THIRD_PARTY_APPS.append("cachalot")
 DEV_APPS = [
    "debug_toolbar",
 
@@ -205,6 +215,54 @@ else:
     }
 
 
+# Redis Cache & Automatic ORM Query Caching (django-redis + django-cachalot)
+REDIS_KEY_PREFIX = os.environ.get("REDIS_KEY_PREFIX", "aroedu")
+if REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": REDIS_URL,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "SOCKET_CONNECT_TIMEOUT": int(os.environ.get("REDIS_CONNECT_TIMEOUT", "5")),
+                "SOCKET_TIMEOUT": int(os.environ.get("REDIS_SOCKET_TIMEOUT", "5")),
+                "IGNORE_EXCEPTIONS": True,
+                "CONNECTION_POOL_KWARGS": {
+                    "max_connections": int(os.environ.get("REDIS_MAX_CONNECTIONS", "100")),
+                },
+            },
+            "KEY_PREFIX": REDIS_KEY_PREFIX,
+            "TIMEOUT": int(os.environ.get("REDIS_CACHE_TIMEOUT", "300")),
+        },
+        "cachalot": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": os.environ.get("REDIS_ORM_CACHE_URL", REDIS_URL),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "SOCKET_CONNECT_TIMEOUT": int(os.environ.get("REDIS_CONNECT_TIMEOUT", "5")),
+                "SOCKET_TIMEOUT": int(os.environ.get("REDIS_SOCKET_TIMEOUT", "5")),
+                "IGNORE_EXCEPTIONS": True,
+            },
+            "KEY_PREFIX": f"{REDIS_KEY_PREFIX}_orm",
+            "TIMEOUT": int(os.environ.get("CACHALOT_TIMEOUT", "600")),
+        },
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "aroedu-local-cache",
+        }
+    }
+
+CACHALOT_ENABLED = ENABLE_ORM_CACHE
+CACHALOT_CACHE = "cachalot" if REDIS_URL else "default"
+CACHALOT_TIMEOUT = int(os.environ.get("CACHALOT_TIMEOUT", "600"))
+CACHALOT_UNCACHABLE_TABLES = frozenset(
+    env_list("CACHALOT_UNCACHABLE_TABLES", "django_migrations,django_session")
+)
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -239,13 +297,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+STATIC_ROOT = Path(os.environ.get("DJANGO_STATIC_ROOT", BASE_DIR / 'staticfiles'))
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / 'media')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = Path(os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / 'media'))
 # django debug
 INTERNAL_IPS = [
 
