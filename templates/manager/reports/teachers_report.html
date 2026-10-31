@@ -13,7 +13,7 @@
             <a href="{% url 'manager:report-advisers' %}" class="manager-btn-outline">گزارش مشاوران</a>
             <a href="{% url 'manager:report-students' %}" class="manager-btn-outline">گزارش دانش‌آموزان</a>
             <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
-            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+            <a href="?print=1" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
         </div>
     </div>
 
@@ -40,7 +40,7 @@
                     <td data-label="میانگین درصد"><strong>{{ row.avg_student_pct }}%</strong> (نمره: {{ row.avg_student_score }})</td>
                     <td data-label="تیکت‌ها">{{ row.assigned_tickets_num }} تیکت</td>
                     <td data-label="چاپ">
-                        <a href="?teacher_id={{ row.teacher.id }}&print=1" target="_blank" class="manager-btn-outline">پرینت A4</a>
+                        <a href="?teacher_id={{ row.teacher.id }}&print=1"   class="manager-btn-outline">پرینت A4</a>
                     </td>
                 </tr>
                 {% empty %}

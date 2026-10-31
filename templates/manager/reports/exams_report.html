@@ -14,7 +14,7 @@
             <a href="{% url 'manager:report-students' %}" class="manager-btn-outline">گزارش دانش‌آموزان</a>
             <a href="{% url 'manager:report-cards' %}" class="manager-btn-outline">صدور کارنامه (A4)</a>
             <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
-            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+            <a href="?print=1"   class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
         </div>
     </div>
 
@@ -72,7 +72,7 @@
                     <td data-label="میانگین درصد"><strong>{{ row.avg_pct }}%</strong></td>
                     <td data-label="درصد قبولی"><span class="manager-badge badge-success">{{ row.pass_rate }}% ({{ row.pass_count }} نفر)</span></td>
                     <td data-label="چاپ">
-                        <a href="?exam_id={{ row.exam.id }}&print=1" target="_blank" class="manager-btn-outline">پرینت A4</a>
+                        <a href="?exam_id={{ row.exam.id }}&print=1"   class="manager-btn-outline">پرینت A4</a>
                     </td>
                 </tr>
                 {% empty %}

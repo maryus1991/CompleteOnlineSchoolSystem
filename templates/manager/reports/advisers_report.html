@@ -12,7 +12,7 @@
             <a href="{% url 'manager:report-exams' %}" class="manager-btn-outline">گزارش آزمون‌ها</a>
             <a href="{% url 'manager:report-teachers' %}" class="manager-btn-outline">گزارش معلمان</a>
             <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
-            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+            <a href="?print=1"   class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                     <td data-label="برنامه‌ها">{{ row.study_plans_num }} برنامه | {{ row.prescriptions_num }} نسخه آزمون</td>
                     <td data-label="میانگین درصد"><strong>{{ row.avg_students_pct }}%</strong></td>
                     <td data-label="چاپ">
-                        <a href="?adviser_id={{ row.adviser.id }}&print=1" target="_blank" class="manager-btn-outline">پرینت A4</a>
+                        <a href="?adviser_id={{ row.adviser.id }}&print=1"  class="manager-btn-outline">پرینت A4</a>
                     </td>
                 </tr>
                 {% empty %}

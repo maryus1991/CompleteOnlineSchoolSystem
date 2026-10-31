@@ -11,7 +11,7 @@
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <a href="{% url 'manager:report-cards' %}" class="manager-btn-outline">صدور کارنامه رسمی (A4)</a>
             <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
-            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+            <a href="?print=1"  class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
         </div>
     </div>
 
@@ -46,7 +46,7 @@
                     </td>
                     <td data-label="مطالعه">{{ row.study_minutes }} دقیقه</td>
                     <td data-label="کارنامه">
-                        <a href="{% url 'manager:report-cards' %}?student_id={{ row.student.id }}&print=1" target="_blank" class="manager-btn">چاپ کارنامه A4</a>
+                        <a href="{% url 'manager:report-cards' %}?student_id={{ row.student.id }}&print=1"  class="manager-btn">چاپ کارنامه A4</a>
                     </td>
                 </tr>
                 {% empty %}

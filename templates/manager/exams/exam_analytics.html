@@ -9,7 +9,7 @@
             </p>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <a href="{% url 'manager:report-exams' %}?exam_id={{ exam_obj.pk }}&print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF (A4)</a>
+            <a href="{% url 'manager:report-exams' %}?exam_id={{ exam_obj.pk }}&print=1"   class="manager-btn">چاپ / دریافت PDF (A4)</a>
             <a href="{% url 'manager:exam-list' %}" class="manager-btn-outline">بازگشت</a>
         </div>
     </div>
