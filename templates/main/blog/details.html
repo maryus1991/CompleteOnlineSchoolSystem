@@ -1,4 +1,4 @@
-{% extends "main/Base/Base.html" %}
+    {% extends "main/Base/Base.html" %}
 
 
 {% block header %}
@@ -67,7 +67,9 @@
 
                         <!-- نویسنده -->
                         <a class="post-author-box" href="{{item.user.get_absolute_url}}" title="{{item.user.get_full_name }}">
-                            <img src="{{item.user.profile_image.url}}" alt="{{item.user.get_full_name }}">
+                            {% if item.user.profile_image %}
+                                <img src="{{ item.user.profile_image.url }}" alt="{{item.user.get_full_name }}">
+                            {% endif %}
                             <div class="author-info">
                                 <h4 data-i18n="mentors.1.name">{{item.user.get_full_name }}</h4>
                                 <p data-i18n="blog.post.author.bio">{{item.user.biography }}</p>

@@ -13,9 +13,11 @@
 
                     {% for item in items %}
                     <div class="mentor-card">
+                        {% if item.profile_image %}
                         <div class="mentor-avatar">
                             <img src="{{item.profile_image.url}}" alt="{{item.get_full_name}}">
                         </div>
+                        {% endif %}
                         <div class="mentor-info">
                             <h2 data-i18n="mentors.1.name" data-i18n="mentors.1.role">{{item.get_full_name}}</h2>
 

@@ -176,7 +176,9 @@
         </div>
 
         <div class="instructor-section">
+            {% if object.teacher.user.profile_image %}
             <img src="{{object.teacher.user.profile_image.url}}" alt="{{object.teacher.user.get_full_name}}" class="instructor-avatar" >
+            {% endif %}
             <div class="instructor-info">
                 <h2>{{object.teacher.user.get_full_name}}</h2>
                 <p>{{object.teacher.user.biography}}</p>
