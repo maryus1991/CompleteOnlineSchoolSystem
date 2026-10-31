@@ -92,6 +92,7 @@ THIRD_PARTY_APPS = [
 ]
 if ENABLE_ORM_CACHE:
     THIRD_PARTY_APPS.append("cachalot")
+
 DEV_APPS = [
    "debug_toolbar",
 
@@ -121,11 +122,7 @@ MAIN_APPS = [
     "apps.practice",
 
 ]
-if DEBUG:
-    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + DEV_APPS  + MAIN_APPS
 
-else:
-    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
 
 
 DJANGO_MIDDLEWARE = [
@@ -148,9 +145,14 @@ MAIN_MIDDLEWARE=[
 
 if DEBUG:
     MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + DEV_MIDDLEWARE + MAIN_MIDDLEWARE
+    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + DEV_APPS  + MAIN_APPS
+
+
 
 else:
     MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + MAIN_MIDDLEWARE
+    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MAIN_APPS
+
 
 
 HTML_MINIFY = True
@@ -307,13 +309,7 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / 'media'))
-# django debug
-INTERNAL_IPS = [
 
-    "127.0.0.1",
-    "localhost",
-
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -463,3 +459,12 @@ LOGGING = {
         "level": os.environ.get("DJANGO_LOG_LEVEL", "INFO"),
     },
 }
+
+INTERNAL_IPS = [
+
+    *ALLOWED_HOSTS,
+    "172.29.0.4",
+    "localhost",
+    "172.29.0.5",
+
+]
