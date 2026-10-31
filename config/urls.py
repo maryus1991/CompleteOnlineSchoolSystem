@@ -48,6 +48,7 @@ urlpatterns = [
     path('student/', include('apps.users.students.urls')),
     path('teacher/', include('apps.users.teachers.urls')),
     path('adviser/', include('apps.users.advisers.urls')),
+    path('manager/', include('apps.users.managers.urls')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]
 
