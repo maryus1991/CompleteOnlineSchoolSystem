@@ -1,0 +1,66 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <h2>تیکت‌ها و پشتیبانی اعضای مدرسه</h2>
+    </div>
+
+    <form method="get" class="manager-filter-bar">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="جستجو موضوع، متن یا نام کاربر...">
+        <select name="status">
+            <option value="">همه وضعیت‌ها</option>
+            {% for val, label in ticket_statuses %}
+            <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="priority">
+            <option value="">همه اولویت‌ها</option>
+            {% for val, label in ticket_priorities %}
+            <option value="{{ val }}" {% if request.GET.priority == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="manager-btn">اعمال فیلتر</button>
+    </form>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>موضوع تیکت</th>
+                    <th>درخواست‌دهنده</th>
+                    <th>اولویت</th>
+                    <th>وضعیت</th>
+                    <th>ارجاع‌شده به</th>
+                    <th>پیام‌ها</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tkt in tickets %}
+                <tr>
+                    <td data-label="موضوع"><strong>{{ tkt.name }}</strong></td>
+                    <td data-label="کاربر">{{ tkt.user }} ({{ tkt.user.get_type_of_user_display }})</td>
+                    <td data-label="اولویت"><span class="manager-badge badge-warning">{{ tkt.priority }}</span></td>
+                    <td data-label="وضعیت"><span class="manager-badge badge-info">{{ tkt.status }}</span></td>
+                    <td data-label="ارجاع">
+                        {% if tkt.assigned_teacher %}معلم: {{ tkt.assigned_teacher }}{% endif %}
+                        {% if tkt.assigned_adviser %}مشاور: {{ tkt.assigned_adviser }}{% endif %}
+                        {% if not tkt.assigned_teacher and not tkt.assigned_adviser %}-{% endif %}
+                    </td>
+                    <td data-label="پیام‌ها">{{ tkt.chats_count }} پیام</td>
+                    <td data-label="عملیات" style="display:flex; gap:6px;">
+                        <a href="{% url 'manager:ticket-detail' tkt.pk %}" class="manager-btn">مشاهده / پاسخ / ارجاع</a>
+                        <form method="post" action="{% url 'manager:ticket-toggle-active' tkt.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="manager-btn-outline">{% if tkt.is_active %}غیرفعال{% else %}فعال{% endif %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7">تیکتی برای این مدرسه ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

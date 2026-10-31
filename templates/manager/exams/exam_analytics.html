@@ -1,0 +1,62 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box" style="margin-bottom:20px;">
+    <div class="manager-panel-head">
+        <div>
+            <h2>گزارش تحلیلی آزمون «{{ exam_obj.name }}»</h2>
+            <p style="font-size:.8rem; color:var(--text-secondary); margin:4px 0 0;">
+                {{ exam_obj.get_categories }} | وضعیت: {{ exam_obj.status }}
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:report-exams' %}?exam_id={{ exam_obj.pk }}&print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF (A4)</a>
+            <a href="{% url 'manager:exam-list' %}" class="manager-btn-outline">بازگشت</a>
+        </div>
+    </div>
+
+    <div class="manager-grid-3" style="margin-bottom:20px;">
+        <div class="manager-panel-box">
+            <span style="font-size:.78rem; color:var(--text-secondary);">تعداد شرکت‌کنندگان</span>
+            <h3 style="font-size:1.4rem; margin:6px 0 0;">{{ exam_stats.participants|default:0 }} نفر</h3>
+        </div>
+        <div class="manager-panel-box">
+            <span style="font-size:.78rem; color:var(--text-secondary);">میانگین نمره / درصد</span>
+            <h3 style="font-size:1.4rem; margin:6px 0 0;">{{ exam_stats.avg_score|default:0|floatformat:2 }} ({{ exam_stats.avg_percentage|default:0|floatformat:1 }}%)</h3>
+        </div>
+        <div class="manager-panel-box">
+            <span style="font-size:.78rem; color:var(--text-secondary);">درصد قبولی (بالای ۵۰٪)</span>
+            <h3 style="font-size:1.4rem; margin:6px 0 0;">{{ exam_stats.pass_rate|default:0 }}%</h3>
+        </div>
+    </div>
+
+    <h3 style="margin-bottom:12px;">تحلیل سوال به سوال آزمون</h3>
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>شماره</th>
+                    <th>عنوان سوال</th>
+                    <th>کل پاسخ‌ها</th>
+                    <th>پاسخ صحیح</th>
+                    <th>پاسخ غلط</th>
+                    <th>درصد پاسخ صحیح</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q_row in question_rows %}
+                <tr>
+                    <td data-label="شماره">{{ q_row.index }}</td>
+                    <td data-label="عنوان سوال">{{ q_row.question.name }}</td>
+                    <td data-label="کل پاسخ‌ها">{{ q_row.total_answers }}</td>
+                    <td data-label="صحیح">{{ q_row.correct_answers }}</td>
+                    <td data-label="غلط">{{ q_row.wrong_answers }}</td>
+                    <td data-label="درصد صحیح"><strong>{{ q_row.correct_pct }}%</strong></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">سوالی برای این آزمون ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

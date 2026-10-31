@@ -1,0 +1,25 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <h2>{% if is_edit %}ویرایش آزمون «{{ exam_obj.name }}»{% else %}ایجاد آزمون جدید توسط مدیر مدرسه{% endif %}</h2>
+        <a href="{% url 'manager:exam-list' %}" class="manager-btn-outline">بازگشت به لیست آزمون‌ها</a>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="manager-form">
+        {% csrf_token %}
+        {{ form.media }}
+        <div class="manager-form-grid">
+            {% for field in form %}
+            <div class="manager-form-group {% if field.name == 'description' or field.name == 'entered_student' %}full-width{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<small style="color:#ef4444;">{{ field.errors|join:", " }}</small>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top:20px;">
+            <button type="submit" class="manager-btn">ذخیره آزمون</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

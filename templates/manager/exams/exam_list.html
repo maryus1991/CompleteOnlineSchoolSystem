@@ -1,0 +1,91 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مدیریت آزمون‌ها و تمرین‌های مدرسه</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                مشاهده، تأیید/رد، غیرفعال‌سازی و تحلیل آماری آزمون‌های معلمان مدرسه
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:practice-list' %}" class="manager-btn-outline">مدیریت تمرین‌ها</a>
+            <a href="{% url 'manager:exam-create' %}" class="manager-btn">+ ایجاد آزمون جدید</a>
+        </div>
+    </div>
+
+    <form method="get" class="manager-filter-bar">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="جستجو عنوان یا مبحث آزمون...">
+        <select name="status">
+            <option value="">همه وضعیت‌ها</option>
+            {% for val, label in exam_statuses %}
+            <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="grade">
+            <option value="">همه پایه‌ها</option>
+            {% for g in grades %}
+            <option value="{{ g.id }}" {% if request.GET.grade == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="lesson">
+            <option value="">همه دروس</option>
+            {% for l in lessons %}
+            <option value="{{ l.id }}" {% if request.GET.lesson == l.id|stringformat:"s" %}selected{% endif %}>{{ l.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="manager-btn">اعمال فیلتر</button>
+    </form>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>عنوان آزمون</th>
+                    <th>درس / پایه</th>
+                    <th>وضعیت</th>
+                    <th>سوالات / شرکت‌کنندگان</th>
+                    <th>میانگین درصد</th>
+                    <th>فعال</th>
+                    <th>عملیات مدیریتی</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ex in exams %}
+                <tr>
+                    <td data-label="عنوان آزمون"><strong>{{ ex.name }}</strong></td>
+                    <td data-label="درس / پایه">{{ ex.get_categories|default:"-" }}</td>
+                    <td data-label="وضعیت"><span class="manager-badge badge-info">{{ ex.status }}</span></td>
+                    <td data-label="آمار">{{ ex.questions_count }} سوال | {{ ex.reports_count }} کارنامه</td>
+                    <td data-label="میانگین درصد">{{ ex.calc_avg_pct|default:0|floatformat:1 }}%</td>
+                    <td data-label="فعال">
+                        {% if ex.is_active %}<span class="manager-badge badge-success">فعال</span>{% else %}<span class="manager-badge badge-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td data-label="عملیات" style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <a href="{% url 'manager:exam-analytics' ex.pk %}" class="manager-btn">گزارش تحلیلی</a>
+                        <a href="{% url 'manager:exam-edit' ex.pk %}" class="manager-btn-outline">ویرایش</a>
+                        <form method="post" action="{% url 'manager:exam-status' ex.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="approve">
+                            <button type="submit" class="manager-btn-outline manager-btn-success">تأیید</button>
+                        </form>
+                        <form method="post" action="{% url 'manager:exam-status' ex.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reject">
+                            <button type="submit" class="manager-btn-outline manager-btn-warn">رد/لغو</button>
+                        </form>
+                        <form method="post" action="{% url 'manager:exam-status' ex.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_active">
+                            <button type="submit" class="manager-btn-outline">{% if ex.is_active %}غیرفعال{% else %}فعال{% endif %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7">آزمونی در این مدرسه ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

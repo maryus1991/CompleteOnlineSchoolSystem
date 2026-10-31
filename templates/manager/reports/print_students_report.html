@@ -1,0 +1,51 @@
+{% extends "manager/reports/base_print_a4.html" %}
+{% block print_title %}گزارش عملکرد دانش‌آموزان | {{ current_school.name }}{% endblock %}
+{% block print_body %}
+<div class="a4-sheet">
+    <div class="school-print-header">
+        <div>
+            <h1>گزارش عملکرد و رتبه‌بندی دانش‌آموزان مدرسه «{{ current_school.name }}»</h1>
+            <div style="font-size:.78rem;">میانگین کل درصد آزمون‌های مدرسه: {{ school_avg_pct }}%</div>
+        </div>
+        <div class="school-print-meta">
+            <div>تاریخ چاپ: {{ generated_at|date:"Y/m/d H:i" }}</div>
+            <div>تعداد دانش‌آموزان: {{ results_count }}</div>
+        </div>
+    </div>
+    <table class="print-table">
+        <thead>
+            <tr>
+                <th>رتبه</th>
+                <th>نام و نام خانوادگی</th>
+                <th>پایه / رشته</th>
+                <th>مشاور</th>
+                <th>تعداد آزمون</th>
+                <th>میانگین نمره</th>
+                <th>میانگین درصد</th>
+                <th>اختلاف با میانگین مدرسه</th>
+                <th>مجموع مطالعه (دقیقه)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in student_rows %}
+            <tr>
+                <td>{{ row.rank_in_list }}</td>
+                <td><strong>{{ row.student }}</strong></td>
+                <td>{{ row.student.grade.name|default:"-" }} / {{ row.student.major.name|default:"-" }}</td>
+                <td>{{ row.student.adviser|default:"-" }}</td>
+                <td>{{ row.exams_num }}</td>
+                <td>{{ row.avg_exam_score }}</td>
+                <td>{{ row.avg_exam_pct }}%</td>
+                <td>{{ row.diff_from_school_avg }}%</td>
+                <td>{{ row.study_minutes }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="signature-grid">
+        <div class="signature-box">معاون آموزشی</div>
+        <div class="signature-box">واحد مشاوره</div>
+        <div class="signature-box">مهر و امضای مدیر مدرسه</div>
+    </div>
+</div>
+{% endblock %}

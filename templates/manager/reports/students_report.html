@@ -1,0 +1,59 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>گزارش عملکرد و پیشرفت دانش‌آموزان (میانگین کل مدرسه: {{ school_avg_pct }}%)</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                تعداد نتایج: <strong>{{ results_count }}</strong> دانش‌آموز | زمان تولید: {{ generated_at|date:"Y/m/d H:i" }}
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:report-cards' %}" class="manager-btn-outline">صدور کارنامه رسمی (A4)</a>
+            <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
+            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+        </div>
+    </div>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>رتبه</th>
+                    <th>نام دانش‌آموز</th>
+                    <th>پایه / رشته</th>
+                    <th>کلاس / آزمون / تمرین</th>
+                    <th>میانگین درصد</th>
+                    <th>اختلاف با میانگین مدرسه</th>
+                    <th>ساعت مطالعه</th>
+                    <th>کارنامه چاپی</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in student_rows %}
+                <tr>
+                    <td data-label="رتبه"><strong>#{{ row.rank_in_list }}</strong></td>
+                    <td data-label="نام دانش‌آموز"><strong>{{ row.student }}</strong></td>
+                    <td data-label="پایه / رشته">{{ row.student.grade.name|default:"-" }} / {{ row.student.major.name|default:"-" }}</td>
+                    <td data-label="فعالیت">{{ row.classes_num }} کلاس | {{ row.exams_num }} آزمون | {{ row.practices_num }} تمرین</td>
+                    <td data-label="میانگین درصد"><strong>{{ row.avg_exam_pct }}%</strong></td>
+                    <td data-label="اختلاف با میانگین">
+                        {% if row.diff_from_school_avg >= 0 %}
+                            <span class="manager-badge badge-success">+{{ row.diff_from_school_avg }}%</span>
+                        {% else %}
+                            <span class="manager-badge badge-danger">{{ row.diff_from_school_avg }}%</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="مطالعه">{{ row.study_minutes }} دقیقه</td>
+                    <td data-label="کارنامه">
+                        <a href="{% url 'manager:report-cards' %}?student_id={{ row.student.id }}&print=1" target="_blank" class="manager-btn">چاپ کارنامه A4</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8">دانش‌آموزی یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

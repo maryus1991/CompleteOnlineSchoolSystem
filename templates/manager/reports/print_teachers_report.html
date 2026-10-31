@@ -1,0 +1,50 @@
+{% extends "manager/reports/base_print_a4.html" %}
+{% block print_title %}گزارش عملکرد معلمان | {{ current_school.name }}{% endblock %}
+{% block print_body %}
+<div class="a4-sheet">
+    <div class="school-print-header">
+        <div>
+            <h1>گزارش عملکرد معلمان مدرسه «{{ current_school.name }}»</h1>
+        </div>
+        <div class="school-print-meta">
+            <div>تاریخ چاپ: {{ generated_at|date:"Y/m/d H:i" }}</div>
+            <div>تعداد معلمان: {{ results_count }}</div>
+        </div>
+    </div>
+    <table class="print-table">
+        <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>نام معلم</th>
+                <th>کلاس‌ها</th>
+                <th>جلسات</th>
+                <th>محتوای آموزشی</th>
+                <th>آزمون‌ها</th>
+                <th>تمرین‌ها</th>
+                <th>سوالات</th>
+                <th>میانگین درصد دانش‌آموزان</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in teacher_rows %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><strong>{{ row.teacher }}</strong></td>
+                <td>{{ row.classes_num }}</td>
+                <td>{{ row.sections_num }}</td>
+                <td>{{ row.content_num }}</td>
+                <td>{{ row.exams_num }}</td>
+                <td>{{ row.practices_num }}</td>
+                <td>{{ row.questions_num }}</td>
+                <td>{{ row.avg_student_pct }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="signature-grid">
+        <div class="signature-box">معاون آموزشی</div>
+        <div class="signature-box">نماینده معلمان</div>
+        <div class="signature-box">مهر و امضای مدیر مدرسه</div>
+    </div>
+</div>
+{% endblock %}

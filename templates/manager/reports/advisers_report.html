@@ -1,0 +1,50 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>گزارش عملکرد مشاوران تحصیلی مدرسه «{{ current_school.name }}»</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                تعداد نتایج: <strong>{{ results_count }}</strong> مشاور | زمان تولید: {{ generated_at|date:"Y/m/d H:i" }}
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:report-exams' %}" class="manager-btn-outline">گزارش آزمون‌ها</a>
+            <a href="{% url 'manager:report-teachers' %}" class="manager-btn-outline">گزارش معلمان</a>
+            <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
+            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+        </div>
+    </div>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام مشاور</th>
+                    <th>دانش‌آموزان تحت پوشش</th>
+                    <th>جلسات مشاوره / آنلاین</th>
+                    <th>برنامه مطالعاتی / نسخه‌ها</th>
+                    <th>میانگین درصد دانش‌آموزان</th>
+                    <th>چاپ تکی</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in adviser_rows %}
+                <tr>
+                    <td data-label="مشاور"><strong>{{ row.adviser }}</strong></td>
+                    <td data-label="ظرفیت">{{ row.covered_students_num }} نفر (ظرفیت باقی‌مانده: {{ row.remaining_capacity }})</td>
+                    <td data-label="جلسات">{{ row.sessions_total_num }} جلسه ({{ row.sessions_completed_num }} برگزارشده) | {{ row.live_sessions_num }} آنلاین</td>
+                    <td data-label="برنامه‌ها">{{ row.study_plans_num }} برنامه | {{ row.prescriptions_num }} نسخه آزمون</td>
+                    <td data-label="میانگین درصد"><strong>{{ row.avg_students_pct }}%</strong></td>
+                    <td data-label="چاپ">
+                        <a href="?adviser_id={{ row.adviser.id }}&print=1" target="_blank" class="manager-btn-outline">پرینت A4</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">مشاوری یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

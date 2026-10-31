@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block print_title %}گزارش چاپی مدرسه {{ current_school.name }}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/main/fonts/stylesheet.css">
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Peyda", Tahoma, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+            line-height: 1.6;
+        }
+        .print-toolbar {
+            max-width: 210mm;
+            margin: 0 auto 16px;
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .print-btn {
+            background: linear-gradient(135deg, #2563eb, #0ea5e9);
+            color: #fff;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: .85rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .print-btn-secondary {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: .82rem;
+            text-decoration: none;
+        }
+        .a4-sheet {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto 20px;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 14mm 12mm;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        }
+        .page-break {
+            page-break-after: always;
+            break-after: page;
+        }
+        .school-print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+        .school-print-header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+        .school-print-meta {
+            font-size: .78rem;
+            color: #334155;
+            text-align: left;
+        }
+        table.print-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .78rem;
+            margin-bottom: 14px;
+        }
+        table.print-table th,
+        table.print-table td {
+            border: 1px solid #94a3b8;
+            padding: 7px 8px;
+            text-align: right;
+            vertical-align: middle;
+        }
+        table.print-table th {
+            background: #e2e8f0;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .signature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 22px;
+            padding-top: 12px;
+            border-top: 1px dashed #94a3b8;
+            font-size: .78rem;
+            text-align: center;
+        }
+        .signature-box {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 8px 34px;
+        }
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .print-toolbar, .no-print {
+                display: none !important;
+            }
+            .a4-sheet {
+                max-width: none;
+                margin: 0;
+                border: none;
+                border-radius: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+    {% block extra_print_style %}{% endblock %}
+</head>
+<body>
+<div class="print-toolbar no-print">
+    <div>
+        <strong>نسخه استاندارد چاپی A4 و تولید PDF سمت کاربر</strong>
+        <span style="font-size:.78rem; opacity:.85; margin-right:10px;">
+            مدرسه: {{ current_school.name }} | تعداد رکورد: {{ results_count|default:0 }}
+        </span>
+    </div>
+    <div style="display:flex; gap:8px;">
+        <button type="button" onclick="window.print()" class="print-btn">
+            چاپ مستقیم / ذخیره به صورت PDF (A4)
+        </button>
+        <a href="javascript:history.back()" class="print-btn-secondary">بازگشت به پنل</a>
+    </div>
+</div>
+{% block print_body %}{% endblock %}
+</body>
+</html>

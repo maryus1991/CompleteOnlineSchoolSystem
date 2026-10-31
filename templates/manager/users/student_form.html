@@ -1,0 +1,25 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <h2>{% if is_edit %}ویرایش دانش‌آموز «{{ student_obj }}»{% else %}افزودن دانش‌آموز جدید به مدرسه{% endif %}</h2>
+        <a href="{% url 'manager:student-list' %}" class="manager-btn-outline">بازگشت به لیست دانش‌آموزان</a>
+    </div>
+    <form method="post" class="manager-form">
+        {% csrf_token %}
+        <div class="manager-form-grid">
+            {% for field in form %}
+            <div class="manager-form-group {% if field.name == 'counseling_notes_summary' %}full-width{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<small style="color:#ef4444;">{{ field.errors|join:", " }}</small>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button type="submit" class="manager-btn">ثبت و ذخیره دانش‌آموز</button>
+            <a href="{% url 'manager:student-list' %}" class="manager-btn-outline">انصراف</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

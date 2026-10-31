@@ -1,0 +1,171 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div id="overviewSection" class="dashboard-section active">
+    <div class="welcome-premium">
+        <div class="welcome-content">
+            <div class="welcome-badge">
+                <span class="badge-dot"></span>
+                <span>پنل مدیریت یکپارچه مدرسه «{{ current_school.name }}»</span>
+            </div>
+            <h1 class="welcome-title">
+                خوش آمدید، <span class="gradient-text">{{ user.get_full_name|default:user.PhoneNumber }}</span>
+            </h1>
+            <p class="welcome-desc">
+                مدیریت کامل دانش‌آموزان، معلمان، مشاوران، کلاس‌های درسی، آزمون‌ها، سرورهای کلاس آنلاین و گزارش‌های چاپی A4 مدرسه {{ current_school.name }} ({{ current_school.province|default:"" }} - {{ current_school.city|default:"" }}).
+            </p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="{% url 'manager:student-import' %}" class="manager-btn">ورود دسته‌جمعی دانش‌آموز (اکسل)</a>
+            <a href="{% url 'manager:report-cards' %}" class="manager-btn-outline">صدور کارنامه چاپی A4</a>
+        </div>
+    </div>
+
+    <div class="stats-premium-grid">
+        <div class="stat-premium-card">
+            <div class="stat-info">
+                <span class="stat-label">دانش‌آموزان فعال مدرسه</span>
+                <h3 class="stat-value">{{ active_students_count }}</h3>
+                <span class="stat-sub">از مجموع {{ total_students_count }} دانش‌آموز</span>
+            </div>
+        </div>
+        <div class="stat-premium-card">
+            <div class="stat-info">
+                <span class="stat-label">معلمان فعال</span>
+                <h3 class="stat-value">{{ active_teachers_count }}</h3>
+                <span class="stat-sub">کادر آموزشی مدرسه</span>
+            </div>
+        </div>
+        <div class="stat-premium-card">
+            <div class="stat-info">
+                <span class="stat-label">مشاوران فعال</span>
+                <h3 class="stat-value">{{ active_advisers_count }}</h3>
+                <span class="stat-sub">تیم مشاوره و برنامه‌ریزی</span>
+            </div>
+        </div>
+        <div class="stat-premium-card">
+            <div class="stat-info">
+                <span class="stat-label">کلاس‌های فعال</span>
+                <h3 class="stat-value">{{ active_classes_count }}</h3>
+                <span class="stat-sub">کلاس‌های در حال برگزاری</span>
+            </div>
+        </div>
+        <div class="stat-premium-card">
+            <div class="stat-info">
+                <span class="stat-label">آزمون‌های جاری / پیش‌رو</span>
+                <h3 class="stat-value">{{ running_exams_count }}</h3>
+                <span class="stat-sub">در حال برگزاری یا آماده شروع</span>
+            </div>
+        </div>
+        <div class="stat-premium-card">
+            <div class="stat-info">
+                <span class="stat-label">کلاس‌ها و جلسات آنلاین زنده</span>
+                <h3 class="stat-value">{{ live_online_classes_count }}</h3>
+                <span class="stat-sub">در حال پخش روی سرورها</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="manager-overview-body">
+        {% if important_announcements %}
+        <div class="manager-panel-box">
+            <div class="manager-panel-head">
+                <h3>اعلان‌های مهم مدرسه</h3>
+                <a href="{% url 'manager:school-settings' %}" class="manager-btn-outline">مدیریت اعلان‌ها</a>
+            </div>
+            {% for ann in important_announcements %}
+            <div style="padding:12px 14px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <strong>{{ ann.title }}</strong>
+                    {% if ann.is_important %}<span class="manager-badge badge-danger">فوری</span>{% endif %}
+                    <span class="manager-badge badge-info">{{ ann.get_target_audience_display }}</span>
+                    <p style="margin:6px 0 0; font-size:.82rem; color:var(--text-secondary);">{{ ann.content }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="manager-grid-2">
+            <div class="manager-panel-box">
+                <div class="manager-panel-head">
+                    <h3>نمودار دانش‌آموزان فعال به تفکیک پایه تحصیلی</h3>
+                    <a href="{% url 'manager:report-students' %}" class="manager-btn-outline">گزارش کامل</a>
+                </div>
+                {% for item in students_by_grade %}
+                <div style="margin-bottom:14px;">
+                    <div style="display:flex; justify-content:space-between; font-size:.82rem; margin-bottom:6px;">
+                        <span>{{ item.label }}</span>
+                        <strong>{{ item.total }} نفر</strong>
+                    </div>
+                    <div class="manager-progress-track">
+                        <div class="manager-progress-fill" style="width: {{ item.percent }}%;"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color:var(--text-secondary); font-size:.84rem;">هنوز دانش‌آموزی ثبت نشده است.</p>
+                {% endfor %}
+            </div>
+
+            <div class="manager-panel-box">
+                <div class="manager-panel-head">
+                    <h3>وضعیت آزمون‌های مدرسه</h3>
+                    <a href="{% url 'manager:report-exams' %}" class="manager-btn-outline">گزارش جامع آزمون‌ها</a>
+                </div>
+                {% for item in exams_by_status %}
+                <div style="margin-bottom:14px;">
+                    <div style="display:flex; justify-content:space-between; font-size:.82rem; margin-bottom:6px;">
+                        <span>{{ item.label }}</span>
+                        <strong>{{ item.total }} آزمون</strong>
+                    </div>
+                    <div class="manager-progress-track">
+                        <div class="manager-progress-fill" style="width: {{ item.percent }}%;"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color:var(--text-secondary); font-size:.84rem;">هنوز آزمونی ثبت نشده است.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="manager-grid-2">
+            <div class="manager-panel-box">
+                <div class="manager-panel-head">
+                    <h3>تیکت‌های باز مدرسه ({{ open_tickets_count }} در انتظار پاسخ)</h3>
+                    <a href="{% url 'manager:ticket-list' %}" class="manager-btn-outline">مشاهده همه تیکت‌ها</a>
+                </div>
+                {% for tkt in open_tickets %}
+                <div style="padding:12px; border:1px solid var(--border-color); border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <div>
+                        <strong>{{ tkt.name }}</strong>
+                        <div style="font-size:.76rem; color:var(--text-secondary); margin-top:4px;">
+                            فرستنده: {{ tkt.user }} | اولویت: {{ tkt.priority }} | وضعیت: {{ tkt.status }}
+                        </div>
+                    </div>
+                    <a href="{% url 'manager:ticket-detail' tkt.pk %}" class="manager-btn">پاسخ / ارجاع</a>
+                </div>
+                {% empty %}
+                <p style="color:var(--text-secondary); font-size:.84rem;">تیکت بازی وجود ندارد.</p>
+                {% endfor %}
+            </div>
+
+            <div class="manager-panel-box">
+                <div class="manager-panel-head">
+                    <h3>آخرین فعالیت‌ها و کلاس‌های ثبت‌شده</h3>
+                    <a href="{% url 'manager:class-list' %}" class="manager-btn-outline">مدیریت کلاس‌ها</a>
+                </div>
+                {% for cls in recent_classes %}
+                <div style="padding:10px 12px; border:1px solid var(--border-color); border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>{{ cls.name }}</strong>
+                        <div style="font-size:.76rem; color:var(--text-secondary);">معلم: {{ cls.teacher }} | {{ cls.get_categories }}</div>
+                    </div>
+                    <a href="{% url 'manager:class-sections' cls.pk %}" class="manager-btn-outline">جلسات</a>
+                </div>
+                {% empty %}
+                <p style="color:var(--text-secondary); font-size:.84rem;">کلاسی ثبت نشده است.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

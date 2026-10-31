@@ -1,0 +1,57 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مانیتورینگ سرورهای استریم مدرسه «{{ current_school.name }}»</h2>
+            <p style="font-size:.8rem; color:var(--text-secondary); margin:4px 0 0;">
+                نمایش سرورهای اختصاصی این مدرسه و سرورهای عمومی سامانه
+            </p>
+        </div>
+        <a href="{% url 'manager:live-list' %}" class="manager-btn-outline">بازگشت به کلاس‌های آنلاین</a>
+    </div>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام سرور</th>
+                    <th>نوع مالکیت</th>
+                    <th>آدرس پایه</th>
+                    <th>کلاس‌های زنده این مدرسه</th>
+                    <th>جلسات مشاوره زنده</th>
+                    <th>کل کلاس‌های ثبت‌شده مدرسه</th>
+                    <th>وضعیت</th>
+                    <th>مانیتور زنده</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for srv in servers %}
+                <tr>
+                    <td data-label="نام سرور"><strong>{{ srv.name }}</strong></td>
+                    <td data-label="مالکیت">
+                        {% if srv.school_id %}
+                            <span class="manager-badge badge-info">اختصاصی ({{ srv.school.name }})</span>
+                        {% else %}
+                            <span class="manager-badge badge-warning">سرور عمومی</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="آدرس" dir="ltr">{{ srv.base_url }}</td>
+                    <td data-label="کلاس‌های زنده">{{ srv.school_running_classes }} کلاس در حال پخش</td>
+                    <td data-label="جلسات مشاوره زنده">{{ srv.school_running_adviser_sessions }} جلسه</td>
+                    <td data-label="کل کلاس‌ها">{{ srv.school_total_classes }} کلاس</td>
+                    <td data-label="وضعیت">
+                        {% if srv.is_active %}<span class="manager-badge badge-success">فعال و آماده</span>{% else %}<span class="manager-badge badge-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td data-label="مانیتور">
+                        <a href="{{ srv.monitor_url }}" target="_blank" rel="noopener" class="manager-btn-outline">مشاهده منابع سرور</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8">سروری برای این مدرسه یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

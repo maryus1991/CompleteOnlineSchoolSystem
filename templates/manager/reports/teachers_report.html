@@ -1,0 +1,53 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>گزارش عملکرد معلمان مدرسه «{{ current_school.name }}»</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                تعداد نتایج: <strong>{{ results_count }}</strong> معلم | زمان تولید: {{ generated_at|date:"Y/m/d H:i" }}
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:report-exams' %}" class="manager-btn-outline">گزارش آزمون‌ها</a>
+            <a href="{% url 'manager:report-advisers' %}" class="manager-btn-outline">گزارش مشاوران</a>
+            <a href="{% url 'manager:report-students' %}" class="manager-btn-outline">گزارش دانش‌آموزان</a>
+            <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
+            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+        </div>
+    </div>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام معلم</th>
+                    <th>کلاس‌ها / جلسات</th>
+                    <th>محتوا (مقاله/فایل)</th>
+                    <th>آزمون / تمرین / سوال</th>
+                    <th>میانگین درصد دانش‌آموزان</th>
+                    <th>تیکت‌های ارجاعی</th>
+                    <th>چاپ تکی</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in teacher_rows %}
+                <tr>
+                    <td data-label="معلم"><strong>{{ row.teacher }}</strong></td>
+                    <td data-label="کلاس / جلسه">{{ row.classes_num }} کلاس | {{ row.sections_num }} جلسه</td>
+                    <td data-label="محتوا">{{ row.articles_num }} مقاله | {{ row.files_num }} فایل</td>
+                    <td data-label="آزمون / تمرین">{{ row.exams_num }} آزمون | {{ row.practices_num }} تمرین | {{ row.questions_num }} سوال</td>
+                    <td data-label="میانگین درصد"><strong>{{ row.avg_student_pct }}%</strong> (نمره: {{ row.avg_student_score }})</td>
+                    <td data-label="تیکت‌ها">{{ row.assigned_tickets_num }} تیکت</td>
+                    <td data-label="چاپ">
+                        <a href="?teacher_id={{ row.teacher.id }}&print=1" target="_blank" class="manager-btn-outline">پرینت A4</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7">معلمی یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

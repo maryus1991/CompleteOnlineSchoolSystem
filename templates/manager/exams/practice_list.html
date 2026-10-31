@@ -1,0 +1,48 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <h2>مدیریت تمرین‌های مدرسه</h2>
+        <div style="display:flex; gap:8px;">
+            <a href="{% url 'manager:exam-list' %}" class="manager-btn-outline">آزمون‌ها</a>
+            <a href="{% url 'manager:practice-create' %}" class="manager-btn">+ ایجاد تمرین جدید</a>
+        </div>
+    </div>
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام تمرین</th>
+                    <th>کلاس و جلسه</th>
+                    <th>نوع</th>
+                    <th>پاسخ‌های ارسالی / میانگین نمره</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pr in practices %}
+                <tr>
+                    <td data-label="نام تمرین"><strong>{{ pr.name }}</strong></td>
+                    <td data-label="کلاس / جلسه">{{ pr.section.klass.name|default:"-" }} - {{ pr.section.name|default:"-" }}</td>
+                    <td data-label="نوع">{{ pr.get_type_of_practice_display }}</td>
+                    <td data-label="آمار">{{ pr.submissions_count }} پاسخ | میانگین: {{ pr.avg_score|default:0|floatformat:1 }}</td>
+                    <td data-label="وضعیت">
+                        {% if pr.is_active %}<span class="manager-badge badge-success">فعال</span>{% else %}<span class="manager-badge badge-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td data-label="عملیات" style="display:flex; gap:6px;">
+                        <a href="{% url 'manager:practice-edit' pr.pk %}" class="manager-btn-outline">ویرایش</a>
+                        <form method="post" action="{% url 'manager:practice-toggle-active' pr.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="manager-btn-outline">{% if pr.is_active %}غیرفعال‌سازی{% else %}فعال‌سازی{% endif %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">تمرینی ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

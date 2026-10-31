@@ -1,0 +1,66 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-grid-2">
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <h2>تنظیمات اختصاصی سایت و ویژگی‌های مدرسه</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="manager-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_settings">
+            <div class="manager-form-grid">
+                {% for field in form %}
+                <div class="manager-form-group {% if field.name == 'description' or field.name == 'welcome_message' %}full-width{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top:18px;">
+                <button type="submit" class="manager-btn">ذخیره تنظیمات مدرسه</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <h2>مدیریت اعلان‌ها و اخبار مدرسه</h2>
+        </div>
+        <form method="post" class="manager-form" style="margin-bottom:20px;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_announcement">
+            <div class="manager-form-grid">
+                {% for field in announcement_form %}
+                <div class="manager-form-group {% if field.name == 'content' or field.name == 'title' %}full-width{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top:12px;">
+                <button type="submit" class="manager-btn">+ انتشار اعلان جدید</button>
+            </div>
+        </form>
+
+        <h3 style="font-size:.9rem; margin-bottom:10px;">اعلان‌های ثبت‌شده</h3>
+        {% for ann in announcements %}
+        <div style="padding:12px; border:1px solid var(--border-color); border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <div>
+                <strong>{{ ann.title }}</strong>
+                {% if ann.is_important %}<span class="manager-badge badge-danger">فوری</span>{% endif %}
+                <span class="manager-badge {% if ann.is_active %}badge-success{% else %}badge-warning{% endif %}">
+                    {% if ann.is_active %}فعال{% else %}غیرفعال{% endif %}
+                </span>
+                <p style="margin:4px 0 0; font-size:.8rem; color:var(--text-secondary);">{{ ann.content }}</p>
+            </div>
+            <form method="post" action="{% url 'manager:announcement-toggle-active' ann.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="manager-btn-outline">{% if ann.is_active %}غیرفعال{% else %}فعال{% endif %}</button>
+            </form>
+        </div>
+        {% empty %}
+        <p style="font-size:.82rem; color:var(--text-secondary);">اعلانی ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

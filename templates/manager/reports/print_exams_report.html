@@ -1,0 +1,81 @@
+{% extends "manager/reports/base_print_a4.html" %}
+{% block print_title %}گزارش چاپی جامع آزمون‌ها | {{ current_school.name }}{% endblock %}
+{% block print_body %}
+<div class="a4-sheet">
+    <div class="school-print-header">
+        <div>
+            <h1>گزارش جامع و تحلیلی آزمون‌های مدرسه «{{ current_school.name }}»</h1>
+            <div style="font-size:.8rem; color:#475569;">استان: {{ current_school.province|default:"-" }} | شهر: {{ current_school.city|default:"-" }}</div>
+        </div>
+        <div class="school-print-meta">
+            <div>تاریخ چاپ: {{ generated_at|date:"Y/m/d H:i" }}</div>
+            <div>تعداد آزمون‌ها: {{ results_count }}</div>
+        </div>
+    </div>
+
+    <table class="print-table">
+        <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>عنوان آزمون</th>
+                <th>درس / پایه</th>
+                <th>شرکت‌کنندگان</th>
+                <th>میانگین نمره</th>
+                <th>بیشترین نمره</th>
+                <th>کمترین نمره</th>
+                <th>میانگین درصد</th>
+                <th>درصد قبولی</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in exam_rows %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><strong>{{ row.exam.name }}</strong></td>
+                <td>{{ row.exam.get_categories }}</td>
+                <td>{{ row.participants }}</td>
+                <td>{{ row.avg_score }}</td>
+                <td>{{ row.max_score }}</td>
+                <td>{{ row.min_score }}</td>
+                <td>{{ row.avg_pct }}%</td>
+                <td>{{ row.pass_rate }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if question_analysis %}
+    <h3 style="font-size:.92rem; margin:14px 0 8px;">تحلیل سوال به سوال</h3>
+    <table class="print-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>عنوان سوال</th>
+                <th>آزمون</th>
+                <th>کل پاسخ</th>
+                <th>پاسخ صحیح</th>
+                <th>درصد پاسخ صحیح</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for qa in question_analysis %}
+            <tr>
+                <td>{{ qa.index }}</td>
+                <td>{{ qa.question.name }}</td>
+                <td>{{ qa.question.exam.name }}</td>
+                <td>{{ qa.total_answers }}</td>
+                <td>{{ qa.correct_answers }}</td>
+                <td>{{ qa.correct_pct }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <div class="signature-grid">
+        <div class="signature-box">امضای مسئول آموزش مدرسه</div>
+        <div class="signature-box">امضای مشاور تحصیلی</div>
+        <div class="signature-box">مهر و امضای مدیر مدرسه ({{ user.get_full_name }})</div>
+    </div>
+</div>
+{% endblock %}

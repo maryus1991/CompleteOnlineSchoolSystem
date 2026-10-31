@@ -1,0 +1,77 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مدیریت کلاس‌ها و جلسات آموزشی مدرسه</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                اختصاص معلم و دانش‌آموزان به کلاس، مدیریت جلسات و محتوای آموزشی
+            </p>
+        </div>
+        <a href="{% url 'manager:class-create' %}" class="manager-btn">+ ایجاد کلاس جدید</a>
+    </div>
+
+    <form method="get" class="manager-filter-bar">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="جستجو نام کلاس یا معلم...">
+        <select name="grade">
+            <option value="">همه پایه‌ها</option>
+            {% for g in grades %}
+            <option value="{{ g.id }}" {% if request.GET.grade == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="lesson">
+            <option value="">همه دروس</option>
+            {% for l in lessons %}
+            <option value="{{ l.id }}" {% if request.GET.lesson == l.id|stringformat:"s" %}selected{% endif %}>{{ l.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="teacher">
+            <option value="">همه معلمان</option>
+            {% for t in teachers %}
+            <option value="{{ t.id }}" {% if request.GET.teacher == t.id|stringformat:"s" %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="manager-btn">اعمال فیلتر</button>
+    </form>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام کلاس</th>
+                    <th>معلم کلاس</th>
+                    <th>پایه / رشته / درس</th>
+                    <th>دانش‌آموزان / جلسات</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cls in classes %}
+                <tr>
+                    <td data-label="نام کلاس"><strong>{{ cls.name }}</strong></td>
+                    <td data-label="معلم">{{ cls.teacher }}</td>
+                    <td data-label="دسته‌بندی">{{ cls.get_categories|default:"-" }}</td>
+                    <td data-label="آمار">{{ cls.students_count }} دانش‌آموز | {{ cls.sections_count }} جلسه</td>
+                    <td data-label="وضعیت">
+                        {% if cls.is_active %}<span class="manager-badge badge-success">فعال</span>{% else %}<span class="manager-badge badge-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td data-label="عملیات" style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <a href="{% url 'manager:class-sections' cls.pk %}" class="manager-btn">مدیریت جلسات ({{ cls.sections_count }})</a>
+                        <a href="{% url 'manager:class-edit' cls.pk %}" class="manager-btn-outline">ویرایش</a>
+                        <form method="post" action="{% url 'manager:class-toggle-active' cls.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="manager-btn-outline {% if cls.is_active %}manager-btn-warn{% else %}manager-btn-success{% endif %}">
+                                {% if cls.is_active %}غیرفعال‌سازی{% else %}فعال‌سازی{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">کلاسی در این مدرسه ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

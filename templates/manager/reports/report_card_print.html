@@ -1,0 +1,135 @@
+{% extends "manager/reports/base_print_a4.html" %}
+{% block print_title %}کارنامه رسمی تحصیلی | {{ current_school.name }}{% endblock %}
+{% block print_body %}
+{% for card in report_cards %}
+<div class="a4-sheet {% if not forloop.last %}page-break{% endif %}">
+    <div class="school-print-header">
+        <div>
+            <h1>کارنامه رسمی پیشرفت تحصیلی — مدرسه «{{ current_school.name }}»</h1>
+            <div style="font-size:.78rem; color:#334155;">
+                استان {{ current_school.province|default:"-" }}، شهر {{ current_school.city|default:"-" }} | مدیر مدرسه: {{ current_school.user_manager }}
+            </div>
+        </div>
+        <div class="school-print-meta">
+            <div>تاریخ صدور: {{ generated_at|date:"Y/m/d H:i" }}</div>
+            <div>رتبه کل در لیست: <strong>#{{ card.overall_rank }}</strong> از {{ results_count }}</div>
+        </div>
+    </div>
+
+    <table class="print-table" style="margin-bottom:12px;">
+        <tbody>
+            <tr>
+                <th>نام و نام خانوادگی دانش‌آموز</th>
+                <td><strong>{{ card.student }}</strong></td>
+                <th>شماره تماس / کد ملی</th>
+                <td dir="ltr">{{ card.student.user.PhoneNumber }} / {{ card.student.user.private_code|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>پایه و رشته تحصیلی</th>
+                <td>{{ card.student.grade.name|default:"-" }} — {{ card.student.major.name|default:"-" }}</td>
+                <th>مشاور تحصیلی</th>
+                <td>{{ card.student.adviser|default:"تعیین‌نشده" }}</td>
+            </tr>
+            <tr>
+                <th>کلاس‌های ثبت‌نامی در مدرسه</th>
+                <td colspan="3">
+                    {% for cls in card.enrolled_classes %}{{ cls.name }}{% if not forloop.last %}، {% endif %}{% empty %}ثبت‌نام نشده{% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 style="font-size:.88rem; margin:10px 0 6px;">۱. ریز نمرات و درصدهای آزمون‌ها به تفکیک درس</h3>
+    <table class="print-table">
+        <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>نام درس</th>
+                <th>عنوان آزمون</th>
+                <th>نمره کسب‌شده</th>
+                <th>حداکثر نمره</th>
+                <th>درصد دانش‌آموز</th>
+                <th>میانگین مدرسه</th>
+                <th>رتبه در آزمون</th>
+                <th>تراز</th>
+                <th>وضعیت</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in card.exam_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><strong>{{ item.lesson_name }}</strong></td>
+                <td>{{ item.exam_name }}</td>
+                <td>{{ item.score }}</td>
+                <td>{{ item.max_score }}</td>
+                <td><strong>{{ item.percentage }}%</strong></td>
+                <td>{{ item.school_exam_avg }}%</td>
+                <td>{{ item.rank|default:"-" }}</td>
+                <td>{{ item.teraze|default:"-" }}</td>
+                <td>{{ item.status_label }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="10">هیچ آزمونی برای این دانش‌آموز ثبت نشده است.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if card.lesson_summaries %}
+    <h3 style="font-size:.88rem; margin:10px 0 6px;">۲. خلاصه میانگین هر درس</h3>
+    <table class="print-table">
+        <thead>
+            <tr>
+                <th>نام درس</th>
+                <th>تعداد آزمون</th>
+                <th>میانگین نمره درس</th>
+                <th>میانگین درصد درس</th>
+                <th>وضعیت درس</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ls in card.lesson_summaries %}
+            <tr>
+                <td><strong>{{ ls.lesson_name }}</strong></td>
+                <td>{{ ls.exams_count }}</td>
+                <td>{{ ls.avg_score }}</td>
+                <td><strong>{{ ls.avg_pct }}%</strong></td>
+                <td>{{ ls.status_label }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <table class="print-table" style="margin-top:10px;">
+        <tbody>
+            <tr>
+                <th>تعداد کل آزمون‌ها</th>
+                <td><strong>{{ card.total_exams }} آزمون</strong></td>
+                <th>معدل کل نمره</th>
+                <td><strong>{{ card.overall_avg_score }}</strong></td>
+                <th>میانگین کل درصد</th>
+                <td><strong>{{ card.overall_avg_pct }}%</strong></td>
+                <th>وضعیت نهایی کارنامه</th>
+                <td><strong>{{ card.pass_status_label }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if card.adviser_comments %}
+    <div style="border:1px solid #94a3b8; border-radius:8px; padding:8px 10px; margin-top:10px; font-size:.76rem;">
+        <strong>توصیه‌ها و نسخه‌های مشاور تحصیلی:</strong>
+        {% for cm in card.adviser_comments %}
+            <div style="margin-top:4px;">• <strong>{{ cm.exam_name }}:</strong> {{ cm.text|striptags }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="signature-grid">
+        <div class="signature-box">امضای مشاور تحصیلی ({{ card.student.adviser|default:"-" }})</div>
+        <div class="signature-box">اطلاع و امضای ولی دانش‌آموز</div>
+        <div class="signature-box">مهر و امضای مدیر مدرسه ({{ current_school.name }})</div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

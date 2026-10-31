@@ -1,0 +1,23 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <h2>مدیریت مجوزهای دسترسی معلم «{{ teacher_obj }}»</h2>
+        <a href="{% url 'manager:teacher-list' %}" class="manager-btn-outline">بازگشت به لیست معلمان</a>
+    </div>
+    <form method="post" class="manager-form">
+        {% csrf_token %}
+        <div class="manager-form-grid">
+            {% for field in form %}
+            <label style="display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px; border:1px solid var(--border-color); cursor:pointer;">
+                {{ field }}
+                <span style="font-weight:700; font-size:.86rem;">{{ field.label }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        <div style="margin-top:20px;">
+            <button type="submit" class="manager-btn">ذخیره مجوزهای معلم</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

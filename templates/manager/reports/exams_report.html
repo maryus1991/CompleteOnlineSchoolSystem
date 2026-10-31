@@ -1,0 +1,136 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box" style="margin-bottom:20px;">
+    <div class="manager-panel-head">
+        <div>
+            <h2>گزارش جامع آزمون‌های مدرسه</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                تعداد نتایج: <strong>{{ results_count }}</strong> آزمون | زمان تولید گزارش: {{ generated_at|date:"Y/m/d H:i" }}
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:report-teachers' %}" class="manager-btn-outline">گزارش معلمان</a>
+            <a href="{% url 'manager:report-advisers' %}" class="manager-btn-outline">گزارش مشاوران</a>
+            <a href="{% url 'manager:report-students' %}" class="manager-btn-outline">گزارش دانش‌آموزان</a>
+            <a href="{% url 'manager:report-cards' %}" class="manager-btn-outline">صدور کارنامه (A4)</a>
+            <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل (.xlsx)</a>
+            <a href="?print=1" target="_blank" class="manager-btn">چاپ / دریافت PDF سمت کاربر (A4)</a>
+        </div>
+    </div>
+
+    <form method="get" class="manager-filter-bar">
+        <select name="grade_id">
+            <option value="">همه پایه‌ها</option>
+            {% for g in grades %}
+            <option value="{{ g.id }}" {% if filters.grade_id == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="lesson_id">
+            <option value="">همه دروس</option>
+            {% for l in lessons %}
+            <option value="{{ l.id }}" {% if filters.lesson_id == l.id|stringformat:"s" %}selected{% endif %}>{{ l.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="teacher_id">
+            <option value="">همه معلمان</option>
+            {% for t in teachers_list %}
+            <option value="{{ t.id }}" {% if filters.teacher_id == t.id|stringformat:"s" %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+        <select name="exam_id">
+            <option value="">همه آزمون‌ها</option>
+            {% for ex in exams_list %}
+            <option value="{{ ex.id }}" {% if filters.exam_id == ex.id|stringformat:"s" %}selected{% endif %}>{{ ex.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="number" name="pass_threshold" value="{{ pass_threshold }}" placeholder="حدنصاب قبولی (%)">
+        <button type="submit" class="manager-btn">اعمال فیلتر</button>
+    </form>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>عنوان آزمون</th>
+                    <th>درس / پایه</th>
+                    <th>شرکت‌کنندگان</th>
+                    <th>میانگین نمره</th>
+                    <th>بیشترین / کمترین نمره</th>
+                    <th>میانگین درصد</th>
+                    <th>درصد قبولی</th>
+                    <th>چاپ تکی</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in exam_rows %}
+                <tr>
+                    <td data-label="آزمون"><strong>{{ row.exam.name }}</strong></td>
+                    <td data-label="درس / پایه">{{ row.exam.get_categories }}</td>
+                    <td data-label="شرکت‌کنندگان">{{ row.participants }} نفر</td>
+                    <td data-label="میانگین نمره">{{ row.avg_score }}</td>
+                    <td data-label="بیشترین / کمترین">{{ row.max_score }} / {{ row.min_score }}</td>
+                    <td data-label="میانگین درصد"><strong>{{ row.avg_pct }}%</strong></td>
+                    <td data-label="درصد قبولی"><span class="manager-badge badge-success">{{ row.pass_rate }}% ({{ row.pass_count }} نفر)</span></td>
+                    <td data-label="چاپ">
+                        <a href="?exam_id={{ row.exam.id }}&print=1" target="_blank" class="manager-btn-outline">پرینت A4</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8">آزمونی با این فیلترها یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="manager-grid-2">
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <h3>تحلیل سوال به سوال (درصد پاسخ صحیح هر سوال)</h3>
+        </div>
+        <div class="table-responsive-wrap">
+            <table class="manager-responsive-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>سوال / آزمون</th>
+                        <th>کل پاسخ</th>
+                        <th>صحیح</th>
+                        <th>درصد صحیح</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for qa in question_analysis %}
+                    <tr>
+                        <td data-label="#">{{ qa.index }}</td>
+                        <td data-label="سوال">{{ qa.question.name }} ({{ qa.question.exam.name }})</td>
+                        <td data-label="کل پاسخ">{{ qa.total_answers }}</td>
+                        <td data-label="صحیح">{{ qa.correct_answers }}</td>
+                        <td data-label="درصد صحیح"><strong>{{ qa.correct_pct }}%</strong></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5">سوالی برای تحلیل یافت نشد.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <h3>مقایسه میانگین درصد بین پایه‌ها و کلاس‌ها</h3>
+        </div>
+        {% for gc in grade_comparison %}
+        <div style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; font-size:.82rem;">
+                <span>پایه {{ gc.student__grade__name|default:"تعیین‌نشده" }} ({{ gc.reports_count }} کارنامه)</span>
+                <strong>میانگین: {{ gc.avg_pct|default:0|floatformat:1 }}%</strong>
+            </div>
+            <div class="manager-progress-track">
+                <div class="manager-progress-fill" style="width: {{ gc.avg_pct|default:0|floatformat:0 }}%;"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

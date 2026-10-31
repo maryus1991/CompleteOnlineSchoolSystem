@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<script>
+    (function () {
+        const t = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+    })();
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیر مدرسه {{ current_school.name|default:"" }} | {{ site.name }}</title>
+    <meta name="description" content="پنل جامع مدیریت مدرسه، کاربران، کلاس‌ها، آزمون‌ها، جلسات آنلاین و گزارش‌های تحلیلی">
+    <link rel="preload" href="/static/main/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Bold.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/static/main/fonts/Peyda-Medium.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="/static/main/fonts/stylesheet.css">
+    <link rel="stylesheet" href="/static/main/css/main.css">
+    <link rel="stylesheet" href="/static/main/css/theme.css">
+    <link rel="stylesheet" href="/static/main/css/components.css">
+    <link rel="stylesheet" href="/static/main/css/responsive.css">
+    <link rel="stylesheet" href="/static/main/css/dashboard.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        .dashboard-wrapper, .dashboard-main-content, #dynamicContent { min-width: 0; width: 100%; }
+        #dynamicContent { padding: 20px; }
+        #dynamicContent > #overviewSection { margin: -20px; }
+        .manager-overview-body { padding: 20px 25px 25px; display: flex; flex-direction: column; gap: 20px; }
+        .manager-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+        .manager-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+        .manager-panel-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px;
+            min-width: 0;
+        }
+        .manager-panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .manager-panel-head h3, .manager-panel-head h2 {
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .manager-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 15px;
+            border-radius: 10px;
+            font-size: .8rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #fff;
+            background: var(--accent-gradient);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .manager-btn-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: .78rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .manager-btn-warn {
+            background: rgba(245, 158, 11, 0.16);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+        .manager-btn-success {
+            background: rgba(34, 197, 94, 0.16);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.35);
+        }
+        .manager-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: .72rem;
+            font-weight: 700;
+        }
+        .badge-danger { background: rgba(239,68,68,.12); color: #ef4444; border: 1px solid rgba(239,68,68,.25); }
+        .badge-warning { background: rgba(245,158,11,.12); color: #f59e0b; border: 1px solid rgba(245,158,11,.25); }
+        .badge-info { background: rgba(79,172,254,.12); color: #4facfe; border: 1px solid rgba(79,172,254,.25); }
+        .badge-success { background: rgba(34,197,94,.12); color: #22c55e; border: 1px solid rgba(34,197,94,.25); }
+
+        .table-responsive-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .manager-responsive-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+        .manager-responsive-table th, .manager-responsive-table td {
+            padding: 12px 10px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        .manager-responsive-table th { color: var(--text-secondary); font-weight: 700; white-space: nowrap; }
+
+        .manager-filter-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+            padding: 14px;
+            border-radius: 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+        }
+        .manager-filter-bar input,
+        .manager-filter-bar select,
+        .manager-form input:not([type="checkbox"]):not([type="color"]),
+        .manager-form select,
+        .manager-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: .84rem;
+        }
+        .manager-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .manager-form-group { display: flex; flex-direction: column; gap: 6px; }
+        .manager-form-group.full-width { grid-column: 1 / -1; }
+        .manager-form-group label { font-size: .82rem; font-weight: 700; color: var(--text-secondary); }
+        .manager-progress-track {
+            width: 100%;
+            height: 8px;
+            border-radius: 99px;
+            background: rgba(255,255,255,0.07);
+            overflow: hidden;
+        }
+        .manager-progress-fill {
+            height: 100%;
+            border-radius: 99px;
+            background: var(--accent-gradient);
+        }
+
+        @media (max-width: 960px) {
+            .manager-grid-2, .manager-grid-3, .manager-form-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            #dynamicContent { padding: 14px; }
+            .manager-overview-body { padding: 14px; }
+            .manager-responsive-table,
+            .manager-responsive-table thead,
+            .manager-responsive-table tbody,
+            .manager-responsive-table th,
+            .manager-responsive-table td,
+            .manager-responsive-table tr { display: block; width: 100%; }
+            .manager-responsive-table thead tr { position: absolute; top: -9999px; right: -9999px; }
+            .manager-responsive-table tbody tr {
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid var(--border-color);
+                border-radius: 14px;
+                padding: 12px 14px;
+                margin-bottom: 12px;
+            }
+            .manager-responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                padding: 8px 0;
+                border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+                text-align: left;
+            }
+            .manager-responsive-table td:last-child { border-bottom: none; }
+            .manager-responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                font-size: .78rem;
+                color: var(--text-secondary);
+                text-align: right;
+            }
+        }
+        @media print {
+            .dashboard-sidebar-right, .dashboard-mobile-toggle, .no-print { display: none !important; }
+            .dashboard-main-content { width: 100% !important; border: none !important; }
+        }
+    </style>
+    {% block header %}{% endblock %}
+</head>
+<body>
+<button type="button" class="dashboard-mobile-toggle" id="dashboardMenuToggle" aria-label="باز کردن منو">
+    <span>منوی مدیر مدرسه</span>
+</button>
+<div class="dashboard-sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<main class="dashboard-premium">
+    <div class="container">
+        <div class="dashboard-wrapper">
+            <div class="dashboard-main-content">
+                <div id="dynamicContent">
+                    {% block main %}{% endblock %}
+                </div>
+            </div>
+            <aside class="dashboard-sidebar-right" id="dashboardSidebar" aria-label="منوی پنل مدیر مدرسه">
+                <div class="sidebar-card profile-card">
+                    <div class="profile-avatar-large">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="آواتار مدیر">
+                        {% endif %}
+                        <div class="online-dot"></div>
+                    </div>
+                    <h3>{{ user.get_full_name|default:user.PhoneNumber }}</h3>
+                    <h4 dir="ltr">{{ user.PhoneNumber }}</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px; font-weight: 700;">
+                        مدیر {{ current_school.name }}
+                    </p>
+                </div>
+
+                <button type="button" class="sidebar-menu-item theme-toggle-btn" id="themeToggle">
+                    <div class="menu-info">
+                        <h4 id="themeToggleText">تغییر تم روشن / تاریک</h4>
+                        <p>تنظیم حالت نمایش پنل</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </button>
+
+                <a href="{% url 'manager:main' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>داشبورد اصلی مدرسه</h4>
+                        <p>آمار زنده، نمودارها و اعلان‌ها</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:student-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>مدیریت دانش‌آموزان</h4>
+                        <p>افزودن، ویرایش و ایمپورت اکسل</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:teacher-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>مدیریت معلمان و مجوزها</h4>
+                        <p>پروفایل و سطح دسترسی معلمان</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:adviser-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>مدیریت مشاوران و ظرفیت</h4>
+                        <p>پروفایل و مجوزهای مشاوران</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:school-info' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>ساختار آموزشی و مدرسه</h4>
+                        <p>اطلاعات مدرسه، پایه‌ها، رشته‌ها و دروس</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:class-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>مدیریت کلاس‌ها و جلسات</h4>
+                        <p>کلاس‌ها، سرفصل‌ها، مقالات و فایل‌ها</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:exam-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>آزمون‌ها و تمرین‌ها</h4>
+                        <p>تأیید/رد، تحلیل آماری و تمرین‌ها</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:live-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>کلاس‌های آنلاین و سرورها</h4>
+                        <p>ایجاد کلاس زنده و مانیتورینگ سرور</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:ticket-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>تیکت و پشتیبانی مدرسه</h4>
+                        <p>پاسخ‌گویی و ارجاع به معلم/مشاور</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:report-exams' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>گزارش‌گیری پیشرفته</h4>
+                        <p>آزمون، معلم، مشاور و دانش‌آموز</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:report-cards' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>صدور کارنامه رسمی (A4)</h4>
+                        <p>چاپ تکی و گروهی کارنامه دانش‌آموزان</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:article-list' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>پست‌ها و مقالات مدرسه</h4>
+                        <p>مقالات عمومی و اختصاصی مدرسه</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:school-settings' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>تنظیمات و اعلان‌های مدرسه</h4>
+                        <p>لوگو، رنگ‌بندی، ویژگی‌ها و اخبار</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+
+                <a href="{% url 'manager:account' %}" class="sidebar-menu-item">
+                    <div class="menu-info">
+                        <h4>حساب کاربری مدیر</h4>
+                        <p>ویرایش اطلاعات فردی مدیر</p>
+                    </div>
+                    <div class="menu-arrow">←</div>
+                </a>
+            </aside>
+        </div>
+    </div>
+</main>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("dashboardMenuToggle");
+    const sidebar = document.getElementById("dashboardSidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+            if (overlay) overlay.classList.toggle("active");
+        });
+    }
+    if (overlay && sidebar) {
+        overlay.addEventListener("click", () => {
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+    }
+    const themeBtn = document.getElementById("themeToggle");
+    if (themeBtn) {
+        themeBtn.addEventListener("click", () => {
+            const cur = document.documentElement.getAttribute("data-theme") || "dark";
+            const next = cur === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            try { localStorage.setItem("theme", next); } catch (e) {}
+        });
+    }
+});
+</script>
+{% block footer %}{% endblock %}
+</body>
+</html>

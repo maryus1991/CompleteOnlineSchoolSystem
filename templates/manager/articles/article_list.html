@@ -1,0 +1,53 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مدیریت پست‌ها و مقالات مدرسه</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                ایجاد، ویرایش و غیرفعال‌سازی مقالات عمومی یا اختصاصی مدرسه
+            </p>
+        </div>
+        <a href="{% url 'manager:article-create' %}" class="manager-btn">+ ایجاد مقاله جدید</a>
+    </div>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>عنوان مقاله</th>
+                    <th>دسته‌بندی</th>
+                    <th>محدوده نمایش</th>
+                    <th>وضعیت انتشار</th>
+                    <th>فعال</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for art in articles %}
+                <tr>
+                    <td data-label="عنوان"><strong>{{ art.name }}</strong></td>
+                    <td data-label="دسته‌بندی">{{ art.category.name }}</td>
+                    <td data-label="محدوده">
+                        {% if art.is_public %}<span class="manager-badge badge-info">عمومی</span>{% else %}<span class="manager-badge badge-warning">اختصاصی مدرسه</span>{% endif %}
+                    </td>
+                    <td data-label="انتشار">{% if art.publish %}منتشر شده{% else %}پیش‌نویس{% endif %}</td>
+                    <td data-label="فعال">
+                        {% if art.is_active %}<span class="manager-badge badge-success">فعال</span>{% else %}<span class="manager-badge badge-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td data-label="عملیات" style="display:flex; gap:6px;">
+                        <a href="{% url 'manager:article-edit' art.pk %}" class="manager-btn-outline">ویرایش</a>
+                        <form method="post" action="{% url 'manager:article-toggle-active' art.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="manager-btn-outline">{% if art.is_active %}غیرفعال‌سازی{% else %}فعال‌سازی{% endif %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">مقاله‌ای ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

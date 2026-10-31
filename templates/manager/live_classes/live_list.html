@@ -1,0 +1,112 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box" style="margin-bottom:20px;">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مدیریت کلاس‌ها و جلسات آنلاین مدرسه</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                ایجاد کلاس آنلاین روی سرورهای اختصاصی مدرسه یا سرورهای عمومی و بررسی درخواست‌ها
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:server-monitor' %}" class="manager-btn-outline">مانیتورینگ سرورهای مدرسه</a>
+            <a href="{% url 'manager:adviser-live-create' %}" class="manager-btn-outline">+ جلسه آنلاین مشاوره</a>
+            <a href="{% url 'manager:live-create' %}" class="manager-btn">+ ایجاد کلاس آنلاین جدید</a>
+        </div>
+    </div>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام کلاس</th>
+                    <th>معلم</th>
+                    <th>سرور استریم</th>
+                    <th>وضعیت</th>
+                    <th>فعال</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lc in live_classes %}
+                <tr>
+                    <td data-label="کلاس"><strong>{{ lc.klass.name }}</strong></td>
+                    <td data-label="معلم">{{ lc.klass.teacher }}</td>
+                    <td data-label="سرور">
+                        {{ lc.server.name }}
+                        {% if lc.server.school_id %}<span class="manager-badge badge-info">اختصاصی مدرسه</span>{% else %}<span class="manager-badge badge-warning">عمومی</span>{% endif %}
+                    </td>
+                    <td data-label="وضعیت"><span class="manager-badge badge-info">{{ lc.get_status_display }}</span></td>
+                    <td data-label="فعال">
+                        {% if lc.is_active %}<span class="manager-badge badge-success">فعال</span>{% else %}<span class="manager-badge badge-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td data-label="عملیات" style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <a href="{% url 'manager:live-edit' lc.pk %}" class="manager-btn-outline">ویرایش</a>
+                        <form method="post" action="{% url 'manager:live-toggle-active' lc.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="manager-btn-outline">{% if lc.is_active %}غیرفعال‌سازی{% else %}فعال‌سازی{% endif %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">کلاس آنلاینی ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="manager-grid-2">
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <h3>درخواست‌های کلاس آنلاین معلمان</h3>
+        </div>
+        {% for req in teacher_live_requests %}
+        <div style="padding:12px; border:1px solid var(--border-color); border-radius:12px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between;">
+                <strong>{{ req.title }} ({{ req.teacher }})</strong>
+                <span class="manager-badge badge-info">{{ req.get_status_display }}</span>
+            </div>
+            <form method="post" action="{% url 'manager:live-request-review' 'teacher' req.pk %}" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                {% csrf_token %}
+                <select name="status" style="padding:6px 10px; border-radius:8px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-color);">
+                    <option value="approved">تأیید</option>
+                    <option value="rejected">رد</option>
+                    <option value="cancelled">لغو</option>
+                </select>
+                <input type="text" name="admin_note" placeholder="یادداشت مدیر..." style="flex:1; padding:6px 10px; border-radius:8px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-color);">
+                <button type="submit" class="manager-btn">ثبت نظر</button>
+            </form>
+        </div>
+        {% empty %}
+        <p style="font-size:.82rem; color:var(--text-secondary);">درخواستی ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <h3>درخواست‌های جلسه آنلاین مشاوران</h3>
+        </div>
+        {% for req in adviser_live_requests %}
+        <div style="padding:12px; border:1px solid var(--border-color); border-radius:12px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between;">
+                <strong>{{ req.title }} ({{ req.adviser }})</strong>
+                <span class="manager-badge badge-info">{{ req.get_status_display }}</span>
+            </div>
+            <form method="post" action="{% url 'manager:live-request-review' 'adviser' req.pk %}" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                {% csrf_token %}
+                <select name="status" style="padding:6px 10px; border-radius:8px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-color);">
+                    <option value="approved">تأیید</option>
+                    <option value="rejected">رد</option>
+                    <option value="cancelled">لغو</option>
+                </select>
+                <input type="text" name="admin_note" placeholder="یادداشت مدیر..." style="flex:1; padding:6px 10px; border-radius:8px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-color);">
+                <button type="submit" class="manager-btn">ثبت نظر</button>
+            </form>
+        </div>
+        {% empty %}
+        <p style="font-size:.82rem; color:var(--text-secondary);">درخواستی ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

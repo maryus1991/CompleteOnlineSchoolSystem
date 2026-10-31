@@ -1,0 +1,82 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box" style="margin-bottom:20px;">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مدیریت جلسات و محتوای کلاس «{{ class_obj.name }}»</h2>
+            <p style="font-size:.8rem; color:var(--text-secondary); margin:4px 0 0;">معلم: {{ class_obj.teacher }} | {{ class_obj.get_categories }}</p>
+        </div>
+        <a href="{% url 'manager:class-list' %}" class="manager-btn-outline">بازگشت به لیست کلاس‌ها</a>
+    </div>
+
+    <form method="post" class="manager-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create_section">
+        <div class="manager-form-grid">
+            {% for field in section_form %}
+            <div class="manager-form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit" class="manager-btn">+ افزودن جلسه جدید به این کلاس</button>
+        </div>
+    </form>
+</div>
+
+{% for sec in sections %}
+<div class="manager-panel-box" style="margin-bottom:16px;">
+    <div class="manager-panel-head">
+        <div>
+            <h3>جلسه: {{ sec.name }}</h3>
+            <span class="manager-badge {% if sec.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                {% if sec.is_active %}فعال{% else %}غیرفعال{% endif %}
+            </span>
+            <span class="manager-badge badge-info">{{ sec.articles_count }} مقاله | {{ sec.files_count }} فایل | {{ sec.practices_count }} تمرین</span>
+        </div>
+        <form method="post" action="{% url 'manager:section-toggle-active' sec.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="manager-btn-outline {% if sec.is_active %}manager-btn-warn{% else %}manager-btn-success{% endif %}">
+                {% if sec.is_active %}غیرفعال‌سازی جلسه{% else %}فعال‌سازی جلسه{% endif %}
+            </button>
+        </form>
+    </div>
+
+    <div class="manager-grid-2">
+        <div>
+            <h4 style="font-size:.86rem; margin-bottom:8px;">مقالات جلسه</h4>
+            {% for art in sec.article.all %}
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border:1px solid var(--border-color); border-radius:10px; margin-bottom:6px;">
+                <span>{{ art.name }} {% if not art.is_active %}(غیرفعال){% endif %}</span>
+                <form method="post" action="{% url 'manager:section-content-toggle-active' 'article' art.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="manager-btn-outline">{% if art.is_active %}غیرفعال{% else %}فعال{% endif %}</button>
+                </form>
+            </div>
+            {% empty %}
+            <p style="font-size:.8rem; color:var(--text-secondary);">مقاله‌ای ثبت نشده است.</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            <h4 style="font-size:.86rem; margin-bottom:8px;">فایل‌های جلسه</h4>
+            {% for fl in sec.file.all %}
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border:1px solid var(--border-color); border-radius:10px; margin-bottom:6px;">
+                <span>{{ fl.name }} {% if not fl.is_active %}(غیرفعال){% endif %}</span>
+                <form method="post" action="{% url 'manager:section-content-toggle-active' 'file' fl.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="manager-btn-outline">{% if fl.is_active %}غیرفعال{% else %}فعال{% endif %}</button>
+                </form>
+            </div>
+            {% empty %}
+            <p style="font-size:.8rem; color:var(--text-secondary);">فایلی ثبت نشده است.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="manager-panel-box"><p>هنوز جلسه‌ای برای این کلاس ایجاد نشده است.</p></div>
+{% endfor %}
+{% endblock %}

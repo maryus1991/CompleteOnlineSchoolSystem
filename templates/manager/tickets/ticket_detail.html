@@ -1,0 +1,68 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-grid-2">
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <div>
+                <h2>تیکت: {{ ticket.name }}</h2>
+                <span style="font-size:.78rem; color:var(--text-secondary);">فرستنده: {{ ticket.user }} | اولویت: {{ ticket.priority }} | وضعیت: {{ ticket.status }}</span>
+            </div>
+            <a href="{% url 'manager:ticket-list' %}" class="manager-btn-outline">بازگشت</a>
+        </div>
+
+        <div style="padding:14px; border-radius:12px; background:var(--bg-primary); border:1px solid var(--border-color); margin-bottom:16px;">
+            <strong>متن اولیه تیکت:</strong>
+            <p style="margin:8px 0 0; line-height:1.8;">{{ ticket.description }}</p>
+        </div>
+
+        <h3 style="font-size:.92rem; margin-bottom:10px;">گفتگوهای ثبت‌شده</h3>
+        {% for ch in chats %}
+        <div style="padding:12px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:10px;">
+            {% if ch.admin_message %}
+                <div style="font-size:.76rem; color:#4facfe; font-weight:700;">پاسخ مدیریت ({{ ch.admin|default:"مدیر" }}):</div>
+                <div>{{ ch.admin_message|safe }}</div>
+            {% endif %}
+            {% if ch.user_message %}
+                <div style="font-size:.76rem; color:#22c55e; font-weight:700;">پیام کاربر:</div>
+                <div>{{ ch.user_message }}</div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p style="font-size:.82rem; color:var(--text-secondary);">هنوز پاسخی ثبت نشده است.</p>
+        {% endfor %}
+
+        <form method="post" class="manager-form" style="margin-top:16px;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="reply">
+            {% for field in reply_form %}
+            <div class="manager-form-group" style="margin-bottom:12px;">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="manager-btn">ارسال پاسخ مدیر</button>
+        </form>
+    </div>
+
+    <div class="manager-panel-box">
+        <div class="manager-panel-head">
+            <h3>تغییر وضعیت و ارجاع تیکت به معلم یا مشاور</h3>
+        </div>
+        <form method="post" class="manager-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="assign">
+            <div class="manager-form-grid">
+                {% for field in assign_form %}
+                <div class="manager-form-group full-width">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top:16px;">
+                <button type="submit" class="manager-btn">ذخیره ارجاع و وضعیت تیکت</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

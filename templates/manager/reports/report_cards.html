@@ -1,0 +1,96 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>صدور کارنامه رسمی دانش‌آموزان (تکی و دسته‌جمعی کل کلاس / پایه)</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                آماده چاپ استاندارد A4 و ذخیره مستقیم PDF سمت کاربر (بدون هدر و سایدبار اضافی) — تعداد کارنامه‌ها: <strong>{{ results_count }}</strong>
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل کارنامه‌ها (.xlsx)</a>
+            <a href="?student_id={{ filters.student_id }}&class_id={{ filters.class_id }}&grade_id={{ filters.grade_id }}&print=1" target="_blank" class="manager-btn">
+                چاپ دسته‌جمعی / دریافت PDF کارنامه‌ها (A4)
+            </a>
+        </div>
+    </div>
+
+    <form method="get" class="manager-filter-bar">
+        <select name="student_id">
+            <option value="">همه دانش‌آموزان (چاپ گروهی)</option>
+            {% for st in students_list %}
+            <option value="{{ st.id }}" {% if filters.student_id == st.id|stringformat:"s" %}selected{% endif %}>{{ st }} ({{ st.user.PhoneNumber }})</option>
+            {% endfor %}
+        </select>
+        <select name="class_id">
+            <option value="">همه کلاس‌ها</option>
+            {% for cls in classes_list %}
+            <option value="{{ cls.id }}" {% if filters.class_id == cls.id|stringformat:"s" %}selected{% endif %}>کلاس {{ cls.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="grade_id">
+            <option value="">همه پایه‌ها</option>
+            {% for g in grades %}
+            <option value="{{ g.id }}" {% if filters.grade_id == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="number" name="pass_threshold" value="{{ pass_threshold }}" placeholder="حدنصاب قبولی (%)">
+        <button type="submit" class="manager-btn">فیلتر کارنامه‌ها</button>
+    </form>
+
+    {% for card in report_cards %}
+    <div class="manager-panel-box" style="margin-bottom:18px; border:1.5px solid var(--border-color);">
+        <div class="manager-panel-head">
+            <div>
+                <h3>کارنامه تحصیلی: {{ card.student }} (رتبه کل: #{{ card.overall_rank }})</h3>
+                <span style="font-size:.8rem; color:var(--text-secondary);">
+                    پایه: {{ card.student.grade.name|default:"-" }} | رشته: {{ card.student.major.name|default:"-" }} | مشاور: {{ card.student.adviser|default:"-" }}
+                </span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <span class="manager-badge {% if card.overall_passed %}badge-success{% else %}badge-warning{% endif %}">
+                    {{ card.pass_status_label }} (معدل درصد: {{ card.overall_avg_pct }}%)
+                </span>
+                <a href="?student_id={{ card.student.id }}&print=1" target="_blank" class="manager-btn">چاپ کارنامه تکی (A4 / PDF)</a>
+            </div>
+        </div>
+
+        <div class="table-responsive-wrap">
+            <table class="manager-responsive-table">
+                <thead>
+                    <tr>
+                        <th>درس</th>
+                        <th>عنوان آزمون</th>
+                        <th>نمره کسب‌شده</th>
+                        <th>درصد دانش‌آموز</th>
+                        <th>میانگین مدرسه</th>
+                        <th>رتبه در آزمون</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in card.exam_items %}
+                    <tr>
+                        <td data-label="درس"><strong>{{ item.lesson_name }}</strong></td>
+                        <td data-label="آزمون">{{ item.exam_name }}</td>
+                        <td data-label="نمره">{{ item.score }} از {{ item.max_score }}</td>
+                        <td data-label="درصد"><strong>{{ item.percentage }}%</strong></td>
+                        <td data-label="میانگین مدرسه">{{ item.school_exam_avg }}%</td>
+                        <td data-label="رتبه">{{ item.rank|default:"-" }}</td>
+                        <td data-label="وضعیت">
+                            <span class="manager-badge {% if item.passed %}badge-success{% else %}badge-danger{% endif %}">{{ item.status_label }}</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7">هنوز کارنامه آزمونی برای این دانش‌آموز ثبت نشده است.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% empty %}
+    <p>دانش‌آموزی یافت نشد.</p>
+    {% endfor %}
+</div>
+{% endblock %}

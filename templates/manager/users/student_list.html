@@ -1,0 +1,94 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مدیریت دانش‌آموزان مدرسه «{{ current_school.name }}»</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                امکان افزودن تکی، ایمپورت اکسل، ویرایش و غیرفعال‌سازی (بدون حذف فیزیکی)
+            </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'manager:student-import-template' %}" class="manager-btn-outline">دانلود قالب اکسل (.xlsx)</a>
+            <a href="{% url 'manager:student-import' %}" class="manager-btn-outline">ایمپورت دسته‌جمعی اکسل</a>
+            <a href="{% url 'manager:student-create' %}" class="manager-btn">+ افزودن دانش‌آموز جدید</a>
+        </div>
+    </div>
+
+    <form method="get" class="manager-filter-bar">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="جستجو نام، موبایل یا کد ملی...">
+        <select name="grade">
+            <option value="">همه پایه‌ها</option>
+            {% for g in grades %}
+            <option value="{{ g.id }}" {% if request.GET.grade == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="major">
+            <option value="">همه رشته‌ها</option>
+            {% for m in majors %}
+            <option value="{{ m.id }}" {% if request.GET.major == m.id|stringformat:"s" %}selected{% endif %}>{{ m.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="adviser">
+            <option value="">همه مشاوران</option>
+            {% for adv in advisers %}
+            <option value="{{ adv.id }}" {% if request.GET.adviser == adv.id|stringformat:"s" %}selected{% endif %}>{{ adv }}</option>
+            {% endfor %}
+        </select>
+        <select name="status">
+            <option value="">همه وضعیت‌ها</option>
+            <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>فعال</option>
+            <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>غیرفعال</option>
+        </select>
+        <button type="submit" class="manager-btn">اعمال فیلتر</button>
+    </form>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام و نام خانوادگی</th>
+                    <th>شماره موبایل</th>
+                    <th>کد ملی</th>
+                    <th>پایه / رشته</th>
+                    <th>مشاور</th>
+                    <th>کلاس / آزمون</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for st in students %}
+                <tr>
+                    <td data-label="نام دانش‌آموز"><strong>{{ st }}</strong></td>
+                    <td data-label="شماره موبایل" dir="ltr">{{ st.user.PhoneNumber }}</td>
+                    <td data-label="کد ملی">{{ st.user.private_code|default:"-" }}</td>
+                    <td data-label="پایه / رشته">{{ st.grade.name|default:"-" }} / {{ st.major.name|default:"-" }}</td>
+                    <td data-label="مشاور">{{ st.adviser|default:"تعیین‌نشده" }}</td>
+                    <td data-label="کلاس / آزمون">{{ st.classes_count }} کلاس | {{ st.exams_count }} آزمون</td>
+                    <td data-label="وضعیت">
+                        {% if st.is_active %}
+                            <span class="manager-badge badge-success">فعال</span>
+                        {% else %}
+                            <span class="manager-badge badge-danger">غیرفعال</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="عملیات" style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <a href="{% url 'manager:student-edit' st.pk %}" class="manager-btn-outline">ویرایش</a>
+                        <a href="{% url 'manager:report-cards' %}?student_id={{ st.pk }}" class="manager-btn-outline">کارنامه</a>
+                        <form method="post" action="{% url 'manager:student-toggle-active' st.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="manager-btn-outline {% if st.is_active %}manager-btn-warn{% else %}manager-btn-success{% endif %}">
+                                {% if st.is_active %}غیرفعال‌سازی{% else %}فعال‌سازی{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8">دانش‌آموزی با این مشخصات در مدرسه یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

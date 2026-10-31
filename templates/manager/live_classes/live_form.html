@@ -1,0 +1,27 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <h2>{% if is_edit %}ویرایش کلاس آنلاین{% else %}ایجاد کلاس آنلاین جدید{% endif %}</h2>
+        <a href="{% url 'manager:live-list' %}" class="manager-btn-outline">بازگشت</a>
+    </div>
+    <p style="font-size:.82rem; color:var(--text-secondary); margin-bottom:16px;">
+        توجه: در لیست سرورها فقط سرورهای اختصاصی مدرسه «{{ current_school.name }}» و سرورهای عمومی قابل انتخاب هستند.
+    </p>
+    <form method="post" class="manager-form">
+        {% csrf_token %}
+        <div class="manager-form-grid">
+            {% for field in form %}
+            <div class="manager-form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<small style="color:#ef4444;">{{ field.errors|join:", " }}</small>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top:20px;">
+            <button type="submit" class="manager-btn">ذخیره کلاس آنلاین</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

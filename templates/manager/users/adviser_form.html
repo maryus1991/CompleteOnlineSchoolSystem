@@ -1,0 +1,24 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <h2>{% if is_edit %}ویرایش اطلاعات مشاور «{{ adviser_obj }}»{% else %}افزودن مشاور جدید به مدرسه{% endif %}</h2>
+        <a href="{% url 'manager:adviser-list' %}" class="manager-btn-outline">بازگشت به لیست مشاوران</a>
+    </div>
+    <form method="post" class="manager-form">
+        {% csrf_token %}
+        <div class="manager-form-grid">
+            {% for field in form %}
+            <div class="manager-form-group {% if field.name == 'biography' %}full-width{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<small style="color:#ef4444;">{{ field.errors|join:", " }}</small>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top:20px;">
+            <button type="submit" class="manager-btn">ذخیره اطلاعات مشاور</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

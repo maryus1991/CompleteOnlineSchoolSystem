@@ -1,0 +1,72 @@
+{% extends "manager/base.html" %}
+{% block main %}
+<div class="manager-panel-box">
+    <div class="manager-panel-head">
+        <div>
+            <h2>مدیریت مشاوران تحصیلی مدرسه</h2>
+            <p style="font-size:.78rem; color:var(--text-secondary); margin:4px 0 0;">
+                مدیریت ظرفیت، پروفایل، مجوزها و وضعیت فعال/غیرفعال مشاوران
+            </p>
+        </div>
+        <a href="{% url 'manager:adviser-create' %}" class="manager-btn">+ افزودن مشاور جدید</a>
+    </div>
+
+    <form method="get" class="manager-filter-bar">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="جستجو نام، موبایل یا تخصص مشاور...">
+        <select name="status">
+            <option value="">همه وضعیت‌ها</option>
+            <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>فعال</option>
+            <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>غیرفعال</option>
+        </select>
+        <button type="submit" class="manager-btn">جستجو</button>
+    </form>
+
+    <div class="table-responsive-wrap">
+        <table class="manager-responsive-table">
+            <thead>
+                <tr>
+                    <th>نام مشاور</th>
+                    <th>شماره موبایل</th>
+                    <th>تخصص</th>
+                    <th>ظرفیت دانش‌آموز</th>
+                    <th>جلسات / برنامه‌ها</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for adv in advisers %}
+                <tr>
+                    <td data-label="نام مشاور"><strong>{{ adv }}</strong></td>
+                    <td data-label="شماره موبایل" dir="ltr">{{ adv.user.PhoneNumber }}</td>
+                    <td data-label="تخصص">{{ adv.specialization|default:"مشاور تحصیلی" }}</td>
+                    <td data-label="ظرفیت">{{ adv.students_count }} از {{ adv.max_students_capacity }} نفر</td>
+                    <td data-label="جلسات / برنامه‌ها">{{ adv.sessions_count }} جلسه | {{ adv.plans_count }} برنامه</td>
+                    <td data-label="وضعیت">
+                        {% if adv.is_active %}
+                            <span class="manager-badge badge-success">فعال</span>
+                        {% else %}
+                            <span class="manager-badge badge-danger">غیرفعال</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="عملیات" style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <a href="{% url 'manager:adviser-edit' adv.pk %}" class="manager-btn-outline">ویرایش</a>
+                        {% if current_manager.can_change_adviser_permissions %}
+                        <a href="{% url 'manager:adviser-permissions' adv.pk %}" class="manager-btn-outline">مجوزها</a>
+                        {% endif %}
+                        <form method="post" action="{% url 'manager:adviser-toggle-active' adv.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="manager-btn-outline {% if adv.is_active %}manager-btn-warn{% else %}manager-btn-success{% endif %}">
+                                {% if adv.is_active %}غیرفعال‌سازی{% else %}فعال‌سازی{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7">مشاوری در این مدرسه ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
