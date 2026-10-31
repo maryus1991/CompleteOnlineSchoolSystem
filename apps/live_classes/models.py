@@ -20,6 +20,14 @@ def generate_session_code():
 
 
 class StreamServers(BaseModel):
+    school = models.ForeignKey(
+        'schools.School',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='stream_servers',
+        verbose_name='مدرسه',
+    )
     name = models.CharField(verbose_name='عنوان', max_length=255)
     base_url = models.URLField("لینک")
     server_stats_check = models.CharField(verbose_name='مسیر چک کردن منابع', max_length=255, default='/monitor/stats')

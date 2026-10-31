@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from apps.users.students.models import Student
 from apps.users.advisers.models import Adviser
+from apps.users.managers.models import Manager
 
 
 class UserLogoutView(LoginRequiredMixin, RedirectView):
@@ -129,6 +130,11 @@ class UserLoginView(RedirectView):
             ):
                 return next_url
 
+        if (
+            user.type_of_user == User.TypeOfUser.MANAGER
+            or Manager.objects.filter(user=user, is_active=True).exists()
+        ):
+            return reverse_lazy("manager:main")
         if (
             user.type_of_user == User.TypeOfUser.ADVISER
             or Adviser.objects.filter(user=user, is_active=True).exists()

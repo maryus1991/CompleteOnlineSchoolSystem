@@ -10,7 +10,11 @@ from .models import (
 )
 
 
-admin.site.register(StreamServers)
+@admin.register(StreamServers)
+class StreamServersAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "school", "base_url", "is_active")
+    list_filter = ("is_active", "school")
+    search_fields = ("name", "base_url", "school__name")
 admin.site.register(LiveClass)
 admin.site.register(LiveClassReport)
 admin.site.register(LiveClassRequest)

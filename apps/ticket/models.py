@@ -22,6 +22,31 @@ class Ticket(BaseModel):
 
     name = models.CharField(max_length=500, verbose_name='موضوع', db_index=True)
     user = models.ForeignKey(User, related_name='tickets', on_delete=models.PROTECT, verbose_name='درخواست دهنده', db_index=True)
+    school = models.ForeignKey(
+        "schools.School",
+        related_name="tickets",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="مدرسه",
+        db_index=True,
+    )
+    assigned_teacher = models.ForeignKey(
+        "teachers.Teacher",
+        related_name="assigned_tickets",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="معلم ارجاع‌شده",
+    )
+    assigned_adviser = models.ForeignKey(
+        "advisers.Adviser",
+        related_name="assigned_tickets",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="مشاور ارجاع‌شده",
+    )
     description = models.TextField(verbose_name="توضیحات ")
     file = models.FileField(verbose_name='پیوست', upload_to=UploadPath("tickets/"), null=True, blank=True)
     priority = models.CharField(verbose_name='اهمیت', choices=TicketPriority, max_length=255)

@@ -9,6 +9,15 @@ from django.urls import reverse_lazy
 
 class Article(BaseModel):
     user = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE, verbose_name="نویسنده")
+    school = models.ForeignKey(
+        "schools.School",
+        related_name="articles",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="مدرسه",
+    )
+    is_public = models.BooleanField(default=True, verbose_name="مقاله عمومی")
     category = models.ForeignKey(BlogCategories, related_name="posts", on_delete=models.CASCADE, verbose_name="دسته بندی")
     reading_time = models.IntegerField("زمان مطالعه (دقیقه)", default=10)
     name = models.CharField(max_length=255, verbose_name='عنوان')
