@@ -23,24 +23,24 @@
     </div>
 
     <div class="manager-panel-box">
-        <div class="manager-panel-head">
-            <h2>افزودن سریع پایه، رشته یا درس آموزشی</h2>
-        </div>
-        <form method="post" class="manager-form" style="margin-bottom:20px;">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="add_category">
-            <div class="manager-form-grid">
-                {% for field in category_form %}
-                <div class="manager-form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                </div>
-                {% endfor %}
-            </div>
-            <div style="margin-top:12px;">
-                <button type="submit" class="manager-btn">ثبت در ساختار آموزشی</button>
-            </div>
-        </form>
+<!--        <div class="manager-panel-head">-->
+<!--            <h2>افزودن سریع پایه، رشته یا درس آموزشی</h2>-->
+<!--        </div>-->
+<!--        <form method="post" class="manager-form" style="margin-bottom:20px;">-->
+<!--            {% csrf_token %}-->
+<!--            <input type="hidden" name="action" value="add_category">-->
+<!--            <div class="manager-form-grid">-->
+<!--                {% for field in category_form %}-->
+<!--                <div class="manager-form-group">-->
+<!--                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>-->
+<!--                    {{ field }}-->
+<!--                </div>-->
+<!--                {% endfor %}-->
+<!--            </div>-->
+<!--            <div style="margin-top:12px;">-->
+<!--                <button type="submit" class="manager-btn">ثبت در ساختار آموزشی</button>-->
+<!--            </div>-->
+<!--        </form>-->
 
         <h3 style="font-size:.9rem; margin-bottom:8px;">پایه‌های تحصیلی ({{ grades|length }})</h3>
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">

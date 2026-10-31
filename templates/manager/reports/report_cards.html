@@ -10,7 +10,7 @@
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <a href="?export=xlsx" class="manager-btn-outline">خروجی اکسل کارنامه‌ها (.xlsx)</a>
-            <a href="?student_id={{ filters.student_id }}&class_id={{ filters.class_id }}&grade_id={{ filters.grade_id }}&print=1" target="_blank" class="manager-btn">
+            <a href="?student_id={{ filters.student_id }}&class_id={{ filters.class_id }}&grade_id={{ filters.grade_id }}&print=1" class="manager-btn">
                 چاپ دسته‌جمعی / دریافت PDF کارنامه‌ها (A4)
             </a>
         </div>
@@ -52,7 +52,7 @@
                 <span class="manager-badge {% if card.overall_passed %}badge-success{% else %}badge-warning{% endif %}">
                     {{ card.pass_status_label }} (معدل درصد: {{ card.overall_avg_pct }}%)
                 </span>
-                <a href="?student_id={{ card.student.id }}&print=1" target="_blank" class="manager-btn">چاپ کارنامه تکی (A4 / PDF)</a>
+                <a href="?student_id={{ card.student.id }}&print=1"   class="manager-btn">چاپ کارنامه تکی (A4 / PDF)</a>
             </div>
         </div>
 

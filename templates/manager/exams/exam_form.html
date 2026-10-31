@@ -10,7 +10,7 @@
         {{ form.media }}
         <div class="manager-form-grid">
             {% for field in form %}
-            <div class="manager-form-group {% if field.name == 'description' or field.name == 'entered_student' %}full-width{% endif %}">
+            <div class="manager-form-group {% if field.name == 'description' or field.name == 'selected_student' %}full-width{% endif %}">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {% if field.errors %}<small style="color:#ef4444;">{{ field.errors|join:", " }}</small>{% endif %}
