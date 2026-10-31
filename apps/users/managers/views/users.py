@@ -56,7 +56,7 @@ class StudentListView(ManagerMixin, ListView):
             qs = qs.filter(
                 Q(user__first_name__icontains=q)
                 | Q(user__last_name__icontains=q)
-                | Q(user__PhoneNumber__icontains=q)
+                | Q(user__PhoneNumber=q)
                 | Q(user__private_code__icontains=q)
             )
         if grade_id.isdigit():
@@ -261,11 +261,22 @@ class StudentBulkImportView(ManagerMixin, TemplateView):
             messages.error(request, "لطفاً فایل اکسل یا CSV معتبر انتخاب کنید.")
             return self.render_to_response(self.get_context_data(form=form))
 
-        result = validate_and_import_students(
-            uploaded_file=form.cleaned_data["file"],
-            school=school,
-            default_adviser=form.cleaned_data.get("default_adviser"),
-        )
+        try:
+            result = validate_and_import_students(
+                uploaded_file=form.cleaned_data["file"],
+                school=school,
+                default_adviser=form.cleaned_data.get("default_adviser"),
+            )
+
+        except Exception as e:
+            messages.error(
+                request,
+                f"در بررسی فایل {e} خطا مشاهده شد. هیچ رکوردی ثبت نشد تا خطاها را اصلاح کنید.",
+            )
+
+            return redirect("manager:student-import")
+
+
         if result["success"]:
             messages.success(
                 request,
@@ -307,7 +318,7 @@ class TeacherListView(ManagerMixin, ListView):
             qs = qs.filter(
                 Q(user__first_name__icontains=q)
                 | Q(user__last_name__icontains=q)
-                | Q(user__PhoneNumber__icontains=q)
+                | Q(user__PhoneNumber=q)
             )
         if status == "active":
             qs = qs.filter(is_active=True)
@@ -508,7 +519,7 @@ class AdviserListView(ManagerMixin, ListView):
             qs = qs.filter(
                 Q(user__first_name__icontains=q)
                 | Q(user__last_name__icontains=q)
-                | Q(user__PhoneNumber__icontains=q)
+                | Q(user__PhoneNumber=q)
                 | Q(specialization__icontains=q)
             )
         if status == "active":

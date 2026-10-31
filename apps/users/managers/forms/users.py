@@ -172,14 +172,14 @@ class TeacherPermissionsForm(forms.ModelForm):
         fields = [
             "can_add_exam",
             "can_add_practice",
-            "can_add_qbank",
+
             "can_add_question",
             "can_add_class_section",
             "can_add_class_article",
             "can_add_class_file",
             "can_start_live_class",
             "can_issuing_report",
-            "can_site_article",
+
             "can_change_account",
         ]
 
@@ -240,7 +240,7 @@ class AdviserPermissionsForm(forms.ModelForm):
             "can_view_student_reports",
             "can_manage_sessions",
             "can_start_live_session",
-            "can_answer_counseling_requests",
+
             "can_send_adviser_notes",
             "can_change_account",
         ]

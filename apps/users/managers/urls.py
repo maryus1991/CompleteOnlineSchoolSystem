@@ -62,7 +62,7 @@ app_name = "manager"
 
 urlpatterns = [
     # ۱. داشبورد و حساب مدیر مدرسه
-    path("", ManagerDashboardView.as_view(), name="main"),
+    path("main/", ManagerDashboardView.as_view(), name="main"),
     path("account/", ManagerEditAccountView.as_view(), name="account"),
 
     # ۲. مدیریت کاربران (دانش‌آموز، معلم، مشاور) + ایمپورت اکسل و مجوزها

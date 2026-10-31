@@ -20,7 +20,7 @@ class ManagerExamForm(forms.ModelForm):
             "major",
             "lesson",
             "teacher",
-            "entered_student",
+            "selected_student",
             "start_at",
             "stop_at",
             "last_enter",
@@ -45,7 +45,7 @@ class ManagerExamForm(forms.ModelForm):
         ]
         widgets = {
             "teacher": forms.SelectMultiple(attrs={"size": 5}),
-            "entered_student": forms.SelectMultiple(attrs={"size": 8}),
+            "selected_student": forms.SelectMultiple(attrs={"size": 8}),
             "summery": forms.Textarea(attrs={"rows": 2}),
         }
 
@@ -60,7 +60,7 @@ class ManagerExamForm(forms.ModelForm):
             self.fields["teacher"].queryset = Teacher.objects.filter(
                 school=school, is_active=True
             ).select_related("user")
-            self.fields["entered_student"].queryset = Student.objects.filter(
+            self.fields["selected_student"].queryset = Student.objects.filter(
                 school=school, is_active=True
             ).select_related("user", "grade", "major")
 
