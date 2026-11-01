@@ -52,7 +52,7 @@ urlpatterns = [
     path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]
 
-if settings.DEBUG:
+if settings.ENABLE_DEBUG_TOOLBAR:
     from debug_toolbar.toolbar import debug_toolbar_urls
     urlpatterns = debug_toolbar_urls() + urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
