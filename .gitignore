@@ -4,6 +4,7 @@ __pycache__/
 *.py[codz]
 *$py.class
 envs/.evns
+
 *.evns
 # C extensions
 *.zip
