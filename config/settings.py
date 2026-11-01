@@ -40,6 +40,7 @@ SECRET_KEY = os.environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool("DJANGO_DEBUG", True)
+ENABLE_DEBUG_TOOLBAR = env_bool("ENABLE_DEBUG_TOOLBAR", False)
 
 if not DEBUG and SECRET_KEY.startswith("django-insecure-"):
     raise ImproperlyConfigured(
@@ -93,10 +94,7 @@ THIRD_PARTY_APPS = [
 if ENABLE_ORM_CACHE:
     THIRD_PARTY_APPS.append("cachalot")
 
-DEV_APPS = [
-   "debug_toolbar",
 
-]
 MAIN_APPS = [
     "apps.categories",
     "apps.users.accounts",
@@ -135,16 +133,34 @@ DJANGO_MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 THIRD_PARTY_MIDDLEWARE=[]
-DEV_MIDDLEWARE=[
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
+if ENABLE_DEBUG_TOOLBAR:
+    DEV_MIDDLEWARE=[
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ]
+    DEV_APPS = [
+        "debug_toolbar",
+
+    ]
+    INTERNAL_IPS = [
+
+        *ALLOWED_HOSTS,
+        "172.29.0.4",
+        "localhost",
+        "172.29.0.5",
+
+    ]
+else:
+    DEV_MIDDLEWARE=[]
+    DEV_APPS=[]
 
 MAIN_MIDDLEWARE=[
     "apps.sitesetting.middleware.SiteMiddleware",
 ]
 
 if DEBUG:
+
     MIDDLEWARE = DJANGO_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + DEV_MIDDLEWARE + MAIN_MIDDLEWARE
+
     INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + DEV_APPS  + MAIN_APPS
 
 
@@ -460,11 +476,4 @@ LOGGING = {
     },
 }
 
-INTERNAL_IPS = [
 
-    *ALLOWED_HOSTS,
-    "172.29.0.4",
-    "localhost",
-    "172.29.0.5",
-
-]
