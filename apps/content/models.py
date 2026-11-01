@@ -5,7 +5,7 @@ from apps.common.models import BaseModel
 
 class Section(BaseModel):
     klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='sections', verbose_name="کلاس")
-    is_publish = models.BooleanField("انتشار", default=False)
+    is_publish = models.BooleanField("انتشار", default=True)
     name = models.CharField("نام", max_length=255 )
 
     def __str__(self):

@@ -27,6 +27,41 @@ class ManagerAccountForm(forms.Form):
     instagram_link = forms.URLField(label="لینک اینستاگرام", required=False)
     profile_image = forms.ImageField(label="تصویر پروفایل", required=False)
 
+    last_password = forms.CharField(
+        label=" رمز عبور فعلی (در صورت نیاز به تغییر رمز وارد شود)",
+        required=False,
+        widget=forms.PasswordInput(),
+    )
+    password = forms.CharField(
+        label="  رمز عبور جدید (در صورت نیاز به تغییر رمز وارد شود)",
+        required=False,
+        widget=forms.PasswordInput(),
+    )
+    conform_password = forms.CharField(
+        label=" تایید  رمز عبور جدید (در صورت نیاز به تغییر رمز وارد شود)",
+        required=False,
+        widget=forms.PasswordInput(),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("conform_password") or cleaned_data.get("confirm_password")
+
+        if password or confirm_password:
+            if not password or not confirm_password:
+                self.add_error(
+                    "conform_password",
+                    "برای تغییر رمز، رمز جدید و تکرار آن را وارد کنید",
+                )
+            elif password != confirm_password:
+                self.add_error(
+                    "conform_password",
+                    "رمز عبور و تکرار آن یکسان نیستند",
+                )
+        return cleaned_data
+
+
 
 class ManagerStudentForm(forms.Form):
     phone_number = forms.CharField(label="شماره موبایل", max_length=20, required=True)

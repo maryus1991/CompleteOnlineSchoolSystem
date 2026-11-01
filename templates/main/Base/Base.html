@@ -9,8 +9,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="site.title">آکادمی پولاریس | فرماندهی نسل بعدی برنامه‌نویسان</title>
-    <meta name="description" content="آکادمی پولاریس - آموزش مدرن برنامه‌نویسی با منتورهای تراز اول">
+    <title data-i18n="site.title">{{site.name}}</title>
+    <meta name="description" content="{{site.short_description}}">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f2fe'/%3E%3Cstop offset='100%25' stop-color='%234facfe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' stroke='url(%23g)' stroke-width='5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='14' fill='url(%23g)'/%3E%3C/svg%3E">
     <!-- Font -->
     <link rel="preload" href="/static/main/fonts/Peyda-Regular.woff" as="font" type="font/woff" crossorigin>
@@ -348,6 +348,22 @@
                                     <span>پنل مدیر</span>
                                 </a>
                                 {% endif %}
+
+
+<!-- خروج از حساب -->
+<a href="{% url 'user:logout' %}" class="user-menu-item logout">
+
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="#ef4444" stroke-width="1.8">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <path d="m16 17 5-5-5-5M21 12H9"/>
+        </svg>
+
+
+        <span class="logout"  >خروج از حساب</span>
+
+
+</a>
                             {% else %}
                                 <a href="{% url 'user:auth' %}" class="user-menu-item" role="menuitem" id="accountBtn">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

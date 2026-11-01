@@ -100,6 +100,8 @@ class ManagerDashboardView(ManagerMixin, TemplateView):
 class ManagerEditAccountView(ManagerMixin, TemplateView):
     template_name = "manager/account_form.html"
     permission_field = "can_change_account"
+    redirect_url = "manager:account"
+    message_info = "جهت عوض کردن شماره با ادمین در ارتباط باشید"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -143,7 +145,19 @@ class ManagerEditAccountView(ManagerMixin, TemplateView):
 
             manager.province = data.get("province") or ""
             manager.city = data.get("city") or ""
-            manager.save(update_fields=["province", "city", "updated_at"])
+
+            new_password = data.get("password")
+
+            if new_password:
+                current_password = data.get("last_password")
+                if not current_password or not user.check_password(current_password):
+                    messages.error(request, "رمز فعلی صحیح نیست.")
+                    return redirect(self.redirect_url)
+                user.set_password(new_password)
+
+            manager.save()
+
+
 
         messages.success(request, "اطلاعات حساب مدیر مدرسه با موفقیت بروزرسانی شد.")
         return redirect("manager:account")
