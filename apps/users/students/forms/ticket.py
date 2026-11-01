@@ -1,10 +1,19 @@
 from django import forms
+from django.core.validators import FileExtensionValidator
 
 from .models import Ticket
 
 
 class TicketCreateForm(forms.ModelForm):
-
+    file= forms.FileField(
+        widget=forms.FileInput(
+            attrs={
+                "class": "form-group-glass",
+            },
+        ),
+        required=False,
+        validators=[FileExtensionValidator(["pdf", "zip", "rar", "png", "jpg", "jpeg"])],
+    )
     class Meta:
         model = Ticket
         fields = [

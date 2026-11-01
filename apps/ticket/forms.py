@@ -7,10 +7,12 @@ from .models import Ticket
 class TicketCreateForm(forms.ModelForm):
     file= forms.FileField(
         widget=forms.FileInput(
+
             attrs={
                 "class": "form-group-glass",
             },
         ),
+        required=False,
         validators=[FileExtensionValidator(["pdf", "zip", "rar", "png", "jpg", "jpeg"])],
     )
 

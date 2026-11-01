@@ -34,6 +34,7 @@ class TicketCreateView(StudentMixin, CreateView):
     form_class = TicketCreateForm
     template_name = "dashboard/ticket/create.html"
     success_url = reverse_lazy("student:ticket-list")
+    not_required_fields = ["file"]
 
     def form_valid(self, form):
         form.instance.user = self.request.user
