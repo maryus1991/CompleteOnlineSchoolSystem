@@ -11,6 +11,9 @@ from apps.sitesetting.models import FAQ, TimeLine, TestMonomials
 from apps.classes.models import Class
 from apps.users.accounts.models import User
 from apps.article.models import Article
+from apps.categories.models import BlogCategories
+from apps.exams.models import Exam
+from apps.questions.models import Question
 from django.db.models import Count, Exists, OuterRef
 from apps.users.students.models import Student
 
@@ -394,3 +397,21 @@ class Counseling(CreateView):
     def form_invalid(self, form):
         messages.success(self.request, form.errors, fail_silently=True)
         return super().form_invalid(form)
+
+class SitemapPageView(TemplateView):
+    template_name = 'main/site/sitemap.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        site = self.request.site
+        data.update(
+            {
+                "categories": BlogCategories.objects.filter(is_active=True) if site.list_articles_active else [],
+                "articles": Article.objects.filter(is_active=True, publish=True, is_public=True).select_related("category") if site.list_articles_active else [],
+                "courses": Class.objects.filter(is_active=True, is_public=True).select_related("grade", "major", "lesson") if site.list_course_active else [],
+                "exams": Exam.objects.filter(is_active=True, is_public=True).select_related("grade", "lesson") if site.list_exam_active else [],
+                "qbank_questions": Question.objects.filter(is_active=True, is_for_qbank=True).select_related("grade", "lesson") if site.qbank_active else [],
+                "teachers": User.objects.filter(is_active=True, publish=True),
+            }
+        )
+        return data

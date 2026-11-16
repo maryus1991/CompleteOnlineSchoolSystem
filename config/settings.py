@@ -79,6 +79,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
 ]
 REDIS_URL = os.environ.get("REDIS_URL", "").strip()
 ENABLE_ORM_CACHE = env_bool("DJANGO_ENABLE_ORM_CACHE", bool(REDIS_URL))

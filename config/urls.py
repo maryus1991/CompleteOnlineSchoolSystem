@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.contrib.sitemaps.views import sitemap
+from apps.sitesetting.sitemaps import SITEMAPS
 from django.db import connections
 from django.core.cache import caches
 
@@ -36,8 +38,26 @@ def healthz_view(request):
     )
 
 
+def robots_txt_view(request):
+    sitemap_url = request.build_absolute_uri("/sitemap.xml")
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin/",
+        "Disallow: /student/",
+        "Disallow: /teacher/",
+        "Disallow: /adviser/",
+        "Disallow: /manager/",
+        "Disallow: /users/auth/",
+        f"Sitemap: {sitemap_url}",
+    ]
+    return HttpResponse("\n".join(lines) + "\n", content_type="text/plain; charset=utf-8")
+
+
 urlpatterns = [
     path('healthz/', healthz_view, name='healthz'),
+    path('sitemap.xml', sitemap, {'sitemaps': SITEMAPS}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', robots_txt_view, name='robots_txt'),
     path('admin/', admin.site.urls),
     path('', include('apps.sitesetting.urls')),
     path('posts/', include('apps.article.urls')),

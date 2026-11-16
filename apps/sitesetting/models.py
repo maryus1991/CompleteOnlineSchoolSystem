@@ -185,6 +185,8 @@ class Site(BaseModel):
     main_page_blog_name =  models.CharField("نام قسمت مقالات در صفحه اصلی", default="مقالات آموزشی", max_length=100)
     MESSAGE_DURATION = models.IntegerField("زمان نمایش پیام ms", default=10000)
 
+    approve_the_new_comments = models.BooleanField("تایید کردن به صورت خودکار کامنت های جدید", default=True)
+
 
     def __str__(self):
         return self.name

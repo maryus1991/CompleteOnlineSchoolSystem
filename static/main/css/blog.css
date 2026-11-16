@@ -588,3 +588,549 @@ body, .blog-post-article {
     right: auto;
     left: 0;
 }
+
+/* ===== امتیازدهی ۱ تا ۵ ستاره و دیدگاه‌های مقاله ===== */
+
+/* --- Rating Card --- */
+.post-rating-card {
+    margin-top: 40px;
+    padding: 32px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-rating-card:hover {
+    border-color: rgba(245, 158, 11, 0.3);
+    box-shadow: 0 8px 30px rgba(245, 158, 11, 0.06);
+}
+
+/* --- Comments Card --- */
+.post-comments-card {
+    margin-top: 40px;
+    padding: 32px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-comments-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--card-shadow);
+}
+
+/* --- Shared heading styles --- */
+.post-rating-head,
+.comments-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.post-rating-head h3,
+.comments-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-family: 'Peyda', sans-serif;
+}
+
+.post-rating-head p {
+    margin: 6px 0 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+}
+
+/* --- Rating summary badge --- */
+.post-rating-summary {
+    text-align: center;
+    padding: 12px 22px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    transition: var(--transition);
+}
+
+.post-rating-summary strong {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #f59e0b;
+    font-family: 'Peyda', sans-serif;
+    line-height: 1.2;
+}
+
+.post-rating-summary span {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+}
+
+/* --- Stars form --- */
+.rating-stars-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.rating-stars {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.rating-star-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+                background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rating-star-btn:hover {
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.5);
+    background: rgba(245, 158, 11, 0.06);
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+
+.rating-star-btn.active {
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.55);
+    background: rgba(245, 158, 11, 0.08);
+    transform: translateY(-1px);
+}
+
+.rating-user-note {
+    font-size: 0.88rem;
+    color: #f59e0b;
+    font-weight: 600;
+    font-family: 'Peyda', sans-serif;
+    background: rgba(245, 158, 11, 0.08);
+    padding: 6px 14px;
+    border-radius: 10px;
+}
+
+/* --- Distribution bars --- */
+.rating-distribution {
+    display: grid;
+    gap: 10px;
+    padding-top: 8px;
+}
+
+.rating-dist-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 36px;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+    transition: opacity 0.2s ease;
+}
+
+.rating-dist-row:hover {
+    opacity: 0.85;
+}
+
+.rating-dist-track {
+    height: 10px;
+    border-radius: 999px;
+    background: var(--border-color);
+    overflow: hidden;
+}
+
+.rating-dist-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    transition: width 0.5s ease;
+}
+
+.rating-dist-count {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* --- Comments header --- */
+.comments-count {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+    background: var(--bg-card);
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    font-weight: 600;
+}
+
+/* --- Guest lock box --- */
+.comment-guest-lock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 22px 24px;
+    border-radius: 18px;
+    border: 1px dashed var(--border-color);
+    background: var(--bg-card);
+    margin-bottom: 28px;
+    transition: border-color 0.3s ease;
+}
+
+.comment-guest-lock:hover {
+    border-color: var(--accent-color);
+}
+
+.comment-guest-lock h4 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: 'Peyda', sans-serif;
+}
+
+.comment-guest-lock p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+    line-height: 1.7;
+}
+
+/* --- Comment form --- */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding: 24px;
+    border-radius: 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+.comment-form:focus-within {
+    border-color: var(--accent-color);
+}
+
+.comment-author-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+}
+
+.comment-author-label strong {
+    color: var(--accent-color);
+}
+
+.comment-textarea {
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: 'Peyda', sans-serif;
+    font-size: 0.95rem;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    line-height: 1.8;
+}
+
+.comment-textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.comment-textarea::placeholder {
+    color: var(--text-muted);
+    font-family: 'Peyda', sans-serif;
+}
+
+.comment-submit-btn {
+    align-self: flex-end;
+    padding: 10px 28px;
+    font-size: 0.9rem;
+}
+
+/* --- Comments list --- */
+.comments-list {
+    display: grid;
+    gap: 16px;
+}
+
+.comment-item {
+    padding: 22px;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.comment-item:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.comment-item-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+}
+
+.comment-item-head strong {
+    color: var(--text-primary);
+    font-size: 0.98rem;
+    font-family: 'Peyda', sans-serif;
+}
+
+.comment-role {
+    margin-right: 8px;
+    color: var(--accent-color);
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--accent-glow);
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-family: 'Peyda', sans-serif;
+}
+
+.comment-body {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    font-family: 'Peyda', sans-serif;
+}
+
+.comments-empty {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-family: 'Peyda', sans-serif;
+    border: 1px dashed var(--border-color);
+    border-radius: 16px;
+    background: var(--bg-card);
+}
+
+/* --- Comment action buttons --- */
+.comment-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-delete-form {
+    display: inline;
+    margin: 0;
+}
+
+.comment-action-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: 'Peyda', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.comment-action-btn:hover {
+    background: var(--accent-glow);
+}
+
+.comment-delete-btn {
+    color: #ef4444;
+}
+
+.comment-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+/* --- Reply form --- */
+.comment-reply-form {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comment-reply-form[hidden] {
+    display: none;
+}
+
+.comment-reply-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.reply-cancel-btn {
+    color: var(--text-muted);
+}
+
+.reply-cancel-btn:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* --- Reply thread --- */
+.comment-replies {
+    margin-top: 18px;
+    margin-right: 22px;
+    padding-right: 18px;
+    border-right: 2px solid var(--accent-color);
+    display: grid;
+    gap: 12px;
+}
+
+.comment-reply-item {
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    transition: border-color 0.3s ease;
+}
+
+.comment-reply-item:hover {
+    border-color: var(--border-hover);
+}
+
+/* --- Rating & Comments responsive --- */
+@media (max-width: 768px) {
+    .post-rating-card,
+    .post-comments-card {
+        padding: 22px 18px;
+        border-radius: 20px;
+    }
+
+    .post-rating-head,
+    .comments-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .rating-star-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+        border-radius: 10px;
+    }
+
+    .rating-stars {
+        gap: 5px;
+    }
+
+    .rating-stars-form {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .comment-form {
+        padding: 18px 16px;
+    }
+
+    .comment-guest-lock {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        padding: 20px 18px;
+    }
+
+    .comment-item {
+        padding: 16px;
+    }
+
+    .comment-replies {
+        margin-right: 12px;
+        padding-right: 12px;
+    }
+
+    .comment-reply-item {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .post-rating-card,
+    .post-comments-card {
+        padding: 18px 14px;
+        border-radius: 16px;
+        margin-top: 28px;
+    }
+
+    .post-rating-head h3,
+    .comments-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .post-rating-summary strong {
+        font-size: 1.4rem;
+    }
+
+    .comment-item-head {
+        font-size: 0.8rem;
+    }
+
+    .comment-body {
+        font-size: 0.88rem;
+    }
+
+    .rating-dist-row {
+        grid-template-columns: 50px 1fr 30px;
+        font-size: 0.78rem;
+    }
+}
+
+/* --- RTL support for comments --- */
+[dir="ltr"] .comment-replies {
+    margin-right: 0;
+    margin-left: 22px;
+    padding-right: 0;
+    padding-left: 18px;
+    border-right: none;
+    border-left: 2px solid var(--accent-color);
+}
+
+[dir="ltr"] .comment-role {
+    margin-right: 0;
+    margin-left: 8px;
+}

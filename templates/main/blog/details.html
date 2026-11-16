@@ -75,6 +75,148 @@
                                 <p data-i18n="blog.post.author.bio">{{item.user.biography }}</p>
                             </div>
                         </a>
+
+                        <!-- امتیازدهی ۱ تا ۵ ستاره -->
+                        <section class="post-rating-card" id="article-rating" aria-labelledby="ratingHeading">
+                            <div class="post-rating-head">
+                                <div>
+                                    <h3 id="ratingHeading">امتیاز به این مقاله</h3>
+                                    <p>این مطلب چقدر برای شما مفید بود؟ از ۱ تا ۵ ستاره انتخاب کنید.</p>
+                                </div>
+                                <div class="post-rating-summary">
+                                    <strong id="ratingAvgValue">{{ rating_avg|floatformat:1 }}</strong>
+                                    <span>از ۵ (<span id="ratingCountValue">{{ rating_count }}</span> رای)</span>
+                                </div>
+                            </div>
+
+                            <form method="post" action="{% url 'article:article-rate' item.pk %}" class="rating-stars-form" id="articleRatingForm">
+                                {% csrf_token %}
+                                <div class="rating-stars" role="group" aria-label="امتیاز از ۱ تا ۵ ستاره">
+                                    {% for star in "12345" %}
+                                        {% with star_num=forloop.counter %}
+                                        <button
+                                            type="submit"
+                                            name="score"
+                                            value="{{ star_num }}"
+                                            class="rating-star-btn {% if user_rating and star_num <= user_rating %}active{% endif %}"
+                                            data-score="{{ star_num }}"
+                                            aria-label="امتیاز {{ star_num }} ستاره"
+                                            aria-pressed="{% if user_rating == star_num %}true{% else %}false{% endif %}"
+                                        >★</button>
+                                        {% endwith %}
+                                    {% endfor %}
+                                </div>
+                                <span class="rating-user-note" id="ratingUserNote">
+                                    {% if user_rating %}امتیاز ثبت‌شده شما: {{ user_rating }} از ۵{% endif %}
+                                </span>
+                            </form>
+
+                            <div class="rating-distribution" id="ratingDistribution">
+                                {% for row in rating_distribution %}
+                                <div class="rating-dist-row" data-stars="{{ row.stars }}">
+                                    <span>{{ row.stars }} ستاره</span>
+                                    <div class="rating-dist-track"><div class="rating-dist-fill" style="width: {{ row.percent }}%;"></div></div>
+                                    <span class="rating-dist-count">{{ row.count }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+
+                        <!-- بخش دیدگاه‌ها (نمایش برای همه، ثبت و پاسخ یک‌سطحی برای کاربران ثبت‌نام‌شده، حذف برای ادمین) -->
+                        <section class="post-comments-card" id="comments" aria-labelledby="commentsHeading">
+                            <div class="comments-header">
+                                <h3 id="commentsHeading">دیدگاه‌های کاربران</h3>
+                                <span class="comments-count">{{ comments_count }} دیدگاه</span>
+                            </div>
+
+                            {% if request.user.is_authenticated %}
+                            <form method="post" action="{% url 'article:article-comment' item.pk %}" class="comment-form">
+                                {% csrf_token %}
+                                <label for="{{ comment_form.text.id_for_label }}" class="comment-author-label">
+                                    ثبت دیدگاه با نام <strong>{{ request.user.get_full_name|default:request.user }}</strong>
+                                </label>
+                                {{ comment_form.text }}
+                                <button type="submit" class="btn btn-primary comment-submit-btn">ارسال دیدگاه</button>
+                            </form>
+                            {% else %}
+                            <div class="comment-guest-lock">
+                                <div>
+                                    <h4>ثبت دیدگاه مخصوص کاربران ثبت‌نام‌شده است</h4>
+                                    <p>همه بازدیدکنندگان می‌توانند دیدگاه‌ها را مشاهده کنند، اما برای ارسال نظر یا پاسخ باید ابتدا ثبت‌نام یا وارد حساب خود شوید.</p>
+                                </div>
+                                <a href="{% url 'user:auth' %}?next={{ request.path }}#comments" class="btn btn-primary">
+                                    ورود یا ثبت‌نام
+                                </a>
+                            </div>
+                            {% endif %}
+
+                            <div class="comments-list">
+                                {% for comment in comments %}
+                                <div class="comment-item" id="comment-{{ comment.pk }}">
+                                    <div class="comment-item-head">
+                                        <div>
+                                            <strong>{{ comment.user.get_full_name|default:comment.user }}</strong>
+                                            <span class="comment-role">{{ comment.user.get_type_of_user_display }}</span>
+                                        </div>
+                                        <div class="comment-actions">
+                                            <time>{{ comment.created_at }}</time>
+                                            {% if request.user.is_authenticated %}
+                                            <button type="button" class="comment-action-btn reply-toggle-btn" data-target="reply-form-{{ comment.pk }}">پاسخ</button>
+                                            {% endif %}
+                                            {% if can_moderate_comments %}
+                                            <form method="post" action="{% url 'article:article-comment-delete' item.pk comment.pk %}" class="comment-delete-form">
+                                                {% csrf_token %}
+                                                <button type="submit" class="comment-action-btn comment-delete-btn">حذف</button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <p class="comment-body">{{ comment.text|linebreaksbr }}</p>
+
+                                    {% if request.user.is_authenticated %}
+                                    <form method="post" action="{% url 'article:article-comment' item.pk %}" class="comment-reply-form" id="reply-form-{{ comment.pk }}" hidden>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="parent_id" value="{{ comment.pk }}">
+                                        <textarea name="text" rows="2" maxlength="1500" required class="comment-textarea" placeholder="پاسخ خود را به این دیدگاه بنویسید..."></textarea>
+                                        <div class="comment-reply-form-actions">
+                                            <button type="button" class="comment-action-btn reply-cancel-btn" data-target="reply-form-{{ comment.pk }}">انصراف</button>
+                                            <button type="submit" class="btn btn-primary comment-submit-btn">ارسال پاسخ</button>
+                                        </div>
+                                    </form>
+                                    {% endif %}
+
+                                    {% with replies=comment.replies.all %}
+                                    {% if replies %}
+                                    <div class="comment-replies">
+                                        {% for reply in replies %}
+                                        <div class="comment-reply-item" id="comment-{{ reply.pk }}">
+                                            <div class="comment-item-head">
+                                                <div>
+                                                    <strong>{{ reply.user.get_full_name|default:reply.user }}</strong>
+                                                    <span class="comment-role">{{ reply.user.get_type_of_user_display }}</span>
+                                                </div>
+                                                <div class="comment-actions">
+                                                    <time>{{ reply.created_at }}</time>
+                                                    {% if can_moderate_comments %}
+                                                    <form method="post" action="{% url 'article:article-comment-delete' item.pk reply.pk %}" class="comment-delete-form">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="comment-action-btn comment-delete-btn">حذف</button>
+                                                    </form>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <p class="comment-body">{{ reply.text|linebreaksbr }}</p>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% endwith %}
+                                </div>
+                                {% empty %}
+                                <p class="comments-empty">هنوز دیدگاهی برای این مقاله ثبت نشده است.</p>
+                                {% endfor %}
+                            </div>
+                        </section>
                     </div>
 
                     <!-- سایدبار -->
@@ -94,4 +236,88 @@
         </article>
         <br>
         <br>
+{% endblock %}
+{% block footer %}
+<script>
+(function () {
+    const form = document.getElementById('articleRatingForm');
+    if (!form) return;
+    const buttons = Array.from(form.querySelectorAll('.rating-star-btn'));
+    const avgEl = document.getElementById('ratingAvgValue');
+    const countEl = document.getElementById('ratingCountValue');
+    const noteEl = document.getElementById('ratingUserNote');
+    const distWrap = document.getElementById('ratingDistribution');
+    const csrfInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+
+    function paintStars(limit) {
+        buttons.forEach((btn) => {
+            const val = Number(btn.dataset.score);
+            btn.classList.toggle('active', val <= limit);
+        });
+    }
+
+    let currentScore = Number((buttons.filter(b => b.classList.contains('active')).pop() || {}).dataset?.score || 0);
+
+    buttons.forEach((btn) => {
+        const val = Number(btn.dataset.score);
+        btn.addEventListener('mouseenter', () => paintStars(val));
+        btn.addEventListener('mouseleave', () => paintStars(currentScore));
+        btn.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                const body = new URLSearchParams();
+                body.set('score', String(val));
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrfInput ? csrfInput.value : '',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: body.toString(),
+                });
+                const data = await res.json();
+                if (!res.ok) return;
+                currentScore = data.user_rating || val;
+                paintStars(currentScore);
+                buttons.forEach((b) => b.setAttribute('aria-pressed', Number(b.dataset.score) === currentScore ? 'true' : 'false'));
+                if (avgEl) avgEl.textContent = Number(data.rating_avg).toFixed(1);
+                if (countEl) countEl.textContent = data.rating_count;
+                if (noteEl) noteEl.textContent = 'امتیاز ثبت‌شده شما: ' + currentScore + ' از ۵';
+                if (distWrap && Array.isArray(data.rating_distribution)) {
+                    data.rating_distribution.forEach((row) => {
+                        const rowEl = distWrap.querySelector('[data-stars="' + row.stars + '"]');
+                        if (!rowEl) return;
+                        const fill = rowEl.querySelector('.rating-dist-fill');
+                        const cnt = rowEl.querySelector('.rating-dist-count');
+                        if (fill) fill.style.width = row.percent + '%';
+                        if (cnt) cnt.textContent = row.count;
+                    });
+                }
+            } catch (err) {
+                form.submit();
+            }
+        });
+    });
+    document.querySelectorAll('.reply-toggle-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const target = document.getElementById(btn.dataset.target);
+            if (!target) return;
+            const willShow = target.hasAttribute('hidden');
+            document.querySelectorAll('.comment-reply-form').forEach((f) => f.setAttribute('hidden', ''));
+            if (willShow) {
+                target.removeAttribute('hidden');
+                const ta = target.querySelector('textarea');
+                if (ta) ta.focus();
+            }
+        });
+    });
+    document.querySelectorAll('.reply-cancel-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const target = document.getElementById(btn.dataset.target);
+            if (target) target.setAttribute('hidden', '');
+        });
+    });
+})();
+</script>
 {% endblock %}

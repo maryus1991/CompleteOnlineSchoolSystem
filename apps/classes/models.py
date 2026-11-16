@@ -18,7 +18,7 @@ class Class(BaseModel):
     lesson = models.ForeignKey(LessonCategories, null=True, blank=True, on_delete=models.CASCADE, related_name='classes', verbose_name="درس")
     name = models.CharField("نام", max_length=100)
     summery = models.CharField("توضیحات کوتاه", max_length=500, null=True, blank=True)
-    is_public = models.BooleanField("عمومی", default=False)
+    is_public = models.BooleanField("عمومی (اضافه به لیست دوره ها)", default=False)
     is_free = models.BooleanField("رایگان", default=False)
     image = ResizedImageField("عکس", upload_to=UploadPath("classes/"))
     price = models.BigIntegerField("قیمت", default=0)
