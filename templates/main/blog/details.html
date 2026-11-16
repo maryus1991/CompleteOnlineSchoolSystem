@@ -16,9 +16,9 @@
     <meta property="article:published_time" content="{{ item.created_at|schema_iso_date }}">
     <meta property="article:modified_time" content="{{ item.updated_at|schema_iso_date }}">
     <meta property="article:section" content="{{ item.category.name }}">
-    {% for t in item.tags.all %}
-    <meta property="article:tag" content="{{ t.name }}">
-    {% endfor %}
+
+    <meta property="article:tag" content=" {% for t in item.tags.all %} {{ t.name }}, {% endfor %}">
+
 {% endblock %}
 {% block schema %}
     {% render_article_schema item rating_avg rating_count %}
