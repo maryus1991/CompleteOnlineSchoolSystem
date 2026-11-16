@@ -39,7 +39,9 @@ def healthz_view(request):
 
 
 def robots_txt_view(request):
-    sitemap_url = request.build_absolute_uri("/sitemap.xml")
+    site = getattr(request, "site", None)
+    base_url = (getattr(site, "canonical_base_url", "") or "").strip().rstrip("/")
+    sitemap_url = f"{base_url}/sitemap.xml" if base_url else request.build_absolute_uri("/sitemap.xml")
     lines = [
         "User-agent: *",
         "Allow: /",

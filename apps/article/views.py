@@ -100,28 +100,29 @@ class ArticleCategoryListView(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        try:
-            if q := self.request.GET.get("q"):
-                return BlogCategories.objects.get(is_active=True, pk=self.kwargs.get("pk")).posts.filter(
-                    is_active=True, publish=True
-                ).filter(
-                    Q(name__icontains=q) |
-                    Q(summery__icontains=q) |
-                    Q(text__icontains=q) |
-                    Q(name_for_file__icontains=q) |
-                    Q(category__name__icontains=q)
-                ).select_related("category").distinct()
-            return BlogCategories.objects.get(is_active=True, pk=self.kwargs.get("pk")).posts.filter(
+        self.current_category = get_object_or_404(
+            BlogCategories, is_active=True, pk=self.kwargs.get("pk")
+        )
+        if q := self.request.GET.get("q"):
+            return self.current_category.posts.filter(
                 is_active=True, publish=True
-            ).select_related("category")
-        except BlogCategories.DoesNotExist:
-            raise Http404()
+            ).filter(
+                Q(name__icontains=q) |
+                Q(summery__icontains=q) |
+                Q(text__icontains=q) |
+                Q(name_for_file__icontains=q) |
+                Q(category__name__icontains=q)
+            ).select_related("category").distinct()
+        return self.current_category.posts.filter(
+            is_active=True, publish=True
+        ).select_related("category")
 
     def get_context_data(self, *args, **kwargs):
         data = super().get_context_data(*args, **kwargs)
         data.update({
             "categories": BlogCategories.objects.filter(is_active=True).all(),
             "pk": self.kwargs.get("pk"),
+            "current_category": getattr(self, "current_category", None),
         })
         return data
 

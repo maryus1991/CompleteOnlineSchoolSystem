@@ -1,4 +1,20 @@
 {% extends "main/Base/Base.html" %}
+{% load seo_tags %}
+{% block title %}{{ object.name }} {{ site.title_separator|default:"|" }} {{ site.list_course_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_description %}{{ object.summery|default:object.text|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block meta_keywords %}{{ object.name }}{% if object.lesson %}, {{ object.lesson.name }}{% endif %}{% if object.grade %}, {{ object.grade.name }}{% endif %}{% if object.major %}, {{ object.major.name }}{% endif %}, {{ site.default_meta_keywords }}{% endblock %}
+{% block og_title %}{{ object.name }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block twitter_title %}{{ object.name }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block og_description %}{{ object.summery|default:object.text|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ object.summery|default:object.text|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block og_image %}{% if object.image %}{% abs_url object.image.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if object.image %}{% abs_url object.image.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block og_image_alt %}{{ object.name }}{% endblock %}
+{% block schema %}
+    {% render_course_schema object %}
+    {% url 'class:list' as courses_url %}
+    {% render_breadcrumb_schema site.list_course_title courses_url object.name object.get_absolute_url %}
+{% endblock %}
 
 {% block header %}
     <link rel="stylesheet" href="../../../static/main/css/course-single.css">

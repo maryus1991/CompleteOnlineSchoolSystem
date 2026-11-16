@@ -1,5 +1,16 @@
-
 {% extends "main/Base/Base.html" %}
+{% load seo_tags %}
+{% block title %}{% if request.GET.q %}جستجو: {{ request.GET.q }} {{ site.title_separator|default:"|" }} {% endif %}{{ site.seo_title_qbank|default:site.qbank_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_description %}{{ site.seo_description_qbank|default:site.qbank_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block og_title %}{{ site.seo_title_qbank|default:site.qbank_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block twitter_title %}{{ site.seo_title_qbank|default:site.qbank_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block og_description %}{{ site.seo_description_qbank|default:site.qbank_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ site.seo_description_qbank|default:site.qbank_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block schema %}
+    {% render_webpage_schema "CollectionPage" site.seo_title_qbank|default:site.qbank_title site.seo_description_qbank|default:site.qbank_description %}
+    {% url 'question:list' as qbank_url %}
+    {% render_breadcrumb_schema site.qbank_title qbank_url %}
+{% endblock %}
 
 {% block main %}
 <style>

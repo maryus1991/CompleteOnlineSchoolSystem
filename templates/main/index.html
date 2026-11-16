@@ -1,4 +1,15 @@
 {% extends "main/Base/Base.html" %}
+{% load seo_tags %}
+{% block title %}{{ site.name }} {{ site.title_separator|default:"|" }} {{ site.seo_title_home|default:site.main_page_greeting }}{% endblock %}
+{% block meta_description %}{{ site.seo_description_home|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block meta_keywords %}{{ site.seo_keywords_home|default:site.default_meta_keywords }}{% endblock %}
+{% block og_title %}{{ site.name }} {{ site.title_separator|default:"|" }} {{ site.seo_title_home|default:site.main_page_greeting }}{% endblock %}
+{% block twitter_title %}{{ site.name }} {{ site.title_separator|default:"|" }} {{ site.seo_title_home|default:site.main_page_greeting }}{% endblock %}
+{% block og_description %}{{ site.seo_description_home|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ site.seo_description_home|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block og_image %}{% if site.og_image %}{{ seo_og_image_url }}{% elif site.about_img %}{% abs_url site.about_img.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if site.og_image %}{{ seo_og_image_url }}{% elif site.about_img %}{% abs_url site.about_img.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block schema %}{% render_webpage_schema "WebPage" site.seo_title_home|default:site.name site.seo_description_home|default:site.get_default_description %}{% endblock %}
 
 
 {% block main %}

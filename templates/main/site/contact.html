@@ -1,11 +1,23 @@
 {% extends "main/Base/Base.html" %}
+{% load seo_tags %}
+{% block title %}{{ site.seo_title_contact|default:site.contact_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_description %}{{ site.seo_description_contact|default:site.contact_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block og_title %}{{ site.seo_title_contact|default:site.contact_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block twitter_title %}{{ site.seo_title_contact|default:site.contact_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block og_description %}{{ site.seo_description_contact|default:site.contact_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ site.seo_description_contact|default:site.contact_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block schema %}
+    {% render_webpage_schema "ContactPage" site.seo_title_contact|default:site.contact_title site.seo_description_contact|default:site.contact_description %}
+    {% url 'site:contact' as contact_url %}
+    {% render_breadcrumb_schema site.contact_title contact_url %}
+{% endblock %}
 
 {% block main %}
     <section class="contact" id="contact">
         <div class="container"><div class="contact-grid">
             <div class="contact-info">
                 <span class="section-subtitle" data-i18n="contact.subtitle">{{site.contact_above_tag}}</span>
-                <h2 class="section-title" data-i18n="contact.title">{{site.contact_title}}</h2>
+                <h1 class="section-title" data-i18n="contact.title">{{site.contact_title}}</h1>
                 <p class="contact-desc" data-i18n="contact.desc">{{site.contact_description}}</p>
                 <div class="contact-details">
                     <div class="contact-item">

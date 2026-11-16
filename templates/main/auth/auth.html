@@ -1,4 +1,8 @@
 {% extends 'main/Base/Base.html' %}
+{% load seo_tags %}
+{% block title %}{{ site.auth_title|default:"ورود و ثبت‌نام" }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
+{% block meta_description %}ورود یا ثبت‌نام در {{ site.name }} برای دسترسی به دوره‌ها، آزمون‌ها و پنل کاربری.{% endblock %}
 
 
 

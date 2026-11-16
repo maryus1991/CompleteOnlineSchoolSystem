@@ -1,4 +1,30 @@
-    {% extends "main/Base/Base.html" %}
+{% extends "main/Base/Base.html" %}
+{% load seo_tags %}
+{% block title %}{{ item.name }} {{ site.title_separator|default:"|" }} {{ item.category.name }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_description %}{{ item.summery|default:item.text|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block meta_keywords %}{% for t in item.tags.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% empty %}{{ item.category.name }}, {{ site.default_meta_keywords }}{% endfor %}{% endblock %}
+{% block meta_author %}{{ item.user.get_full_name|default:site.name }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ item.name }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block twitter_title %}{{ item.name }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block og_description %}{{ item.summery|default:item.text|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ item.summery|default:item.text|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block og_image %}{% if item.image %}{% abs_url item.image.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if item.image %}{% abs_url item.image.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block og_image_alt %}{{ item.name }}{% endblock %}
+{% block og_extra %}
+    <meta property="article:published_time" content="{{ item.created_at|schema_iso_date }}">
+    <meta property="article:modified_time" content="{{ item.updated_at|schema_iso_date }}">
+    <meta property="article:section" content="{{ item.category.name }}">
+    {% for t in item.tags.all %}
+    <meta property="article:tag" content="{{ t.name }}">
+    {% endfor %}
+{% endblock %}
+{% block schema %}
+    {% render_article_schema item rating_avg rating_count %}
+    {% url 'article:article-list' as articles_url %}
+    {% render_breadcrumb_schema site.list_articles_title articles_url item.category.name item.category.get_absolute_url item.name item.get_absolute_url %}
+{% endblock %}
 
 
 {% block header %}
