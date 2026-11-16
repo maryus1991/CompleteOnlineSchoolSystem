@@ -187,6 +187,256 @@ class Site(BaseModel):
 
     approve_the_new_comments = models.BooleanField("تایید کردن به صورت خودکار کامنت های جدید", default=True)
 
+    # ==========================================================
+    # تنظیمات سئو فنی و عمومی (Technical SEO)
+    # ==========================================================
+    ORGANIZATION_TYPE_CHOICES = [
+        ("EducationalOrganization", "موسسه آموزشی (EducationalOrganization)"),
+        ("School", "مدرسه (School)"),
+        ("Organization", "سازمان (Organization)"),
+    ]
+
+    title_separator = models.CharField(
+        "جداکننده عنوان صفحات",
+        max_length=10,
+        default="|",
+        help_text="کاراکتر جداکننده بین عنوان صفحه و نام برند (مثلاً | یا -)",
+    )
+    canonical_base_url = models.URLField(
+        "دامنه اصلی سایت (Canonical Base URL)",
+        blank=True,
+        default="",
+        help_text="مثال: https://example.com (در صورت خالی بودن، از دامنه درخواست فعلی استفاده می‌شود)",
+    )
+    og_image = ResizedImageField(
+        "تصویر پیش‌فرض اشتراک‌گذاری (OG Image)",
+        upload_to=UploadPath("seo"),
+        null=True,
+        blank=True,
+        help_text="ابعاد پیشنهادی: 1200×630 پیکسل",
+    )
+    apple_touch_icon = ResizedImageField(
+        "آیکون اپل (Apple Touch Icon)",
+        upload_to=UploadPath("seo"),
+        null=True,
+        blank=True,
+        help_text="ابعاد پیشنهادی: 180×180 پیکسل",
+    )
+    theme_color = models.CharField(
+        "رنگ تم مرورگر (theme-color)",
+        max_length=20,
+        default="#0a101d",
+    )
+    default_meta_description = models.CharField(
+        "توضیحات متای پیش‌فرض (Meta Description)",
+        max_length=160,
+        blank=True,
+        default="",
+        help_text="۱۵۰ تا ۱۶۰ کاراکتر؛ در صورت خالی بودن از توضیحات کوتاه سایت استفاده می‌شود.",
+    )
+    default_meta_keywords = models.CharField(
+        "کلمات کلیدی پیش‌فرض (Meta Keywords)",
+        max_length=300,
+        blank=True,
+        default="آموزش آنلاین, مدرسه آنلاین, دوره آموزشی, آزمون آنلاین, بانک سوال",
+    )
+    robots_default = models.CharField(
+        "دستور پیش‌فرض ربات‌ها (Robots Meta)",
+        max_length=60,
+        default="index, follow",
+    )
+    google_site_verification = models.CharField(
+        "کد تایید Google Search Console",
+        max_length=150,
+        blank=True,
+        default="",
+        help_text="فقط مقدار content مربوط به متاتگ google-site-verification",
+    )
+    twitter_handle = models.CharField(
+        "نام کاربری توییتر / X",
+        max_length=60,
+        blank=True,
+        default="",
+        help_text="مثال: @aroo_academy",
+    )
+    organization_type = models.CharField(
+        "نوع سازمان در اسکیما (Schema.org)",
+        max_length=40,
+        choices=ORGANIZATION_TYPE_CHOICES,
+        default="EducationalOrganization",
+    )
+    price_currency = models.CharField(
+        "واحد پول در اسکیما (ISO 4217)",
+        max_length=10,
+        default="IRR",
+        help_text="برای تومان معادل ریالی یا IRR / IRT مطابق استاندارد اسکیما",
+    )
+
+    # ==========================================================
+    # تنظیمات اختصاصی سئوی صفحات عمومی
+    # ==========================================================
+    seo_title_home = models.CharField(
+        "عنوان سئو صفحه اصلی",
+        max_length=120,
+        default="آموزش آنلاین، دوره‌های تخصصی و آزمون‌های هوشمند",
+    )
+    seo_description_home = models.CharField(
+        "توضیحات متای صفحه اصلی",
+        max_length=160,
+        default="پلتفرم جامع آموزش آنلاین با دوره‌های تخصصی، آزمون‌های هوشمند، بانک سوال و مشاوره تحصیلی برای تضمین آینده آموزشی شما.",
+    )
+    seo_keywords_home = models.CharField(
+        "کلمات کلیدی صفحه اصلی",
+        max_length=300,
+        blank=True,
+        default="آموزش آنلاین, مدرسه آنلاین, دوره‌های تخصصی, آزمون آنلاین, بانک سوال",
+    )
+
+    seo_title_courses = models.CharField(
+        "عنوان سئو لیست دوره‌ها",
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="در صورت خالی بودن از «عنوان لیست دوره‌ها» استفاده می‌شود.",
+    )
+    seo_description_courses = models.CharField(
+        "توضیحات متای لیست دوره‌ها",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_articles = models.CharField(
+        "عنوان سئو لیست مقالات",
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="در صورت خالی بودن از «عنوان لیست مقالات» استفاده می‌شود.",
+    )
+    seo_description_articles = models.CharField(
+        "توضیحات متای لیست مقالات",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_exams = models.CharField(
+        "عنوان سئو لیست آزمون‌ها",
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="در صورت خالی بودن از «عنوان لیست آزمون‌ها» استفاده می‌شود.",
+    )
+    seo_description_exams = models.CharField(
+        "توضیحات متای لیست آزمون‌ها",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_qbank = models.CharField(
+        "عنوان سئو بانک سوال",
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="در صورت خالی بودن از «عنوان بانک سوال» استفاده می‌شود.",
+    )
+    seo_description_qbank = models.CharField(
+        "توضیحات متای بانک سوال",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_teachers = models.CharField(
+        "عنوان سئو لیست اساتید و برترین‌ها",
+        max_length=120,
+        blank=True,
+        default="",
+    )
+    seo_description_teachers = models.CharField(
+        "توضیحات متای لیست اساتید و برترین‌ها",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_about = models.CharField(
+        "عنوان سئو درباره ما",
+        max_length=120,
+        blank=True,
+        default="",
+    )
+    seo_description_about = models.CharField(
+        "توضیحات متای درباره ما",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_faq = models.CharField(
+        "عنوان سئو سوالات متداول",
+        max_length=120,
+        blank=True,
+        default="",
+    )
+    seo_description_faq = models.CharField(
+        "توضیحات متای سوالات متداول",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_contact = models.CharField(
+        "عنوان سئو تماس با ما",
+        max_length=120,
+        blank=True,
+        default="",
+    )
+    seo_description_contact = models.CharField(
+        "توضیحات متای تماس با ما",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_counseling = models.CharField(
+        "عنوان سئو مشاوره رایگان",
+        max_length=120,
+        blank=True,
+        default="",
+    )
+    seo_description_counseling = models.CharField(
+        "توضیحات متای مشاوره رایگان",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+
+    seo_title_sitemap = models.CharField(
+        "عنوان سئو نقشه سایت",
+        max_length=120,
+        blank=True,
+        default="نقشه سایت و فهرست کامل صفحات",
+    )
+    seo_description_sitemap = models.CharField(
+        "توضیحات متای نقشه سایت",
+        max_length=160,
+        blank=True,
+        default="دسترسی سریع به تمام صفحات عمومی، دوره‌ها، مقالات، آزمون‌ها و بانک سوال در نقشه سایت.",
+    )
+
+    def get_default_description(self):
+        return (self.default_meta_description or self.short_description or self.name or "").strip()
+
+    def get_same_as_links(self):
+        links = []
+        for url in (self.instagram_link, self.telegram_link, self.other_link):
+            cleaned = (url or "").strip()
+            if cleaned and cleaned != "#" and cleaned.startswith(("http://", "https://")):
+                links.append(cleaned)
+        return links
+
 
     def __str__(self):
         return self.name

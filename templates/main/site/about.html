@@ -1,4 +1,16 @@
 {% extends 'main/Base/Base.html' %}
+{% load seo_tags %}
+{% block title %}{{ site.seo_title_about|default:site.about_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_description %}{{ site.seo_description_about|default:site.description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block og_title %}{{ site.seo_title_about|default:site.about_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block twitter_title %}{{ site.seo_title_about|default:site.about_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block og_description %}{{ site.seo_description_about|default:site.description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ site.seo_description_about|default:site.description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block schema %}
+    {% render_webpage_schema "AboutPage" site.seo_title_about|default:site.about_title site.seo_description_about|default:site.get_default_description %}
+    {% url 'site:about' as about_url %}
+    {% render_breadcrumb_schema site.about_title about_url %}
+{% endblock %}
 
 {% block main %}
         <section class="roadmap" id="roadmap">

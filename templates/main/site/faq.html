@@ -1,4 +1,16 @@
- {% extends "main/Base/Base.html" %}
+{% extends "main/Base/Base.html" %}
+{% load seo_tags %}
+{% block title %}{{ site.seo_title_faq|default:site.faq_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_description %}{{ site.seo_description_faq|default:site.faq_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block og_title %}{{ site.seo_title_faq|default:site.faq_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block twitter_title %}{{ site.seo_title_faq|default:site.faq_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block og_description %}{{ site.seo_description_faq|default:site.faq_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ site.seo_description_faq|default:site.faq_description|default:site.get_default_description|clean_meta:160 }}{% endblock %}
+{% block schema %}
+    {% render_faq_schema items %}
+    {% url 'site:faq' as faq_url %}
+    {% render_breadcrumb_schema site.faq_title faq_url %}
+{% endblock %}
 
 {% block main %}
         <section class="faq" id="faq">

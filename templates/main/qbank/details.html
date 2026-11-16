@@ -1,5 +1,20 @@
-
 {% extends "main/Base/Base.html" %}
+{% load seo_tags %}
+{% block title %}{{ item.name|clean_meta:65 }} {{ site.title_separator|default:"|" }} {{ site.qbank_title }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block meta_description %}{{ item.description|default:item.name|clean_meta:160 }}{% endblock %}
+{% block meta_keywords %}{{ item.name|clean_meta:60 }}{% if item.lesson %}, {{ item.lesson.name }}{% endif %}{% if item.grade %}, {{ item.grade.name }}{% endif %}{% if item.major %}, {{ item.major.name }}{% endif %}, {{ site.default_meta_keywords }}{% endblock %}
+{% block og_title %}{{ item.name|clean_meta:65 }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block twitter_title %}{{ item.name|clean_meta:65 }} {{ site.title_separator|default:"|" }} {{ site.name }}{% endblock %}
+{% block og_description %}{{ item.description|default:item.name|clean_meta:160 }}{% endblock %}
+{% block twitter_description %}{{ item.description|default:item.name|clean_meta:160 }}{% endblock %}
+{% block og_image %}{% if item.image %}{% abs_url item.image.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if item.image %}{% abs_url item.image.url %}{% else %}{{ seo_og_image_url }}{% endif %}{% endblock %}
+{% block og_image_alt %}{{ item.name|clean_meta:100 }}{% endblock %}
+{% block schema %}
+    {% render_qbank_schema item %}
+    {% url 'question:list' as qbank_url %}
+    {% render_breadcrumb_schema site.qbank_title qbank_url item.name|clean_meta:60 item.get_absolute_url %}
+{% endblock %}
 
 {% block main %}
 <style>
